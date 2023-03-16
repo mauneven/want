@@ -1,0 +1,18 @@
+/* custom-navbar.css */
+.navbar {
+    font-family: 'Helvetica', sans-serif;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .navbar-brand {
+    font-weight: bold;
+  }
+  
+  .nav-link {
+    transition: color 0.2s ease;
+  }
+  
+  .nav-link:hover {
+    color: #ffdd57 !important;
+  }
+  
