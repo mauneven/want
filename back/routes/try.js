@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const tryController = require('../controller/tryController');
+const tryController = require('../controllers/tryController');
 
 router.use((req, res, next) => {
   console.log(`Método: ${req.method} - Ruta: ${req.originalUrl}`);

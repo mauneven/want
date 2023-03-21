@@ -1,0 +1,351 @@
+1. 
+
+mkdir crud-posts
+cd crud-posts
+npm init -y
+npm install express mongoose bcryptjs jsonwebtoken cors next react react-dom
+
+2. 
+
+// database.js
+const mongoose = require('mongoose');
+
+async function connectDB() {
+  try {
+    await mongoose.connect('mongodb://localhost/crud-posts-db', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: false
+    });
+    console.log('Base de datos conectada');
+  } catch (error) {
+    console.error('Error al conectar a la base de datos:', error);
+    process.exit(1);
+  }
+}
+
+module.exports = connectDB;
+
+3.
+
+// models/User.js
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+
+const UserSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true }
+});
+
+UserSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+UserSchema.methods.comparePassword = function (candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
+module.exports = mongoose.model('User', UserSchema);
+
+4. 
+
+// models/Post.js
+const mongoose = require('mongoose');
+
+const PostSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
+});
+
+module.exports = mongoose.model('Post', PostSchema);
+
+
+5.
+
+// controllers/authController.js
+const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+
+exports.register = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = new User({ username, password });
+    await user.save();
+
+    res.status(201).json({ message: 'Usuario registrado exitosamente' });
+  } catch (error) {
+    res.status(400).json({ message: 'Error al registrar el usuario', error });
+  }
+};
+
+exports.login = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(400).json({ message: 'Usuario o contraseña incorrectos' });
+    }
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Usuario o contraseña incorrectos' });
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.status(200).json({ token });
+  } catch (error) {
+    res.status(400).json({ message: 'Error al iniciar sesión', error });
+  }
+};
+
+
+6.
+
+// controllers/authController.js
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+
+const register = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = new User({ username, password });
+    await user.save();
+
+    res.status(201).json({ message: 'Usuario registrado exitosamente' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al registrar usuario', error });
+  }
+};
+
+const login = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Contraseña incorrecta' });
+    }
+
+    const token = jwt.sign({ userId: user._id }, 'your-secret-key', { expiresIn: '1h' });
+    res.status(200).json({ message: 'Usuario autenticado', token });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al autenticar usuario', error });
+  }
+};
+
+module.exports = { register, login };
+
+
+7.
+
+// controllers/postController.js
+const Post = require('../models/Post');
+
+const createPost = async (req, res) => {
+  const { title, description } = req.body;
+  const userId = req.userId;
+
+  try {
+    const post = new Post({ title, description, user: userId });
+    await post.save();
+
+    res.status(201).json({ message: 'Post creado exitosamente', post });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al crear post', error });
+  }
+};
+
+const getAllPosts = async (req, res) => {
+  try {
+    const posts = await Post.find().populate('user', 'username');
+    res.status(200).json({ posts });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener posts', error });
+  }
+};
+
+const getPostById = async (req, res) => {
+  const postId = req.params.id;
+
+  try {
+    const post = await Post.findById(postId).populate('user', 'username');
+    if (!post) {
+      return res.status(404).json({ message: 'Post no encontrado' });
+    }
+    res.status(200).json({ post });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener post', error });
+  }
+};
+
+const updatePost = async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.userId;
+  const { title, description } = req.body;
+
+  try {
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: 'Post no encontrado' });
+    }
+
+    if (post.user.toString() !== userId) {
+      return res.status(403).json({ message: 'No tienes permiso para editar este post' });
+    }
+
+    post.title = title;
+    post.description = description;
+    await post.save();
+
+    res.status(200).json({ message: 'Post actualizado exitosamente', post });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al actualizar post', error });
+  }
+};
+
+const deletePost = async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.userId;
+
+  try {
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: 'Post no encontrado' });
+    }
+
+        if (post.user.toString() !== userId) {
+      return res.status(403).json({ message: 'No tienes permiso para eliminar este post' });
+    }
+
+    await Post.findByIdAndDelete(postId);
+
+    res.status(200).json({ message: 'Post eliminado exitosamente' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al eliminar post', error });
+  }
+};
+
+module.exports = {
+  createPost,
+  getAllPosts,
+  getPostById,
+  updatePost,
+  deletePost
+};
+
+
+8.
+
+// routes/authRoutes.js
+const express = require('express');
+const { register, login } = require('../controllers/authController');
+
+const router = express.Router();
+
+router.post('/register', register);
+router.post('/login', login);
+
+module.exports = router;
+
+
+9. 
+
+// routes/postRoutes.js
+const express = require('express');
+const {
+  createPost,
+  getAllPosts,
+  getPostById,
+  updatePost,
+  deletePost
+} = require('../controllers/postController');
+const authMiddleware = require('../middleware/authMiddleware');
+
+const router = express.Router();
+
+router.post('/', authMiddleware, createPost);
+router.get('/', getAllPosts);
+router.get('/:id', getPostById);
+router.put('/:id', authMiddleware, updatePost);
+router.delete('/:id', authMiddleware, deletePost);
+
+module.exports = router;
+
+
+10.
+
+// middleware/authMiddleware.js
+const jwt = require('jsonwebtoken');
+
+module.exports = (req, res, next) => {
+  const token = req.header('Authorization');
+
+  if (!token) {
+    return res.status(401).json({ message: 'No hay token, acceso denegado' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, 'your-secret-key');
+    req.userId = decoded.userId;
+    next();
+  } catch (error) {
+    res.status(400).json({ message: 'Token inválido' });
+  }
+};
+
+
+11.
+
+
+// index.js
+const express = require('express');
+const cors = require('cors');
+const connectDB = require('./database');
+const authRoutes = require('./routes/authRoutes');
+const postRoutes = require('./routes/postRoutes');
+
+const app = express();
+
+// Conectar a la base de datos
+connectDB();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Rutas
+app.use('/api/auth', authRoutes);
+app.use('/api/posts', postRoutes);
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
+});
+
+
+
+12.
+
+npx create-next-app frontend
+cd frontend
+
+
+
+

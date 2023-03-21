@@ -1,19 +1,17 @@
+// database.js
 const mongoose = require('mongoose');
 
-// URL de conexión a la base de datos
-const dbUrl = process.env.DB_URL;
+async function connectDB() {
+  try {
+    await mongoose.connect("mongodb+srv://mauneven:admin123@want.oik7qz6.mongodb.net/?retryWrites=true&w=majority", {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('Base de datos conectada');
+  } catch (error) {
+    console.error('Error al conectar a la base de datos:', error);
+    process.exit(1);
+  }
+}
 
-// Conexión a la base de datos
-mongoose.connect(dbUrl, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-// Manejador de eventos de la conexión
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'Error de conexión:'));
-db.once('open', function() {
-  console.log('Conexión exitosa a la base de datos');
-});
-
-module.exports = mongoose;
+module.exports = connectDB;
