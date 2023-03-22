@@ -1,86 +1,73 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { useRouter } from 'next/router';
+import { Form, Button, Card } from 'react-bootstrap';
 
 const Login = () => {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [registerEmail, setRegisterEmail] = useState('');
-  const [registerPassword, setRegisterPassword] = useState('');
+  const [isRegistering, setIsRegistering] = useState(false);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
-        email,
-        password,
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (isRegistering) {
+      const response = await fetch('http://localhost:4000/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       });
-      console.log(response.data);
-      // Aquí podrías guardar el token de autenticación en el estado global de tu aplicación, por ejemplo
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', {
-        email: registerEmail,
-        password: registerPassword,
-      });
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
+      if (response.ok) {
+        router.push('/'); // Redirigir al usuario a la página principal después de registrarse
+      } else {
+        // Manejo de errores
+        const data = await response.json();
+        console.error(data.message);
+      }
+    } else {
+      // Lógica para iniciar sesión con un usuario existente
     }
   };
 
   return (
-    <div>
-      <h1>Iniciar sesión</h1>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label htmlFor="email">Correo electrónico</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+    <div className="container my-5">
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <Card>
+            <Card.Body>
+              <h2 className="card-title mb-4">{isRegistering ? 'Registro' : 'Inicio de sesión'}</h2>
+              <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3" controlId="email">
+                  <Form.Label>Correo electrónico</Form.Label>
+                  <Form.Control
+                    type="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="password">
+                  <Form.Label>Contraseña</Form.Label>
+                  <Form.Control
+                    type="password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3 form-check">
+                  <Form.Check
+                    type="checkbox"
+                    label="Registrarse"
+                    checked={isRegistering}
+                    onChange={() => setIsRegistering(!isRegistering)}
+                  />
+                </Form.Group>
+                <Button type="submit">{isRegistering ? 'Registrarse' : 'Iniciar sesión'}</Button>
+              </Form>
+            </Card.Body>
+          </Card>
         </div>
-        <div>
-          <label htmlFor="password">Contraseña</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <button type="submit">Iniciar sesión</button>
-      </form>
-      <hr />
-      <h1>Registrarse</h1>
-      <form onSubmit={handleRegister}>
-        <div>
-          <label htmlFor="registerEmail">Correo electrónico</label>
-          <input
-            type="email"
-            id="registerEmail"
-            value={registerEmail}
-            onChange={(e) => setRegisterEmail(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="registerPassword">Contraseña</label>
-          <input
-            type="password"
-            id="registerPassword"
-            value={registerPassword}
-            onChange={(e) => setRegisterPassword(e.target.value)}
-          />
-        </div>
-        <button type="submit">Registrarse</button>
-      </form>
+      </div>
     </div>
   );
 };
