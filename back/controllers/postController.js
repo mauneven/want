@@ -1,94 +1,57 @@
-// controllers/postController.js
-const Post = require('../models/Post');
+const Post = require('../models/postModel');
 
-const createPost = async (req, res) => {
+async function createPost(req, res, next) {
   const { title, description } = req.body;
-  const userId = req.userId;
-
+  const { userId } = req.session;
   try {
     const post = new Post({ title, description, user: userId });
     await post.save();
-
-    res.status(201).json({ message: 'Post creado exitosamente', post });
+    res.json({ message: 'Publicación creada con éxito', post });
   } catch (error) {
-    res.status(500).json({ message: 'Error al crear post', error });
+    next(error);
   }
-};
+}
 
-const getAllPosts = async (req, res) => {
+async function getPosts(req, res, next) {
   try {
-    const posts = await Post.find().populate('user', 'username');
-    res.status(200).json({ posts });
+    const posts = await Post.find().populate('user', 'email');
+    res.json({ posts });
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener posts', error });
+    next(error);
   }
-};
+}
 
-const getPostById = async (req, res) => {
-  const postId = req.params.id;
-
-  try {
-    const post = await Post.findById(postId).populate('user', 'username');
-    if (!post) {
-      return res.status(404).json({ message: 'Post no encontrado' });
-    }
-    res.status(200).json({ post });
-  } catch (error) {
-    res.status(500).json({ message: 'Error al obtener post', error });
-  }
-};
-
-const updatePost = async (req, res) => {
-  const postId = req.params.id;
-  const userId = req.userId;
+async function updatePost(req, res, next) {
   const { title, description } = req.body;
-
+  const { postId } = req.params;
+  const { userId } = req.session;
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findOne({ _id: postId, user: userId });
     if (!post) {
-      return res.status(404).json({ message: 'Post no encontrado' });
+      return res.status(404).json({ message: 'Publicación no encontrada' });
     }
-
-    if (post.user.toString() !== userId) {
-      return res.status(403).json({ message: 'No tienes permiso para editar este post' });
-    }
-
     post.title = title;
     post.description = description;
     await post.save();
-
-    res.status(200).json({ message: 'Post actualizado exitosamente', post });
+    res.json({ message: 'Publicación actualizada con éxito', post });
   } catch (error) {
-    res.status(500).json({ message: 'Error al actualizar post', error });
+    next(error);
   }
-};
+}
 
-const deletePost = async (req, res) => {
-  const postId = req.params.id;
-  const userId = req.userId;
-
+async function deletePost(req, res, next) {
+  const { postId } = req.params;
+  const { userId } = req.session;
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findOne({ _id: postId, user: userId });
     if (!post) {
-      return res.status(404).json({ message: 'Post no encontrado' });
+      return res.status(404).json({ message: 'Publicación no encontrada' });
     }
-
-        if (post.user.toString() !== userId) {
-      return res.status(403).json({ message: 'No tienes permiso para eliminar este post' });
-    }
-
-    await Post.findByIdAndDelete(postId);
-
-    res.status(200).json({ message: 'Post eliminado exitosamente' });
+    await post.remove();
+    res.json({ message: 'Publicación eliminada con éxito' });
   } catch (error) {
-    res.status(500).json({ message: 'Error al eliminar post', error });
+    next(error);
   }
-};
+}
 
-module.exports = {
-  createPost,
-  getAllPosts,
-  getPostById,
-  updatePost,
-  deletePost
-};
+module.exports = { createPost, getPosts, updatePost, deletePost };
