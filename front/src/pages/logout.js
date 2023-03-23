@@ -12,7 +12,7 @@ const Logout = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post('http://localhost:4000/api/auth/logout');
+      await axios.delete('http://localhost:4000/api/auth/logout');
       router.push('/');
     } catch (error) {
       console.log(error.response.data);

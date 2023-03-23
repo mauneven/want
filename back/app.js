@@ -19,6 +19,7 @@ app.use(session({
   secret: 'supersecret',
   resave: false,
   saveUninitialized: false,
+  rolling: true,
   store: MongoStore.create({
     mongoUrl: 'mongodb+srv://mauneven:admin123@want.oik7qz6.mongodb.net/want?retryWrites=true&w=majority',
     collectionName: 'sessions',
