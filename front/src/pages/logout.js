@@ -10,9 +10,12 @@ export default function Logout() {
         method: 'POST',
         credentials: 'include',
       });
-      const responseData = await response.json();
-      console.log(responseData);
-      router.push('/');
+
+      if (response.ok) {
+        router.replace('/');
+      } else {
+        console.error('Error al cerrar sesión:', response.status, response.statusText);
+      }
     };
     logout();
   }, []);

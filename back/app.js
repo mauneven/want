@@ -36,6 +36,7 @@ app.use(async (req, res, next) => {
     const user = await User.findById(userId);
     if (user) {
       req.user = user;
+      req.session.user = user; // Añade esta línea para actualizar la sesión
     } else {
       delete req.session.userId;
     }
