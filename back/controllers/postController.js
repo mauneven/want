@@ -79,3 +79,21 @@ exports.deletePost = async (req, res, next) => {
     next(err);
   }
 };
+
+
+exports.getPostsByCurrentUser = async (req, res, next) => {
+  try {
+    if (!req.session.userId) {
+      return res.status(401).send('You must be logged in to view your posts');
+    }
+
+    const posts = await Post.find({ createdBy: req.session.userId }).populate(
+      'createdBy',
+      'firstName lastName'
+    );
+    res.status(200).json(posts);
+  } catch (err) {
+    next(err);
+  }
+};
+

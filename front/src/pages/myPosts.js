@@ -1,28 +1,27 @@
+// pages/myPosts.js
+import { useState, useEffect } from 'react';
 
-import React, { useEffect, useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-function PostsList({ userIdFilter }) {
+export default function MyPosts() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await fetch('http://localhost:4000/api/posts');
-      const postsData = await response.json();
-      
-      if (userIdFilter) {
-        const filteredPosts = postsData.filter(post => post.createdBy._id === userIdFilter);
-        setPosts(filteredPosts);
-      } else {
+    const fetchMyPosts = async () => {
+      const response = await fetch('http://localhost:4000/api/my-posts', {
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const postsData = await response.json();
         setPosts(postsData);
       }
     };
 
-    fetchPosts();
-  }, [userIdFilter]);
+    fetchMyPosts();
+  }, []);
 
   return (
     <div className="container">
+      <h1>Mis Posts</h1>
       <div className="row">
         {posts.map((post) => (
           <div key={post._id} className="col-md-4">
@@ -37,8 +36,7 @@ function PostsList({ userIdFilter }) {
               </div>
               <div className="card-footer">
                 <small className="text-muted">
-                  Created by {post.createdBy.firstName} {post.createdBy.lastName} on{' '}
-                  {new Date(post.createdAt).toLocaleDateString()}
+                  Creado el {new Date(post.createdAt).toLocaleDateString()}
                 </small>
               </div>
             </div>
@@ -48,5 +46,3 @@ function PostsList({ userIdFilter }) {
     </div>
   );
 }
-
-export default PostsList;
