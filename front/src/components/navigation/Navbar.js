@@ -65,6 +65,7 @@ function MegaMenu() {
                 <NavDropdown.Item href="#shoes">Zapatos</NavDropdown.Item>
               </NavDropdown>
             </NavDropdown>
+<<<<<<< Updated upstream
             {user ? (
               <NavDropdown title={user.name} id="account-dropdown">
                 <NavDropdown.Item href="#my-posts">Mis publicaciones</NavDropdown.Item>
@@ -78,6 +79,10 @@ function MegaMenu() {
                 <Nav.Link href="login">Ingresar sesión</Nav.Link>
               </>
             )}
+=======
+            <Nav.Link href="#account">Mi cuenta</Nav.Link>
+            <Nav.Link href="login">Ingresar sesión</Nav.Link>
+>>>>>>> Stashed changes
           </Nav>
         </Navbar.Collapse>
       </Container>
