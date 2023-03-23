@@ -1,41 +1,17 @@
 import { useState } from 'react';
-<<<<<<< Updated upstream
 import { useRouter } from 'next/router';
-import axios from 'axios';
-import { Container, Form, Button } from 'react-bootstrap';
-
-const Login = () => {
-  const [userData, setUserData] = useState({
-    email: '',
-    password: '',
-  });
-
-  const router = useRouter();
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setUserData((prevState) => ({ ...prevState, [name]: value }));
-=======
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
+  const router = useRouter();
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
->>>>>>> Stashed changes
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-<<<<<<< Updated upstream
-
-    try {
-      const response = await axios.post('http://localhost:4000/api/auth/login', userData);
-      console.log(response.data);
-      router.push('/');
-    } catch (error) {
-      console.log(error.response.data);
-=======
     const email = event.target.email.value;
     const password = event.target.password.value;
     let firstName, lastName, phone, birthdate;
@@ -44,7 +20,6 @@ export default function Login() {
       lastName = event.target.lastName.value;
       phone = event.target.phone.value;
       birthdate = event.target.birthdate.value;
->>>>>>> Stashed changes
     }
     const data = {
       email,
@@ -52,7 +27,7 @@ export default function Login() {
       ...(isLogin ? {} : { firstName, lastName, phone, birthdate }),
     };
     const response = await fetch(`http://localhost:4000/api/${isLogin ? 'login' : 'register'}`, {
-      method: 'POST', // Cambiar a POST
+      method: 'POST',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
@@ -61,27 +36,12 @@ export default function Login() {
     });
     const responseData = await response.json();
     console.log(responseData);
+    if (response.ok) {
+      router.push('/');
+    }
   };
 
   return (
-<<<<<<< Updated upstream
-    <Container className="my-5">
-      <h1>Iniciar sesión</h1>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3" controlId="formEmail">
-          <Form.Label>Correo electrónico</Form.Label>
-          <Form.Control type="email" name="email" value={userData.email} onChange={handleChange} required />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formPassword">
-          <Form.Label>Contraseña</Form.Label>
-          <Form.Control type="password" name="password" value={userData.password} onChange={handleChange} required />
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Iniciar sesión
-        </Button>
-      </Form>
-    </Container>
-=======
     <div className="container">
       <h1 className="text-center">{isLogin ? 'Iniciar sesión' : 'Registrarse'}</h1>
       <form onSubmit={handleSubmit}>
@@ -122,6 +82,5 @@ export default function Login() {
         <button onClick={toggleForm} className="btn btn-link">{isLogin ? 'Regístrate' : 'Inicia sesión'}</button>
       </div>
     </div>
->>>>>>> Stashed changes
   );
 }

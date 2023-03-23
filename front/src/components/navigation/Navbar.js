@@ -1,93 +1,78 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Navbar, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
-import { useCookies } from 'react-cookie';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
-function MegaMenu() {
-  const [cookies] = useCookies(['connect.sid']);
+export default function Navbar() {
   const [user, setUser] = useState(null);
+  const [isLogged, setIsLogged] = useState(false);
 
   useEffect(() => {
-    const getUserInfo = async () => {
-      // Verifica si el token está presente en las cookies
-      console.log('Token desde las cookies:', cookies.token);
+    const fetchUser = async () => {
+      const response = await fetch('http://localhost:4000/api/user', {
+        method: 'GET',
+        credentials: 'include',
+      });
 
-      try {
-        const response = await fetch('http://localhost:4000/api/users/me', {
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user || null);
+        setIsLogged(true);
+      } else if (response.status === 401) {
+        setIsLogged(false);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    if (isLogged) {
+      const updateSession = async () => {
+        const response = await fetch('http://localhost:4000/api/user', {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include', // Agrega esta línea
+          credentials: 'include',
         });
-
 
         if (response.ok) {
           const data = await response.json();
-          setUser(data);
+          setUser(data.user || null);
+        } else if (response.status === 401) {
+          setIsLogged(false);
         }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    if (cookies.token) {
-      getUserInfo();
+      };
+      const interval = setInterval(updateSession, 5000);
+      return () => clearInterval(interval);
     }
-  }, [cookies.token]);
+  }, [isLogged]);
 
   return (
-    <Navbar bg="light" expand="lg">
-      <Container>
-        <Navbar.Brand href="#home">Want</Navbar.Brand>
-        <Form className="d-flex">
-          <FormControl
-            type="search"
-            placeholder="Buscar"
-            className="mr-2"
-            aria-label="Buscar"
-          />
-          <Button variant="outline-success">Buscar</Button>
-        </Form>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="ms-auto">
-            <NavDropdown title="Categorías" id="categories-dropdown">
-              <NavDropdown title="Tecnología" id="technology-dropdown">
-                <NavDropdown.Item href="#tablets">Tablets</NavDropdown.Item>
-                <NavDropdown.Item href="#cellphones">Celulares</NavDropdown.Item>
-                <NavDropdown.Item href="#computers">Computadores</NavDropdown.Item>
-              </NavDropdown>
-              <NavDropdown title="Hogar" id="home-dropdown">
-                <NavDropdown.Item href="#furniture">Muebles</NavDropdown.Item>
-                <NavDropdown.Item href="#tables">Mesas</NavDropdown.Item>
-              </NavDropdown>
-              <NavDropdown title="Deporte" id="sports-dropdown">
-                <NavDropdown.Item href="#shoes">Zapatos</NavDropdown.Item>
-              </NavDropdown>
-            </NavDropdown>
-<<<<<<< Updated upstream
+    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <div className="container">
+        <Link href="/">
+          <span className="navbar-brand">Mi Sitio</span>
+        </Link>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav me-auto">
+            <li className="nav-item">
+              <Link href="/">
+                <span className="nav-link">Inicio</span>
+              </Link>
+            </li>
             {user ? (
-              <NavDropdown title={user.name} id="account-dropdown">
-                <NavDropdown.Item href="#my-posts">Mis publicaciones</NavDropdown.Item>
-                <NavDropdown.Item href="#settings">Configuración</NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="#logout">Cerrar sesión</NavDropdown.Item>
-              </NavDropdown>
+              <li className="nav-item">
+                <span className="nav-link">{user.firstName} {user.lastName}</span>
+              </li>
             ) : (
-              <>
-                <Nav.Link href="#account">Mi cuenta</Nav.Link>
-                <Nav.Link href="login">Ingresar sesión</Nav.Link>
-              </>
+              <li className="nav-item">
+                <Link href="/login">
+                  <span className="nav-link">Iniciar sesión</span>
+                </Link>
+              </li>
             )}
-=======
-            <Nav.Link href="#account">Mi cuenta</Nav.Link>
-            <Nav.Link href="login">Ingresar sesión</Nav.Link>
->>>>>>> Stashed changes
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+          </ul>
+        </div>
+      </div>
+    </nav>
   );
 }
-
-export default MegaMenu;

@@ -1,12 +1,12 @@
 // index.js
 import 'bootstrap/dist/css/bootstrap.min.css';
-import MegaMenu from '@/components/navigation/Navbar';
+import Navbar from '@/components/navigation/Navbar';
 import React from 'react'
 
 const index = () => {
   return (
     <div>
-      <MegaMenu/>
+      <Navbar/>
     </div>
   )
 }

@@ -1,8 +1,13 @@
 const bcrypt = require('bcrypt');
+const { default: mongoose } = require('mongoose');
 const User = require('../models/User');
+
+const db = require('../config/database');
 
 exports.register = async (req, res, next) => {
   try {
+    const User = mongoose.model('User');
+
     const { email, password, firstName, lastName } = req.body;
 
     // Check if user already exists
@@ -35,6 +40,9 @@ exports.register = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   try {
+    const User = mongoose.model('User');
+
+
     const { email, password } = req.body;
 
     // Check if user exists
