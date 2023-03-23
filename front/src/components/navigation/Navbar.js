@@ -1,7 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Navbar, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
+import { useCookies } from 'react-cookie';
 
 function MegaMenu() {
+  const [cookies] = useCookies(['connect.sid']);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      // Verifica si el token está presente en las cookies
+      console.log('Token desde las cookies:', cookies.token);
+
+      try {
+        const response = await fetch('http://localhost:4000/api/users/me', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // Agrega esta línea
+        });
+
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (cookies.token) {
+      getUserInfo();
+    }
+  }, [cookies.token]);
+
   return (
     <Navbar bg="light" expand="lg">
       <Container>
@@ -32,8 +65,19 @@ function MegaMenu() {
                 <NavDropdown.Item href="#shoes">Zapatos</NavDropdown.Item>
               </NavDropdown>
             </NavDropdown>
-            <Nav.Link href="#account">Mi cuenta</Nav.Link>
-            <Nav.Link href="#login">Ingresar sesión</Nav.Link>
+            {user ? (
+              <NavDropdown title={user.name} id="account-dropdown">
+                <NavDropdown.Item href="#my-posts">Mis publicaciones</NavDropdown.Item>
+                <NavDropdown.Item href="#settings">Configuración</NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item href="#logout">Cerrar sesión</NavDropdown.Item>
+              </NavDropdown>
+            ) : (
+              <>
+                <Nav.Link href="#account">Mi cuenta</Nav.Link>
+                <Nav.Link href="login">Ingresar sesión</Nav.Link>
+              </>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>

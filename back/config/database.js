@@ -1,16 +1,18 @@
-const mongoose = require('mongoose');
+const { MongoClient } = require('mongodb');
 
-async function connectDB() {
+const uri = 'mongodb+srv://mauneven:admin123@want.oik7qz6.mongodb.net/want?retryWrites=true&w=majority';
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+async function connect() {
   try {
-    await mongoose.connect("mongodb+srv://mauneven:admin123@want.oik7qz6.mongodb.net/?retryWrites=true&w=majority", {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log('Base de datos conectada');
+    await client.connect();
+    console.log('Connected to MongoDB Atlas!');
   } catch (error) {
-    console.error('Error al conectar a la base de datos:', error);
-    process.exit(1);
+    console.log('Error connecting to MongoDB Atlas:', error);
   }
 }
 
-module.exports = connectDB;
+connect();
