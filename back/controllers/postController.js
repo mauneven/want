@@ -84,7 +84,7 @@ exports.deletePost = async (req, res, next) => {
       return res.status(401).send('You are not authorized to delete this post');
     }
 
-    await post.remove();
+    await Post.deleteOne({ _id: req.params.id });
 
     res.sendStatus(204);
   } catch (err) {

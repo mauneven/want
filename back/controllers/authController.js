@@ -66,6 +66,15 @@ exports.login = async (req, res, next) => {
   }
 };
 
+exports.isLoggedIn = (req, res) => {
+  if (req.session.userId) {
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(401);
+  }
+};
+
+
 exports.logout = async (req, res, next) => {
   try {
     await req.session.destroy();

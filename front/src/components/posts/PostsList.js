@@ -1,6 +1,6 @@
-
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Link from 'next/link';
 
 function PostsList({ userIdFilter }) {
   const [posts, setPosts] = useState([]);
@@ -34,6 +34,10 @@ function PostsList({ userIdFilter }) {
                     ? post.description.substring(0, 100) + '...'
                     : post.description}
                 </p>
+                {/* Botón para ir a la página de detalles del post */}
+                <Link href={`/post/[id]`} as={`/post/${post._id}`}>
+                  <button className="btn btn-primary">Ver detalles</button>
+                </Link>
               </div>
               <div className="card-footer">
                 <small className="text-muted">

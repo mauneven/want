@@ -10,5 +10,7 @@ router.post('/login', authController.login);
 router.post('/logout', authController.logout);
 router.get('/user', userController.getCurrentUser);
 router.put('/users/me', userController.updateCurrentUser);
+router.get('/is-logged-in', authController.isLoggedIn);
+
 
 module.exports = router;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -40,6 +40,21 @@ export default function Login() {
       router.push('/');
     }
   };
+
+  
+  useEffect(() => {
+    const checkLoggedIn = async () => {
+      const response = await fetch('http://localhost:4000/api/is-logged-in', {
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        router.push('/');
+      }
+    };
+
+    checkLoggedIn();
+  }, []);
 
   return (
     <div className="container">
