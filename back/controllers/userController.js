@@ -54,8 +54,6 @@ exports.updateCurrentUser = async (req, res, next) => {
       return;
     }
 
-    console.log('Request body:', req.body); // Agrega esta línea para depurar
-
     user.firstName = req.body.firstName;
     user.lastName = req.body.lastName;
     user.phone = req.body.phone;
