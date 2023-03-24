@@ -47,7 +47,8 @@ exports.updatePost = async (req, res, next) => {
       return res.status(404).send('Post not found');
     }
 
-    if (post.createdBy.toString() !== req.session.userId && req.user.role !== 'admin') {
+    if (post.createdBy.toString() !== req.session.userId && req.user && req.user.role !== 'admin') {
+
       return res.status(401).send('You are not authorized to edit this post');
     }
 

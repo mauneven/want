@@ -44,6 +44,7 @@ app.use(async (req, res, next) => {
   next();
 });
 
+
 app.use('/api', authRoutes);
 app.use('/api', postRoutes);
 
