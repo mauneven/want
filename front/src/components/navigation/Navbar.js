@@ -44,6 +44,15 @@ export default function Megamenu() {
     }
   }, [isLogged]);
 
+  function getUserImageUrl() {
+    if (user && user.photo) {
+      return `http://localhost:4000/${user.photo}`;
+    } else {
+      // Aquí puedes especificar la URL de una imagen predeterminada, si lo deseas.
+      return "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"; // Imagen de ejemplo. Reemplazar con una imagen real.
+    }
+  }
+
   return (
     <Navbar bg="light" expand="lg">
       <Container>
@@ -76,10 +85,12 @@ export default function Megamenu() {
             </NavDropdown>
             {user ? (
 
-              <NavDropdown title={`${user.firstName} ${user.lastName}`} id="user-dropdown">
-                <NavDropdown.Item href="/editProfile">Perfil</NavDropdown.Item>
-                <NavDropdown.Item href="/logout">Cerrar sesión</NavDropdown.Item>
-              </NavDropdown>
+
+<NavDropdown title={<><img src={user.photo ? `http://localhost:4000/${user.photo}` : '/default-profile-picture.png'} alt="Profile" style={{ borderRadius: '50%', width: '30px', height: '30px' }} /> {`${user.firstName} ${user.lastName}`}</>} id="user-dropdown">
+  <NavDropdown.Item href="/editProfile">Perfil</NavDropdown.Item>
+  <NavDropdown.Item href="/logout">Cerrar sesión</NavDropdown.Item>
+</NavDropdown>
+
             ) : (
               <li className="nav-item">
                 <Link href="/login">

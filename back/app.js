@@ -15,7 +15,7 @@ app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true
 }));
-
+app.use('/uploads', express.static('uploads'));
 app.use(session({
   secret: 'my-secret',
   resave: false,
