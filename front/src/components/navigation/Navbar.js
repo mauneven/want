@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { Container, Navbar, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
 
-export default function Navbar() {
+export default function Megamenu() {
   const [user, setUser] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
 
@@ -44,25 +45,41 @@ export default function Navbar() {
   }, [isLogged]);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <div className="container">
-        <Link href="/">
-          <span className="navbar-brand">Mi Sitio</span>
-        </Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav me-auto">
-            <li className="nav-item">
-              <Link href="/">
-                <span className="nav-link">Inicio</span>
-              </Link>
-            </li>
+    <Navbar bg="light" expand="lg">
+      <Container>
+        <Navbar.Brand href="#home">Want</Navbar.Brand>
+        <Form className="d-flex flex-grow-1 w-auto">
+          <FormControl
+            type="search"
+            placeholder="Search"
+            className="mr-2 form-control-sm"
+            aria-label="Search"
+          />
+          <Button variant="outline-success ml-2"><i class="bi bi-search"></i></Button>
+        </Form>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="ms-auto">
+            <NavDropdown title="Categorys" id="categories-dropdown">
+              <NavDropdown title="Tecnología" id="technology-dropdown">
+                <NavDropdown.Item href="#tablets">Tablets</NavDropdown.Item>
+                <NavDropdown.Item href="#cellphones">Celulares</NavDropdown.Item>
+                <NavDropdown.Item href="#computers">Computadores</NavDropdown.Item>
+              </NavDropdown>
+              <NavDropdown title="Hogar" id="home-dropdown">
+                <NavDropdown.Item href="#furniture">Muebles</NavDropdown.Item>
+                <NavDropdown.Item href="#tables">Mesas</NavDropdown.Item>
+              </NavDropdown>
+              <NavDropdown title="Deporte" id="sports-dropdown">
+                <NavDropdown.Item href="#shoes">Zapatos</NavDropdown.Item>
+              </NavDropdown>
+            </NavDropdown>
             {user ? (
-              <li className="nav-item">
-                <span className="nav-link">{user.firstName} {user.lastName}</span>
-              </li>
+
+              <NavDropdown title={`${user.firstName} ${user.lastName}`} id="user-dropdown">
+                <NavDropdown.Item href="/editProfile">Perfil</NavDropdown.Item>
+                <NavDropdown.Item href="/logout">Cerrar sesión</NavDropdown.Item>
+              </NavDropdown>
             ) : (
               <li className="nav-item">
                 <Link href="/login">
@@ -70,9 +87,9 @@ export default function Navbar() {
                 </Link>
               </li>
             )}
-          </ul>
-        </div>
-      </div>
-    </nav>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 }
