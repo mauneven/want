@@ -10,12 +10,9 @@ router.post('/login', authController.login);
 router.post('/logout', authController.logout);
 router.put('/users/me', userController.uploadPhotoMiddleware, userController.updateCurrentUser);
 router.get('/is-logged-in', authController.isLoggedIn);
-<<<<<<< Updated upstream
 router.get('/user', userController.getCurrentUser);
-=======
 router.post('/forgot-password', authController.forgotPassword);
 router.post('/reset-password/:token', authController.resetPassword);
->>>>>>> Stashed changes
 
 
 module.exports = router;
