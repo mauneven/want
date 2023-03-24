@@ -126,7 +126,7 @@ exports.forgotPassword = async (req, res, next) => {
     }
 
     // Generate reset password token
-    const token = await bcrypt.hash(Date.now().toString(), 10);
+    const token = await (await bcrypt.hash(Date.now().toString(), 10)).replace("/","n");
 
     // Store reset password token and expiration date in user document
     user.resetPasswordToken = token;
