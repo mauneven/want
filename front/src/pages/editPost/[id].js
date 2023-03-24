@@ -94,16 +94,6 @@ const EditPost = () => {
                 />
             </div>
             <div className="mb-3">
-                <label htmlFor="main-category" className="form-label">Main Category</label>
-                <input
-                    type="text"
-                    className="form-control"
-                    id="main-category"
-                    value={mainCategory}
-                    onChange={(e) => setMainCategory(e.target.value)}
-                />
-            </div>
-            <div className="mb-3">
                 <PostCategory
                     onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
                     onSubCategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)}
