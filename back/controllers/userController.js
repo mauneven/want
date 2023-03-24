@@ -1,5 +1,16 @@
 const mongoose = require('mongoose');
 const User = require('../models/User');
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/') // Selecciona la carpeta de destino donde se guardarán los archivos subidos
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname) // Usa el nombre original del archivo como nombre de archivo en el servidor
+  }
+});
+
+const upload = multer({ storage: storage });
 
 exports.getCurrentUser = async (req, res, next) => {
   try {
@@ -20,6 +31,9 @@ exports.getCurrentUser = async (req, res, next) => {
   }
 };
 
+
+exports.uploadPhotoMiddleware = upload.single('photo');
+
 exports.updateCurrentUser = async (req, res, next) => {
   try {
     const User = mongoose.model('User');
@@ -32,10 +46,16 @@ exports.updateCurrentUser = async (req, res, next) => {
       return;
     }
 
+    console.log('Request body:', req.body); // Agrega esta línea para depurar
+
     user.firstName = req.body.firstName;
     user.lastName = req.body.lastName;
     user.phone = req.body.phone;
     user.birthdate = req.body.birthdate;
+
+    if (req.file) { // Si se ha subido un archivo, guarda la URL de la foto en la base de datos
+      user.photo = req.file.path;
+    }
 
     await user.save();
 

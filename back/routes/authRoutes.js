@@ -8,8 +8,7 @@ const router = express.Router();
 router.post('/register', authController.register);
 router.post('/login', authController.login);
 router.post('/logout', authController.logout);
-router.get('/user', userController.getCurrentUser);
-router.put('/users/me', userController.updateCurrentUser);
+router.put('/users/me', userController.uploadPhotoMiddleware, userController.updateCurrentUser);
 router.get('/is-logged-in', authController.isLoggedIn);
 
 

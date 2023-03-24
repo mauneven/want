@@ -47,7 +47,7 @@ export default function Megamenu() {
   return (
     <Navbar bg="light" expand="lg">
       <Container>
-        <Navbar.Brand href="#home">Want</Navbar.Brand>
+        <Navbar.Brand href="/">Want</Navbar.Brand>
         <Form className="d-flex flex-grow-1 w-auto">
           <FormControl
             type="search"
@@ -55,7 +55,7 @@ export default function Megamenu() {
             className="mr-2 form-control-sm"
             aria-label="Search"
           />
-          <Button variant="outline-success ml-2"><i class="bi bi-search"></i></Button>
+          <Button variant="outline-success ml-2"><i className="bi bi-search"></i></Button>
         </Form>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
