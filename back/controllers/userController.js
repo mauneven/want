@@ -59,7 +59,16 @@ exports.updateCurrentUser = async (req, res, next) => {
     user.phone = req.body.phone;
     user.birthdate = req.body.birthdate;
 
-    if (req.file) { // Si se ha subido un archivo, guarda la URL de la foto en la base de datos
+    if (req.file) {
+      if (user.photo) {
+        // Elimina la foto anterior si existe
+        fs.unlink(user.photo, (err) => {
+          if (err) {
+            console.error('Error removing old profile picture:', err);
+          }
+        });
+      }
+      // Guarda la URL de la nueva foto en la base de datos
       user.photo = req.file.path;
     }
 
