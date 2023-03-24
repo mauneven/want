@@ -1,10 +1,17 @@
-// pages/createPost.js
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import PostCategory from '@/components/posts/postCategory';
+import Location from '@/components/location/location';
 
-export default function CreatePost() {
+const CreatePost = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [country, setCountry] = useState('');
+  const [state, setState] = useState('');
+  const [city, setCity] = useState('');
+  const [mainCategory, setMainCategory] = useState('');
+  const [subCategory, setSubCategory] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -13,6 +20,8 @@ export default function CreatePost() {
     e.preventDefault();
     setLoading(true);
 
+    console.log('Submitting post with values:', { title, description, country, state, city, mainCategory, subCategory });
+
     try {
       const response = await fetch('http://localhost:4000/api/posts', {
         method: 'POST',
@@ -20,7 +29,7 @@ export default function CreatePost() {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({ title, description }),
+        body: JSON.stringify({ title, description, country, state, city, mainCategory, subCategory }),
       });
 
       if (!response.ok) {
@@ -37,40 +46,42 @@ export default function CreatePost() {
   };
 
   return (
-    <div className="container">
-      <h1>Crear un nuevo post</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="title" className="form-label">
-            Título
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="description" className="form-label">
-            Descripción
-          </label>
-          <textarea
-            className="form-control"
-            id="description"
-            rows="5"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          ></textarea>
-        </div>
-        {error && <div className="alert alert-danger">{error}</div>}
-        <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading ? 'Creando...' : 'Crear post'}
-        </button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit} className="container">
+      <div className="mb-3">
+        <label htmlFor="title" className="form-label">Title</label>
+        <input
+          type="text"
+          className="form-control"
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+      </div>
+      <div className="mb-3">
+        <label htmlFor="description" className="form-label">Description</label>
+        <textarea
+          className="form-control"
+          id="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        ></textarea>
+      </div>
+      <div className="mb-3">
+        <Location
+          onCountryChange={(selectedCountry) => setCountry(selectedCountry)}
+          onStateChange={(selectedState) => setState(selectedState)}
+          onCityChange={(selectedCity) => setCity(selectedCity)}
+        />
+      </div>
+      <div className="mb-3">
+        <PostCategory
+          onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
+          onSubCategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)}
+        />
+      </div>
+      <button type="submit" className="btn btn-primary">Create Post</button>
+    </form>
   );
-}
+};
+
+export default CreatePost;

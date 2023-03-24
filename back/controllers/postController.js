@@ -23,12 +23,17 @@ exports.getPostById = async (req, res, next) => {
 
 exports.createPost = async (req, res, next) => {
   try {
-    const { title, description } = req.body;
+    const { title, description, country, state, city, mainCategory, subCategory } = req.body;
 
     const post = new Post({
       title,
       description,
-      createdBy: req.session.userId
+      createdBy: req.session.userId,
+      country,
+      state,
+      city,
+      mainCategory,
+      subCategory
     });
     await post.save();
 
@@ -38,9 +43,10 @@ exports.createPost = async (req, res, next) => {
   }
 };
 
+
 exports.updatePost = async (req, res, next) => {
   try {
-    const { title, description } = req.body;
+    const { title, description, country, state, city, mainCategory, subCategory } = req.body;
 
     const post = await Post.findById(req.params.id);
     if (!post) {
@@ -48,12 +54,16 @@ exports.updatePost = async (req, res, next) => {
     }
 
     if (post.createdBy.toString() !== req.session.userId && req.user && req.user.role !== 'admin') {
-
       return res.status(401).send('You are not authorized to edit this post');
     }
 
     post.title = title;
     post.description = description;
+    post.country = country;
+    post.state = state;
+    post.city = city;
+    post.mainCategory = mainCategory;
+    post.subCategory = subCategory;
     await post.save();
 
     res.status(200).json(post);
@@ -61,6 +71,7 @@ exports.updatePost = async (req, res, next) => {
     next(err);
   }
 };
+
 
 exports.deletePost = async (req, res, next) => {
   try {
@@ -97,4 +108,3 @@ exports.getPostsByCurrentUser = async (req, res, next) => {
     next(err);
   }
 };
-

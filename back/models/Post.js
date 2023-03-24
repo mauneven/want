@@ -17,6 +17,26 @@ const postSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
+  },
+  country: {
+    type: String,
+    required: true
+  },
+  state: {
+    type: String,
+    required: true
+  },
+  city: {
+    type: String,
+    required: true
+  },
+  mainCategory: {
+    type: String,
+    required: true
+  },
+  subCategory: {
+    type: String,
+    required: true
   }
 });
 
