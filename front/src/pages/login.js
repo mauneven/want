@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Link from 'next/link';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -41,7 +42,7 @@ export default function Login() {
     }
   };
 
-  
+
   useEffect(() => {
     const checkLoggedIn = async () => {
       const response = await fetch('http://localhost:4000/api/is-logged-in', {
@@ -96,6 +97,9 @@ export default function Login() {
         {isLogin ? '¿No tienes una cuenta?' : '¿Ya tienes una cuenta?'}
         <button onClick={toggleForm} className="btn btn-link">{isLogin ? 'Regístrate' : 'Inicia sesión'}</button>
       </div>
+      <Link href="/recovery">
+        <span className="nav-link">Forgot my password</span>
+      </Link>
     </div>
   );
 }

@@ -106,8 +106,8 @@ exports.sendResetPasswordEmail = async ({ email, token }) => {
     subject: 'Password Reset Request', // Subject line
     html: `
       <p>You have requested a password reset for your account. Please follow the link below to reset your password:</p>
-      <a href="http://localhost:4000/reset-password/${token}">Reset Password</a>
-      <p>"http://localhost:4000/reset-password/${token}"></p>
+      <a href="http://localhost:3000/recoveryPassword/${token}">Reset Password</a>
+      <p>"http://localhost:3000/recoveryPassword/${token}"></p>
       <p>If you did not make this request, please ignore this email and your password will remain unchanged.</p>
     `
   });
