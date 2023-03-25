@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const EditProfile = () => {
   const router = useRouter();
@@ -85,7 +86,7 @@ const EditProfile = () => {
     required: true,
   },
   ];
-  const photoUrl = typeof File !== 'undefined' && photo instanceof File ? URL.createObjectURL(photo) : (user?.photo ? `http://localhost:4000/${user.photo}` : null) ;
+  const photoUrl = typeof File !== 'undefined' && photo instanceof File ? URL.createObjectURL(photo) : (user?.photo ? `http://localhost:4000/${user.photo}` : null);
 
   return (
     <div className="container">
@@ -182,8 +183,12 @@ const EditProfile = () => {
               Save Changes
             </button>
           </>
+
         )}
       </form>
+      <Link href="/changePassword">
+          <button className="btn btn-success">Change my password</button>
+        </Link>
     </div>
   );
 };
