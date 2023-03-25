@@ -84,7 +84,7 @@ export default function Megamenu() {
               </NavDropdown>
             </NavDropdown>
             {user ? (
-              <NavDropdown title={<><img src={user.photo ? `http://localhost:4000/${user.photo}` : '/default-profile-picture.png'} alt="Profile" style={{ borderRadius: '50%', width: '30px', height: '30px' }} /> {`${user.firstName} ${user.lastName}`}</>} id="user-dropdown">
+              <NavDropdown title={<><img src={user.photo ? `http://localhost:4000/${user.photo}` : '/default-profile-picture.png'} alt="Profile" style={{ borderRadius: '50%', width: '30px', height: '30px' }} /> {`${user.firstName}`}</>} id="user-dropdown">
                 <NavDropdown.Item href="/editProfile">Perfil</NavDropdown.Item>
                 <NavDropdown.Item href="/logout">Cerrar sesión</NavDropdown.Item>
               </NavDropdown>

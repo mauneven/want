@@ -168,3 +168,36 @@ exports.resetPassword = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.changePassword = async (req, res, next) => {
+  try {
+    const User = mongoose.model('User');
+    const { currentPassword, newPassword } = req.body;
+
+    // Get the user from the session
+    const user = await User.findById(req.session.userId);
+
+    if (!user) {
+      return res.status(401).send('Unauthorized');
+    }
+
+    // Check if the current password is correct
+    const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!passwordMatch) {
+      return res.status(400).send('Incorrect current password');
+    }
+
+    // Hash the new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // Update the user's password
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).send('Password successfully changed');
+  } catch (err) {
+    next(err);
+  }
+};
+

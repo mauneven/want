@@ -13,6 +13,8 @@ router.get('/is-logged-in', authController.isLoggedIn);
 router.get('/user', userController.getCurrentUser);
 router.post('/forgot-password', authController.forgotPassword);
 router.post('/reset-password/:token', authController.resetPassword);
+router.put('/change-password', authController.changePassword);
+
 
 
 module.exports = router;
