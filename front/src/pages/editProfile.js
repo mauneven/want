@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import Megamenu from '@/components/navigation/Navbar';
 
 const EditProfile = () => {
   const router = useRouter();
@@ -89,7 +90,9 @@ const EditProfile = () => {
   const photoUrl = typeof File !== 'undefined' && photo instanceof File ? URL.createObjectURL(photo) : (user?.photo ? `http://localhost:4000/${user.photo}` : null);
 
   return (
+    
     <div className="container">
+      <Megamenu/>
       <div className="text-center my-4">
         <img
           src={photoUrl}

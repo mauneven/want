@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Modal, Button } from 'react-bootstrap';
+import Megamenu from '@/components/navigation/Navbar';
 
 
 export default function MyPosts() {
@@ -47,7 +48,6 @@ export default function MyPosts() {
 
   return (
     <>
-      {/* Agregar el modal antes del contenedor */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Eliminar Post</Modal.Title>
@@ -62,9 +62,8 @@ export default function MyPosts() {
           </Button>
         </Modal.Footer>
       </Modal>
-  
-      {/* El resto del componente */}
       <div className="container">
+        <Megamenu/>
         <h1>Mis Posts</h1>
         <div className="row">
           {posts.map((post) => (

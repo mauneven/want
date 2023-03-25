@@ -69,6 +69,7 @@ export default function Megamenu() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
+          <Nav.Link href="/createPost">Add post</Nav.Link>
             <NavDropdown title="Categorys" id="categories-dropdown">
               <NavDropdown title="Tecnología" id="technology-dropdown">
                 <NavDropdown.Item href="#tablets">Tablets</NavDropdown.Item>
@@ -85,6 +86,7 @@ export default function Megamenu() {
             </NavDropdown>
             {user ? (
               <NavDropdown title={<><img src={user.photo ? `http://localhost:4000/${user.photo}` : '/default-profile-picture.png'} alt="Profile" style={{ borderRadius: '50%', width: '30px', height: '30px' }} /> {`${user.firstName}`}</>} id="user-dropdown">
+                <NavDropdown.Item href="/myPosts">My posts</NavDropdown.Item>
                 <NavDropdown.Item href="/editProfile">Perfil</NavDropdown.Item>
                 <NavDropdown.Item href="/logout">Cerrar sesión</NavDropdown.Item>
               </NavDropdown>

@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import PostCategory from '@/components/posts/postCategory';
 import Location from '@/components/location/location';
+import Megamenu from '@/components/navigation/Navbar';
 
 const CreatePost = () => {
   const [title, setTitle] = useState('');
@@ -46,6 +47,8 @@ const CreatePost = () => {
   };
 
   return (
+    <div className="container">
+    <Megamenu/>
     <form onSubmit={handleSubmit} className="container">
       <div className="mb-3">
         <label htmlFor="title" className="form-label">Title</label>
@@ -81,6 +84,7 @@ const CreatePost = () => {
       </div>
       <button type="submit" className="btn btn-primary">Create Post</button>
     </form>
+    </div>
   );
 };
 
