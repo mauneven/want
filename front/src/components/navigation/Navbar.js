@@ -1,10 +1,20 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Container, Navbar, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
+import LocationModal from '../location/LocationPosts';
 
-export default function Megamenu() {
+export default function Megamenu( {onLocationFilterChange} ) {
   const [user, setUser] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
+  const [locationFilter, setLocationFilter] = useState(null);
+  const [showLocationModal, setShowLocationModal] = useState(false);
+  const handleLocationSelected = (country, state, city) => {
+    if (onLocationFilterChange) {
+      onLocationFilterChange({ country, state, city });
+    }
+  };
+
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -70,6 +80,11 @@ export default function Megamenu() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
           <Nav.Link href="/createPost">Add post</Nav.Link>
+          <LocationModal
+  show={showLocationModal}
+  onHide={() => setShowLocationModal(false)}
+  onLocationSelected={handleLocationSelected}
+/>
             <NavDropdown title="Categorys" id="categories-dropdown">
               <NavDropdown title="Tecnología" id="technology-dropdown">
                 <NavDropdown.Item href="#tablets">Tablets</NavDropdown.Item>

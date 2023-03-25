@@ -2,24 +2,35 @@ import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Link from 'next/link';
 
-function PostsList({ userIdFilter }) {
+function PostsList({ userIdFilter, locationFilter }) {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
       const response = await fetch('http://localhost:4000/api/posts');
       const postsData = await response.json();
-      
+
+      let filteredPosts = postsData;
+
       if (userIdFilter) {
-        const filteredPosts = postsData.filter(post => post.createdBy._id === userIdFilter);
-        setPosts(filteredPosts);
-      } else {
-        setPosts(postsData);
+        filteredPosts = filteredPosts.filter(post => post.createdBy._id === userIdFilter);
       }
+
+      if (locationFilter) {
+        filteredPosts = filteredPosts.filter(post => {
+          return (
+            post.country === locationFilter.country &&
+            post.state === locationFilter.state &&
+            post.city === locationFilter.city
+          );
+        });
+      }
+
+      setPosts(filteredPosts);
     };
 
     fetchPosts();
-  }, [userIdFilter]);
+  }, [userIdFilter, locationFilter]);
 
   return (
     <div className="container">

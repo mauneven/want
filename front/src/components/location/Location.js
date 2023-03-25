@@ -30,6 +30,22 @@ const countries = [
     },
 ];
 
+// Agrega esta función al componente Location
+const handleLocationSelected = () => {
+    if (selectedCountry && selectedState && selectedCity) {
+      onLocationSelected(selectedCountry.name, selectedState.name, selectedCity);
+    }
+  };
+  
+  // Llama a handleLocationSelected cuando cambie la ciudad
+  const handleCityChange = (event) => {
+    const city = event.target.value;
+    setSelectedCity(city);
+    onCityChange && onCityChange(city);
+    handleLocationSelected(); // Agrega esta línea
+  };
+  
+
 const Location = ({ onCountryChange, onStateChange, onCityChange }) => {
     const [selectedCountry, setSelectedCountry] = useState(null);
     const [selectedState, setSelectedState] = useState(null);
@@ -57,6 +73,8 @@ const Location = ({ onCountryChange, onStateChange, onCityChange }) => {
         setSelectedCity(city);
         onCityChange && onCityChange(city); // Aquí se cambió 'selectedCity' por 'city'
     };
+
+    
     
 
     return (
