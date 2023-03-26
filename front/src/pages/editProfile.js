@@ -15,18 +15,27 @@ const EditProfile = () => {
 
   useEffect(() => {
     fetch('http://localhost:4000/api/user', { credentials: 'include' })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          // Si el usuario no está autenticado, redirigir a la página de inicio de sesión
+          router.push('/login');
+          return;
+        }
+        return response.json();
+      })
       .then((data) => {
-        setUser(data.user);
-        setFirstName(data.user.firstName);
-        setLastName(data.user.lastName);
-        setPhone(data.user.phone);
-        setBirthdate(
-          data.user.birthdate
-            ? new Date(data.user.birthdate).toISOString().split('T')[0]
-            : ''
-        );
-        setPhoto(data.user.photo);
+        if (data) {
+          setUser(data.user);
+          setFirstName(data.user.firstName);
+          setLastName(data.user.lastName);
+          setPhone(data.user.phone);
+          setBirthdate(
+            data.user.birthdate
+              ? new Date(data.user.birthdate).toISOString().split('T')[0]
+              : ''
+          );
+          setPhoto(data.user.photo);
+        }
       });
   }, []);
   
@@ -39,8 +48,6 @@ const EditProfile = () => {
       setEditingField('photo');
     }
   };
-  
-  
 
   const handleCancel = () => {
     setFirstName(user.firstName);

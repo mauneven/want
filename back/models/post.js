@@ -37,7 +37,17 @@ const postSchema = new mongoose.Schema({
   subCategory: {
     type: String,
     required: true
-  }
+  },
+  photo: {
+    type: String,
+    required: true
+  },
+  reports: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Report'
+    }
+  ]
 });
 
 module.exports = mongoose.model('Post', postSchema);

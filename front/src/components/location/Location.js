@@ -70,9 +70,9 @@ const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSele
 
     return (
         <div className="d-flex flex-wrap align-items-center">
-            <label htmlFor="country-select" className="me-2 mb-0">País:</label>
+            <label htmlFor="country-select" className="me-2 mb-0">Country:</label>
             <select id="country-select" className="form-select me-4" value={selectedCountry?.id} onChange={handleCountryChange}>
-                <option value="">Seleccione un país</option>
+                <option value="">Choose your country</option>
                 {countries.map((country) => (
                     <option key={country.id} value={country.id}>
                         {country.name}
@@ -82,9 +82,9 @@ const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSele
 
             {selectedCountry && (
                 <>
-                    <label htmlFor="state-select" className="me-2 mb-0">Estado:</label>
+                    <label htmlFor="state-select" className="me-2 mb-0">State:</label>
                     <select id="state-select" className="form-select me-4" value={selectedState?.id} onChange={handleStateChange}>
-                        <option value="">Seleccione un estado</option>
+                        <option value="">Choose your state</option>
                         {selectedCountry.states.map((state) => (
                             <option key={state.id} value={state.id}>
                                 {state.name}
@@ -96,9 +96,9 @@ const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSele
 
             {selectedState && (
                 <>
-                    <label htmlFor="city-select" className="me-2 mb-0">Ciudad:</label>
+                    <label htmlFor="city-select" className="me-2 mb-0">City:</label>
                     <select id="city-select" className="form-select" value={selectedCity} onChange={handleCityChange}>
-                        <option value="">Seleccione una ciudad</option>
+                        <option value="">Choose your city</option>
                         {selectedState.cities.map((city) => (
                             <option key={city} value={city}>
                                 {city}

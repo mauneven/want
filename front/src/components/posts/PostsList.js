@@ -17,12 +17,12 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
         const stateMatch = locationFilter.state
           ? post.state === locationFilter.state
           : locationFilter.country && !locationFilter.city
-          ? post.country === locationFilter.country
-          : true;
+            ? post.country === locationFilter.country
+            : true;
         const cityMatch = locationFilter.city
           ? post.city === locationFilter.city
           : true;
-  
+
         return countryMatch && stateMatch && cityMatch;
       });
     }
@@ -45,14 +45,14 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
       const titleB = b.title.toLowerCase();
       const searchTermIndexA = titleA.indexOf(searchTerm.toLowerCase());
       const searchTermIndexB = titleB.indexOf(searchTerm.toLowerCase());
-  
+
       if (searchTermIndexA === -1 && searchTermIndexB !== -1) {
         return 1;
       }
       if (searchTermIndexA !== -1 && searchTermIndexB === -1) {
         return -1;
       }
-  
+
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
 
@@ -85,6 +85,13 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
             posts.map((post) => (
               <div key={post._id} className="col-md-4">
                 <div className="card mb-4">
+                  {post.photo && (
+                    <img
+                      src={`http://localhost:4000/${post.photo}`}
+                      className="card-img-top"
+                      alt={post.title}
+                    />
+                  )}
                   <div className="card-body">
                     <h5 className="card-title">{post.title}</h5>
                     <p className="card-text">

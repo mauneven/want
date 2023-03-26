@@ -4,6 +4,7 @@ const postController = require('../controllers/postController');
 const router = express.Router();
 
 router.get('/posts', postController.getAllPosts);
+router.post('/posts', postController.uploadPhoto, postController.createPost);
 router.get('/posts/:id', postController.getPostById);
 router.post('/posts', postController.createPost);
 router.put('/posts/:id', postController.updatePost);

@@ -33,9 +33,9 @@ const PostCategory = ({ onMainCategoryChange, onSubCategoryChange }) => {
 
   return (
     <div className="d-flex flex-wrap align-items-center">
-      <label htmlFor="category-select" className="me-2 mb-0">Categoría:</label>
+      <label htmlFor="category-select" className="me-2 mb-0">Category of what you Want:</label>
       <select id="category-select" className="form-select me-4" value={selectedCategory?.id} onChange={handleCategoryChange}>
-        <option value="">Seleccione una categoría</option>
+        <option value="">Choose the category</option>
         {categories.map((category) => (
           <option key={category.id} value={category.id}>
             {category.name}
@@ -45,9 +45,9 @@ const PostCategory = ({ onMainCategoryChange, onSubCategoryChange }) => {
 
       {selectedCategory && (
         <>
-          <label htmlFor="subcategory-select" className="me-2 mb-0">Subcategoría:</label>
+          <label htmlFor="subcategory-select" className="me-2 mb-0">Sub category of what you Want:</label>
           <select id="subcategory-select" className="form-select" value={selectedSubcategory} onChange={handleSubcategoryChange}>
-            <option value="">Seleccione una subcategoría</option>
+            <option value="">Choose the subcategory</option>
             {selectedCategory.subcategories.map((subcategory) => (
               <option key={subcategory} value={subcategory}>
                 {subcategory}

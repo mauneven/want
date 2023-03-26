@@ -26,7 +26,7 @@ const LocationModal = ({ onLocationSelected }) => {
 
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Seleccionar ubicación</Modal.Title>
+          <Modal.Title>Where are you?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Location
@@ -36,8 +36,8 @@ const LocationModal = ({ onLocationSelected }) => {
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
-          <Button variant="primary" onClick={handleAccept}>Aceptar</Button>
+          <Button variant="secondary" onClick={handleClose}>Cancel</Button>
+          <Button variant="primary" onClick={handleAccept}>Accept</Button>
         </Modal.Footer>
       </Modal>
     </>

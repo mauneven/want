@@ -1,4 +1,20 @@
 const Post = require('../models/Post');
+const multer = require('multer');
+const path = require('path');
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
+
+exports.uploadPhoto = upload.single('photo');
+
 
 exports.getAllPosts = async (req, res, next) => {
   try {
@@ -21,9 +37,12 @@ exports.getPostById = async (req, res, next) => {
   }
 };
 
+// controllers/postController.js
+
 exports.createPost = async (req, res, next) => {
   try {
     const { title, description, country, state, city, mainCategory, subCategory } = req.body;
+    const photo = req.file ? req.file.path : null;
 
     const post = new Post({
       title,
@@ -33,7 +52,8 @@ exports.createPost = async (req, res, next) => {
       state,
       city,
       mainCategory,
-      subCategory
+      subCategory,
+      photo
     });
     await post.save();
 
@@ -42,7 +62,6 @@ exports.createPost = async (req, res, next) => {
     next(err);
   }
 };
-
 
 exports.updatePost = async (req, res, next) => {
   try {
@@ -108,3 +127,4 @@ exports.getPostsByCurrentUser = async (req, res, next) => {
     next(err);
   }
 };
+
