@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Link from 'next/link';
-
+// postList
 function PostsList({ userIdFilter, locationFilter }) {
-  const [posts, setPosts] = useState([]);
+  // Resto del código
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -18,10 +15,20 @@ function PostsList({ userIdFilter, locationFilter }) {
 
       if (locationFilter) {
         filteredPosts = filteredPosts.filter(post => {
+          const countryMatch = locationFilter.country
+            ? post.country === locationFilter.country
+            : true;
+          const stateMatch = locationFilter.state
+            ? post.state === locationFilter.state
+            : true;
+          const cityMatch = locationFilter.city
+            ? post.city === locationFilter.city
+            : true;
+
           return (
-            post.country === locationFilter.country &&
-            post.state === locationFilter.state &&
-            post.city === locationFilter.city
+            countryMatch &&
+            (stateMatch || !locationFilter.state) &&
+            (cityMatch || !locationFilter.city)
           );
         });
       }

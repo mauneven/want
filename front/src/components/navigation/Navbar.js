@@ -66,7 +66,7 @@ export default function Megamenu( {onLocationFilterChange} ) {
   return (
     <Navbar bg="light" expand="lg">
       <Container>
-        <Navbar.Brand href="/">Want</Navbar.Brand>
+        <Navbar.Brand href="/">Hugo</Navbar.Brand>
         <Form className="d-flex flex-grow-1 w-auto">
           <FormControl
             type="search"
