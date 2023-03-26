@@ -29,14 +29,18 @@ const EditProfile = () => {
         setPhoto(data.user.photo);
       });
   }, []);
-
+  
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setPhoto(file);
+      const fileName = user._id + '_' + file.name; // Renombrar el archivo con el id del usuario
+      const renamedFile = new File([file], fileName, {type: file.type}); // Crear un nuevo objeto File con el archivo renombrado
+      setPhoto(renamedFile);
       setEditingField('photo');
     }
   };
+  
+  
 
   const handleCancel = () => {
     setFirstName(user.firstName);
