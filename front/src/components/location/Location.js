@@ -1,81 +1,72 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const countries = [
-    {
-        id: 1,
-        name: 'Estados Unidos',
-        states: [
-            { id: 1, name: 'California', cities: ['Los Ángeles', 'San Francisco'] },
-            { id: 2, name: 'Florida', cities: ['Miami', 'Orlando'] },
-            { id: 3, name: 'Texas', cities: ['Houston', 'Dallas'] },
-        ],
-    },
-    {
-        id: 2,
-        name: 'Colombia',
-        states: [
-            { id: 4, name: 'Antioquia', cities: ['Medellín', 'Envigado'] },
-            { id: 5, name: 'Cundinamarca', cities: ['Bogotá', 'Chía'] },
-            { id: 6, name: 'Valle del Cauca', cities: ['Cali', 'Palmira'] },
-        ],
-    },
-    {
-        id: 3,
-        name: 'Singapur',
-        states: [
-            { id: 7, name: 'Central', cities: ['Singapur', 'Toa Payoh'] },
-            { id: 8, name: 'Este', cities: ['Tampines', 'Pasir Ris'] },
-            { id: 9, name: 'Norte', cities: ['Woodlands', 'Yishun'] },
-        ],
-    },
+  {
+    id: 1,
+    name: 'Estados Unidos',
+    states: [
+      { id: 1, name: 'California', cities: ['Los Ángeles', 'San Francisco'] },
+      { id: 2, name: 'Florida', cities: ['Miami', 'Orlando'] },
+      { id: 3, name: 'Texas', cities: ['Houston', 'Dallas'] },
+    ],
+  },
+  {
+    id: 2,
+    name: 'Colombia',
+    states: [
+      { id: 4, name: 'Antioquia', cities: ['Medellín', 'Envigado'] },
+      { id: 5, name: 'Cundinamarca', cities: ['Bogotá', 'Chía'] },
+      { id: 6, name: 'Valle del Cauca', cities: ['Cali', 'Palmira'] },
+    ],
+  },
+  {
+    id: 3,
+    name: 'Singapur',
+    states: [
+      { id: 7, name: 'Central', cities: ['Singapur', 'Toa Payoh'] },
+      { id: 8, name: 'Este', cities: ['Tampines', 'Pasir Ris'] },
+      { id: 9, name: 'Norte', cities: ['Woodlands', 'Yishun'] },
+    ],
+  },
 ];
 
-// Agrega esta función al componente Location
-const handleLocationSelected = () => {
-    if (selectedCountry && selectedState && selectedCity) {
-      onLocationSelected(selectedCountry.name, selectedState.name, selectedCity);
-    }
+const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSelected }) => {
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+
+  useEffect(() => {
+    handleLocationSelected();
+  }, [selectedCity]);
+
+  const handleCountryChange = (event) => {
+    const countryId = parseInt(event.target.value);
+    const country = countries.find((country) => country.id === countryId);
+    setSelectedCountry(country);
+    setSelectedState(null);
+    setSelectedCity(null);
+    onCountryChange && onCountryChange(country?.name);
   };
-  
-  // Llama a handleLocationSelected cuando cambie la ciudad
+
+  const handleStateChange = (event) => {
+    const stateId = parseInt(event.target.value);
+    const state = selectedCountry.states.find((state) => state.id === stateId);
+    setSelectedState(state);
+    setSelectedCity(null);
+    onStateChange && onStateChange(state?.name);
+  };
+
   const handleCityChange = (event) => {
     const city = event.target.value;
     setSelectedCity(city);
     onCityChange && onCityChange(city);
-    handleLocationSelected(); // Agrega esta línea
   };
-  
 
-const Location = ({ onCountryChange, onStateChange, onCityChange }) => {
-    const [selectedCountry, setSelectedCountry] = useState(null);
-    const [selectedState, setSelectedState] = useState(null);
-    const [selectedCity, setSelectedCity] = useState(null);
-
-    const handleCountryChange = (event) => {
-        const countryId = parseInt(event.target.value);
-        const country = countries.find((country) => country.id === countryId);
-        setSelectedCountry(country);
-        setSelectedState(null);
-        setSelectedCity(null);
-        onCountryChange && onCountryChange(country?.name);
-    };    
-
-    const handleStateChange = (event) => {
-        const stateId = parseInt(event.target.value);
-        const state = selectedCountry.states.find((state) => state.id === stateId);
-        setSelectedState(state);
-        setSelectedCity(null);
-        onStateChange && onStateChange(state?.name);
-    };    
-
-    const handleCityChange = (event) => {
-        const city = event.target.value;
-        setSelectedCity(city);
-        onCityChange && onCityChange(city); // Aquí se cambió 'selectedCity' por 'city'
-    };
-
-    
-    
+  const handleLocationSelected = () => {
+    if (selectedCountry && selectedState && selectedCity) {
+      onLocationSelected && onLocationSelected(selectedCountry.name, selectedState.name, selectedCity);
+    }
+  };
 
     return (
         <div className="d-flex flex-wrap align-items-center">

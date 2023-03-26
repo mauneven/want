@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import Megamenu from '@/components/navigation/Navbar';
 
 const EditProfile = () => {
   const router = useRouter();
@@ -92,7 +91,6 @@ const EditProfile = () => {
   return (
     
     <div className="container">
-      <Megamenu/>
       <div className="text-center my-4">
         <img
           src={photoUrl}

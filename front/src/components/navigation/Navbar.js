@@ -1,23 +1,44 @@
-import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Container, Navbar, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
 import LocationModal from '../location/LocationPosts';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
-export default function Megamenu( {onLocationFilterChange} ) {
+export default function Megamenu({ onLocationFilterChange }) {
   const [user, setUser] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
   const [locationFilter, setLocationFilter] = useState(null);
+  const [filterVersion, setFilterVersion] = useState(0);
   const [showLocationModal, setShowLocationModal] = useState(false);
+  const router = useRouter();
+
   const handleLocationSelected = (country, state, city) => {
-    if (onLocationFilterChange) {
-      onLocationFilterChange({ country, state, city });
+    const newLocationFilter = {
+      country: country,
+      state: state && state !== 'Seleccione un estado' ? state : null,
+      city: city && city !== 'Seleccione una ciudad' ? city : null,
+    };
+
+    // Restablecer los valores de estado y ciudad si se selecciona un nuevo país
+    if (locationFilter && country !== locationFilter.country) {
+      newLocationFilter.state = null;
+      newLocationFilter.city = null;
     }
+
+    // Almacenar los datos de la ubicación en el localStorage
+    localStorage.setItem('locationFilter', JSON.stringify(newLocationFilter));
+
+    setLocationFilter(newLocationFilter);
+    onLocationFilterChange(newLocationFilter);
+    setFilterVersion(filterVersion + 1);
+    handleClose();
   };
 
-
+  const handleClose = () => setShowLocationModal(false);
+  const handleShow = () => setShowLocationModal(true);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const checkSession = async () => {
       const response = await fetch('http://localhost:4000/api/user', {
         method: 'GET',
         credentials: 'include',
@@ -31,9 +52,19 @@ export default function Megamenu( {onLocationFilterChange} ) {
         setIsLogged(false);
       }
     };
-    fetchUser();
-  }, []);
 
+    checkSession();
+  }, [router.pathname]); // Agrega la dependencia del router.pathname aquí
+
+  useEffect(() => {
+    const locationFilterString = localStorage.getItem('locationFilter');
+    if (locationFilterString) {
+      const parsedLocationFilter = JSON.parse(locationFilterString);
+      setLocationFilter(parsedLocationFilter);
+      onLocationFilterChange(parsedLocationFilter);
+    }
+  }, []); // Agrega la matriz de dependencias vacía aquí
+  
   useEffect(() => {
     if (isLogged) {
       const updateSession = async () => {
@@ -41,7 +72,7 @@ export default function Megamenu( {onLocationFilterChange} ) {
           method: 'GET',
           credentials: 'include',
         });
-
+  
         if (response.ok) {
           const data = await response.json();
           setUser(data.user || null);
@@ -52,14 +83,14 @@ export default function Megamenu( {onLocationFilterChange} ) {
       const interval = setInterval(updateSession, 5000);
       return () => clearInterval(interval);
     }
-  }, [isLogged]);
+  }, [isLogged]); // Agrega la matriz de dependencias con isLogged aquí  
 
   function getUserImageUrl() {
     if (user && user.photo) {
       return `http://localhost:4000/${user.photo}`;
     } else {
       // Aquí puedes especificar la URL de una imagen predeterminada, si lo deseas.
-      return "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"; // Imagen de ejemplo. Reemplazar con una imagen real.
+      return 'https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'; // Imagen de ejemplo. Reemplazar con una imagen real.
     }
   }
 
@@ -79,12 +110,12 @@ export default function Megamenu( {onLocationFilterChange} ) {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-          <Nav.Link href="/createPost">Add post</Nav.Link>
-          <LocationModal
-  show={showLocationModal}
-  onHide={() => setShowLocationModal(false)}
-  onLocationSelected={handleLocationSelected}
-/>
+            <Nav.Link href="/createPost">Add post</Nav.Link>
+            <LocationModal
+              show={showLocationModal}
+              onHide={() => setShowLocationModal(false)}
+              onLocationSelected={handleLocationSelected}
+            />
             <NavDropdown title="Categorys" id="categories-dropdown">
               <NavDropdown title="Tecnología" id="technology-dropdown">
                 <NavDropdown.Item href="#tablets">Tablets</NavDropdown.Item>

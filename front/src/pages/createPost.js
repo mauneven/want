@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import PostCategory from '@/components/posts/postCategory';
 import Location from '@/components/location/location';
-import Megamenu from '@/components/navigation/Navbar';
 
 const CreatePost = () => {
   const [title, setTitle] = useState('');
@@ -16,6 +15,7 @@ const CreatePost = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,7 +48,6 @@ const CreatePost = () => {
 
   return (
     <div className="container">
-    <Megamenu/>
     <form onSubmit={handleSubmit} className="container">
       <div className="mb-3">
         <label htmlFor="title" className="form-label">Title</label>

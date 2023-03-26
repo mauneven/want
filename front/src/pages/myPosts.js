@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Modal, Button } from 'react-bootstrap';
-import Megamenu from '@/components/navigation/Navbar';
 
 
 export default function MyPosts() {
@@ -63,7 +62,6 @@ export default function MyPosts() {
         </Modal.Footer>
       </Modal>
       <div className="container">
-        <Megamenu/>
         <h1>Mis Posts</h1>
         <div className="row">
           {posts.map((post) => (

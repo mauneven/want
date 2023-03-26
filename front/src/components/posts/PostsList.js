@@ -1,6 +1,9 @@
-// postList
-function PostsList({ userIdFilter, locationFilter }) {
-  // Resto del código
+import React, { useState, useEffect } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Link from 'next/link';
+
+function PostsList({ userIdFilter, locationFilter, filterVersion }) {
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -20,16 +23,14 @@ function PostsList({ userIdFilter, locationFilter }) {
             : true;
           const stateMatch = locationFilter.state
             ? post.state === locationFilter.state
+            : locationFilter.country && !locationFilter.city
+            ? post.country === locationFilter.country
             : true;
           const cityMatch = locationFilter.city
             ? post.city === locationFilter.city
             : true;
 
-          return (
-            countryMatch &&
-            (stateMatch || !locationFilter.state) &&
-            (cityMatch || !locationFilter.city)
-          );
+          return countryMatch && stateMatch && cityMatch;
         });
       }
 
@@ -37,7 +38,7 @@ function PostsList({ userIdFilter, locationFilter }) {
     };
 
     fetchPosts();
-  }, [userIdFilter, locationFilter]);
+  }, [userIdFilter, locationFilter, filterVersion]);
 
   return (
     <div className="container">
