@@ -1,68 +1,81 @@
-const fetchPosts = async () => {
-  setIsLoading(true);
-  const response = await fetch('http://localhost:4000/api/posts');
-  let postsData = await response.json();
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
 
-  if (userIdFilter) {
-    postsData = postsData.filter((post) => post.createdBy._id === userIdFilter);
-  }
+const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  if (locationFilter) {
-    postsData = postsData.filter((post) => {
-      const countryMatch = locationFilter.country
-        ? post.country === locationFilter.country
-        : true;
-      const stateMatch = locationFilter.state
-        ? post.state === locationFilter.state
-        : locationFilter.country && !locationFilter.city
-        ? post.country === locationFilter.country
-        : true;
-      const cityMatch = locationFilter.city
-        ? post.city === locationFilter.city
-        : true;
+  const fetchPostsByLocation = async () => {
+    const response = await fetch("http://localhost:4000/api/posts");
+    let postsData = await response.json();
 
-      return countryMatch && stateMatch && cityMatch;
-    });
-  }
-
-  if (searchTerm) {
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    postsData = postsData.filter(
-      (post) =>
-        post.title.toLowerCase().includes(lowerCaseSearchTerm) ||
-        post.description.toLowerCase().includes(lowerCaseSearchTerm)
-    );
-  }
-
-  // Función de ordenamiento para ordenar primero por título y luego por fecha de creación en orden descendente
-  postsData.sort((a, b) => {
-    const titleA = a.title.toLowerCase();
-    const titleB = b.title.toLowerCase();
-    const searchTermIndexA = titleA.indexOf(searchTerm.toLowerCase());
-    const searchTermIndexB = titleB.indexOf(searchTerm.toLowerCase());
-
-    if (searchTermIndexA === -1 && searchTermIndexB !== -1) {
-      return 1;
-    }
-    if (searchTermIndexA !== -1 && searchTermIndexB === -1) {
-      return -1;
-    }
-
-    return new Date(b.createdAt) - new Date(a.createdAt);
-  });
-
-  setPosts(postsData);
-  setIsLoading(false);
-};
+    if (locationFilter) {
+      postsData = postsData.filter((post) => {
+        const countryMatch = locationFilter.country
+          ? post.country === locationFilter.country
+          : true;
+        const stateMatch = locationFilter.state
+          ? post.state === locationFilter.state
+          : locationFilter.country && !locationFilter.city
+          ? post.country === locationFilter.country
+          : true;
+        const cityMatch = locationFilter.city
+          ? post.city === locationFilter.city
+          : true;
   
-useEffect(() => {
-  const fetchAndSetPosts = async () => {
-    await fetchPosts();
+        return countryMatch && stateMatch && cityMatch;
+      });
+    }
+
+    return postsData;
   };
 
-  fetchAndSetPosts();
-}, [locationFilter, userIdFilter, searchTerm]);
+  const fetchPostsBySearch = (postsData) => {
+    if (searchTerm) {
+      const lowerCaseSearchTerm = searchTerm.toLowerCase();
+      postsData = postsData.filter(
+        (post) =>
+          post.title.toLowerCase().includes(lowerCaseSearchTerm) ||
+          post.description.toLowerCase().includes(lowerCaseSearchTerm)
+      );
+    }
 
+    postsData.sort((a, b) => {
+      const titleA = a.title.toLowerCase();
+      const titleB = b.title.toLowerCase();
+      const searchTermIndexA = titleA.indexOf(searchTerm.toLowerCase());
+      const searchTermIndexB = titleB.indexOf(searchTerm.toLowerCase());
+  
+      if (searchTermIndexA === -1 && searchTermIndexB !== -1) {
+        return 1;
+      }
+      if (searchTermIndexA !== -1 && searchTermIndexB === -1) {
+        return -1;
+      }
+  
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+
+    setPosts(postsData);
+    setIsLoading(false);
+    return postsData;
+  };
+
+  const fetchPosts = async () => {
+    setIsLoading(true);
+    let postsData = await fetchPostsByLocation();
+    postsData = fetchPostsBySearch(postsData);
+    setPosts(postsData);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    const fetchAndSetPosts = async () => {
+      await fetchPosts();
+    };
+
+    fetchAndSetPosts();
+  }, [locationFilter, userIdFilter, searchTerm]);
 
   return (
     <div className="container">
@@ -76,7 +89,7 @@ useEffect(() => {
                     <h5 className="card-title">{post.title}</h5>
                     <p className="card-text">
                       {post.description.length > 100
-                        ? post.description.substring(0, 100) + '...'
+                        ? post.description.substring(0, 100) + "..."
                         : post.description}
                     </p>
                     <Link href={`/post/[id]`} as={`/post/${post._id}`}>
@@ -85,7 +98,7 @@ useEffect(() => {
                   </div>
                   <div className="card-footer">
                     <small className="text-muted">
-                      Created by {post.createdBy.firstName} {post.createdBy.lastName} on{' '}
+                      Created by {post.createdBy.firstName} {post.createdBy.lastName} on{" "}
                       {new Date(post.createdAt).toLocaleDateString()}
                     </small>
                   </div>
@@ -104,7 +117,7 @@ useEffect(() => {
         )}
       </div>
     </div>
-
   );
+};
 
 export default PostsList;
