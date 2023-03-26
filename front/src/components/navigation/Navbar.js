@@ -4,12 +4,14 @@ import LocationModal from '../location/LocationPosts';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-export default function Megamenu({ onLocationFilterChange }) {
+export default function MegaMenu({ onLocationFilterChange,  onSearchTermChange }) {
   const [user, setUser] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
   const [locationFilter, setLocationFilter] = useState(null);
   const [filterVersion, setFilterVersion] = useState(0);
   const [showLocationModal, setShowLocationModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
   const router = useRouter();
 
   const handleLocationSelected = (country, state, city) => {
@@ -32,6 +34,13 @@ export default function Megamenu({ onLocationFilterChange }) {
     onLocationFilterChange(newLocationFilter);
     setFilterVersion(filterVersion + 1);
     handleClose();
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    setSearchTerm(e.target.search.value);
+    onSearchTermChange(e.target.search.value); // Agrega esta línea
+    setSearchTerm(e.target.search.value);
   };
 
   const handleClose = () => setShowLocationModal(false);
@@ -64,7 +73,7 @@ export default function Megamenu({ onLocationFilterChange }) {
       onLocationFilterChange(parsedLocationFilter);
     }
   }, []); // Agrega la matriz de dependencias vacía aquí
-  
+
   useEffect(() => {
     if (isLogged) {
       const updateSession = async () => {
@@ -72,7 +81,7 @@ export default function Megamenu({ onLocationFilterChange }) {
           method: 'GET',
           credentials: 'include',
         });
-  
+
         if (response.ok) {
           const data = await response.json();
           setUser(data.user || null);
@@ -98,19 +107,22 @@ export default function Megamenu({ onLocationFilterChange }) {
     <Navbar bg="light" expand="lg">
       <Container>
         <Navbar.Brand href="/">Hugo</Navbar.Brand>
-        <Form className="d-flex flex-grow-1 w-auto">
+        <Form className="d-flex flex-grow-1 w-auto" onSubmit={handleSearchSubmit}>
           <FormControl
             type="search"
             placeholder="Search"
             className="mr-2 form-control-sm p-1"
             aria-label="Search"
+            name="search"
           />
-          <Button variant="outline-success ml-2"><i className="bi bi-search"></i></Button>
+          <Button type="submit" variant="outline-success ml-2">
+            <i className="bi bi-search"></i>
+          </Button>
         </Form>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link href="/createPost">Add post</Nav.Link>
+            <Nav.Link className='btn btn-warning' href="/createPost">I Want Something</Nav.Link>
             <LocationModal
               show={showLocationModal}
               onHide={() => setShowLocationModal(false)}

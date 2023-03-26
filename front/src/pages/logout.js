@@ -1,9 +1,6 @@
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 
 export default function Logout() {
-  const router = useRouter();
-
   useEffect(() => {
     const logout = async () => {
       const response = await fetch('http://localhost:4000/api/logout', {
@@ -12,7 +9,15 @@ export default function Logout() {
       });
 
       if (response.ok) {
-        router.replace('/');
+        // Eliminamos el estado del usuario tanto en el servidor como en el cliente
+        await fetch('http://localhost:4000/api/user/logout', {
+          method: 'POST',
+          credentials: 'include',
+        });
+        localStorage.removeItem('user');
+
+        // Redirigimos a la página principal
+        window.location.replace('/');
       } else {
         console.error('Error al cerrar sesión:', response.status, response.statusText);
       }
