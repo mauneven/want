@@ -23,7 +23,7 @@ const LocationModal = ({ onHide, onLocationSelected }) => {
   return (
     <>
       <Button variant="" onClick={handleShow}>
-        <i className="bi bi-globe2"></i>
+        <i className="bi bi-globe2 navbar-icon"></i>
       </Button>
       
       <Modal show={show} onHide={handleClose} centered>

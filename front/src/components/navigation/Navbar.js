@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Container, Navbar, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
+import { Container, Navbar, Nav, NavDropdown, Form, FormControl, Button, NavItem } from 'react-bootstrap';
 import LocationModal from '../locations/LocationPosts';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -126,32 +126,32 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
       bg="light"
       expand="lg">
       <Container className='sticky-top'>
-        <Navbar.Brand href="/" className='want-logo'><Image src="/icons/want-logo.svg" alt="Want" width={90} height={50} /></Navbar.Brand>
-        <Form className="d-flex flex-grow-1 w-auto" onSubmit={handleSearchSubmit}>
+        <Navbar.Brand href="/"><Image className='want-logo' src="/icons/want-logo.svg" alt="Want" width={90} height={50} /></Navbar.Brand>
+        <Form className="d-flex flex-grow-1 w-auto search-bar border rounded-5" onSubmit={handleSearchSubmit}>
           <FormControl
             type="search"
             placeholder=" The people want..."
-            className="mr-2 form-control-sm p-1 search-bar"
+            className="mr-2 form-control-sm p-1 px-3 search-bar-input border-top-0 border-bottom-0 border-start-0 border-end"
             aria-label="Search"
             name="search"
           />
-          <Button type="submit" variant="outline-success ml-1 search-icon">
+          <Button type="submit" variant="ml-2 search-btn">
             <i className="bi bi-search"></i>
           </Button>
         </Form>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link className='btn-post' href="/createPost">Want something?</Nav.Link>
+            <Nav.Link className='nav-item' href="/createPost"><Button className='btn-post rounded-pill p-2'>Want something?</Button></Nav.Link>
             <LocationModal
               show={showLocationModal}
               onHide={() => setShowLocationModal(false)}
               onLocationSelected={handleLocationSelected}
             />
             <Button type="submit" variant="ml-1">
-              <i className="bi bi-bell fs-20"></i>
+              <i className="bi bi-bell fs-20 navbar-icon"></i>
             </Button>
-            <NavDropdown className='nav-link-lh' title="Categories" id="categories-dropdown">
+            <NavDropdown className='nav-link' title="Categories" id="categories-dropdown">
               <NavDropdown title="Tecnología" id="technology-dropdown">
                 <NavDropdown.Item href="#tablets">Tablets</NavDropdown.Item>
                 <NavDropdown.Item href="#cellphones">Celulares</NavDropdown.Item>
@@ -172,11 +172,11 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
                 <NavDropdown.Item href="/logout">Cerrar sesión</NavDropdown.Item>
               </NavDropdown>
             ) : (
-              <li className="nav-item">
-                <Link href="/login">
+              <Nav.Link  href="/login" className='nav-item'>
+                
                   <span className="nav-link">Iniciar sesión</span>
-                </Link>
-              </li>
+               
+              </Nav.Link>
             )}
           </Nav>
         </Navbar.Collapse>
