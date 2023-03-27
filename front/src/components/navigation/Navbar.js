@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Container, Navbar, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
-import LocationModal from '../location/LocationPosts';
+import LocationModal from '../locations/LocationPosts';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -13,28 +13,44 @@ export default function MegaMenu({ onLocationFilterChange,  onSearchTermChange }
   const [searchTerm, setSearchTerm] = useState('');
 
   const router = useRouter();
-
+  
   const handleLocationSelected = (country, state, city) => {
-    const newLocationFilter = {
+    let newLocationFilter = {
       country: country,
       state: state && state !== 'Seleccione un estado' ? state : null,
       city: city && city !== 'Seleccione una ciudad' ? city : null,
+      timestamp: new Date().getTime(),
     };
-
-    // Restablecer los valores de estado y ciudad si se selecciona un nuevo país
-    if (locationFilter && country !== locationFilter.country) {
+  
+    // Si el país ha cambiado o solo el país está seleccionado, limpiar el estado y la ciudad
+    if (!locationFilter || country !== locationFilter.country || (country && !state && !city)) {
       newLocationFilter.state = null;
       newLocationFilter.city = null;
     }
-
+  
     // Almacenar los datos de la ubicación en el localStorage
     localStorage.setItem('locationFilter', JSON.stringify(newLocationFilter));
-
+  
     setLocationFilter(newLocationFilter);
     onLocationFilterChange(newLocationFilter);
     setFilterVersion(filterVersion + 1);
     handleClose();
-  };
+  };  
+
+  useEffect(() => {
+    const locationFilterString = localStorage.getItem('locationFilter');
+    if (locationFilterString) {
+      const parsedLocationFilter = JSON.parse(locationFilterString);
+      setLocationFilter(parsedLocationFilter);
+      onLocationFilterChange(parsedLocationFilter);
+    }
+  }, []); // Elimina la dependencia de locationFilter
+  
+  useEffect(() => {
+    if (locationFilter) {
+      onLocationFilterChange(locationFilter);
+    }
+  }, [locationFilter]); // Deja solo la dependencia de locationFilter  
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -45,63 +61,6 @@ export default function MegaMenu({ onLocationFilterChange,  onSearchTermChange }
 
   const handleClose = () => setShowLocationModal(false);
   const handleShow = () => setShowLocationModal(true);
-
-  useEffect(() => {
-    const checkSession = async () => {
-      const response = await fetch('http://localhost:4000/api/user', {
-        method: 'GET',
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data.user || null);
-        setIsLogged(true);
-      } else if (response.status === 401) {
-        setIsLogged(false);
-      }
-    };
-
-    checkSession();
-  }, [router.pathname]); // Agrega la dependencia del router.pathname aquí
-
-  useEffect(() => {
-    const locationFilterString = localStorage.getItem('locationFilter');
-    if (locationFilterString) {
-      const parsedLocationFilter = JSON.parse(locationFilterString);
-      setLocationFilter(parsedLocationFilter);
-      onLocationFilterChange(parsedLocationFilter);
-    }
-  }, []); // Agrega la matriz de dependencias vacía aquí
-
-  useEffect(() => {
-    if (isLogged) {
-      const updateSession = async () => {
-        const response = await fetch('http://localhost:4000/api/user', {
-          method: 'GET',
-          credentials: 'include',
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data.user || null);
-        } else if (response.status === 401) {
-          setIsLogged(false);
-        }
-      };
-      const interval = setInterval(updateSession, 5000);
-      return () => clearInterval(interval);
-    }
-  }, [isLogged]); // Agrega la matriz de dependencias con isLogged aquí  
-
-  function getUserImageUrl() {
-    if (user && user.photo) {
-      return `http://localhost:4000/${user.photo}`;
-    } else {
-      // Aquí puedes especificar la URL de una imagen predeterminada, si lo deseas.
-      return 'https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'; // Imagen de ejemplo. Reemplazar con una imagen real.
-    }
-  }
 
   return (
     <Navbar bg="light" expand="lg">

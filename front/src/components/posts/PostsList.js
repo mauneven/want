@@ -8,27 +8,19 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
   const fetchPostsByLocation = async () => {
     const response = await fetch("http://localhost:4000/api/posts");
     let postsData = await response.json();
-
+  
     if (locationFilter) {
       postsData = postsData.filter((post) => {
-        const countryMatch = locationFilter.country
-          ? post.country === locationFilter.country
-          : true;
-        const stateMatch = locationFilter.state
-          ? post.state === locationFilter.state
-          : locationFilter.country && !locationFilter.city
-            ? post.country === locationFilter.country
-            : true;
-        const cityMatch = locationFilter.city
-          ? post.city === locationFilter.city
-          : true;
-
-        return countryMatch && stateMatch && cityMatch;
+        let countryMatch = locationFilter.country ? post.country === locationFilter.country : true;
+        let stateMatch = locationFilter.state ? post.state === locationFilter.state : true;
+        let cityMatch = locationFilter.city ? post.city === locationFilter.city : true;
+  
+        return countryMatch && (stateMatch || cityMatch);
       });
     }
-
+  
     return postsData;
-  };
+  };  
 
   const fetchPostsBySearch = (postsData) => {
     if (searchTerm) {
@@ -94,6 +86,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
                   )}
                   <div className="card-body">
                     <h5 className="card-title">{post.title}</h5>
+                    <h5 className="text-success">maximum payment: ${post.price.toLocaleString()}</h5>
                     <p className="card-text">
                       {post.description.length > 100
                         ? post.description.substring(0, 100) + "..."
@@ -124,7 +117,8 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
         )}
       </div>
     </div>
-  );
+  );  
+  
 };
 
 export default PostsList;

@@ -41,7 +41,7 @@ exports.getPostById = async (req, res, next) => {
 
 exports.createPost = async (req, res, next) => {
   try {
-    const { title, description, country, state, city, mainCategory, subCategory } = req.body;
+    const { title, description, country, state, city, mainCategory, subCategory,price } = req.body;
     const photo = req.file ? req.file.path : null;
 
     const post = new Post({
@@ -53,6 +53,7 @@ exports.createPost = async (req, res, next) => {
       city,
       mainCategory,
       subCategory,
+      price,
       photo
     });
     await post.save();

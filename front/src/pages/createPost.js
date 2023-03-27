@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import PostCategory from '@/components/posts/postCategory';
-import Location from '@/components/location/location';
+import Location from '@/components/locations/Location';
 
 const CreatePost = () => {
   const [title, setTitle] = useState('');
@@ -12,20 +12,35 @@ const CreatePost = () => {
   const [city, setCity] = useState('');
   const [mainCategory, setMainCategory] = useState('');
   const [subCategory, setSubCategory] = useState('');
+  const [price, setPrice] = useState('');
   const [photo, setPhoto] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  const [previewTitle, setPreviewTitle] = useState('');
+  const [previewDescription, setPreviewDescription] = useState('');
+  const [previewLocation, setPreviewLocation] = useState('');
+  const [previewCategory, setPreviewCategory] = useState('');
+  const [previewPrice, setPreviewPrice] = useState('');
 
   const handleFileChange = (e) => {
     setPhoto(e.target.files[0]);
   };
+
+  useEffect(() => {
+    setPreviewTitle(title);
+    setPreviewDescription(description);
+    setPreviewLocation(`${city}, ${state}, ${country}`);
+    setPreviewCategory(`${mainCategory} > ${subCategory}`);
+    setPreviewPrice(Number(price).toLocaleString());
+  }, [title, description, country, state, city, mainCategory, subCategory, price]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
   
-    console.log('Submitting post with values:', { title, description, country, state, city, mainCategory, subCategory, photo });
+    console.log('Submitting post with values:', { title, description, country, state, city, mainCategory, subCategory, price, photo });
   
     const formData = new FormData();
     formData.append('title', title);
@@ -35,6 +50,7 @@ const CreatePost = () => {
     formData.append('city', city);
     formData.append('mainCategory', mainCategory);
     formData.append('subCategory', subCategory);
+    formData.append('price', price);
     if (photo) {
       formData.append('photo', photo);
     }
@@ -64,53 +80,96 @@ const CreatePost = () => {
 
   return (
     <div className="container">
-      <form onSubmit={handleSubmit} className="container">
-        <div className="mb-3">
-          <label htmlFor="title" className="form-label">What do you Want?</label>
-          <input
-            type="text"
-            className="form-control"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
+      <div className="row">
+        <div className="col-md-6">
+          <form onSubmit={handleSubmit} className="container">
+            <div className="mb-3">
+              <label htmlFor="title" className="form-label">What do you Want?</label>
+              <input
+                type="text"
+                className="form-control"
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="description" className="form-label">Give some details to the people about it</label>
+              <textarea
+                className="form-control"
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+              ></textarea>
+            </div>
+            <div className="mb-3">
+              <label htmlFor="price" className="form-label">Max Price</label>
+              <input
+                type="number"
+                className="form-control"
+                id="price"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                required
+              />
+              {price ? (
+                <small className="form-text text-muted">Price: {Number(price).toLocaleString()}</small>
+              ) : null}
+            </div>
+            <div className="mb-3">
+              <Location
+                onCountryChange={(selectedCountry) => setCountry(selectedCountry)}
+                onStateChange={(selectedState) => setState(selectedState)}
+                onCityChange={(selectedCity) => setCity(selectedCity)}
+              />
+            </div>
+            <div className="mb-3">
+              <PostCategory
+                onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
+                onSubCategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)}
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="photo" className="form-label">Upload a photo about what you want</label>
+              <input
+                type="file"
+                className="form-control"
+                id="photo"
+                accept="image/*"
+                onChange={handleFileChange}
+              />
+            </div>
+            <button type="submit" className="btn btn-primary">Create Post</button>
+          </form>
         </div>
-        <div className="mb-3">
-          <label htmlFor="description" className="form-label">Give some details to the people about it</label>
-          <textarea
-            className="form-control"
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          ></textarea>
+        <div className="col-md-6">
+          <div className="card">
+            {photo && (
+              <img
+                src={URL.createObjectURL(photo)}
+                className="card-img-top"
+                alt="Preview"
+              />
+            )}
+            <div className="card-body">
+              <h5 className="card-title">{title || "Title"}</h5>
+              <h5 className="text-success">${Number(price).toLocaleString()}</h5>
+              <p className="card-text">{description || "Description"}</p>
+            </div>
+            <div className="card-footer">
+              <small className="text-muted">
+                {country || "Country"}, {state || "State"}, {city || "City"}
+              </small>
+            </div>
+          </div>
         </div>
-        <div className="mb-3">
-          <Location
-            onCountryChange={(selectedCountry) => setCountry(selectedCountry)}
-            onStateChange={(selectedState) => setState(selectedState)}
-            onCityChange={(selectedCity) => setCity(selectedCity)}
-          />
-        </div>
-        <div className="mb-3">
-          <PostCategory
-            onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
-            onSubCategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)}
-          />
-        </div>
-        <div className="mb-3">
-        <label htmlFor="photo" className="form-label">Upload a photo about what you want</label>
-        <input
-          type="file"
-          className="form-control"
-          id="photo"
-          accept="image/*"
-          onChange={handleFileChange}
-        />
       </div>
-        <button type="submit" className="btn btn-primary">Create Post</button>
-      </form>
     </div>
-  );
+  );  
+  
+  
 };
 
 export default CreatePost;
