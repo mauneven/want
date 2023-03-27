@@ -126,7 +126,7 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
       bg="light"
       expand="lg">
       <Container className='sticky-top'>
-        <Navbar.Brand href="/" className='want-logo'><Image src="/icons/want-logo.svg" alt="Want" width={100} height={50} /></Navbar.Brand>
+        <Navbar.Brand href="/" className='want-logo'><Image src="/icons/want-logo.svg" alt="Want" width={90} height={50} /></Navbar.Brand>
         <Form className="d-flex flex-grow-1 w-auto" onSubmit={handleSearchSubmit}>
           <FormControl
             type="search"
