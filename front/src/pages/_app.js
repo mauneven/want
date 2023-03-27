@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container } from 'react-bootstrap';
 import MegaMenu from '@/components/navigation/Navbar';
 import { useState } from 'react';
+import { useEffect } from 'react';
 
 export default function MyApp({ Component, pageProps }) {
   const [locationFilter, setLocationFilter] = useState(null);
@@ -17,6 +18,14 @@ export default function MyApp({ Component, pageProps }) {
     setSearchTerm(newSearchTerm);
   };
 
+  useEffect(() => {
+    // Seleccionar todos los elementos que activan los popovers
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+
+    // Crear un nuevo objeto Popover para cada elemento de popoverTriggerList
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
+  }, []);
+
   return (
     <div>
       <header>
@@ -24,6 +33,7 @@ export default function MyApp({ Component, pageProps }) {
           onLocationFilterChange={handleLocationFilterChange}
           onSearchTermChange={handleSearchTermChange} // Pasa la función handleSearchTermChange al componente Megamenu
         />
+        <link rel="stylesheet" href="/css/navbar.css" />
       </header>
       <Container>
         <Component

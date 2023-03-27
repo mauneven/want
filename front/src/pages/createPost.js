@@ -80,7 +80,7 @@ const CreatePost = () => {
 
   return (
     <div className="container">
-      <div className="row">
+      <div className="row row-cols-1 row-cols-md-4 g-4">
         <div className="col-md-6">
           <form onSubmit={handleSubmit} className="container">
             <div className="mb-3">

@@ -69,55 +69,60 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
     fetchAndSetPosts();
   }, [locationFilter, userIdFilter, searchTerm]);
 
-  return (
-    <div className="container">
-      <div className="row">
-        {!isLoading ? (
-          posts.length > 0 ? (
-            posts.map((post) => (
-              <div key={post._id} className="col-md-4">
-                <div className="card mb-4">
-                  {post.photo && (
-                    <img
-                      src={`http://localhost:4000/${post.photo}`}
-                      className="card-img-top"
-                      alt={post.title}
-                    />
-                  )}
-                  <div className="card-body">
-                    <h5 className="card-title">{post.title}</h5>
-                    <h5 className="text-success">maximum payment: ${post.price.toLocaleString()}</h5>
-                    <p className="card-text">
-                      {post.description.length > 100
-                        ? post.description.substring(0, 100) + "..."
-                        : post.description}
-                    </p>
-                    <Link href={`/post/[id]`} as={`/post/${post._id}`}>
-                      <button className="btn btn-primary">Ver detalles</button>
-                    </Link>
-                  </div>
-                  <div className="card-footer">
-                    <small className="text-muted">
-                      Created by {post.createdBy.firstName} {post.createdBy.lastName} on{" "}
-                      {new Date(post.createdAt).toLocaleDateString()}
-                    </small>
+    return (
+      <div className="container">
+        <div className="row row-cols-1 row-cols-md-4 g-4">
+          {!isLoading ? (
+            posts.length > 0 ? (
+              posts.map((post) => (
+                <div key={post._id}>
+                  <div className="card h-100">
+                    {post.photo && (
+                      <div style={{ height: "200px", overflow: "hidden" }}>
+                        <img
+                          src={`http://localhost:4000/${post.photo}`}
+                          className="card-img-top"
+                          alt={post.title}
+                          style={{ objectFit: "cover", height: "100%" }}
+                        />
+                      </div>
+                    )}
+                    <div className="card-body">
+                      <h5 className="card-title">{post.title}</h5>
+                      <h5 className="text-success">
+                        ${post.price.toLocaleString()}
+                      </h5>
+                      <p className="card-text">
+                        {post.description.length > 100
+                          ? post.description.substring(0, 100) + "..."
+                          : post.description}
+                      </p>
+                      <Link href={`/post/[id]`} as={`/post/${post._id}`}>
+                        <button className="offer-btn btn float-end rounded-pill">Ver detalles</button>
+                      </Link>
+                    </div>
+                    <div className="card-footer">
+                      <small className="text-muted">
+                        Created by {post.createdBy.firstName} {post.createdBy.lastName} on{" "}
+                        {new Date(post.createdAt).toLocaleDateString()}
+                      </small>
+                    </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="col-md-12">
+                <p>No se encontraron posts con los filtros aplicados.</p>
               </div>
-            ))
+            )
           ) : (
             <div className="col-md-12">
-              <p>No se encontraron posts con los filtros aplicados.</p>
+              <p>Cargando posts...</p>
             </div>
-          )
-        ) : (
-          <div className="col-md-12">
-            <p>Cargando posts...</p>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
-  );  
+    );
   
 };
 

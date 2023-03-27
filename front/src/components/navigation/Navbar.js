@@ -3,8 +3,9 @@ import { Container, Navbar, Nav, NavDropdown, Form, FormControl, Button } from '
 import LocationModal from '../locations/LocationPosts';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
-export default function MegaMenu({ onLocationFilterChange,  onSearchTermChange }) {
+export default function MegaMenu({ onLocationFilterChange, onSearchTermChange }) {
   const [user, setUser] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
   const [locationFilter, setLocationFilter] = useState(null);
@@ -13,7 +14,7 @@ export default function MegaMenu({ onLocationFilterChange,  onSearchTermChange }
   const [searchTerm, setSearchTerm] = useState('');
 
   const router = useRouter();
-  
+
   const handleLocationSelected = (country, state, city) => {
     let newLocationFilter = {
       country: country,
@@ -21,21 +22,21 @@ export default function MegaMenu({ onLocationFilterChange,  onSearchTermChange }
       city: city && city !== 'Seleccione una ciudad' ? city : null,
       timestamp: new Date().getTime(),
     };
-  
+
     // Si el país ha cambiado o solo el país está seleccionado, limpiar el estado y la ciudad
     if (!locationFilter || country !== locationFilter.country || (country && !state && !city)) {
       newLocationFilter.state = null;
       newLocationFilter.city = null;
     }
-  
+
     // Almacenar los datos de la ubicación en el localStorage
     localStorage.setItem('locationFilter', JSON.stringify(newLocationFilter));
-  
+
     setLocationFilter(newLocationFilter);
     onLocationFilterChange(newLocationFilter);
     setFilterVersion(filterVersion + 1);
     handleClose();
-  };  
+  };
 
   useEffect(() => {
     const locationFilterString = localStorage.getItem('locationFilter');
@@ -45,7 +46,7 @@ export default function MegaMenu({ onLocationFilterChange,  onSearchTermChange }
       onLocationFilterChange(parsedLocationFilter);
     }
   }, []); // Elimina la dependencia de locationFilter
-  
+
   useEffect(() => {
     if (locationFilter) {
       onLocationFilterChange(locationFilter);
@@ -122,29 +123,32 @@ export default function MegaMenu({ onLocationFilterChange,  onSearchTermChange }
   return (
     <Navbar bg="light" expand="lg">
       <Container>
-        <Navbar.Brand href="/">Want</Navbar.Brand>
+        <Navbar.Brand href="/" className='want-logo'><Image src="/icons/want-logo.svg" alt="Want" width={120} height={70} /></Navbar.Brand>
         <Form className="d-flex flex-grow-1 w-auto" onSubmit={handleSearchSubmit}>
           <FormControl
             type="search"
-            placeholder="Search"
-            className="mr-2 form-control-sm p-1"
+            placeholder=" Search what the people Want"
+            className="mr-2 form-control-sm p-1 search-bar"
             aria-label="Search"
             name="search"
           />
-          <Button type="submit" variant="outline-success ml-2">
+          <Button type="submit" variant="outline-success ml-1 search-icon">
             <i className="bi bi-search"></i>
           </Button>
         </Form>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link className='btn btn-warning' href="/createPost">I Want Something</Nav.Link>
+            <Nav.Link className='btn-post' href="/createPost">Want something?</Nav.Link>
             <LocationModal
               show={showLocationModal}
               onHide={() => setShowLocationModal(false)}
               onLocationSelected={handleLocationSelected}
             />
-            <NavDropdown title="Categorys" id="categories-dropdown">
+            <Button type="submit" variant="ml-1">
+            <i class="bi bi-bell fs-20"></i>
+            </Button>
+            <NavDropdown className='nav-link-lh' title="Categorys" id="categories-dropdown">
               <NavDropdown title="Tecnología" id="technology-dropdown">
                 <NavDropdown.Item href="#tablets">Tablets</NavDropdown.Item>
                 <NavDropdown.Item href="#cellphones">Celulares</NavDropdown.Item>

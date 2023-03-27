@@ -1,0 +1,10 @@
+    .offer-btn{
+        border: 2px solid black;
+        border-radius: 50px;
+    }
+  
+    .offer-btn:hover{
+      border: solid #4FC68D 1px;
+      background: #4FC68D;
+      color:white;
+    }

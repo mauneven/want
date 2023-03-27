@@ -100,109 +100,112 @@ const EditProfile = () => {
   const photoUrl = typeof File !== 'undefined' && photo instanceof File ? URL.createObjectURL(photo) : (user?.photo ? `http://localhost:4000/${user.photo}` : null);
 
   return (
-    
     <div className="container">
-      <div className="text-center my-4">
-        <img
-          src={photoUrl}
-          alt="User"
-          style={{
-            width: '150px',
-            height: '150px',
-            borderRadius: '50%',
-            objectFit: 'cover',
-          }}
-        />
-        <label htmlFor="photo" style={{ cursor: 'pointer', marginTop: '1rem' }}>
-          <div
-            className="overlay"
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <i className="bi bi-pencil text-primary"></i> Change photo
-          </div>
-        </label>
-        <input
-          type="file"
-          id="photo"
-          name="photo"
-          accept="image/*"
-          onChange={handlePhotoChange}
-          style={{ display: 'none' }}
-        />
-      </div>
-      <form onSubmit={handleSubmit}>
-        {inputFields.map((field) => (
-          <div key={field.name} className="mb-3">
-            <label htmlFor={field.name} className="form-label">
-              {field.label}
-            </label>
-            <div className="input-group">
-              <input
-                type={field.type}
-                className={`form-control${editingField === field.name ? '' : ' bg-light'}`}
-                id={field.name}
-                value={field.value}
-                onChange={field.onChange}
-                readOnly={editingField !== field.name}
-                required={field.required}
-              />
-              <button
-                type="button"
-                className="btn btn-outline-secondary"
-                onClick={() => setEditingField(field.name)}
+      <div className="card my-4">
+        <div className="card-body">
+          <div className="text-center">
+            <img
+              src={photoUrl}
+              alt="User"
+              style={{
+                width: '150px',
+                height: '150px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+              }}
+            />
+            <label htmlFor="photo" style={{ cursor: 'pointer', marginTop: '1rem' }}>
+              <div
+                className="overlay"
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
               >
-                <i className="bi bi-pencil"></i>
-              </button>
-            </div>
+                <i className="bi bi-pencil text-primary"></i> Change photo
+              </div>
+            </label>
+            <input
+              type="file"
+              id="photo"
+              name="photo"
+              accept="image/*"
+              onChange={handlePhotoChange}
+              style={{ display: 'none' }}
+            />
           </div>
-        ))}
-        {editingField === 'photo' && (
-          <>
-            <button
-              type="button"
-              className="btn btn-secondary me-3"
-              onClick={handleCancel}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              disabled={!photo}
-            >
-              Save Changes
-            </button>
-          </>
-        )}
-        {editingField !== 'photo' && editingField !== null && (
-          <>
-            <button
-              type="button"
-              className="btn btn-secondary me-3"
-              onClick={handleCancel}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              disabled={!editingField}
-            >
-              Save Changes
-            </button>
-          </>
-
-        )}
-      </form>
-      <Link href="/changePassword">
-          <button className="btn btn-success">Change my password</button>
-        </Link>
+          <form onSubmit={handleSubmit}>
+            {inputFields.map((field) => (
+              <div key={field.name} className="mb-3">
+                <label htmlFor={field.name} className="form-label">
+                  {field.label}
+                </label>
+                <div className="input-group">
+                  <input
+                    type={field.type}
+                    className={`form-control${editingField === field.name ? '' : ' bg-light'}`}
+                    id={field.name}
+                    value={field.value}
+                    onChange={field.onChange}
+                    readOnly={editingField !== field.name}
+                    required={field.required}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary"
+                    onClick={() => setEditingField(field.name)}
+                  >
+                    <i className="bi bi-pencil"></i>
+                  </button>
+                </div>
+              </div>
+            ))}
+            {editingField === 'photo' && (
+              <>
+                <button
+                  type="button"
+                  className="btn btn-secondary me-3"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={!photo}
+                >
+                  Save Changes
+                </button>
+              </>
+            )}
+            {editingField !== 'photo' && editingField !== null && (
+              <>
+                <button
+                  type="button"
+                  className="btn btn-secondary me-3"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={!editingField}
+                >
+                  Save Changes
+                </button>
+              </>
+            )}
+          </form>
+          <Link href="/changePassword">
+            <button className="btn btn-success">Change my password</button>
+          </Link>
+        </div>
+      </div>
     </div>
   );
+  
 };
 
 export default EditProfile;

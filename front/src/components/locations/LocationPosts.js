@@ -22,7 +22,7 @@ const LocationModal = ({ onHide, onLocationSelected }) => {
 
   return (
     <>
-      <Button variant="outline-primary" onClick={handleShow}>
+      <Button variant="" onClick={handleShow}>
         <i className="bi bi-globe2"></i>
       </Button>
       

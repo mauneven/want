@@ -26,14 +26,28 @@ const PostDetails = () => {
 
   return (
     <div className="container mt-5">
-      <h1 className="mb-4">{post.title}</h1>
-      <h5>{post.description}</h5>
-      <p>País: {post.country}</p>
-      <p>Estado: {post.state}</p>
-      <p>Ciudad: {post.city}</p>
-      <p>Categoría principal: {post.mainCategory}</p>
-      <p>Subcategoría: {post.subCategory}</p>
-      {/* Agrega aquí más campos si es necesario */}
+      <div className="row">
+        <div className="col-lg-6">
+        <img
+                          src={`http://localhost:4000/${post.photo}`}
+                          className="card-img-top"
+                          alt={post.title}
+                          style={{ objectFit: "cover", height: "100%" }}
+                        />
+        </div>
+        <div className="col-lg-6">
+          <h1 className="mb-4">{post.title}</h1>
+          <h5>{post.description}</h5>
+          <p><strong>Precio: </strong>{post.price} USD</p>
+          <p><strong>País: </strong>{post.country}</p>
+          <p><strong>Estado: </strong>{post.state}</p>
+          <p><strong>Ciudad: </strong>{post.city}</p>
+          <p><strong>Categoría principal: </strong>{post.mainCategory}</p>
+          <p><strong>Subcategoría: </strong>{post.subCategory}</p>
+          {/* Agrega aquí más campos si es necesario */}
+          <button className="btn btn-primary mt-3">Ofertar</button>
+        </div>
+      </div>
     </div>
   );
 };

@@ -45,6 +45,7 @@ const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSele
     clearLocation();
     console.log("Selected Country:", foundCountry);
     onCountryChange && onCountryChange(foundCountry?.name);
+    clearLocation();
   };  
 
   const handleStateChange = (event) => {
