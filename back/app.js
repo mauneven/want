@@ -6,6 +6,7 @@ const authRoutes = require('./routes/authRoutes');
 const postRoutes = require('./routes/postRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const User = require('./models/User');
+const offerRoutes = require('./routes/offerRoutes');
 
 const app = express();
 
@@ -49,6 +50,7 @@ app.use(async (req, res, next) => {
 app.use('/api', authRoutes);
 app.use('/api', postRoutes);
 app.use('/api', reportRoutes);
+app.use('/api', offerRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err);

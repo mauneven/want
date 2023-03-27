@@ -168,8 +168,10 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
             {user ? (
               <NavDropdown title={<><img src={user.photo ? `http://localhost:4000/${user.photo}` : '/default-profile-picture.png'} alt="Profile" style={{ borderRadius: '50%', width: '30px', height: '30px' }} /> {`${user.firstName}`}</>} id="user-dropdown">
                 <NavDropdown.Item href="/myPosts">My posts</NavDropdown.Item>
-                <NavDropdown.Item href="/editProfile">Perfil</NavDropdown.Item>
-                <NavDropdown.Item href="/logout">Cerrar sesión</NavDropdown.Item>
+                <NavDropdown.Item href="/sentOffers">Sent Offers</NavDropdown.Item>
+                <NavDropdown.Item href="/receivedOffers">Received Offers</NavDropdown.Item>
+                <NavDropdown.Item href="/editProfile">Profile</NavDropdown.Item>
+                <NavDropdown.Item href="/logout">Logout</NavDropdown.Item>
               </NavDropdown>
             ) : (
               <li className="nav-item">
