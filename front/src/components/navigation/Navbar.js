@@ -151,7 +151,7 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
             <Button type="submit" variant="ml-1">
               <i className="bi bi-bell fs-20"></i>
             </Button>
-            <NavDropdown className='nav-link-lh' title="Categorys" id="categories-dropdown">
+            <NavDropdown className='nav-link-lh' title="Categories" id="categories-dropdown">
               <NavDropdown title="Tecnología" id="technology-dropdown">
                 <NavDropdown.Item href="#tablets">Tablets</NavDropdown.Item>
                 <NavDropdown.Item href="#cellphones">Celulares</NavDropdown.Item>
