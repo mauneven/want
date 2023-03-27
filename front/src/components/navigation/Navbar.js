@@ -62,6 +62,63 @@ export default function MegaMenu({ onLocationFilterChange,  onSearchTermChange }
   const handleClose = () => setShowLocationModal(false);
   const handleShow = () => setShowLocationModal(true);
 
+  useEffect(() => {
+    const checkSession = async () => {
+      const response = await fetch('http://localhost:4000/api/user', {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user || null);
+        setIsLogged(true);
+      } else if (response.status === 401) {
+        setIsLogged(false);
+      }
+    };
+
+    checkSession();
+  }, [router.pathname]); // Agrega la dependencia del router.pathname aquí
+
+  useEffect(() => {
+    const locationFilterString = localStorage.getItem('locationFilter');
+    if (locationFilterString) {
+      const parsedLocationFilter = JSON.parse(locationFilterString);
+      setLocationFilter(parsedLocationFilter);
+      onLocationFilterChange(parsedLocationFilter);
+    }
+  }, []); // Agrega la matriz de dependencias vacía aquí
+
+  useEffect(() => {
+    if (isLogged) {
+      const updateSession = async () => {
+        const response = await fetch('http://localhost:4000/api/user', {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.user || null);
+        } else if (response.status === 401) {
+          setIsLogged(false);
+        }
+      };
+      const interval = setInterval(updateSession, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [isLogged]); // Agrega la matriz de dependencias con isLogged aquí  
+
+  function getUserImageUrl() {
+    if (user && user.photo) {
+      return `http://localhost:4000/${user.photo}`;
+    } else {
+      // Aquí puedes especificar la URL de una imagen predeterminada, si lo deseas.
+      return 'https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'; // Imagen de ejemplo. Reemplazar con una imagen real.
+    }
+  }
+
   return (
     <Navbar bg="light" expand="lg">
       <Container>
