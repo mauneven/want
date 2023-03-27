@@ -130,7 +130,7 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
         <Form className="d-flex flex-grow-1 w-auto" onSubmit={handleSearchSubmit}>
           <FormControl
             type="search"
-            placeholder=" Search what the people Want"
+            placeholder=" The people want..."
             className="mr-2 form-control-sm p-1 search-bar"
             aria-label="Search"
             name="search"
