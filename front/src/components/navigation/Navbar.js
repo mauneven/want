@@ -4,6 +4,7 @@ import LocationModal from '../locations/LocationPosts';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import Notifications from '../notifications/notifications';
 
 export default function MegaMenu({ onLocationFilterChange, onSearchTermChange }) {
   const [user, setUser] = useState(null);
@@ -148,9 +149,7 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
               onHide={() => setShowLocationModal(false)}
               onLocationSelected={handleLocationSelected}
             />
-            <Button type="submit" variant="ml-1">
-              <i className="bi bi-bell fs-20"></i>
-            </Button>
+            {user ? (<Notifications/>) : ("")}
             <NavDropdown className='nav-link-lh' title="Categories" id="categories-dropdown">
               <NavDropdown title="Tecnología" id="technology-dropdown">
                 <NavDropdown.Item href="#tablets">Tablets</NavDropdown.Item>

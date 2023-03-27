@@ -34,6 +34,7 @@ export default function MyApp({ Component, pageProps }) {
           onSearchTermChange={handleSearchTermChange} // Pasa la función handleSearchTermChange al componente Megamenu
         />
         <link rel="stylesheet" href="/css/navbar.css" />
+        <link rel="stylesheet" href="/css/notifications.css" />
       </header>
       <Container>
         <Component

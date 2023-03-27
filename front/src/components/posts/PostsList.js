@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import ContentLoader from "react-content-loader";
 
 const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
   const [posts, setPosts] = useState([]);
@@ -8,19 +9,19 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
   const fetchPostsByLocation = async () => {
     const response = await fetch("http://localhost:4000/api/posts");
     let postsData = await response.json();
-  
+
     if (locationFilter) {
       postsData = postsData.filter((post) => {
         let countryMatch = locationFilter.country ? post.country === locationFilter.country : true;
         let stateMatch = locationFilter.state ? post.state === locationFilter.state : true;
         let cityMatch = locationFilter.city ? post.city === locationFilter.city : true;
-  
+
         return countryMatch && stateMatch && cityMatch;
       });
     }
-  
+
     return postsData;
-  };  
+  };
 
   const fetchPostsBySearch = (postsData) => {
     if (searchTerm) {
@@ -69,12 +70,24 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
     fetchAndSetPosts();
   }, [locationFilter, userIdFilter, searchTerm]);
 
-    return (
-      <div className="container">
-        <div className="row row-cols-1 row-cols-md-4 g-4">
-          {!isLoading ? (
-            posts.length > 0 ? (
-              posts.map((post) => (
+  const Placeholder = () => (
+    <div className="col-md-3">
+      <ContentLoader speed={2} width={260} height={450} viewBox="0 0 260 450" backgroundColor="#f3f3f3" foregroundColor="#ecebeb">
+        <rect x="0" y="0" rx="10" ry="10" width="260" height="310" />
+        <rect x="0" y="330" rx="3" ry="3" width="260" height="20" />
+        <rect x="0" y="360" rx="3" ry="3" width="260" height="20" />
+        <rect x="0" y="390" rx="3" ry="3" width="260" height="20" />
+        <rect x="0" y="420" rx="3" ry="3" width="260" height="20" />
+      </ContentLoader>
+    </div>
+  );
+
+  return (
+    <div className="container">
+      <div className="row row-cols-1 row-cols-md-4 g-4">
+        {!isLoading
+          ? posts.length > 0
+            ? posts.map((post) => (
                 <div key={post._id}>
                   <div className="card h-100">
                     {post.photo && (
@@ -110,19 +123,23 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
                   </div>
                 </div>
               ))
-            ) : (
+            : (
               <div className="col-md-12">
                 <p>No se encontraron posts con los filtros aplicados.</p>
               </div>
             )
-          ) : (
-            <div className="col-md-12">
-              <p>Cargando posts...</p>
-            </div>
-          )}
-        </div>
+          : (
+            <>
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+            </>
+          )
+        }
       </div>
-    );
+    </div>
+  );
   
 };
 

@@ -15,9 +15,9 @@ body {
 }
 
 .btn-post {
-  background-image: linear-gradient(150deg, rgba(134, 210, 151, 1) 0%, rgba(0, 168, 178, 1) 100%) !important;
-  color: white !important;
-  border: none !important;
+  background-image: linear-gradient(150deg, rgba(134, 210, 151, 1) 0%, rgba(0, 168, 178, 1) 100%) ;
+  color: white ;
+  border: none ;
   background-size: cover;
   position: relative;
   width: 150px;
@@ -28,7 +28,7 @@ body {
 }
 
 .btn-post:before {
-  background-image: linear-gradient(150deg, rgba(0, 168, 178, 1) 0%, rgba(134, 210, 151, 1) 100%) !important;
+  background-image: linear-gradient(150deg, rgba(0, 168, 178, 1) 0%, rgba(134, 210, 151, 1) 100%);
   border-radius: inherit;
   display: block;
   position: absolute;
@@ -39,8 +39,9 @@ body {
   top: 0;
   left: 0;
   z-index: -100;
-  box-shadow: 0 0 10px rgba(79, 198, 141, 1) !important;
-  transition: opacity 0.2s ease-in-out;
+  box-shadow: 1px 0px 10px rgba(79, 198, 141, 1);
+  transition: opacity 0.5s ease-in-out;
+  color: white !important;
 }
 
 .btn-post:hover:before {

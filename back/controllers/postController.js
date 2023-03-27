@@ -105,12 +105,15 @@ exports.deletePost = async (req, res, next) => {
     }
 
     await Post.deleteOne({ _id: req.params.id });
+    fetchNotifications();
+
 
     res.sendStatus(204);
   } catch (err) {
     next(err);
   }
 };
+
 
 
 exports.getPostsByCurrentUser = async (req, res, next) => {

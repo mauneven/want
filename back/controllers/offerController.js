@@ -90,7 +90,7 @@ exports.getNotifications = async (req, res, next) => {
     await notification.save();
   };  
 
-exports.deleteOffer = async (req, res, next) => {
+  exports.deleteOffer = async (req, res, next) => {
     try {
       const offer = await Offer.findById(req.params.id);
   
@@ -106,13 +106,21 @@ exports.deleteOffer = async (req, res, next) => {
         return res.status(401).send('You are not authorized to delete this offer');
       }
   
+      // Encuentra la notificación correspondiente al postId de la oferta que se está eliminando.
+      const notification = await Notification.findOne({ postId: offer.post });
+  
       await Offer.deleteOne({ _id: req.params.id });
+  
+      // Si se encuentra la notificación, elimínala.
+      if (notification) {
+        await Notification.deleteOne({ _id: notification._id });
+      }
   
       res.sendStatus(204);
     } catch (err) {
       next(err);
     }
-  };   
+  };  
 
 exports.createReport = async (req, res, next) => {
     try {

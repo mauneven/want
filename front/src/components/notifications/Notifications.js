@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { NavDropdown, Badge } from 'react-bootstrap';
+
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const router = useRouter();
+  const hasUnreadNotifications = notifications.some((notification) => !notification.isRead);
 
   const fetchPostName = async (postId) => {
     if (!postId) {
@@ -42,29 +45,34 @@ export default function Notifications() {
   };
 
   return (
-    <div className="container">
-      <h1>Notificaciones</h1>
-      <div className="row">
-        {notifications.map((notification) => (
-          <div className="col-md-4 mb-4" key={notification._id}>
-            <div
-              className={`card ${!notification.isRead ? 'border-primary' : ''}`}
-              style={{ cursor: 'pointer' }}
-              onClick={handleClick}
-            >
-              <div className="card-body">
-                {/* Reemplaza "notification.message" por "notification.content" */}
-                <p className="card-text">{notification.content}</p>
-              </div>
-              {!notification.isRead && (
-                <div className="card-footer bg-primary text-white">
-                  Nueva notificación
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+    <NavDropdown
+    title={
+      <>
+        <i className="bi bi-bell fs-20"></i>
+        {hasUnreadNotifications && (
+          <Badge pill bg="danger" className="position-absolute" style={{ top: -5, right: -10 }}>
+            {notifications.filter((notification) => !notification.isRead).length}
+          </Badge>
+        )}
+      </>
+    }
+    id="notification-dropdown"
+    className={hasUnreadNotifications ? "text-success" : ""}
+  >
+      {notifications.length > 0 ? (
+        notifications.map((notification) => (
+          <NavDropdown.Item
+            key={notification._id}
+            onClick={() => router.push('/receivedOffers')}
+            className={!notification.isRead ? 'bg-primary text-white' : ''}
+          >
+            {notification.content}
+          </NavDropdown.Item>
+        ))
+      ) : (
+        <NavDropdown.Item disabled>No hay notificaciones</NavDropdown.Item>
+      )}
+    </NavDropdown>
   );
+  
 }
