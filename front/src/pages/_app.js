@@ -28,7 +28,7 @@ export default function MyApp({ Component, pageProps }) {
 
   return (
     <div>
-      <header>
+      <header className='sticky-top'>
         <MegaMenu
           onLocationFilterChange={handleLocationFilterChange}
           onSearchTermChange={handleSearchTermChange} // Pasa la función handleSearchTermChange al componente Megamenu

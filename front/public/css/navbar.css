@@ -5,62 +5,64 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-.navbar {
-    border: 1px black;
-    outline: black;
-  }
-  
-  .nav-link {
-    transition: background-color 0.3s ease;
-    border-radius: 20px;
-  }
+.nav-link {
+  transition: background-color 0.3s ease;
+  border-radius: 20px;
+}
 
-  .nav-link-lh{
-    line-height: 30px;
-  }
+.nav-link-lh {
+  line-height: 30px;
+}
 
-  .btn-post{
-    background-image: linear-gradient(150deg, rgba(134,210,151,1) 0%, rgba(0,168,178,1) 100%)!important;
-    color: white !important;
-    border: none !important;
-    background-size: cover;
-    position: relative;
-    width: 150px;
-    text-align: center;
-    line-height: 30px;
-    z-index: 100;
-    
-  }
-    .btn-post:before {
-      background-image: linear-gradient(150deg, rgba(0,168,178,1) 0%, rgba(134,210,151,1) 100%)!important;
-      border-radius: inherit;
-      display: block;
-      position: absolute;
-      content: '';
-      opacity: 0;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      z-index: -100;
-      box-shadow: 0 0 10px rgba(79,198,141,1)!important;
-      transition: opacity 0.2s ease-in-out;
-    }
-  
-    .btn-post:hover:before {
-      opacity: 1;
-  
-    }
+.btn-post {
+  background-image: linear-gradient(150deg, rgba(134, 210, 151, 1) 0%, rgba(0, 168, 178, 1) 100%) !important;
+  color: white !important;
+  border: none !important;
+  background-size: cover;
+  position: relative;
+  width: 150px;
+  text-align: center;
+  line-height: 30px;
+  z-index: 100;
 
-  .search-bar{
-    border-radius: 50px 0px 0px 50px;
-  }
-  .search-icon{
-    border-radius: 0px 50px 50px 0px;
-    outline: #059900 1px;
-  }
+}
 
-  .want-logo{
-    border-radius: 50px;
-    width: 150px;
-  }
+.btn-post:before {
+  background-image: linear-gradient(150deg, rgba(0, 168, 178, 1) 0%, rgba(134, 210, 151, 1) 100%) !important;
+  border-radius: inherit;
+  display: block;
+  position: absolute;
+  content: '';
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -100;
+  box-shadow: 0 0 10px rgba(79, 198, 141, 1) !important;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.btn-post:hover:before {
+  opacity: 1;
+
+}
+
+.search-bar {
+  border-radius: 50px 0px 0px 50px;
+}
+
+.search-icon {
+  border-radius: 0px 50px 50px 0px;
+  outline: #059900 1px;
+}
+
+.want-logo {
+  border-radius: 50px;
+  width: 150px;
+}
+
+.sticky-nav {
+  position: sticky;
+  top: 0;
+}
