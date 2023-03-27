@@ -2,6 +2,7 @@ const Offer = require('../models/Offer');
 const Post = require('../models/Post');
 const multer = require('multer');
 const path = require('path');
+const Notification = require('../models/notification');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -18,30 +19,36 @@ exports.uploadPhoto = upload.single('photo');
 
 exports.createOffer = async (req, res, next) => {
     try {
-        const { title, description, price, postId } = req.body;
-        const photo = req.file ? req.file.path : null;
-        const post = await Post.findById(postId);
-
-        if (!post) {
-            return res.status(404).send('Post not found');
-        }
-
-        const offer = new Offer({
-            title,
-            description,
-            price,
-            photo,
-            createdBy: req.session.userId,
-            receivedBy: post.createdBy,
-            post: postId
-        });
-        await offer.save();
-
-        res.status(201).json(offer);
+      const { title, description, price, postId } = req.body;
+      const photo = req.file ? req.file.path : null;
+      const post = await Post.findById(postId);
+  
+      if (!post) {
+        return res.status(404).send('Post not found');
+      }
+  
+      // Mueve esta línea aquí, dentro de la función createOffer
+      const notificationContent = `¡Tienes una nueva oferta para tu post "${post.title}"!`;
+  
+      const offer = new Offer({
+        title,
+        description,
+        price,
+        photo,
+        createdBy: req.session.userId,
+        receivedBy: post.createdBy,
+        post: postId,
+      });
+      await offer.save();
+  
+      // Enviar notificación al usuario que recibió la oferta
+      await exports.sendNotification(post.createdBy, notificationContent, postId);
+  
+      res.status(201).json(offer);
     } catch (err) {
-        next(err);
+      next(err);
     }
-};
+  };  
 
 exports.getOffersByCurrentUser = async (req, res, next) => {
     try {
@@ -60,6 +67,28 @@ exports.getOffersReceivedByCurrentUser = async (req, res, next) => {
         next(err);
     }
 };
+
+exports.getNotifications = async (req, res, next) => {
+    try {
+      const notifications = await Notification.find({ recipient: req.session.userId })
+        .sort({ createdAt: -1 });
+  
+      // Marcar notificaciones como leídas
+      await Notification.updateMany(
+        { recipient: req.session.userId, isRead: false },
+        { isRead: true }
+      );
+  
+      res.status(200).json(notifications);
+    } catch (err) {
+      next(err);
+    }
+  };
+  
+  exports.sendNotification = async (recipientId, content, postId) => {
+    const notification = new Notification({ content, recipient: recipientId, postId }); // Añade postId aquí
+    await notification.save();
+  };  
 
 exports.deleteOffer = async (req, res, next) => {
     try {

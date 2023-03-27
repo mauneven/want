@@ -52,6 +52,7 @@ const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSele
     const stateId = event.target.value;
     const foundState = selectedCountry.states.find((state) => state.id === stateId);
     setSelectedState(foundState);
+    setSelectedCity("");
     console.log("Selected State:", foundState);
     onStateChange && onStateChange(foundState?.name !== 'Seleccione un estado' ? foundState?.name : null);
     handleLocationSelected(); // Agregar esta línea

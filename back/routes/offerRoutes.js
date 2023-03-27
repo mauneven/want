@@ -10,5 +10,6 @@ router.get('/received', offerController.getOffersReceivedByCurrentUser);
 router.delete('/:id', offerController.deleteOffer);
 router.post('/:id/report', offerController.createReport);
 router.get('/my-offers', offerController.getOffersByCurrentUser);
+router.get('/notifications', offerController.getNotifications);
 
 module.exports = router;
