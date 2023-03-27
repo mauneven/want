@@ -15,7 +15,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
         let stateMatch = locationFilter.state ? post.state === locationFilter.state : true;
         let cityMatch = locationFilter.city ? post.city === locationFilter.city : true;
   
-        return countryMatch && (stateMatch || cityMatch);
+        return countryMatch && stateMatch && cityMatch;
       });
     }
   

@@ -24,18 +24,18 @@ const modifiedCountries = countries.countries.map((country) => {
 });
 
 const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSelected }) => {
-  const [selectedCountry, setSelectedCountry] = useState(null);
-  const [selectedState, setSelectedState] = useState(null);
-  const [selectedCity, setSelectedCity] = useState(null);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");  
 
   useEffect(() => {
     handleLocationSelected();
   }, [selectedCity]);
 
   const clearLocation = () => {
-    setSelectedState(null);
-    setSelectedCity(null);
-    onLocationSelected && onLocationSelected(selectedCountry?.name, null, null);
+    setSelectedState("");
+    setSelectedCity("");
+    onLocationSelected && onLocationSelected(selectedCountry?.name, "", "");
   };
 
   const handleCountryChange = (event) => {
@@ -51,17 +51,18 @@ const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSele
     const stateId = event.target.value;
     const foundState = selectedCountry.states.find((state) => state.id === stateId);
     setSelectedState(foundState);
-    setSelectedCity(null);
     console.log("Selected State:", foundState);
     onStateChange && onStateChange(foundState?.name !== 'Seleccione un estado' ? foundState?.name : null);
-  };  
-
+    handleLocationSelected(); // Agregar esta línea
+  };
+  
   const handleCityChange = (event) => {
     const city = event.target.value;
     setSelectedCity(city);
     console.log("Selected City:", city);
     onCityChange && onCityChange(city !== 'Seleccione una ciudad' ? city : null);
-  };
+    handleLocationSelected(); // Agregar esta línea
+  };  
 
   const handleLocationSelected = () => {
     if (selectedCountry && !selectedState && !selectedCity) {
