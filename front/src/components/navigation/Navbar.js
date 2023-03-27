@@ -121,9 +121,12 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
   }
 
   return (
-    <Navbar bg="light" expand="lg">
-      <Container>
-        <Navbar.Brand href="/" className='want-logo'><Image src="/icons/want-logo.svg" alt="Want" width={120} height={70} /></Navbar.Brand>
+    <Navbar style={{ top: 0, zIndex: 1000 }} // Añade estilos en línea aquí
+      className='sticky-top sticky-nav'
+      bg="light"
+      expand="lg">
+      <Container className='sticky-top'>
+        <Navbar.Brand href="/" className='want-logo'><Image src="/icons/want-logo.svg" alt="Want" width={100} height={50} /></Navbar.Brand>
         <Form className="d-flex flex-grow-1 w-auto" onSubmit={handleSearchSubmit}>
           <FormControl
             type="search"
@@ -146,7 +149,7 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
               onLocationSelected={handleLocationSelected}
             />
             <Button type="submit" variant="ml-1">
-            <i class="bi bi-bell fs-20"></i>
+              <i class="bi bi-bell fs-20"></i>
             </Button>
             <NavDropdown className='nav-link-lh' title="Categorys" id="categories-dropdown">
               <NavDropdown title="Tecnología" id="technology-dropdown">
