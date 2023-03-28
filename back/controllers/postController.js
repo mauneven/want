@@ -1,6 +1,8 @@
 const Post = require('../models/Post');
 const multer = require('multer');
 const path = require('path');
+const Offer = require('../models/Offer');
+const Notification = require('../models/notification');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -100,17 +102,20 @@ exports.updatePost = async (req, res, next) => {
 exports.deletePost = async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.id);
+
     if (!post) {
       return res.status(404).send('Post not found');
     }
 
-    if (post.createdBy.toString() !== req.session.userId && req.user.role !== 'admin') {
+    if (post.createdBy.toString() !== req.session.userId) {
       return res.status(401).send('You are not authorized to delete this post');
     }
 
-    await Post.deleteOne({ _id: req.params.id });
-    fetchNotifications();
+    // Eliminar las ofertas y notificaciones relacionadas con el post
+    await Offer.deleteMany({ post: req.params.id });
+    await Notification.deleteMany({ postId: req.params.id });
 
+    await Post.deleteOne({ _id: req.params.id });
 
     res.sendStatus(204);
   } catch (err) {
