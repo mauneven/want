@@ -1,8 +1,24 @@
 // pages/myOffers.js
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 export default function sentOffers() {
   const [offers, setOffers] = useState([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkLoggedIn = async () => {
+        const response = await fetch('http://localhost:4000/api/is-logged-in', {
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            router.push('/login');
+        }
+    };
+
+    checkLoggedIn();
+}, []);
 
   useEffect(() => {
     const fetchMyOffers = async () => {

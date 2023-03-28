@@ -2,12 +2,28 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Modal, Button } from 'react-bootstrap';
+import { useRouter } from 'next/router';
 
 
 export default function MyPosts() {
   const [posts, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkLoggedIn = async () => {
+        const response = await fetch('http://localhost:4000/api/is-logged-in', {
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            router.push('/login');
+        }
+    };
+
+    checkLoggedIn();
+}, []);
 
 
   useEffect(() => {

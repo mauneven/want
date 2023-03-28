@@ -66,6 +66,10 @@ exports.createPost = async (req, res, next) => {
 
 exports.updatePost = async (req, res, next) => {
   try {
+    if (!req.session.userId) {
+      return res.status(401).send('You must be logged in to edit a post');
+    }
+
     const { title, description, country, state, city, mainCategory, subCategory } = req.body;
 
     const post = await Post.findById(req.params.id);

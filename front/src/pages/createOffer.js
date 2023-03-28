@@ -13,6 +13,20 @@ const CreateOffer = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
+    const checkLoggedIn = async () => {
+        const response = await fetch('http://localhost:4000/api/is-logged-in', {
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            router.push('/login');
+        }
+    };
+
+    checkLoggedIn();
+}, []);
+
+  useEffect(() => {
     const fetchPost = async () => {
       // Llama a la API para obtener el post por ID.
       const response = await fetch(`http://localhost:4000/api/posts/${postId}`);

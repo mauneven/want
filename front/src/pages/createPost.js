@@ -24,6 +24,20 @@ const CreatePost = () => {
   const [previewCategory, setPreviewCategory] = useState('');
   const [previewPrice, setPreviewPrice] = useState('');
 
+  useEffect(() => {
+    const checkLoggedIn = async () => {
+        const response = await fetch('http://localhost:4000/api/is-logged-in', {
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            router.push('/login');
+        }
+    };
+
+    checkLoggedIn();
+}, []);
+
   const handleFileChange = (e) => {
     setPhoto(e.target.files[0]);
   };

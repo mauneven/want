@@ -20,6 +20,20 @@ const EditPost = () => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        const checkLoggedIn = async () => {
+            const response = await fetch('http://localhost:4000/api/is-logged-in', {
+                credentials: 'include',
+            });
+    
+            if (!response.ok) {
+                router.push('/login');
+            }
+        };
+    
+        checkLoggedIn();
+    }, []);
+
+    useEffect(() => {
         if (id) {
             fetch(`http://localhost:4000/api/posts/${id}`)
                 .then((response) => response.json())
