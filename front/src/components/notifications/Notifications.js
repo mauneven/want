@@ -48,7 +48,7 @@ export default function Notifications() {
     <NavDropdown
     title={
       <>
-        <i className="bi bi-bell fs-20"></i>
+        <i className="bi bi-bell fs-20 navbar-icon"></i>
         {hasUnreadNotifications && (
           <Badge pill bg="danger" className="position-absolute" style={{ top: -5, right: -10 }}>
             {notifications.filter((notification) => !notification.isRead).length}

@@ -103,13 +103,30 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
     for (let i = 1; i <= Math.ceil(totalPosts / pageSize); i++) {
       pageNumbers.push(i);
     }
-
     return (
-      <div className="container">
-        <div className="row row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 g-4">
-          {!isLoading ? (
-            posts.length > 0 ? (
-              posts.map((post) => (
+      <nav aria-label="Page navigation example pt-2 pb-2">
+        <ul className="pagination justify-content-center">
+          {pageNumbers.map((number) => (
+            <li key={number} className="page-item">
+              <button
+                onClick={() => handlePageChange(number)}
+                className={`page-link ${number === currentPage ? "active" : ""}`}
+              >
+                {number}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    );
+  };
+
+  return (
+    <div className="container">
+      <div className="row row-cols-1 row-cols-md-4 g-4 pb-5">
+        {!isLoading
+          ? posts.length > 0
+            ? posts.map((post) => (
                 <div key={post._id}>
                   <div className="card h-100">
                     {post.photo && (
@@ -123,11 +140,11 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
                       </div>
                     )}
                     <div className="card-body">
-                      <h5 className="card-title post-title">{post.title}</h5>
+                      <h5 className="card-title post-title mb-2">{post.title}</h5>
                       <h5 className="text-success">
                         ${post.price.toLocaleString()}
                       </h5>
-                      <p className="card-text post-text">
+                      <p className="card-text post-text mb-2">
                         {post.description.length > 100
                           ? post.description.substring(0, 100) + "..."
                           : post.description}
@@ -173,5 +190,6 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
   );
 };
 
-export default PostsList;
+export default PostsList;
+ 
 

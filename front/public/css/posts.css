@@ -25,10 +25,10 @@
 .post-text { 
   display: block; /* Fallback for non-webkit */
   display: -webkit-box;
-  height: 112px; /* Fallback for non-webkit */
+  height: 89.6px; /* Fallback for non-webkit */
   margin: 0 auto;
   line-height: 1.4;
-  -webkit-line-clamp: 5;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;

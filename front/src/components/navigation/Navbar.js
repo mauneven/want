@@ -149,8 +149,10 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
               onHide={() => setShowLocationModal(false)}
               onLocationSelected={handleLocationSelected}
             />
-            {user ? (<Notifications/>) : ("")}
-            <NavDropdown className='nav-link-lh' title="Categories" id="categories-dropdown">
+            <Nav.Link className='nav-item'>
+            {user ? (<Notifications />) : ("")}
+            </Nav.Link>
+            <NavDropdown className='nav-link' title="Categories" id="categories-dropdown">
               <NavDropdown title="Tecnología" id="technology-dropdown">
                 <NavDropdown.Item href="#tablets">Tablets</NavDropdown.Item>
                 <NavDropdown.Item href="#cellphones">Celulares</NavDropdown.Item>
@@ -165,7 +167,7 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
               </NavDropdown>
             </NavDropdown>
             {user ? (
-              <NavDropdown title={<><img src={user.photo ? `http://localhost:4000/${user.photo}` : '/default-profile-picture.png'} alt="Profile" style={{ borderRadius: '50%', width: '30px', height: '30px' }} /> {`${user.firstName}`}</>} id="user-dropdown">
+              <NavDropdown className='nav-link' title={<><img src={user.photo ? `http://localhost:4000/${user.photo}` : 'icons/default-profile-picture.svg'} alt="Profile" style={{ borderRadius: '50%', width: '30px', height: '30px' }} /> {`${user.firstName}`}</>} id="user-dropdown">
                 <NavDropdown.Item href="/myPosts">My posts</NavDropdown.Item>
                 <NavDropdown.Item href="/sentOffers">Sent Offers</NavDropdown.Item>
                 <NavDropdown.Item href="/receivedOffers">Received Offers</NavDropdown.Item>
