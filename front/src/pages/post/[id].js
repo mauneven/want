@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 const PostDetails = () => {
   const router = useRouter();
@@ -28,12 +29,12 @@ const PostDetails = () => {
     <div className="container mt-5">
       <div className="row">
         <div className="col-lg-6">
-        <img
-                          src={`http://localhost:4000/${post.photo}`}
-                          className="card-img-top"
-                          alt={post.title}
-                          style={{ objectFit: "cover", height: "100%" }}
-                        />
+          <img
+            src={`http://localhost:4000/${post.photo}`}
+            className="card-img-top"
+            alt={post.title}
+            style={{ objectFit: "cover", height: "100%" }}
+          />
         </div>
         <div className="col-lg-6">
           <h1 className="mb-4">{post.title}</h1>
@@ -45,7 +46,9 @@ const PostDetails = () => {
           <p><strong>Categoría principal: </strong>{post.mainCategory}</p>
           <p><strong>Subcategoría: </strong>{post.subCategory}</p>
           {/* Agrega aquí más campos si es necesario */}
-          <button className="btn btn-primary mt-3">Ofertar</button>
+          <Link href={`/createOffer?postId=${id}`}>
+            <button className="btn btn-primary mt-3">Ofertar</button>
+          </Link>
         </div>
       </div>
     </div>

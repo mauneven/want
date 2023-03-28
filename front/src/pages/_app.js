@@ -4,6 +4,7 @@ import { Container } from 'react-bootstrap';
 import MegaMenu from '@/components/navigation/Navbar';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import Footer from '@/components/footer/footer';
 
 export default function MyApp({ Component, pageProps }) {
   const [locationFilter, setLocationFilter] = useState(null);
@@ -34,6 +35,7 @@ export default function MyApp({ Component, pageProps }) {
           onSearchTermChange={handleSearchTermChange} // Pasa la función handleSearchTermChange al componente Megamenu
         />
         <link rel="stylesheet" href="/css/navbar.css" />
+        <link rel="stylesheet" href="/css/notifications.css" />
       </header>
       <Container>
         <Component
@@ -42,6 +44,10 @@ export default function MyApp({ Component, pageProps }) {
           searchTerm={searchTerm} // Pasa el estado searchTerm al componente IndexPage
         />
       </Container>
+      <footer>
+        <Footer/>
+        <link rel="stylesheet" href="/css/footer.css" />
+      </footer>
     </div>
   );
 }

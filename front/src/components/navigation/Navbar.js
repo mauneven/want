@@ -4,6 +4,7 @@ import LocationModal from '../locations/LocationPosts';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import Notifications from '../notifications/notifications';
 
 export default function MegaMenu({ onLocationFilterChange, onSearchTermChange }) {
   const [user, setUser] = useState(null);
@@ -148,10 +149,8 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
               onHide={() => setShowLocationModal(false)}
               onLocationSelected={handleLocationSelected}
             />
-            <Button type="submit" variant="ml-1">
-              <i className="bi bi-bell fs-20 navbar-icon"></i>
-            </Button>
-            <NavDropdown className='nav-link' title="Categories" id="categories-dropdown">
+            {user ? (<Notifications/>) : ("")}
+            <NavDropdown className='nav-link-lh' title="Categories" id="categories-dropdown">
               <NavDropdown title="Tecnología" id="technology-dropdown">
                 <NavDropdown.Item href="#tablets">Tablets</NavDropdown.Item>
                 <NavDropdown.Item href="#cellphones">Celulares</NavDropdown.Item>
@@ -168,8 +167,10 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
             {user ? (
               <NavDropdown title={<><img src={user.photo ? `http://localhost:4000/${user.photo}` : '/default-profile-picture.png'} alt="Profile" style={{ borderRadius: '50%', width: '30px', height: '30px' }} /> {`${user.firstName}`}</>} id="user-dropdown">
                 <NavDropdown.Item href="/myPosts">My posts</NavDropdown.Item>
-                <NavDropdown.Item href="/editProfile">Perfil</NavDropdown.Item>
-                <NavDropdown.Item href="/logout">Cerrar sesión</NavDropdown.Item>
+                <NavDropdown.Item href="/sentOffers">Sent Offers</NavDropdown.Item>
+                <NavDropdown.Item href="/receivedOffers">Received Offers</NavDropdown.Item>
+                <NavDropdown.Item href="/editProfile">Profile</NavDropdown.Item>
+                <NavDropdown.Item href="/logout">Logout</NavDropdown.Item>
               </NavDropdown>
             ) : (
               <Nav.Link  href="/login" className='nav-item'>

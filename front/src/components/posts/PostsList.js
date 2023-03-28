@@ -1,27 +1,31 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import ContentLoader from "react-content-loader";
 
 
 const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(12);
+  const [totalPosts, setTotalPosts] = useState(0);
 
   const fetchPostsByLocation = async () => {
     const response = await fetch("http://localhost:4000/api/posts");
     let postsData = await response.json();
-  
+
     if (locationFilter) {
       postsData = postsData.filter((post) => {
         let countryMatch = locationFilter.country ? post.country === locationFilter.country : true;
         let stateMatch = locationFilter.state ? post.state === locationFilter.state : true;
         let cityMatch = locationFilter.city ? post.city === locationFilter.city : true;
-  
+
         return countryMatch && stateMatch && cityMatch;
       });
     }
-  
+
     return postsData;
-  };  
+  };
 
   const fetchPostsBySearch = (postsData) => {
     if (searchTerm) {
@@ -58,8 +62,19 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
     setIsLoading(true);
     let postsData = await fetchPostsByLocation();
     postsData = fetchPostsBySearch(postsData);
-    setPosts(postsData);
+  
+    // Establece el total de posts antes del paginado
+    setTotalPosts(postsData.length);
+  
+    const start = (currentPage - 1) * pageSize;
+    const end = start + pageSize;
+    setPosts(postsData.slice(start, end));
+  
     setIsLoading(false);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   useEffect(() => {
@@ -68,7 +83,26 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
     };
 
     fetchAndSetPosts();
-  }, [locationFilter, userIdFilter, searchTerm]);
+  }, [locationFilter, userIdFilter, searchTerm, currentPage, pageSize]);
+
+  const Placeholder = () => (
+    <div className="col-md-3">
+      <ContentLoader speed={2} width={260} height={450} viewBox="0 0 260 450" backgroundColor="#f3f3f3" foregroundColor="#ecebeb">
+        <rect x="0" y="0" rx="10" ry="10" width="260" height="310" />
+        <rect x="0" y="330" rx="3" ry="3" width="260" height="20" />
+        <rect x="0" y="360" rx="3" ry="3" width="260" height="20" />
+        <rect x="0" y="390" rx="3" ry="3" width="260" height="20" />
+        <rect x="0" y="420" rx="3" ry="3" width="260" height="20" />
+      </ContentLoader>
+    </div>
+  );
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    // Utiliza totalPosts en lugar de posts.length para calcular la cantidad de páginas
+    for (let i = 1; i <= Math.ceil(totalPosts / pageSize); i++) {
+      pageNumbers.push(i);
+    }
 
     return (
       <div className="container">
@@ -111,20 +145,33 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
                   </div>
                 </div>
               ))
-            ) : (
+            : (
               <div className="col-md-12">
                 <p>No se encontraron posts con los filtros aplicados.</p>
               </div>
             )
-          ) : (
-            <div className="col-md-12">
-              <p>Cargando posts...</p>
-            </div>
-          )}
-        </div>
+          : (
+            <>
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+            </>
+          )
+        }
       </div>
-    );
-  
+      {posts.length > 0 && renderPageNumbers()}
+    </div>
+  );
 };
 
 export default PostsList;
+
