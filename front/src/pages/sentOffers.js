@@ -39,7 +39,7 @@ const checkAuthentication = () => {
 
   return (
     <div className="container">
-      <h1>Mis Ofertas</h1>
+      <h1>Sent Offers</h1>
       <div className="row">
         {offers.map((offer) => (
           <div key={offer._id} className="col-md-4">
@@ -48,7 +48,7 @@ const checkAuthentication = () => {
                 <h5 className="card-title">{offer.title}</h5>
                 <p className="card-text">{offer.description}</p>
                 <p className="card-text">
-                  Precio: <strong>{offer.price}</strong>
+                  Price: <strong>{offer.price}</strong>
                 </p>
               </div>
             </div>
