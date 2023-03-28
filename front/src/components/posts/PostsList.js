@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 
+
 const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -71,7 +72,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
 
     return (
       <div className="container">
-        <div className="row row-cols-1 row-cols-md-4 g-4">
+        <div className="row row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xxl-4 g-4">
           {!isLoading ? (
             posts.length > 0 ? (
               posts.map((post) => (
@@ -88,11 +89,11 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
                       </div>
                     )}
                     <div className="card-body">
-                      <h5 className="card-title">{post.title}</h5>
+                      <h5 className="card-title post-title">{post.title}</h5>
                       <h5 className="text-success">
                         ${post.price.toLocaleString()}
                       </h5>
-                      <p className="card-text">
+                      <p className="card-text post-text">
                         {post.description.length > 100
                           ? post.description.substring(0, 100) + "..."
                           : post.description}

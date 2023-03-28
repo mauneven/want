@@ -8,3 +8,28 @@
       background: #4FC68D;
       color:white;
     }
+
+
+.post-title { 
+  display: block; /* Fallback for non-webkit */
+  display: -webkit-box;
+  height: 56px; /* Fallback for non-webkit */
+  margin: 0 auto;
+  line-height: 1.4;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.post-text { 
+  display: block; /* Fallback for non-webkit */
+  display: -webkit-box;
+  height: 112px; /* Fallback for non-webkit */
+  margin: 0 auto;
+  line-height: 1.4;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
