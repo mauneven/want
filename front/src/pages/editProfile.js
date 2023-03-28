@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 
 const EditProfile = () => {
   const router = useRouter();
