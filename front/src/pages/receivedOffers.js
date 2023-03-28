@@ -1,13 +1,31 @@
 import { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
+import { useRouter } from 'next/router';
 
 export default function ReceivedOffers() {
   const [offers, setOffers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedOfferId, setSelectedOfferId] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const router = useRouter();
+
+
+useEffect(() => {
+    fetch('http://localhost:4000/api/currentUser', { credentials: 'include' })
+        .then((response) => response.json())
+        .then((data) => setCurrentUser(data))
+        .catch((error) => console.error('Error fetching current user:', error));
+}, []);
+const checkAuthentication = () => {
+  if (!currentUser) {
+      router.push('/login'); // Redirige al usuario a la página de inicio de sesión si no está autenticado
+  }
+};
+
 
   useEffect(() => {
     const fetchReceivedOffers = async () => {
+      checkAuthentication(); // Asegura que el usuario esté autenticado antes de cargar la lista de ofertas
       const response = await fetch('http://localhost:4000/api/received', {
         credentials: 'include',
       });
@@ -19,7 +37,7 @@ export default function ReceivedOffers() {
     };
 
     fetchReceivedOffers();
-  }, []);
+  }, [[currentUser]]);
 
   const handleDeleteOffer = async () => {
     try {

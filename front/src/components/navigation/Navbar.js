@@ -143,7 +143,7 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link className='btn-post' href="/createPost">Want something?</Nav.Link>
+            <Nav.Link className='btn-post' href="/createPost">I want</Nav.Link>
             <LocationModal
               show={showLocationModal}
               onHide={() => setShowLocationModal(false)}
@@ -175,7 +175,7 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
             ) : (
               <li className="nav-item">
                 <Link href="/login">
-                  <span className="nav-link">Iniciar sesión</span>
+                  <span className="nav-link pt-30px">Login</span>
                 </Link>
               </li>
             )}

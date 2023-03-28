@@ -2,28 +2,43 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Modal, Button } from 'react-bootstrap';
-
+import { useRouter } from 'next/router';
 
 export default function MyPosts() {
   const [posts, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const router = useRouter();
 
 
-  useEffect(() => {
-    const fetchMyPosts = async () => {
+useEffect(() => {
+    fetch('http://localhost:4000/api/currentUser', { credentials: 'include' })
+        .then((response) => response.json())
+        .then((data) => setCurrentUser(data))
+        .catch((error) => console.error('Error fetching current user:', error));
+}, []);
+const checkAuthentication = () => {
+  if (!currentUser) {
+      router.push('/login'); // Redirige al usuario a la página de inicio de sesión si no está autenticado
+  }
+};
+
+useEffect(() => {
+  const fetchMyPosts = async () => {
+      checkAuthentication(); // Asegura que el usuario esté autenticado antes de cargar la lista de posts
       const response = await fetch('http://localhost:4000/api/my-posts', {
-        credentials: 'include',
+          credentials: 'include',
       });
 
       if (response.ok) {
-        const postsData = await response.json();
-        setPosts(postsData);
+          const postsData = await response.json();
+          setPosts(postsData);
       }
-    };
+  };
 
-    fetchMyPosts();
-  }, []);
+  fetchMyPosts();
+}, [currentUser]); // Agrega currentUser como dependencia
 
   const handleDeletePost = async () => {
     try {

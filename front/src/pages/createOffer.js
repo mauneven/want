@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useState, useEffect,  } from 'react';
+import { useState, useEffect, } from 'react';
 
 const CreateOffer = () => {
   const router = useRouter();
@@ -11,9 +11,25 @@ const CreateOffer = () => {
   const [price, setPrice] = useState('');
   const [photo, setPhoto] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    fetch('http://localhost:4000/api/currentUser', { credentials: 'include' })
+      .then((response) => response.json())
+      .then((data) => setCurrentUser(data))
+      .catch((error) => console.error('Error fetching current user:', error));
+  }, []);
+
+  const checkAuthentication = () => {
+    if (!currentUser) {
+      router.push('/login'); // Redirige al usuario a la página de inicio de sesión si no está autenticado
+    }
+  };
+
 
   useEffect(() => {
     const fetchPost = async () => {
+      checkAuthentication(); // Asegura que el usuario esté autenticado antes de cargar el post
       // Llama a la API para obtener el post por ID.
       const response = await fetch(`http://localhost:4000/api/posts/${postId}`);
       const data = await response.json();
@@ -23,7 +39,7 @@ const CreateOffer = () => {
     if (postId) {
       fetchPost();
     }
-  }, [postId]);
+  }, [postId, currentUser]); // Agrega currentUser como dependencia
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,17 +58,16 @@ const CreateOffer = () => {
       const response = await fetch('http://localhost:4000/api/create', {
         method: 'POST',
         headers: {
-            Accept: 'application/json'
-          },
-          credentials: 'include',
-          body: formData
-      });      
+          Accept: 'application/json'
+        },
+        credentials: 'include',
+        body: formData
+      });
 
       if (response.ok) {
-        alert('Oferta creada exitosamente');
         router.push(`/post/${postId}`);
       } else {
-        alert('Ocurrió un error al crear la oferta');
+        alert('Theres an error creating the offer');
       }
     } catch (error) {
       console.error(error);
@@ -61,17 +76,17 @@ const CreateOffer = () => {
     }
   };
 
-if (!post) {
-    return <p className="container mt-5">Cargando...</p>;
+  if (!post) {
+    return <p className="container mt-5">Loading...</p>;
   }
-  
+
   return (
     <div className="container">
       <div className="row row-cols-1 row-cols-md-4 g-4">
         <div className="col-md-6">
           <form onSubmit={handleSubmit} className="container">
             <div className="mb-3">
-              <label htmlFor="title" className="form-label">Título de la oferta</label>
+              <label htmlFor="title" className="form-label">Title of your offer</label>
               <input
                 type="text"
                 className="form-control"
@@ -82,7 +97,7 @@ if (!post) {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="description" className="form-label">Descripción de la oferta</label>
+              <label htmlFor="description" className="form-label">Describe your offer</label>
               <textarea
                 className="form-control"
                 id="description"
@@ -92,7 +107,7 @@ if (!post) {
               ></textarea>
             </div>
             <div className="mb-3">
-              <label htmlFor="price" className="form-label">Precio ofrecido</label>
+              <label htmlFor="price" className="form-label">Offer a price</label>
               <input
                 type="number"
                 className="form-control"
@@ -102,11 +117,11 @@ if (!post) {
                 required
               />
               {price ? (
-                <small className="form-text text-muted">Precio: {Number(price).toLocaleString()}</small>
+                <small className="form-text text-muted">Price: {Number(price).toLocaleString()}</small>
               ) : null}
             </div>
             <div className="mb-3">
-              <label htmlFor="photo" className="form-label">Foto opcional</label>
+              <label htmlFor="photo" className="form-label">Share a photo of your offer</label>
               <input
                 type="file"
                 className="form-control"
@@ -139,7 +154,7 @@ if (!post) {
       </div>
     </div>
   );
-  
+
 };
 
 export default CreateOffer;
