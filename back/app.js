@@ -8,7 +8,6 @@ const reportRoutes = require('./routes/reportRoutes');
 const User = require('./models/User');
 const offerRoutes = require('./routes/offerRoutes');
 const docxRoutes = require('./routes/docxRoutes.js');
-const currentUserRouter = require('./routes/currentUser');
 
 const app = express();
 
@@ -54,7 +53,6 @@ app.use('/api', postRoutes);
 app.use('/api', reportRoutes);
 app.use('/api', offerRoutes);
 app.use("/api", docxRoutes);
-app.use('/api', currentUserRouter);
 
 app.use((err, req, res, next) => {
   console.error(err);

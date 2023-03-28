@@ -17,32 +17,16 @@ const CreatePost = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [currentUser, setCurrentUser] = useState(null);
+
   const [previewTitle, setPreviewTitle] = useState('');
   const [previewDescription, setPreviewDescription] = useState('');
   const [previewLocation, setPreviewLocation] = useState('');
   const [previewCategory, setPreviewCategory] = useState('');
   const [previewPrice, setPreviewPrice] = useState('');
-  const checkAuthentication = () => {
-    if (!currentUser) {
-        router.push('/login'); // Redirige al usuario a la página de inicio de sesión si no está autenticado
-    }
-  };
+
   const handleFileChange = (e) => {
     setPhoto(e.target.files[0]);
   };
-
-  useEffect(() => {
-    fetch('http://localhost:4000/api/currentUser', { credentials: 'include' })
-        .then((response) => response.json())
-        .then((data) => setCurrentUser(data))
-        .catch((error) => console.error('Error fetching current user:', error));
-}, []);
-
-  useEffect(() => {
-    checkAuthentication();
-}, [currentUser]); // Agrega currentUser como dependencia
-
 
   useEffect(() => {
     setPreviewTitle(title);

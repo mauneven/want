@@ -18,26 +18,9 @@ const EditPost = () => {
     const [subCategory, setSubCategory] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [currentUser, setCurrentUser] = useState(null);
-    const [postLoaded, setPostLoaded] = useState(false);
-
-    const checkAuthentication = () => {
-        if (!currentUser) {
-            router.push('/'); // Redirige al usuario a la página de inicio de sesión si no está autenticado
-        }
-    };    
-
-    useEffect(() => {
-        fetch('http://localhost:4000/api/currentUser', { credentials: 'include' })
-            .then((response) => response.json())
-            .then((data) => setCurrentUser(data))
-            .catch((error) => console.error('Error fetching current user:', error));
-    }, []);
 
     useEffect(() => {
         if (id) {
-            checkAuthentication(); // Asegura que el usuario esté autenticado antes de cargar el post
-    
             fetch(`http://localhost:4000/api/posts/${id}`)
                 .then((response) => response.json())
                 .then((data) => {
@@ -48,26 +31,17 @@ const EditPost = () => {
                     setState(data.state);
                     setCity(data.city);
                     setMainCategory(data.mainCategory);
-                    setSubCategory(data.subCategory);
-                })
-                .then(() => setPostLoaded(true)) // Indica que el post ha sido cargado
-                .catch((error) => console.error('Error fetching post:', error));
+                    setSubCategory(data.subCategory)
+                });
         }
-    }, [id, currentUser]); // Agrega currentUser como dependencia
+    }, [id]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (postLoaded && currentUser && post) {
-            // Solo realiza la comprobación si el post y el usuario actual han sido cargados
-            if (post.createdBy._id !== currentUser._id && currentUser.role !== 'admin') {
-                setLoading(false);
-                setError('You are not authorized to edit this post');
-                return;
-            }
-        }
-
         setLoading(true);
+
+        console.log('Submitting post with values:', { title, description, country, state, city, mainCategory, subCategory });
+
         try {
             const response = await fetch(`http://localhost:4000/api/posts/${id}`, {
                 method: 'PUT',

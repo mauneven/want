@@ -58,47 +58,47 @@ export default function Login() {
   }, []);
 
   return (
-    <div className="container p-3">
-      <h1 className="text-center">{isLogin ? 'Login' : 'Sign Up'}</h1>
+    <div className="container">
+      <h1 className="text-center">{isLogin ? 'Iniciar sesión' : 'Registrarse'}</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor="email" className="form-label">Mail</label>
+          <label htmlFor="email" className="form-label">Correo electrónico:</label>
           <input type="email" className="form-control" id="email" name="email" required />
         </div>
         <div className="mb-3">
-          <label htmlFor="password" className="form-label">Password</label>
+          <label htmlFor="password" className="form-label">Contraseña:</label>
           <input type="password" className="form-control" id="password" name="password" required />
         </div>
         {!isLogin && (
           <>
             <div className="mb-3">
-              <label htmlFor="firstName" className="form-label">Names</label>
+              <label htmlFor="firstName" className="form-label">Nombre:</label>
               <input type="text" className="form-control" id="firstName" name="firstName" required />
             </div>
             <div className="mb-3">
-              <label htmlFor="lastName" className="form-label">Last Names</label>
+              <label htmlFor="lastName" className="form-label">Apellido:</label>
               <input type="text" className="form-control" id="lastName" name="lastName" required />
             </div>
             <div className="mb-3">
-              <label htmlFor="phone" className="form-label">Phone Number</label>
+              <label htmlFor="phone" className="form-label">Número de teléfono:</label>
               <input type="tel" className="form-control" id="phone" name="phone" required />
             </div>
             <div className="mb-3">
-              <label htmlFor="birthdate" className="form-label">Birthdate</label>
+              <label htmlFor="birthdate" className="form-label">Fecha de nacimiento:</label>
               <input type="date" className="form-control" id="birthdate" name="birthdate" required />
             </div>
           </>
         )}
         <div className="mb-3">
-          <button type="submit" className="btn btn-primary">{isLogin ? 'Login' : 'Sign Up'}</button>
+          <button type="submit" className="btn btn-primary">{isLogin ? 'Iniciar sesión' : 'Registrarse'}</button>
         </div>
       </form>
       <div>
-        {isLogin ? 'Want to create an account?' : 'Want to login into your account?'}
-        <button onClick={toggleForm} className="btn btn-outline btn-link">{isLogin ? 'Sign Up' : 'Login'}</button>
+        {isLogin ? '¿No tienes una cuenta?' : '¿Ya tienes una cuenta?'}
+        <button onClick={toggleForm} className="btn btn-link">{isLogin ? 'Regístrate' : 'Inicia sesión'}</button>
       </div>
       <Link href="/recovery">
-        <span className="nav-link">I forgot my password</span>
+        <span className="nav-link">Forgot my password</span>
       </Link>
     </div>
   );

@@ -5,6 +5,7 @@ const uploadDirectory = path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadDirectory)) {
   fs.mkdirSync(uploadDirectory);
 }
+
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const multer = require('multer');
