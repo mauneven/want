@@ -38,6 +38,12 @@ const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSele
     onLocationSelected && onLocationSelected(selectedCountry?.name, "", "");
   };
 
+  const resetCity = () => {
+    setSelectedCity("");
+    onCityChange && onCityChange(null);
+    handleLocationSelected();
+  };
+
   const handleCountryChange = (event) => {
     const countryId = parseInt(event.target.value);
     const foundCountry = modifiedCountries.find((country) => country.id === countryId);
@@ -52,10 +58,9 @@ const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSele
     const stateId = event.target.value;
     const foundState = selectedCountry.states.find((state) => state.id === stateId);
     setSelectedState(foundState);
-    setSelectedCity("");
     console.log("Selected State:", foundState);
     onStateChange && onStateChange(foundState?.name !== 'Seleccione un estado' ? foundState?.name : null);
-    handleLocationSelected(); // Agregar esta línea
+    resetCity(); // Agregar esta línea
   };
   
   const handleCityChange = (event) => {

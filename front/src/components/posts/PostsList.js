@@ -5,6 +5,9 @@ import ContentLoader from "react-content-loader";
 const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(12);
+  const [totalPosts, setTotalPosts] = useState(0);
 
   const fetchPostsByLocation = async () => {
     const response = await fetch("http://localhost:4000/api/posts");
@@ -58,8 +61,19 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
     setIsLoading(true);
     let postsData = await fetchPostsByLocation();
     postsData = fetchPostsBySearch(postsData);
-    setPosts(postsData);
+  
+    // Establece el total de posts antes del paginado
+    setTotalPosts(postsData.length);
+  
+    const start = (currentPage - 1) * pageSize;
+    const end = start + pageSize;
+    setPosts(postsData.slice(start, end));
+  
     setIsLoading(false);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   useEffect(() => {
@@ -68,7 +82,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
     };
 
     fetchAndSetPosts();
-  }, [locationFilter, userIdFilter, searchTerm]);
+  }, [locationFilter, userIdFilter, searchTerm, currentPage, pageSize]);
 
   const Placeholder = () => (
     <div className="col-md-3">
@@ -82,9 +96,34 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
     </div>
   );
 
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    // Utiliza totalPosts en lugar de posts.length para calcular la cantidad de páginas
+    for (let i = 1; i <= Math.ceil(totalPosts / pageSize); i++) {
+      pageNumbers.push(i);
+    }
+
+    return (
+      <nav aria-label="Page navigation example pt-2 pb-2">
+        <ul className="pagination justify-content-center">
+          {pageNumbers.map((number) => (
+            <li key={number} className="page-item">
+              <button
+                onClick={() => handlePageChange(number)}
+                className={`page-link ${number === currentPage ? "active" : ""}`}
+              >
+                {number}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    );
+  };
+
   return (
     <div className="container">
-      <div className="row row-cols-1 row-cols-md-4 g-4">
+      <div className="row row-cols-1 row-cols-md-4 g-4 pb-5">
         {!isLoading
           ? posts.length > 0
             ? posts.map((post) => (
@@ -134,13 +173,22 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
               <Placeholder />
               <Placeholder />
               <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
             </>
           )
         }
       </div>
+      {posts.length > 0 && renderPageNumbers()}
     </div>
   );
-  
 };
 
 export default PostsList;
+
