@@ -25,7 +25,12 @@ export default function PostCategory({ onMainCategoryChange, onSubcategoryChange
     if (onMainCategoryChange) {
       onMainCategoryChange(category ? category.name : '');
     }
-  };  
+  
+    // Borra la subcategoría seleccionada en el componente padre cuando se cambia la categoría principal
+    if (onSubcategoryChange) {
+      onSubcategoryChange('');
+    }
+  };   
 
   const handleSubcategoryChange = (event) => {
     const subcategory = event.target.value;
@@ -36,7 +41,7 @@ export default function PostCategory({ onMainCategoryChange, onSubcategoryChange
     if (onSubcategoryChange) {
       onSubcategoryChange(subcategory);
     }
-  };  
+  };   
 
   useEffect(() => {
     // Utiliza `externalSelectedSubcategory` en lugar de `selectedSubcategory`

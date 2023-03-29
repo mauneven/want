@@ -140,10 +140,10 @@ const CreatePost = () => {
               />
             </div>
             <div className="mb-3">
-              <PostCategory
-                onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
-                onSubCategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)}
-              />
+            <PostCategory
+  onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
+  onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)} // Cambia "onSubCategoryChange" a "onSubcategoryChange"
+/>
             </div>
             <div className="mb-3">
               <label htmlFor="photo" className="form-label">Upload a photo about what you want</label>
