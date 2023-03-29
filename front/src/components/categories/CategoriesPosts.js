@@ -35,6 +35,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected })
           <PostCategory
             onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
             onSubcategoryChange={(selectedSubcategory) => setSubcategory(selectedSubcategory)}
+            selectedSubcategory={subCategory} // Agrega esta línea
           />
         </Modal.Body>
         <Modal.Footer>

@@ -24,17 +24,18 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange, o
     console.log("Selected Subcategory: ", subCategory);
     const selectedCategory = {
       mainCategory: mainCategory,
-      subCategory: subCategory,
+      subCategory: subCategory !== '' ? subCategory : null,
     };
     onCategoryFilterChange(selectedCategory);
     handleCloseCategories();
-  };
-  
-  
-  
+  };  
+
   const handleCategoryCleared = () => {
-    setCategoryFilter(null);
-    setSubCategoryFilter(null); // agrega esta línea para limpiar la subcategoría    
+    const clearedCategory = {
+      mainCategory: '',
+      subCategory: '',
+    };
+    onCategoryFilterChange(clearedCategory);
   };  
 
   const handleLocationSelected = (country, state, city) => {
