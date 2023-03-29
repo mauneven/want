@@ -1,81 +1,71 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const categories = [
-  {
-    category: 'Tecnología',
-    subcategories: ['Hardware', 'Software', 'Electrónica'],
-  },
-  {
-    category: 'Muebles',
-    subcategories: ['Hogar', 'Oficina'],
-  },
-  {
-    category: 'Electrodomésticos',
-    subcategories: ['Cocina', 'Lavandería'],
-  },
-  {
-    category: 'Servicios',
-    subcategories: ['Limpieza', 'Jardinería', 'Mantenimiento'],
-  },
+  { id: 1, name: 'Tecnología', subcategories: ['Tablets', 'Computador', 'Celulares'] },
+  { id: 2, name: 'Ropa', subcategories: ['Camisa', 'Camiseta', 'Pantalones', 'Zapatos'] },
+  { id: 3, name: 'Hogar', subcategories: ['Muebles', 'Electrodomésticos', 'Decoración'] },
 ];
 
-const Categories = ({ onCategoryChange, onSubcategoryChange }) => {
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedSubcategory, setSelectedSubcategory] = useState('');
-
-  useEffect(() => {
-    handleSubcategoryChange();
-  }, [selectedSubcategory]);
+const PostCategory = ({ onMainCategoryChange, onSubCategoryChange }) => {
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
 
   const handleCategoryChange = (event) => {
-    const category = event.target.value;
+    const categoryId = parseInt(event.target.value);
+    const category = categories.find((cat) => cat.id === categoryId);
     setSelectedCategory(category);
-    setSelectedSubcategory('');
-    onCategoryChange && onCategoryChange(category);
+    setSelectedSubcategory(null);
+    console.log("Maincategory:", category);
+
+    if (onMainCategoryChange) {
+      onMainCategoryChange(category ? category.name : '');
+    }
   };
 
-  const handleSubcategoryChange = () => {
-    onSubcategoryChange && onSubcategoryChange(selectedSubcategory);
+  const handleSubcategoryChange = (event) => {
+    const subcategory = event.target.value;
+    setSelectedSubcategory(subcategory);
+    console.log("Subcategory:", subcategory);
+
+    if (onSubCategoryChange) {
+      onSubCategoryChange(subcategory);
+    }
   };
+
+  const categoryOptions = categories.map((category) => (
+    <option key={category.id} value={category.id}>
+      {category.name}
+    </option>
+  ));
+
+  const subcategoryOptions = selectedCategory ? (
+    selectedCategory.subcategories.map((subcategory) => (
+      <option key={subcategory} value={subcategory}>
+        {subcategory}
+      </option>
+    ))
+  ) : (
+    <option value="">Choose the subcategory</option>
+  );
 
   return (
     <div className="d-flex flex-wrap align-items-center">
-      <label htmlFor="category-select" className="me-2 mb-0">
-        Category:
-      </label>
-      <select id="category-select" className="form-select me-4" value={selectedCategory} onChange={handleCategoryChange}>
-        <option value="">Choose a category</option>
-        {categories.map((category, index) => (
-          <option key={index} value={category.category}>
-            {category.category}
-          </option>
-        ))}
+      <label htmlFor="category-select" className="me-2 mb-0">Category of what you Want:</label>
+      <select id="category-select" className="form-select me-4" value={selectedCategory?.id} onChange={handleCategoryChange}>
+        <option value="">Choose the category</option>
+        {categoryOptions}
       </select>
 
       {selectedCategory && (
-        <React.Fragment>
-          <label htmlFor="subcategory-select" className="me-2 mb-0">
-            Subcategory:
-          </label>
-          <select
-            id="subcategory-select"
-            className="form-select"
-            value={selectedSubcategory}
-            onChange={(e) => setSelectedSubcategory(e.target.value)}
-          >
-            <option value="">Choose a subcategory</option>
-            {categories
-              .find((category) => category.category === selectedCategory)
-              .subcategories.map((subcategory, index) => (
-                <option key={index} value={subcategory}>
-                  {subcategory}
-                </option>
-              ))}
+        <>
+          <label htmlFor="subcategory-select" className="me-2 mb-0">Sub category of what you Want:</label>
+          <select id="subcategory-select" className="form-select" value={selectedSubcategory} onChange={handleSubcategoryChange}>
+            {subcategoryOptions}
           </select>
-        </React.Fragment>
+        </>
       )}
     </div>
   );
 };
 
-export default Categories;
+export default PostCategory;

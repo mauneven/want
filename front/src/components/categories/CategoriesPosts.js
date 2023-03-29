@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import Categories from './Categories';
+import PostCategory from './Categories';
 
-const CategoriesModal = ({ onHide, onCategorySelected, onSubcategorySelected }) => {
+export default function CategoriesModal({ isShown, onHide, onCategorySelected }) {
+
   const [show, setShow] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedSubcategory, setSelectedSubcategory] = useState('');
+  const [mainCategory, setMainCategory] = useState('');
+  const [subCategory, setSubcategory] = useState('');
 
   const handleShow = () => setShow(true);
   const handleClose = () => {
@@ -14,27 +15,26 @@ const CategoriesModal = ({ onHide, onCategorySelected, onSubcategorySelected }) 
   };
 
   const handleAccept = () => {
-    if (onCategorySelected && onSubcategorySelected) {
-      onCategorySelected(selectedCategory);
-      onSubcategorySelected(selectedSubcategory);
+    if (onCategorySelected) {
+      onCategorySelected(mainCategory, subCategory);
     }
     handleClose();
-  };
+  };   
 
   return (
     <>
       <Button variant="" onClick={handleShow}>
-        <i className="bi bi-tags navbar-icon"></i>
+        <i className="bi bi-list navbar-icon"></i>
       </Button>
-      
-      <Modal show={show} onHide={handleClose} centered>
+
+      <Modal show={show || isShown} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>Choose a category</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Categories
-            onCategoryChange={(selectedCategory) => setSelectedCategory(selectedCategory)}
-            onSubcategoryChange={(selectedSubcategory) => setSelectedSubcategory(selectedSubcategory)}
+          <PostCategory
+            onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
+            onSubcategoryChange={(selectedSubcategory) => setSubcategory(selectedSubcategory)}
           />
         </Modal.Body>
         <Modal.Footer>
@@ -45,5 +45,3 @@ const CategoriesModal = ({ onHide, onCategorySelected, onSubcategorySelected }) 
     </>
   );
 };
-
-export default CategoriesModal;

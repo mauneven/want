@@ -1,20 +1,41 @@
 import { useState, useEffect } from 'react';
-import { Container, Navbar, Nav, NavDropdown, Form, FormControl, Button, NavItem } from 'react-bootstrap';
+import { Container, Navbar, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
 import LocationModal from '../locations/LocationPosts';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Notifications from '../notifications/notifications';
+import CategoriesModal from '../categories/CategoriesPosts';
 
-export default function MegaMenu({ onLocationFilterChange, onSearchTermChange }) {
+export default function MegaMenu({ onLocationFilterChange, onSearchTermChange, onCategoryFilterChange }) {
   const [user, setUser] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
   const [locationFilter, setLocationFilter] = useState(null);
   const [filterVersion, setFilterVersion] = useState(0);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showCategoriesModal, setShowCategoriesModal] = useState(false);
 
   const router = useRouter();
+
+  const handleCloseCategories = () => setShowCategoriesModal(false);
+  
+  const handleCategorySelected = (mainCategory, subCategory) => {
+    console.log("Selected Category: ", mainCategory);
+    console.log("Selected Subcategory: ", subCategory);
+    const selectedCategory = {
+      mainCategory: mainCategory,
+      subCategory: subCategory,
+    };
+    onCategoryFilterChange(selectedCategory);
+    handleCloseCategories();
+  };
+  
+  
+  
+  const handleCategoryCleared = () => {
+    setCategoryFilter(null);
+    setSubCategoryFilter(null); // agrega esta línea para limpiar la subcategoría    
+  };  
 
   const handleLocationSelected = (country, state, city) => {
     let newLocationFilter = {
@@ -152,20 +173,12 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
             <Nav.Link className='nav-item'>
             {user ? (<Notifications />) : ("")}
             </Nav.Link>
-            <NavDropdown className='nav-link' title="Categories" id="categories-dropdown">
-              <NavDropdown title="Tecnología" id="technology-dropdown">
-                <NavDropdown.Item href="#tablets">Tablets</NavDropdown.Item>
-                <NavDropdown.Item href="#cellphones">Celulares</NavDropdown.Item>
-                <NavDropdown.Item href="#computers">Computadores</NavDropdown.Item>
-              </NavDropdown>
-              <NavDropdown title="Hogar" id="home-dropdown">
-                <NavDropdown.Item href="#furniture">Muebles</NavDropdown.Item>
-                <NavDropdown.Item href="#tables">Mesas</NavDropdown.Item>
-              </NavDropdown>
-              <NavDropdown title="Deporte" id="sports-dropdown">
-                <NavDropdown.Item href="#shoes">Zapatos</NavDropdown.Item>
-              </NavDropdown>
-            </NavDropdown>
+            <CategoriesModal
+  isShown={showCategoriesModal}
+  onHide={() => setShowCategoriesModal(false)}
+  onCategorySelected={handleCategorySelected}
+  onCategoryCleared={handleCategoryCleared}
+/>
             {user ? (
               <NavDropdown className='nav-link' title={<><img src={user.photo ? `http://localhost:4000/${user.photo}` : 'icons/default-profile-picture.svg'} alt="Profile" style={{ borderRadius: '50%', width: '30px', height: '30px' }} /> {`${user.firstName}`}</>} id="user-dropdown">
                 <NavDropdown.Item href="/myPosts">My posts</NavDropdown.Item>
