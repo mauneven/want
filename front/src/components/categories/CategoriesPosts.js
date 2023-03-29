@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import PostCategory from './Categories';
 
-export default function CategoriesModal({ isShown, onHide, onCategorySelected }) {
+export default function CategoriesModal({ isShown, onHide, onCategorySelected, onMainCategoryChange, onSubcategoryChange }) {
 
   const [show, setShow] = useState(false);
   const [mainCategory, setMainCategory] = useState('');
@@ -18,8 +18,21 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected })
     if (onCategorySelected) {
       onCategorySelected(mainCategory, subCategory);
     }
+  
+    // Borra la categoría principal y la subcategoría al hacer clic en Aceptar
+    setMainCategory('');
+    setSubcategory('');
+  
+    // Llama a onMainCategoryChange y onSubcategoryChange si están presentes
+    if (onMainCategoryChange) {
+      onMainCategoryChange('');
+    }
+    if (onSubcategoryChange) {
+      onSubcategoryChange('');
+    }
+  
     handleClose();
-  };   
+  };    
 
   return (
     <>
