@@ -123,12 +123,15 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
 
   return (
     <div className="container">
-      <div className="row row-cols-1 row-cols-md-4 g-4 pb-5">
+      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 pb-5">
         {!isLoading
           ? posts.length > 0
             ? posts.map((post) => (
                 <div key={post._id}>
-                  <div className="card h-100">
+                  <div className="card post rounded-5">
+                    <button class="rounded-circle btn-report" title="Report">
+                    <i class="bi bi-flag"></i>
+                    </button>
                     {post.photo && (
                       <div style={{ height: "200px", overflow: "hidden" }}>
                         <img
@@ -153,12 +156,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
                         <button className="offer-btn btn float-end rounded-pill">Ver detalles</button>
                       </Link>
                     </div>
-                    <div className="card-footer">
-                      <small className="text-muted">
-                        Created by {post.createdBy.firstName} {post.createdBy.lastName} on{" "}
-                        {new Date(post.createdAt).toLocaleDateString()}
-                      </small>
-                    </div>
+                    
                   </div>
                 </div>
               ))

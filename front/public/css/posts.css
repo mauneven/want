@@ -1,14 +1,23 @@
-    .offer-btn{
-        border: 2px solid black;
-        border-radius: 50px;
-    }
+.offer-btn{
+  border: 2px solid black;
+  border-radius: 50px;
+}
   
-    .offer-btn:hover{
-      border: solid #4FC68D 1px;
-      background: #4FC68D;
-      color:white;
-    }
+.offer-btn:hover{
+  border: solid #4FC68D 1px;
+  background: #4FC68D;
+  color:white;
+}
 
+.post{
+  cursor: pointer;
+  overflow: hidden;
+  border: solid 1px var(--bs-gray-300);
+}
+
+.post:hover{
+  box-shadow: 0 5px 10px lightgray;
+}
 
 .post-title { 
   display: block; /* Fallback for non-webkit */
@@ -25,11 +34,36 @@
 .post-text { 
   display: block; /* Fallback for non-webkit */
   display: -webkit-box;
-  height: 89.6px; /* Fallback for non-webkit */
+  height: 0px; /* Fallback for non-webkit */
   margin: 0 auto;
   line-height: 1.4;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: 0.3s;
+}
+
+.post:hover .post-text{
+  height: 89.6px;
+}
+
+.btn-report{
+  background-color: #00000067;
+  color: #fff;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  backdrop-filter: blur(2px);
+  border: none;
+  transition: 0.1s;
+  width: 28px;
+  height: 28px;
+  line-height: 1.7;
+
+}
+
+.btn-report:hover{
+  background-color: #dc3546d3;
+  box-shadow: 0 0 10px red;
 }
