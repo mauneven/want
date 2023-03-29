@@ -22,7 +22,7 @@ const LocationModal = ({ onHide, onLocationSelected }) => {
 
   return (
     <>
-      <Button variant="" onClick={handleShow}>
+      <Button variant="" onClick={handleShow} className=' mundi-btn'>
         <i className="bi bi-globe2 navbar-icon"></i>
       </Button>
       
