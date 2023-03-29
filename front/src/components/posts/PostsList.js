@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import ContentLoader from "react-content-loader";
 
-
-const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
+const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter }) => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -26,6 +25,39 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
 
     return postsData;
   };
+
+  const fetchPostsByCategory = (postsData) => {
+    console.log("Filtering by category:", categoryFilter);
+  
+    if (categoryFilter && categoryFilter.mainCategory) {
+      postsData = postsData.filter((post) => {
+        const mainCategoryMatch =
+          post.mainCategory === categoryFilter.mainCategory;
+  
+        const subCategoryMatch =
+          categoryFilter.subCategory
+            ? post.subCategory === categoryFilter.subCategory
+            : true;
+  
+        const isMatch = mainCategoryMatch && subCategoryMatch;
+  
+        if (!isMatch) {
+          console.log(
+            "Filtered out post:",
+            post.title,
+            "mainCategory:",
+            post.mainCategory,
+            "subCategory:",
+            post.subCategory
+          );
+        }
+  
+        return isMatch;
+      });
+    }
+  
+    return postsData;
+  };  
 
   const fetchPostsBySearch = (postsData) => {
     if (searchTerm) {
@@ -61,6 +93,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
   const fetchPosts = async () => {
     setIsLoading(true);
     let postsData = await fetchPostsByLocation();
+    postsData = fetchPostsByCategory(postsData); // Agrega esta línea
     postsData = fetchPostsBySearch(postsData);
   
     // Establece el total de posts antes del paginado
@@ -71,19 +104,15 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm }) => {
     setPosts(postsData.slice(start, end));
   
     setIsLoading(false);
-  };
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
+  };  
 
   useEffect(() => {
     const fetchAndSetPosts = async () => {
       await fetchPosts();
     };
-
+  
     fetchAndSetPosts();
-  }, [locationFilter, userIdFilter, searchTerm, currentPage, pageSize]);
+  }, [locationFilter, userIdFilter, searchTerm, categoryFilter, currentPage, pageSize]);
 
   const Placeholder = () => (
     <div className="col-md-3">

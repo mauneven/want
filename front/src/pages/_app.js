@@ -9,6 +9,7 @@ import Footer from '@/components/footer/footer';
 export default function MyApp({ Component, pageProps }) {
   const [locationFilter, setLocationFilter] = useState(null);
   const [searchTerm, setSearchTerm] = useState(''); // Agrega el estado searchTerm
+  const [categoryFilter, setCategoryFilter] = useState(null);
 
   const handleLocationFilterChange = (filter) => {
     setLocationFilter(filter);
@@ -17,6 +18,10 @@ export default function MyApp({ Component, pageProps }) {
   // Agrega una función para manejar el cambio en searchTerm desde el componente Megamenu
   const handleSearchTermChange = (newSearchTerm) => {
     setSearchTerm(newSearchTerm);
+  };
+
+  const handleCategoryFilterChange = (filter) => {
+    setCategoryFilter(filter);
   };
 
   useEffect(() => {
@@ -32,7 +37,8 @@ export default function MyApp({ Component, pageProps }) {
       <header className='sticky-top'>
         <MegaMenu
           onLocationFilterChange={handleLocationFilterChange}
-          onSearchTermChange={handleSearchTermChange} // Pasa la función handleSearchTermChange al componente Megamenu
+          onSearchTermChange={handleSearchTermChange}
+          onCategoryFilterChange={handleCategoryFilterChange}
         />
         <link rel="stylesheet" href="/css/navbar.css" />
         <link rel="stylesheet" href="/css/notifications.css" />
@@ -41,11 +47,13 @@ export default function MyApp({ Component, pageProps }) {
         <Component
           {...pageProps}
           locationFilter={locationFilter}
-          searchTerm={searchTerm} // Pasa el estado searchTerm al componente IndexPage
+          searchTerm={searchTerm}
+          categoryFilter={categoryFilter}
         />
+        <link rel="stylesheet" href="/css/posts.css" />
       </Container>
       <footer>
-        <Footer/>
+        <Footer />
         <link rel="stylesheet" href="/css/footer.css" />
       </footer>
     </div>

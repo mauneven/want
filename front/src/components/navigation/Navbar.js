@@ -1,20 +1,42 @@
 import { useState, useEffect } from 'react';
-import { Container, Navbar, Nav, NavDropdown, Form, FormControl, Button, NavItem } from 'react-bootstrap';
+import { Container, Navbar, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
 import LocationModal from '../locations/LocationPosts';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Notifications from '../notifications/notifications';
+import CategoriesModal from '../categories/CategoriesPosts';
 
-export default function MegaMenu({ onLocationFilterChange, onSearchTermChange }) {
+export default function MegaMenu({ onLocationFilterChange, onSearchTermChange, onCategoryFilterChange }) {
   const [user, setUser] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
   const [locationFilter, setLocationFilter] = useState(null);
   const [filterVersion, setFilterVersion] = useState(0);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showCategoriesModal, setShowCategoriesModal] = useState(false);
 
   const router = useRouter();
+
+  const handleCloseCategories = () => setShowCategoriesModal(false);
+  
+  const handleCategorySelected = (mainCategory, subCategory) => {
+    console.log("Selected Category: ", mainCategory);
+    console.log("Selected Subcategory: ", subCategory);
+    const selectedCategory = {
+      mainCategory: mainCategory,
+      subCategory: subCategory !== '' ? subCategory : null,
+    };
+    onCategoryFilterChange(selectedCategory);
+    handleCloseCategories();
+  };  
+
+  const handleCategoryCleared = () => {
+    const clearedCategory = {
+      mainCategory: '',
+      subCategory: '',
+    };
+    onCategoryFilterChange(clearedCategory);
+  };  
 
   const handleLocationSelected = (country, state, city) => {
     let newLocationFilter = {
@@ -129,6 +151,11 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
       <Container className='sticky-top'>
         <Navbar.Brand href="/"><Image className='want-logo' src="/icons/want-logo.svg" alt="Want" width={90} height={50} /></Navbar.Brand>
         <Form className="d-flex flex-grow-1 w-auto search-bar border rounded-5" onSubmit={handleSearchSubmit}>
+        <LocationModal
+              show={showLocationModal}
+              onHide={() => setShowLocationModal(false)}
+              onLocationSelected={handleLocationSelected}
+            />
           <FormControl
             type="search"
             placeholder=" The people want..."
@@ -144,28 +171,15 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
             <Nav.Link className='nav-item' href="/createPost"><Button className='btn-post rounded-pill p-2'>Want something?</Button></Nav.Link>
-            <LocationModal
-              show={showLocationModal}
-              onHide={() => setShowLocationModal(false)}
-              onLocationSelected={handleLocationSelected}
-            />
             <Nav.Link className='nav-item'>
             {user ? (<Notifications />) : ("")}
             </Nav.Link>
-            <NavDropdown className='nav-link' title="Categories" id="categories-dropdown">
-              <NavDropdown title="Tecnología" id="technology-dropdown">
-                <NavDropdown.Item href="#tablets">Tablets</NavDropdown.Item>
-                <NavDropdown.Item href="#cellphones">Celulares</NavDropdown.Item>
-                <NavDropdown.Item href="#computers">Computadores</NavDropdown.Item>
-              </NavDropdown>
-              <NavDropdown title="Hogar" id="home-dropdown">
-                <NavDropdown.Item href="#furniture">Muebles</NavDropdown.Item>
-                <NavDropdown.Item href="#tables">Mesas</NavDropdown.Item>
-              </NavDropdown>
-              <NavDropdown title="Deporte" id="sports-dropdown">
-                <NavDropdown.Item href="#shoes">Zapatos</NavDropdown.Item>
-              </NavDropdown>
-            </NavDropdown>
+            <CategoriesModal
+  isShown={showCategoriesModal}
+  onHide={() => setShowCategoriesModal(false)}
+  onCategorySelected={handleCategorySelected}
+  onCategoryCleared={handleCategoryCleared}
+/>
             {user ? (
               <NavDropdown className='nav-link' title={<><img src={user.photo ? `http://localhost:4000/${user.photo}` : 'icons/default-profile-picture.svg'} alt="Profile" style={{ borderRadius: '50%', width: '30px', height: '30px' }} /> {`${user.firstName}`}</>} id="user-dropdown">
                 <NavDropdown.Item href="/myPosts">My posts</NavDropdown.Item>
