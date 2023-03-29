@@ -7,6 +7,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, o
   const [show, setShow] = useState(false);
   const [mainCategory, setMainCategory] = useState('');
   const [subCategory, setSubcategory] = useState('');
+  const [displayCategory, setDisplayCategory] = useState('Todas las categorias'); // Nuevo estado para almacenar el texto a mostrar
 
   const handleShow = () => setShow(true);
   const handleClose = () => {
@@ -19,25 +20,34 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, o
       onCategorySelected(mainCategory, subCategory);
     }
   
-    // Borra la categoría principal y la subcategoría al hacer clic en Aceptar
-    setMainCategory('');
-    setSubcategory('');
-  
-    // Llama a onMainCategoryChange y onSubcategoryChange si están presentes
-    if (onMainCategoryChange) {
-      onMainCategoryChange('');
+    // Actualiza el texto a mostrar en base a la categoría y subcategoría seleccionadas
+    if (subCategory) {
+      setDisplayCategory(subCategory);
+    } else if (mainCategory) {
+      setDisplayCategory(mainCategory);
+    } else {
+      setDisplayCategory('Todas las categorias');
     }
-    if (onSubcategoryChange) {
-      onSubcategoryChange('');
+  
+    // Restablece los valores de mainCategory y subCategory si se muestra "Todas las categorias"
+    if (displayCategory === 'Todas las categorias') {
+      setMainCategory('');
+      setSubcategory('');
+      if (onMainCategoryChange) {
+        onMainCategoryChange('');
+      }
+      if (onSubcategoryChange) {
+        onSubcategoryChange('');
+      }
     }
   
     handleClose();
-  };    
+  };  
 
   return (
     <>
       <Button variant="" onClick={handleShow}>
-        <i className="bi bi-list navbar-icon"></i>
+        {displayCategory} {/* Muestra el texto almacenado en displayCategory */}
       </Button>
 
       <Modal show={show || isShown} onHide={handleClose} centered>
