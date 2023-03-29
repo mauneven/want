@@ -129,6 +129,11 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
       <Container className='sticky-top'>
         <Navbar.Brand href="/"><Image className='want-logo' src="/icons/want-logo.svg" alt="Want" width={90} height={50} /></Navbar.Brand>
         <Form className="d-flex flex-grow-1 w-auto search-bar border rounded-5" onSubmit={handleSearchSubmit}>
+        <LocationModal
+              show={showLocationModal}
+              onHide={() => setShowLocationModal(false)}
+              onLocationSelected={handleLocationSelected}
+            />
           <FormControl
             type="search"
             placeholder=" The people want..."
@@ -144,11 +149,6 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange })
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
             <Nav.Link className='nav-item' href="/createPost"><Button className='btn-post rounded-pill p-2'>Want something?</Button></Nav.Link>
-            <LocationModal
-              show={showLocationModal}
-              onHide={() => setShowLocationModal(false)}
-              onLocationSelected={handleLocationSelected}
-            />
             <Nav.Link className='nav-item'>
             {user ? (<Notifications />) : ("")}
             </Nav.Link>

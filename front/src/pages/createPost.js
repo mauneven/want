@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import PostCategory from '@/components/posts/postCategory';
+import PostCategory from '@/components/categories/Categories';
 import Location from '@/components/locations/Location';
 
 const CreatePost = () => {
