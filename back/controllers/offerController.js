@@ -3,6 +3,7 @@ const Post = require('../models/Post');
 const multer = require('multer');
 const path = require('path');
 const Notification = require('../models/notification');
+const fs = require('fs');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -109,6 +110,17 @@ exports.getNotifications = async (req, res, next) => {
       // Encuentra la notificación correspondiente al postId de la oferta que se está eliminando.
       const notification = await Notification.findOne({ postId: offer.post });
   
+      // Eliminar la imagen asociada con la oferta
+      if (offer.photo) {
+        fs.unlink(offer.photo, (err) => {
+          if (err) {
+            console.error('Error al eliminar la imagen:', err);
+          } else {
+            console.log('Imagen eliminada:', offer.photo);
+          }
+        });
+      }
+  
       await Offer.deleteOne({ _id: req.params.id });
   
       // Si se encuentra la notificación, elimínala.
@@ -120,7 +132,7 @@ exports.getNotifications = async (req, res, next) => {
     } catch (err) {
       next(err);
     }
-  };  
+  };   
 
 exports.createReport = async (req, res, next) => {
     try {

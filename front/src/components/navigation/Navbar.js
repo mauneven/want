@@ -41,8 +41,8 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange, o
   const handleLocationSelected = (country, state, city) => {
     let newLocationFilter = {
       country: country,
-      state: state && state !== 'Seleccione un estado' ? state : null,
-      city: city && city !== 'Seleccione una ciudad' ? city : null,
+      state: state && state !== 'Choose an state' ? state : null,
+      city: city && city !== 'Choose a city' ? city : null,
       timestamp: new Date().getTime(),
     };
 
@@ -170,28 +170,29 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange, o
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link className='nav-item' href="/createPost"><Button className='btn-post rounded-pill p-2'>Want something?</Button></Nav.Link>
-            <Nav.Link className='nav-item'>
-            {user ? (<Notifications />) : ("")}
-            </Nav.Link>
-            <CategoriesModal
+          <CategoriesModal
   isShown={showCategoriesModal}
   onHide={() => setShowCategoriesModal(false)}
   onCategorySelected={handleCategorySelected}
   onCategoryCleared={handleCategoryCleared}
 />
+            <Nav.Link className='nav-item' href="/createPost"><Button className='btn-post rounded-pill p-2'>you Want something?</Button></Nav.Link>
+            <Nav.Link className='nav-item'>
+            {user ? (<Notifications />) : ("")}
+            </Nav.Link>
             {user ? (
               <NavDropdown className='nav-link' title={<><img src={user.photo ? `http://localhost:4000/${user.photo}` : 'icons/default-profile-picture.svg'} alt="Profile" style={{ borderRadius: '50%', width: '30px', height: '30px' }} /> {`${user.firstName}`}</>} id="user-dropdown">
-                <NavDropdown.Item href="/myPosts">My posts</NavDropdown.Item>
-                <NavDropdown.Item href="/sentOffers">Sent Offers</NavDropdown.Item>
-                <NavDropdown.Item href="/receivedOffers">Received Offers</NavDropdown.Item>
-                <NavDropdown.Item href="/editProfile">Profile</NavDropdown.Item>
-                <NavDropdown.Item href="/logout">Logout</NavDropdown.Item>
+                <NavDropdown.Item href="/myPosts"><i class="bi bi-stickies-fill me-3"></i>My posts</NavDropdown.Item>
+                <NavDropdown.Item href="/sentOffers"><i class="bi bi-send-check-fill me-3"></i>Sent Offers</NavDropdown.Item>
+                <NavDropdown.Item href="/receivedOffers"><i class="bi bi-receipt me-3"></i>Received Offers</NavDropdown.Item>
+                <NavDropdown.Item href="/editProfile"><i class="bi bi-person-lines-fill me-3"></i>Profile</NavDropdown.Item>
+                <hr/>
+                <NavDropdown.Item href="/logout"><i class="bi bi-box-arrow-right me-3"></i>Logout</NavDropdown.Item>
               </NavDropdown>
             ) : (
               <Nav.Link  href="/login" className='nav-item'>
                 
-                  <span className="nav-link">Iniciar sesión</span>
+                  <span className="nav-link">Login or Sign Up</span>
                
               </Nav.Link>
             )}

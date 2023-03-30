@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import Location from './Location';
+
 const LocationModal = ({ onHide, onLocationSelected }) => {
   const [show, setShow] = useState(false);
   const [country, setCountry] = useState('');
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
+  const [locationType, setLocationType] = useState('Location');
 
   const handleShow = () => setShow(true);
   const handleClose = () => {
@@ -16,6 +18,13 @@ const LocationModal = ({ onHide, onLocationSelected }) => {
   const handleAccept = () => {
     if (onLocationSelected) {
       onLocationSelected(country, state, city);
+      if (city) {
+        setLocationType(city);
+      } else if (state) {
+        setLocationType(state);
+      } else if (country) {
+        setLocationType(country);
+      }
     }
     handleClose();
   };
@@ -23,12 +32,12 @@ const LocationModal = ({ onHide, onLocationSelected }) => {
   return (
     <>
       <Button variant="" onClick={handleShow} className=' mundi-btn'>
-        <i className="bi bi-globe2 navbar-icon"></i>
+        <div className="selected-location">{locationType}</div>
       </Button>
-      
+
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Where are you?</Modal.Title>
+          <Modal.Title>Where do you want to see the posts?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Location

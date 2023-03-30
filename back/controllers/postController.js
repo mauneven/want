@@ -60,6 +60,8 @@ exports.createPost = async (req, res, next) => {
     });
     await post.save();
 
+    exports.schedulePostDeletion(post._id, 60 * 60 * 24 * 7 * 1000);
+
     res.status(201).json(post);
   } catch (err) {
     next(err);
@@ -117,11 +119,55 @@ exports.deletePost = async (req, res, next) => {
 
     await Post.deleteOne({ _id: req.params.id });
 
+    await exports.deletePostById(req.params.id);
     res.sendStatus(204);
   } catch (err) {
     next(err);
   }
+
 };
+
+// controllers/postController.js
+
+exports.deletePostById = async (postId) => {
+  const post = await Post.findById(postId);
+
+  if (!post) {
+    throw new Error('Post not found');
+  }
+
+  // Eliminar las ofertas y notificaciones relacionadas con el post
+  await Offer.deleteMany({ post: postId });
+  await Notification.deleteMany({ postId });
+
+  // Eliminar la imagen del post
+  if (post.photo) {
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const imagePath = path.join(__dirname, '..', post.photo);
+      fs.unlinkSync(imagePath);
+    } catch (err) {
+      console.error(`Error deleting image for post ${postId}: ${err.message}`);
+    }
+  }
+
+  await Post.deleteOne({ _id: postId });
+};
+
+
+// controllers/postController.js
+
+exports.schedulePostDeletion = async (postId, delay) => {
+  setTimeout(async () => {
+    try {
+      await exports.deletePostById(postId);
+    } catch (err) {
+      console.error(`Error deleting post ${postId}: ${err.message}`);
+    }
+  }, delay);
+};
+
 
 
 

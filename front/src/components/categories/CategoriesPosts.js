@@ -7,7 +7,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, o
   const [show, setShow] = useState(false);
   const [mainCategory, setMainCategory] = useState('');
   const [subCategory, setSubcategory] = useState('');
-  const [displayCategory, setDisplayCategory] = useState('Todas las categorias'); // Nuevo estado para almacenar el texto a mostrar
+  const [displayCategory, setDisplayCategory] = useState('All Categories'); // Nuevo estado para almacenar el texto a mostrar
 
   const handleShow = () => setShow(true);
   const handleClose = () => {
@@ -26,11 +26,11 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, o
     } else if (mainCategory) {
       setDisplayCategory(mainCategory);
     } else {
-      setDisplayCategory('Todas las categorias');
+      setDisplayCategory('All Categories');
     }
   
     // Restablece los valores de mainCategory y subCategory si se muestra "Todas las categorias"
-    if (displayCategory === 'Todas las categorias') {
+    if (displayCategory === 'All Categories') {
       setMainCategory('');
       setSubcategory('');
       if (onMainCategoryChange) {
