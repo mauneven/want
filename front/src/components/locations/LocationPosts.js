@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import Location from './Location';
+import { useEffect } from 'react';
 
 const LocationModal = ({ onHide, onLocationSelected }) => {
   const [show, setShow] = useState(false);
@@ -28,6 +29,20 @@ const LocationModal = ({ onHide, onLocationSelected }) => {
     }
     handleClose();
   };
+
+  useEffect(() => {
+    const storedLocationFilter = JSON.parse(localStorage.getItem('locationFilter'));
+    if (storedLocationFilter) {
+      const { country, state, city } = storedLocationFilter;
+      if (city) {
+        setLocationType(city);
+      } else if (state) {
+        setLocationType(state);
+      } else if (country) {
+        setLocationType(country);
+      }
+    }
+  }, []);  
 
   return (
     <>
