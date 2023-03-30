@@ -16,6 +16,31 @@ const LocationModal = ({ onHide, onLocationSelected }) => {
     onHide();
   };
 
+  const handleCountryChange = (selectedCountry) => {
+    setCountry(selectedCountry);
+    setState('');
+    setCity('');
+  };
+  
+  const handleStateChange = (selectedState) => {
+    setState(selectedState);
+    setCity('');
+  };
+
+  useEffect(() => {
+    const locationFilterString = localStorage.getItem("locationFilter");
+    if (locationFilterString) {
+      const parsedLocationFilter = JSON.parse(locationFilterString);
+      if (parsedLocationFilter.city) {
+        setLocationType(parsedLocationFilter.city);
+      } else if (parsedLocationFilter.state) {
+        setLocationType(parsedLocationFilter.state);
+      } else if (parsedLocationFilter.country) {
+        setLocationType(parsedLocationFilter.country);
+      }
+    }
+  }, []);  
+
   const handleAccept = () => {
     if (onLocationSelected) {
       onLocationSelected(country, state, city);
@@ -30,20 +55,6 @@ const LocationModal = ({ onHide, onLocationSelected }) => {
     handleClose();
   };
 
-  useEffect(() => {
-    const storedLocationFilter = JSON.parse(localStorage.getItem('locationFilter'));
-    if (storedLocationFilter) {
-      const { country, state, city } = storedLocationFilter;
-      if (city) {
-        setLocationType(city);
-      } else if (state) {
-        setLocationType(state);
-      } else if (country) {
-        setLocationType(country);
-      }
-    }
-  }, []);  
-
   return (
     <>
       <Button variant="" onClick={handleShow} className=' mundi-btn'>
@@ -56,10 +67,10 @@ const LocationModal = ({ onHide, onLocationSelected }) => {
         </Modal.Header>
         <Modal.Body>
           <Location
-            onCountryChange={(selectedCountry) => setCountry(selectedCountry)}
-            onStateChange={(selectedState) => setState(selectedState)}
-            onCityChange={(selectedCity) => setCity(selectedCity)}
-            onLocationSelected={(country, state, city) => onLocationSelected(country, state, city)}
+           onCountryChange={handleCountryChange}
+           onStateChange={handleStateChange}
+           onCityChange={(selectedCity) => setCity(selectedCity)}
+           onLocationSelected={(country, state, city) => onLocationSelected(country, state, city)}
           />
         </Modal.Body>
         <Modal.Footer>
