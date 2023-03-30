@@ -43,6 +43,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, o
     handleClose();
   };
 
+
   const handleSeeAllCategories = () => {
     setMainCategory('');
     setSubcategory('');
@@ -53,8 +54,11 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, o
     if (onSubcategoryChange) {
       onSubcategoryChange('');
     }
+    if (onCategorySelected) {
+      onCategorySelected('', '');
+    }
     handleClose();
-  }; 
+  };
   
   return (
     <>
