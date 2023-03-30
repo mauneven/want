@@ -207,7 +207,7 @@ export default function MegaMenu({
             />
             <Nav.Link className="nav-item" href="/createPost">
               <Button className="btn-post rounded-pill p-2">
-                you Want something?
+                You Want something?
               </Button>
             </Nav.Link>
             <Nav.Link className="nav-item">
