@@ -11,8 +11,9 @@ import {
 import LocationModal from "../locations/LocationPosts";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import Notifications from "../notifications/notifications";
+import Notifications from "../notifications/Notifications";
 import CategoriesModal from "../categories/CategoriesPosts";
+import { useRef } from "react";
 
 export default function MegaMenu({
   onLocationFilterChange,
@@ -26,8 +27,15 @@ export default function MegaMenu({
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
+  const searchInputRef = useRef(null); // Nuevo estado
 
   const router = useRouter();
+
+  const handleLogoClick = () => {
+    setSearchTerm("");
+    onSearchTermChange("");
+    router.push("/");
+  };
 
   const handleCloseCategories = () => setShowCategoriesModal(false);
 
@@ -95,8 +103,11 @@ export default function MegaMenu({
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     setSearchTerm(e.target.search.value);
-    onSearchTermChange(e.target.search.value); // Agrega esta línea
+    onSearchTermChange(e.target.search.value);
     setSearchTerm(e.target.search.value);
+    if (e.target.search.value === "") {
+      handleSearchClear();
+    }
   };
 
   const handleClose = () => setShowLocationModal(false);
@@ -153,9 +164,6 @@ export default function MegaMenu({
   function getUserImageUrl() {
     if (user && user.photo) {
       return `http://localhost:4000/${user.photo}`;
-    } else {
-      // Aquí puedes especificar la URL de una imagen predeterminada, si lo deseas.
-      return "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"; // Imagen de ejemplo. Reemplazar con una imagen real.
     }
   }
 
@@ -167,7 +175,7 @@ export default function MegaMenu({
       expand="lg"
     >
       <Container className="sticky-top">
-        <Navbar.Brand href="/">
+      <Navbar.Brand onClick={handleLogoClick} className="divhover">
           <Image
             className="want-logo"
             src="/icons/want-logo.svg"
@@ -205,7 +213,7 @@ export default function MegaMenu({
               onCategorySelected={handleCategorySelected}
               onCategoryCleared={handleCategoryCleared}
             />
-            <Nav.Link className="nav-item" href="/createPost">
+            <Nav.Link className="nav-item" onClick={() => router.push('/createPost')}>
               <Button className="btn-post rounded-pill p-2">
                 You Want something?
               </Button>
@@ -222,7 +230,7 @@ export default function MegaMenu({
                       src={
                         user.photo
                           ? `http://localhost:4000/${user.photo}`
-                          : "icons/default-profile-picture.svg"
+                          : "icons/person-circle.svg"
                       }
                       alt="Profile"
                       style={{
@@ -236,25 +244,25 @@ export default function MegaMenu({
                 }
                 id="user-dropdown"
               >
-                <NavDropdown.Item href="/myPosts">
-                  <i class="bi bi-stickies-fill me-3"></i>My posts
+                <NavDropdown.Item onClick={() => router.push('/myPosts')}>
+                  <i className="bi bi-stickies-fill me-3"></i>My posts
                 </NavDropdown.Item>
-                <NavDropdown.Item href="/sentOffers">
-                  <i class="bi bi-send-check-fill me-3"></i>Sent Offers
+                <NavDropdown.Item onClick={() => router.push('/sentOffers')}>
+                  <i className="bi bi-send-check-fill me-3"></i>Sent Offers
                 </NavDropdown.Item>
-                <NavDropdown.Item href="/receivedOffers">
-                  <i class="bi bi-receipt me-3"></i>Received Offers
+                <NavDropdown.Item onClick={() => router.push('/receivedOffers')}>
+                  <i className="bi bi-receipt me-3"></i>Received Offers
                 </NavDropdown.Item>
-                <NavDropdown.Item href="/editProfile">
-                  <i class="bi bi-person-lines-fill me-3"></i>Profile
+                <NavDropdown.Item onClick={() => router.push('/editProfile')}>
+                  <i className="bi bi-person-lines-fill me-3"></i>Profile
                 </NavDropdown.Item>
                 <hr />
-                <NavDropdown.Item href="/logout">
-                  <i class="bi bi-box-arrow-right me-3"></i>Logout
+                <NavDropdown.Item onClick={() => router.push('/logout')}>
+                  <i className="bi bi-box-arrow-right me-3"></i>Logout
                 </NavDropdown.Item>
               </NavDropdown>
             ) : (
-              <Nav.Link href="/login" className="nav-item">
+              <Nav.Link onClick={() => router.push('/login')} className="nav-item">
                 <span className="nav-link">Login or Sign Up</span>
               </Nav.Link>
             )}

@@ -139,7 +139,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
             <li key={number} className="page-item">
               <button
                 onClick={() => handlePageChange(number)}
-                className={`page-link ${number === currentPage ? "active" : ""}`}
+                className={`btn btn-success ${number === currentPage ? "active" : ""}`}
               >
                 {number}
               </button>
@@ -158,8 +158,8 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
             ? posts.map((post) => (
                 <div key={post._id}>
                   <div className="card post rounded-5">
-                    <button class="rounded-circle btn-report" title="Report">
-                    <i class="bi bi-flag"></i>
+                    <button className="rounded-circle btn-report" title="Report">
+                    <i className="bi bi-flag"></i>
                     </button>
                     {post.photo && (
                       <div style={{ height: "200px", overflow: "hidden" }}>

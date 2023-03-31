@@ -1,8 +1,10 @@
 import React from 'react';
-import Link from 'next/link';
 import { Container, Row, Col } from 'react-bootstrap';
+import { useRouter } from 'next/router';
 
 const Footer = () => {
+  const router = useRouter();
+
   return (
     <footer className="bg-light py-4">
       <Container>
@@ -11,19 +13,19 @@ const Footer = () => {
             <h5>Company</h5>
             <ul className="list-unstyled">
               <li>
-                <Link href="/about-us">
-                  <div className="text-dark">About Us</div>
-                </Link>
+                <div className="text-dark divhover" onClick={() => router.push('/about-us')}>
+                  About Us
+                </div>
               </li>
               <li>
-                <Link href="/careers">
-                  <div className="text-dark">Company Data</div>
-                </Link>
+                <div className="text-dark divhover" onClick={() => router.push('/careers')}>
+                  Company Data
+                </div>
               </li>
               <li>
-                <Link href="/contact-us">
-                  <div className="text-dark">Contact Us</div>
-                </Link>
+                <div className="text-dark divhover" onClick={() => router.push('/contact-us')}>
+                  Contact Us
+                </div>
               </li>
             </ul>
           </Col>
@@ -31,19 +33,19 @@ const Footer = () => {
             <h5>Subscriptions</h5>
             <ul className="list-unstyled">
               <li>
-                <Link href="/features">
-                  <div className="text-dark">Want +</div>
-                </Link>
+                <div className="text-dark divhover" onClick={() => router.push('/about/wantplus')}>
+                  Want +
+                </div>
               </li>
               <li>
-                <Link href="/pricing">
-                  <div className="text-dark">Features</div>
-                </Link>
+                <div className="text-dark divhover" onClick={() => router.push('/pricing')}>
+                  Features
+                </div>
               </li>
               <li>
-                <Link href="/download">
-                  <div className="text-dark">Limitations</div>
-                </Link>
+                <div className="text-dark divhover" onClick={() => router.push('/download')}>
+                  Limitations
+                </div>
               </li>
             </ul>
           </Col>
@@ -51,14 +53,14 @@ const Footer = () => {
             <h5>Legal</h5>
             <ul className="list-unstyled">
               <li>
-                <Link href="/privacy-policy">
-                  <div className="text-dark">Privacy Policy</div>
-                </Link>
+                <div className="text-dark divhover" onClick={() => router.push('/privacy-policy')}>
+                  Privacy Policy
+                </div>
               </li>
               <li>
-                <Link href="/terms-of-service">
-                  <div className="text-dark">Terms of Service</div>
-                </Link>
+                <div className="text-dark divhover" onClick={() => router.push('/about/terms-and-conditions')}>
+                  Terms of Service
+                </div>
               </li>
             </ul>
           </Col>
@@ -66,19 +68,19 @@ const Footer = () => {
             <h5>Help</h5>
             <ul className="list-unstyled">
               <li>
-                <Link href="/" target="_blank">
-                  <div className="text-dark">How to use Want</div>
-                </Link>
+                <div className="text-dark divhover" onClick={() => router.push('/')}>
+                  How to use Want
+                </div>
               </li>
               <li>
-                <Link href="">
-                  <div className="text-dark">Contact support</div>
-                </Link>
+                <div className="text-dark divhover" onClick={() => router.push('')}>
+                  Contact support
+                </div>
               </li>
               <li>
-                <Link href="">
-                  <div className="text-dark">Frequent questions</div>
-                </Link>
+                <div className="text-dark divhover" onClick={() => router.push('')}>
+                  Frequent questions
+                </div>
               </li>
             </ul>
           </Col>
