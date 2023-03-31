@@ -1,10 +1,11 @@
 .offer-btn{
-  border: solid 2px  black;
+  border: solid 1px  rgba(0, 0, 0, 0.26);
   border-radius: 50px;
+  color: rgba(0, 0, 0, 0.418);
 }
   
 .offer-btn:hover{
-  border: solid 2px  rgb(0, 80, 17);
+  border: solid 1px  rgb(0, 80, 17);
   color:rgb(4, 126, 0);
 }
 

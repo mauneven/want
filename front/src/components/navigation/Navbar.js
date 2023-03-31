@@ -138,26 +138,6 @@ export default function MegaMenu({
     }
   }, []); // Agrega la matriz de dependencias vacía aquí
 
-  useEffect(() => {
-    if (isLogged) {
-      const updateSession = async () => {
-        const response = await fetch("http://localhost:4000/api/user", {
-          method: "GET",
-          credentials: "include",
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data.user || null);
-        } else if (response.status === 401) {
-          setIsLogged(false);
-        }
-      };
-      const interval = setInterval(updateSession, 5000);
-      return () => clearInterval(interval);
-    }
-  }, [isLogged]); // Agrega la matriz de dependencias con isLogged aquí
-
   function getUserImageUrl() {
     if (user && user.photo) {
       return `http://localhost:4000/${user.photo}`;

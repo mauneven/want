@@ -70,21 +70,15 @@ exports.getOffersReceivedByCurrentUser = async (req, res, next) => {
 };
 
 exports.getNotifications = async (req, res, next) => {
-    try {
-      const notifications = await Notification.find({ recipient: req.session.userId })
-        .sort({ createdAt: -1 });
-  
-      // Marcar notificaciones como leídas
-      await Notification.updateMany(
-        { recipient: req.session.userId, isRead: false },
-        { isRead: true }
-      );
-  
-      res.status(200).json(notifications);
-    } catch (err) {
-      next(err);
-    }
-  };
+  try {
+    const notifications = await Notification.find({ recipient: req.session.userId })
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(notifications);
+  } catch (err) {
+    next(err);
+  }
+};
   
   exports.sendNotification = async (recipientId, content, postId) => {
     const notification = new Notification({ content, recipient: recipientId, postId }); // Añade postId aquí
@@ -164,3 +158,21 @@ exports.createReport = async (req, res, next) => {
         next(err);
     }
 };
+
+exports.markNotificationAsRead = async (req, res, next) => {
+  try {
+    const notificationId = req.params.id;
+    const notification = await Notification.findById(notificationId);
+
+    if (!notification) {
+      return res.status(404).send('Notification not found');
+    }
+
+    notification.isRead = true;
+    await notification.save();
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+};
+

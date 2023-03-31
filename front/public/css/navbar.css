@@ -94,6 +94,10 @@ header{
   backdrop-filter: blur(9px);
 }
 
-.containerboy{
-  min-height: 670px;
+.notification-dropdown .dropdown-toggle::after {
+  content: none;
+}
+
+.notification-dropdown .bi-bell {
+  font-size: 20px;
 }
