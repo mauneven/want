@@ -156,10 +156,13 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
         {!isLoading
           ? posts.length > 0
             ? posts.map((post) => (
-                <div key={post._id}>
+                <div key={post._id} class="col">
                   <div className="card post rounded-5">
                     <button class="rounded-circle btn-report" title="Report">
                     <i class="bi bi-flag"></i>
+                    </button>
+                    <button class="rounded-circle btn-save" title="Save">
+                    <i class="bi bi-heart"></i>
                     </button>
                     {post.photo && (
                       <div style={{ height: "200px", overflow: "hidden" }}>
@@ -181,8 +184,8 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                           ? post.description.substring(0, 100) + "..."
                           : post.description}
                       </p>
-                      <Link href={`/post/[id]`} as={`/post/${post._id}`}>
-                        <button className="offer-btn btn float-end rounded-pill">Ver detalles</button>
+                      <Link className="d-flex justify-content-center" href={`/post/[id]`} as={`/post/${post._id}`}>
+                        <button className="offer-btn btn rounded-pill">Ver detalles</button>
                       </Link>
                     </div>
                     

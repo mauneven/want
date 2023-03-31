@@ -145,10 +145,9 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange, o
 
   return (
     <Navbar style={{ top: 0, zIndex: 1000 }} // Añade estilos en línea aquí
-      className='sticky-top sticky-nav'
       bg="light"
       expand="lg">
-      <Container className='sticky-top'>
+      <Container>
         <Navbar.Brand href="/"><Image className='want-logo' src="/icons/want-logo.svg" alt="Want" width={90} height={50} /></Navbar.Brand>
         <Form className="d-flex flex-grow-1 w-auto search-bar border rounded-5" onSubmit={handleSearchSubmit}>
         <LocationModal
