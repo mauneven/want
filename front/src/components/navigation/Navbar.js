@@ -105,9 +105,6 @@ export default function MegaMenu({
     setSearchTerm(e.target.search.value);
     onSearchTermChange(e.target.search.value);
     setSearchTerm(e.target.search.value);
-    if (e.target.search.value === "") {
-      handleSearchClear();
-    }
   };
 
   const handleClose = () => setShowLocationModal(false);
