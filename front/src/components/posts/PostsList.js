@@ -156,13 +156,13 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
         {!isLoading
           ? posts.length > 0
             ? posts.map((post) => (
-                <div key={post._id} class="col">
+                <div key={post._id} className="col">
                   <div className="card post rounded-5">
                     <button className="rounded-circle btn-report" title="Report">
                     <i className="bi bi-flag"></i>
                     </button>
-                    <button class="rounded-circle btn-save" title="Save">
-                    <i class="bi bi-heart"></i>
+                    <button className="rounded-circle btn-save" title="Save">
+                    <i className="bi bi-heart"></i>
                     </button>
                     {post.photo && (
                       <div style={{ height: "200px", overflow: "hidden" }}>

@@ -108,7 +108,7 @@ exports.getNotifications = async (req, res, next) => {
       }
   
       // Encuentra la notificación correspondiente al postId de la oferta que se está eliminando.
-      const notification = await Notification.findOne({ postId: offer.post });
+      const notification = await Notification.findOne({ postId: offer.post, content: `"${offer.post.title}"` });
   
       // Eliminar la imagen asociada con la oferta
       if (offer.photo) {

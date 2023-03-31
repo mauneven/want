@@ -132,8 +132,10 @@ exports.deletePost = async (req, res, next) => {
 exports.deletePostById = async (postId) => {
   const post = await Post.findById(postId);
 
+  // Verificar si el post ya ha sido eliminado
   if (!post) {
-    throw new Error('Post not found');
+    console.log('Post already deleted');
+    return;
   }
 
   // Eliminar las ofertas y notificaciones relacionadas con el post
@@ -167,8 +169,6 @@ exports.schedulePostDeletion = async (postId, delay) => {
     }
   }, delay);
 };
-
-
 
 
 exports.getPostsByCurrentUser = async (req, res, next) => {
