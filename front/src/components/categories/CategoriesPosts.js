@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import PostCategory from './Categories';
+import { useEffect } from 'react';
 
 export default function CategoriesModal({ isShown, onHide, onCategorySelected, onMainCategoryChange, onSubcategoryChange }) {
 
   const [show, setShow] = useState(false);
   const [mainCategory, setMainCategory] = useState('');
   const [subCategory, setSubcategory] = useState('');
-  const [displayCategory, setDisplayCategory] = useState('Todas las categorias'); // Nuevo estado para almacenar el texto a mostrar
+  const [displayCategory, setDisplayCategory] = useState('All Categories');
 
   const handleShow = () => setShow(true);
   const handleClose = () => {
@@ -20,17 +21,15 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, o
       onCategorySelected(mainCategory, subCategory);
     }
   
-    // Actualiza el texto a mostrar en base a la categoría y subcategoría seleccionadas
     if (subCategory) {
       setDisplayCategory(subCategory);
     } else if (mainCategory) {
       setDisplayCategory(mainCategory);
     } else {
-      setDisplayCategory('Todas las categorias');
+      setDisplayCategory('All Categories');
     }
   
-    // Restablece los valores de mainCategory y subCategory si se muestra "Todas las categorias"
-    if (displayCategory === 'Todas las categorias') {
+    if (displayCategory === 'All Categories') {
       setMainCategory('');
       setSubcategory('');
       if (onMainCategoryChange) {
@@ -42,12 +41,29 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, o
     }
   
     handleClose();
-  };  
+  };
 
+
+  const handleSeeAllCategories = () => {
+    setMainCategory('');
+    setSubcategory('');
+    setDisplayCategory('All Categories');
+    if (onMainCategoryChange) {
+      onMainCategoryChange('');
+    }
+    if (onSubcategoryChange) {
+      onSubcategoryChange('');
+    }
+    if (onCategorySelected) {
+      onCategorySelected('', '');
+    }
+    handleClose();
+  };
+  
   return (
     <>
       <Button variant="" onClick={handleShow}>
-        {displayCategory} {/* Muestra el texto almacenado en displayCategory */}
+        {displayCategory}
       </Button>
 
       <Modal show={show || isShown} onHide={handleClose} centered>
@@ -58,12 +74,13 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, o
           <PostCategory
             onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
             onSubcategoryChange={(selectedSubcategory) => setSubcategory(selectedSubcategory)}
-            selectedSubcategory={subCategory} // Agrega esta línea
+            selectedSubcategory={subCategory}
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>Cancel</Button>
-          <Button variant="primary" onClick={handleAccept}>Accept</Button>
+        <Button variant="secondary" onClick={handleSeeAllCategories}>See all Categories</Button>
+          <Button variant="primary" onClick={handleClose}>Cancel</Button>
+          <Button variant="success" onClick={handleAccept}>Accept</Button>
         </Modal.Footer>
       </Modal>
     </>

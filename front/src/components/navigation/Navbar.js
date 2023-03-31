@@ -1,59 +1,75 @@
-import { useState, useEffect } from 'react';
-import { Container, Navbar, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
-import LocationModal from '../locations/LocationPosts';
-import { useRouter } from 'next/router';
-import Image from 'next/image';
-import Notifications from '../notifications/notifications';
-import CategoriesModal from '../categories/CategoriesPosts';
+import { useState, useEffect } from "react";
+import {
+  Container,
+  Navbar,
+  Nav,
+  NavDropdown,
+  Form,
+  FormControl,
+  Button,
+} from "react-bootstrap";
+import LocationModal from "../locations/LocationPosts";
+import { useRouter } from "next/router";
+import Image from "next/image";
+import Notifications from "../notifications/notifications";
+import CategoriesModal from "../categories/CategoriesPosts";
 
-export default function MegaMenu({ onLocationFilterChange, onSearchTermChange, onCategoryFilterChange }) {
+export default function MegaMenu({
+  onLocationFilterChange,
+  onSearchTermChange,
+  onCategoryFilterChange,
+}) {
   const [user, setUser] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
   const [locationFilter, setLocationFilter] = useState(null);
   const [filterVersion, setFilterVersion] = useState(0);
   const [showLocationModal, setShowLocationModal] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
 
   const router = useRouter();
 
   const handleCloseCategories = () => setShowCategoriesModal(false);
-  
+
   const handleCategorySelected = (mainCategory, subCategory) => {
     console.log("Selected Category: ", mainCategory);
     console.log("Selected Subcategory: ", subCategory);
     const selectedCategory = {
       mainCategory: mainCategory,
-      subCategory: subCategory !== '' ? subCategory : null,
+      subCategory: subCategory !== "" ? subCategory : null,
     };
     onCategoryFilterChange(selectedCategory);
     handleCloseCategories();
-  };  
+  };
 
   const handleCategoryCleared = () => {
     const clearedCategory = {
-      mainCategory: '',
-      subCategory: '',
+      mainCategory: "",
+      subCategory: "",
     };
     onCategoryFilterChange(clearedCategory);
-  };  
+  };
 
   const handleLocationSelected = (country, state, city) => {
     let newLocationFilter = {
       country: country,
-      state: state && state !== 'Seleccione un estado' ? state : null,
-      city: city && city !== 'Seleccione una ciudad' ? city : null,
+      state: state && state !== "Choose an state" ? state : null,
+      city: city && city !== "Choose a city" ? city : null,
       timestamp: new Date().getTime(),
     };
 
     // Si el país ha cambiado o solo el país está seleccionado, limpiar el estado y la ciudad
-    if (!locationFilter || country !== locationFilter.country || (country && !state && !city)) {
+    if (
+      !locationFilter ||
+      country !== locationFilter.country ||
+      (country && !state && !city)
+    ) {
       newLocationFilter.state = null;
       newLocationFilter.city = null;
     }
 
     // Almacenar los datos de la ubicación en el localStorage
-    localStorage.setItem('locationFilter', JSON.stringify(newLocationFilter));
+    localStorage.setItem("locationFilter", JSON.stringify(newLocationFilter));
 
     setLocationFilter(newLocationFilter);
     onLocationFilterChange(newLocationFilter);
@@ -62,7 +78,7 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange, o
   };
 
   useEffect(() => {
-    const locationFilterString = localStorage.getItem('locationFilter');
+    const locationFilterString = localStorage.getItem("locationFilter");
     if (locationFilterString) {
       const parsedLocationFilter = JSON.parse(locationFilterString);
       setLocationFilter(parsedLocationFilter);
@@ -74,7 +90,7 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange, o
     if (locationFilter) {
       onLocationFilterChange(locationFilter);
     }
-  }, [locationFilter]); // Deja solo la dependencia de locationFilter  
+  }, [locationFilter]); // Deja solo la dependencia de locationFilter
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -88,9 +104,9 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange, o
 
   useEffect(() => {
     const checkSession = async () => {
-      const response = await fetch('http://localhost:4000/api/user', {
-        method: 'GET',
-        credentials: 'include',
+      const response = await fetch("http://localhost:4000/api/user", {
+        method: "GET",
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -106,7 +122,7 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange, o
   }, [router.pathname]); // Agrega la dependencia del router.pathname aquí
 
   useEffect(() => {
-    const locationFilterString = localStorage.getItem('locationFilter');
+    const locationFilterString = localStorage.getItem("locationFilter");
     if (locationFilterString) {
       const parsedLocationFilter = JSON.parse(locationFilterString);
       setLocationFilter(parsedLocationFilter);
@@ -117,9 +133,9 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange, o
   useEffect(() => {
     if (isLogged) {
       const updateSession = async () => {
-        const response = await fetch('http://localhost:4000/api/user', {
-          method: 'GET',
-          credentials: 'include',
+        const response = await fetch("http://localhost:4000/api/user", {
+          method: "GET",
+          credentials: "include",
         });
 
         if (response.ok) {
@@ -132,29 +148,43 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange, o
       const interval = setInterval(updateSession, 5000);
       return () => clearInterval(interval);
     }
-  }, [isLogged]); // Agrega la matriz de dependencias con isLogged aquí  
+  }, [isLogged]); // Agrega la matriz de dependencias con isLogged aquí
 
   function getUserImageUrl() {
     if (user && user.photo) {
       return `http://localhost:4000/${user.photo}`;
     } else {
       // Aquí puedes especificar la URL de una imagen predeterminada, si lo deseas.
-      return 'https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'; // Imagen de ejemplo. Reemplazar con una imagen real.
+      return "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"; // Imagen de ejemplo. Reemplazar con una imagen real.
     }
   }
 
   return (
-    <Navbar style={{ top: 0, zIndex: 1000 }} // Añade estilos en línea aquí
+    <Navbar
+      style={{ top: 0, zIndex: 1000 }} // Añade estilos en línea aquí
+      className="sticky-top sticky-nav"
       bg="light"
-      expand="lg">
-      <Container>
-        <Navbar.Brand href="/"><Image className='want-logo' src="/icons/want-logo.svg" alt="Want" width={90} height={50} /></Navbar.Brand>
-        <Form className="d-flex flex-grow-1 w-auto search-bar border rounded-5" onSubmit={handleSearchSubmit}>
-        <LocationModal
-              show={showLocationModal}
-              onHide={() => setShowLocationModal(false)}
-              onLocationSelected={handleLocationSelected}
-            />
+      expand="lg"
+    >
+      <Container className="sticky-top">
+        <Navbar.Brand href="/">
+          <Image
+            className="want-logo"
+            src="/icons/want-logo.svg"
+            alt="Want"
+            width={90}
+            height={50}
+          />
+        </Navbar.Brand>
+        <Form
+          className="d-flex flex-grow-1 w-auto search-bar border rounded-5"
+          onSubmit={handleSearchSubmit}
+        >
+          <LocationModal
+            show={showLocationModal}
+            onHide={() => setShowLocationModal(false)}
+            onLocationSelected={handleLocationSelected}
+          />
           <FormControl
             type="search"
             placeholder=" The people want..."
@@ -169,29 +199,63 @@ export default function MegaMenu({ onLocationFilterChange, onSearchTermChange, o
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link className='nav-item' href="/createPost"><Button className='btn-post rounded-pill p-2'>Want something?</Button></Nav.Link>
-            <Nav.Link className='nav-item'>
-            {user ? (<Notifications />) : ("")}
-            </Nav.Link>
             <CategoriesModal
-  isShown={showCategoriesModal}
-  onHide={() => setShowCategoriesModal(false)}
-  onCategorySelected={handleCategorySelected}
-  onCategoryCleared={handleCategoryCleared}
-/>
+              isShown={showCategoriesModal}
+              onHide={() => setShowCategoriesModal(false)}
+              onCategorySelected={handleCategorySelected}
+              onCategoryCleared={handleCategoryCleared}
+            />
+            <Nav.Link className="nav-item" href="/createPost">
+              <Button className="btn-post rounded-pill p-2">
+                You Want something?
+              </Button>
+            </Nav.Link>
+            <Nav.Link className="nav-item">
+              {user ? <Notifications /> : ""}
+            </Nav.Link>
             {user ? (
-              <NavDropdown className='nav-link' title={<><img src={user.photo ? `http://localhost:4000/${user.photo}` : 'icons/default-profile-picture.svg'} alt="Profile" style={{ borderRadius: '50%', width: '30px', height: '30px' }} /> {`${user.firstName}`}</>} id="user-dropdown">
-                <NavDropdown.Item href="/myPosts">My posts</NavDropdown.Item>
-                <NavDropdown.Item href="/sentOffers">Sent Offers</NavDropdown.Item>
-                <NavDropdown.Item href="/receivedOffers">Received Offers</NavDropdown.Item>
-                <NavDropdown.Item href="/editProfile">Profile</NavDropdown.Item>
-                <NavDropdown.Item href="/logout">Logout</NavDropdown.Item>
+              <NavDropdown
+                className="nav-link"
+                title={
+                  <>
+                    <img
+                      src={
+                        user.photo
+                          ? `http://localhost:4000/${user.photo}`
+                          : "icons/default-profile-picture.svg"
+                      }
+                      alt="Profile"
+                      style={{
+                        borderRadius: "50%",
+                        width: "30px",
+                        height: "30px",
+                      }}
+                    />{" "}
+                    {`${user.firstName}`}
+                  </>
+                }
+                id="user-dropdown"
+              >
+                <NavDropdown.Item href="/myPosts">
+                  <i class="bi bi-stickies-fill me-3"></i>My posts
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/sentOffers">
+                  <i class="bi bi-send-check-fill me-3"></i>Sent Offers
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/receivedOffers">
+                  <i class="bi bi-receipt me-3"></i>Received Offers
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/editProfile">
+                  <i class="bi bi-person-lines-fill me-3"></i>Profile
+                </NavDropdown.Item>
+                <hr />
+                <NavDropdown.Item href="/logout">
+                  <i class="bi bi-box-arrow-right me-3"></i>Logout
+                </NavDropdown.Item>
               </NavDropdown>
             ) : (
-              <Nav.Link  href="/login" className='nav-item'>
-                
-                  <span className="nav-link">Iniciar sesión</span>
-               
+              <Nav.Link href="/login" className="nav-item">
+                <span className="nav-link">Login or Sign Up</span>
               </Nav.Link>
             )}
           </Nav>
