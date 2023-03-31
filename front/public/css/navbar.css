@@ -6,6 +6,9 @@
 body {
   font-family: 'Poppins','Inter','Helvetica','sans-serif';
 }
+.search-bar-input{
+background-color: #ffffff73;
+}
 .search-bar-input:focus{
   box-shadow: 0 0 22px -11px rgba(0, 0, 0, 0.438)!important;
   
@@ -79,4 +82,13 @@ body {
 .want-logo {
   border-radius: 50px;
   width: 150px;
+}
+
+header{
+  background-color: transparent;
+}
+
+.navbar-blur{
+  background-color: #ffffffde!important;
+  backdrop-filter: blur(11px);
 }
