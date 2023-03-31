@@ -4,7 +4,7 @@ import { Container } from 'react-bootstrap';
 import MegaMenu from '@/components/navigation/Navbar';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import Footer from '@/components/footer/footer';
+import Footer from '@/components/footer/Footer';
 
 export default function MyApp({ Component, pageProps }) {
   const [locationFilter, setLocationFilter] = useState(null);

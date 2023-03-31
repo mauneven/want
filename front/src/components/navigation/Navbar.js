@@ -167,7 +167,7 @@ export default function MegaMenu({
   return (
     <Navbar
       style={{ top: 0, zIndex: 1000 }} // Añade estilos en línea aquí
-      className="sticky-nav navbar-blur"
+      className="sticky-top sticky-nav navbar-blur"
       bg="light"
       expand="lg"
     >
