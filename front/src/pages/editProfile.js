@@ -111,7 +111,7 @@ const EditProfile = () => {
     required: true,
   },
   ];
-  const photoUrl = typeof File !== 'undefined' && photo instanceof File ? URL.createObjectURL(photo) : (user?.photo ? `http://localhost:4000/${user.photo}` : null);
+  const photoUrl = typeof File !== 'undefined' && photo instanceof File ? URL.createObjectURL(photo) : (user?.photo ? `http://localhost:4000/${user.photo}` : "icons/person-circle.svg");
 
   return (
     <div className="container">
@@ -120,13 +120,14 @@ const EditProfile = () => {
           <div className="text-center">
             <img
               src={photoUrl}
-              alt="User"
+              alt=""
               style={{
                 width: '150px',
                 height: '150px',
                 borderRadius: '50%',
                 objectFit: 'cover',
               }}
+
             />
             <label htmlFor="photo" style={{ cursor: 'pointer', marginTop: '1rem' }}>
               <div

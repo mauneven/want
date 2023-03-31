@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { NavDropdown, Badge } from 'react-bootstrap';
 
@@ -70,7 +69,7 @@ export default function Notifications() {
           </NavDropdown.Item>
         ))
       ) : (
-        <NavDropdown.Item disabled>No hay notificaciones</NavDropdown.Item>
+        <NavDropdown.Item disabled>Empty</NavDropdown.Item>
       )}
     </NavDropdown>
   );

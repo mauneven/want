@@ -29,7 +29,7 @@ exports.createOffer = async (req, res, next) => {
       }
   
       // Mueve esta línea aquí, dentro de la función createOffer
-      const notificationContent = `¡Tienes una nueva oferta para tu post "${post.title}"!`;
+      const notificationContent = `"${post.title}"`;
   
       const offer = new Offer({
         title,
