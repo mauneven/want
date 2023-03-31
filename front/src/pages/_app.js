@@ -43,7 +43,7 @@ export default function MyApp({ Component, pageProps }) {
         <link rel="stylesheet" href="/css/navbar.css" />
         <link rel="stylesheet" href="/css/notifications.css" />
       </header>
-      <Container>
+      <Container className='containerboy'>
         <Component
           {...pageProps}
           locationFilter={locationFilter}
