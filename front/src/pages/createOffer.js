@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect,  } from 'react';
+import WordsFilter from '@/badWordsFilter/WordsFilter';
 
 const CreateOffer = () => {
   const router = useRouter();
@@ -39,9 +40,20 @@ const CreateOffer = () => {
     }
   }, [postId]);
 
+  const bwf = new WordsFilter();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+
+    if (bwf.containsBadWord(title)) {
+      alert(`Escribiste una mala palabra en el titulo: ${bwf.devolverPalabra(title)}`);
+      return;
+    }
+
+    if (bwf.containsBadWord(description)) {
+      alert(`Escribiste una mala palabra en la descripción: ${bwf.devolverPalabra(description)}`);
+      return;
+    }
 
     // Preparar los datos de la oferta
     const formData = new FormData();
