@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import PostCategory from '@/components/categories/Categories';
 import Location from '@/components/locations/Location';
+import WordsFilter from '@/badWordsFilter/WordsFilter.js';
 
 const CreatePost = () => {
   const [title, setTitle] = useState('');
@@ -50,9 +51,21 @@ const CreatePost = () => {
     setPreviewPrice(Number(price).toLocaleString());
   }, [title, description, country, state, city, mainCategory, subCategory, price]);
 
+  const bwf = new WordsFilter();
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    
+    if (bwf.containsBadWord(title)) {
+      alert(`Escribiste una mala palabra en el titulo: ${bwf.devolverPalabra(title)}`);
+      return;
+    }
+
+    if (bwf.containsBadWord(description)) {
+      alert(`Escribiste una mala palabra en la descripción: ${bwf.devolverPalabra(description)}`);
+      return;
+    }
   
     console.log('Submitting post with values:', { title, description, country, state, city, mainCategory, subCategory, price, photo });
   
