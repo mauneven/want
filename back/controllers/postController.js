@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const Offer = require('../models/offer');
 const Notification = require('../models/notification');
+const fs = require('fs');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -15,8 +16,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-exports.uploadPhoto = upload.single('photo');
-
+exports.uploadPhotoMiddleware = upload.single('photo');
 
 exports.getAllPosts = async (req, res, next) => {
   try {
@@ -92,6 +92,21 @@ exports.updatePost = async (req, res, next) => {
     post.city = city;
     post.mainCategory = mainCategory;
     post.subCategory = subCategory;
+
+    if (req.file) {
+      if (post.photo) {
+        // Elimina la foto anterior si existe
+        const oldPhotoPath = path.join(__dirname, '..', post.photo);
+        fs.unlink(oldPhotoPath, (err) => {
+          if (err) {
+            console.error('Error removing old post picture:', err);
+          }
+        });
+      }
+      // Guarda la URL de la nueva foto en la base de datos
+      post.photo = req.file.path;
+    }
+
     await post.save();
 
     res.status(200).json(post);
@@ -99,7 +114,6 @@ exports.updatePost = async (req, res, next) => {
     next(err);
   }
 };
-
 
 exports.deletePost = async (req, res, next) => {
   try {

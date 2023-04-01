@@ -26,7 +26,8 @@ const EditPost = () => {
     const [previewLocation, setPreviewLocation] = useState('');
     const [previewCategory, setPreviewCategory] = useState('');
     const [previewPrice, setPreviewPrice] = useState('');
-
+    const [previewImage, setPreviewImage] = useState(null);
+    const [photoUrl, setPhotoUrl] = useState(null);
 
     useEffect(() => {
         const checkLoggedIn = async () => {
@@ -56,6 +57,7 @@ const EditPost = () => {
                     setPrice(data.price);
                     setMainCategory(data.mainCategory);
                     setSubCategory(data.subCategory);
+                    setPhotoUrl(`http://localhost:4000/${data.photo}`);
                 });
         }
     }, [id]);
@@ -75,7 +77,10 @@ const EditPost = () => {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        setImageFile(file);
+        if (file) {
+            setImageFile(file);
+            setPreviewImage(URL.createObjectURL(file)); // Cambiar aquí
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -109,11 +114,8 @@ const EditPost = () => {
 
             const response = await fetch(`http://localhost:4000/api/posts/${id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 credentials: 'include',
-                body: JSON.stringify(Object.fromEntries(formData)),
+                body: formData,
             });
 
             if (!response.ok) {
@@ -197,24 +199,34 @@ const EditPost = () => {
                 </div>
                 <div className="col-md-3">
                     <div className="card post rounded-5 card-preview">
-                    {!imageFile && post.photo && (
-    <div style={{ height: "200px", overflow: "hidden" }}>
-        <img
-            src={post.photo} // Asegúrate de que 'post.photo' tenga la ruta correcta de la imagen original
-            className="card-img-top"
-            alt="Original"
-            style={{ objectFit: "cover", height: "100%" }}
-        />
-    </div>
-)}
+                        {previewImage ? (
+                            <div style={{ height: "200px", overflow: "hidden" }}>
+                                <img
+                                    src={previewImage}
+                                    className="card-img-top"
+                                    alt="Preview"
+                                    style={{ objectFit: "cover", height: "100%" }}
+                                />
+                            </div>
+                        ) : (
+                            <div style={{ height: "200px", overflow: "hidden" }}>
+                                <img
+                                    src={photoUrl}
+                                    className="card-img-top"
+                                    alt="Post"
+                                    style={{ objectFit: "cover", height: "100%" }}
+                                />
+                            </div>
+                        )}
+
                         <div className="card-body">
                             <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>
                             <h5 className="text-success">${previewPrice}</h5>
                             <p className="card-text post-text mb-2">{previewDescription || "Description"}</p>
                         </div>
                     </div>
-                </div>
 
+                </div>
             </div>
         </div>
     );
