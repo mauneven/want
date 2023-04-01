@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
   phone: String,
   role: {
     type: String,
-    enum: ['user', 'admin'],
+    enum: ['user', 'premium', 'admin'],
     default: 'user'
   },
   birthdate: Date,
@@ -30,6 +30,12 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  reports: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Report'
+    }
+  ],
   resetPasswordToken: String,
   resetPasswordExpires: Date
 });
