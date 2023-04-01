@@ -1,7 +1,7 @@
-const Post = require('../models/Post');
+const Post = require('../models/post');
 const multer = require('multer');
 const path = require('path');
-const Offer = require('../models/Offer');
+const Offer = require('../models/offer');
 const Notification = require('../models/notification');
 
 const storage = multer.diskStorage({

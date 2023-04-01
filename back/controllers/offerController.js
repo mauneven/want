@@ -1,5 +1,5 @@
-const Offer = require('../models/Offer');
-const Post = require('../models/Post');
+const Offer = require('../models/offer');
+const Post = require('../models/post');
 const multer = require('multer');
 const path = require('path');
 const Notification = require('../models/notification');
@@ -20,7 +20,7 @@ exports.uploadPhoto = upload.single('photo');
 
 exports.createOffer = async (req, res, next) => {
     try {
-      const { title, description, price, postId } = req.body;
+      const { title, description, price, contact, postId } = req.body;
       const photo = req.file ? req.file.path : null;
       const post = await Post.findById(postId);
   
@@ -36,6 +36,7 @@ exports.createOffer = async (req, res, next) => {
         description,
         price,
         photo,
+        contact,
         createdBy: req.session.userId,
         receivedBy: post.createdBy,
         post: postId,

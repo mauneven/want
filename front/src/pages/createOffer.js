@@ -10,6 +10,7 @@ const CreateOffer = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [contact, setContact] = useState ('');
   const [photo, setPhoto] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -60,6 +61,7 @@ const CreateOffer = () => {
     formData.append('title', title);
     formData.append('description', description);
     formData.append('price', price);
+    formData.append('contact', contact)
     formData.append('photo', photo);
     formData.append('postId', postId);
 

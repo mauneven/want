@@ -1,7 +1,7 @@
 // controllers/reportController.js
 
-const Post = require('../models/Post');
-const Report = require('../models/Report');
+const Post = require('../models/post');
+const Report = require('../models/report');
 
 exports.createReport = async (req, res, next) => {
   try {

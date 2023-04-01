@@ -88,7 +88,7 @@ const Footer = () => {
         <hr />
         <Row>
           <Col className="text-center">
-            <p className="mb-0">&copy; {new Date().getFullYear()} Want, Inc. All Rights Reserved.</p>
+            <p className="mb-0">&copy; {new Date().getFullYear()} Want, S.A.S All Rights Reserved.</p>
           </Col>
         </Row>
       </Container>

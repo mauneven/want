@@ -106,7 +106,7 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="container">
+    <div className="mt-5 mb-5">
       <div className="row row-cols-1 row-cols-md-4 g-4">
         <div className="col-md-6">
           <form onSubmit={handleSubmit} className="container">
@@ -170,31 +170,29 @@ const CreatePost = () => {
             </div>
             <button type="submit" className="btn btn-primary">Create Post</button>
           </form>
-        </div>
-        <div className="col-md-6">
-          <div className="card">
+          </div>
+        <div className="col-md-3">
+          <div className="card post rounded-5 card-preview">
             {photo && (
-              <img
-                src={URL.createObjectURL(photo)}
-                className="card-img-top"
-                alt="Preview"
-              />
+              <div style={{ height: "200px", overflow: "hidden" }}>
+                <img
+                  src={URL.createObjectURL(photo)}
+                  className="card-img-top"
+                  alt="Preview"
+                  style={{ objectFit: "cover", height: "100%" }}
+                />
+              </div>
             )}
             <div className="card-body">
-              <h5 className="card-title">{title || "Title"}</h5>
-              <h5 className="text-success">${Number(price).toLocaleString()}</h5>
-              <p className="card-text">{description || "Description"}</p>
-            </div>
-            <div className="card-footer">
-              <small className="text-muted">
-                {country || "Country"}, {state || "State"}, {city || "City"}
-              </small>
+              <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>
+              <h5 className="text-success">${previewPrice}</h5>
+              <p className="card-text post-text mb-2">{previewDescription || "Description"}</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  );  
+  );
   
   
 };
