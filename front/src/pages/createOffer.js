@@ -120,6 +120,16 @@ if (!post) {
               ></textarea>
             </div>
             <div className="mb-3">
+              <label htmlFor="contact" className="form-label">Describe tu contacto</label>
+              <textarea
+                className="form-control"
+                id="contact"
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+                required
+              ></textarea>
+            </div>
+            <div className="mb-3">
               <label htmlFor="price" className="form-label">Precio ofrecido</label>
               <input
                 type="number"
@@ -161,6 +171,7 @@ if (!post) {
               <h5 className="card-title">{title || "Título de la oferta"}</h5>
               <h5 className="text-success">{Number(price).toLocaleString()} USD</h5>
               <p className="card-text">{description || "Descripción de la oferta"}</p>
+              <p className="card-text">{contact || "Contacto"}</p>
             </div>
           </div>
         </div>

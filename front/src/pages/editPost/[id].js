@@ -48,6 +48,18 @@ const EditPost = () => {
             fetch(`http://localhost:4000/api/posts/${id}`)
                 .then((response) => response.json())
                 .then((data) => {
+                    // Verificar si el usuario actual es el propietario del post
+                    fetch('http://localhost:4000/api/user')
+                        .then((res) => res.json())
+                        .then((user) => {
+                            if (user._id !== data.createdBy) {
+                                router.push('/404');
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('Error fetching user:', error);
+                        });
+
                     setPost(data);
                     setTitle(data.title);
                     setDescription(data.description);

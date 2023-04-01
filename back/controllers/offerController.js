@@ -107,11 +107,12 @@ exports.getNotifications = async (req, res, next) => {
   
       // Eliminar la imagen asociada con la oferta
       if (offer.photo) {
-        fs.unlink(offer.photo, (err) => {
+        const imagePath = path.join(__dirname, '..', offer.photo);
+        fs.unlink(imagePath, (err) => {
           if (err) {
             console.error('Error al eliminar la imagen:', err);
           } else {
-            console.log('Imagen eliminada:', offer.photo);
+            console.log('Imagen eliminada:', imagePath);
           }
         });
       }
@@ -127,7 +128,7 @@ exports.getNotifications = async (req, res, next) => {
     } catch (err) {
       next(err);
     }
-  };   
+  };  
 
 exports.createReport = async (req, res, next) => {
     try {

@@ -74,7 +74,7 @@ exports.updatePost = async (req, res, next) => {
       return res.status(401).send('You must be logged in to edit a post');
     }
 
-    const { title, description, country, state, city, mainCategory, subCategory } = req.body;
+    const { title, description, country, state, city, mainCategory, subCategory, price } = req.body;
 
     const post = await Post.findById(req.params.id);
     if (!post) {
@@ -92,6 +92,7 @@ exports.updatePost = async (req, res, next) => {
     post.city = city;
     post.mainCategory = mainCategory;
     post.subCategory = subCategory;
+    post.price = price;
 
     if (req.file) {
       if (post.photo) {
@@ -131,14 +132,11 @@ exports.deletePost = async (req, res, next) => {
     await Offer.deleteMany({ post: req.params.id });
     await Notification.deleteMany({ postId: req.params.id });
 
-    await Post.deleteOne({ _id: req.params.id });
-
     await exports.deletePostById(req.params.id);
     res.sendStatus(204);
   } catch (err) {
     next(err);
   }
-
 };
 
 // controllers/postController.js
