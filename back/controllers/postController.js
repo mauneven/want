@@ -128,6 +128,21 @@ exports.deletePost = async (req, res, next) => {
       return res.status(401).send('You are not authorized to delete this post');
     }
 
+    // Buscar todas las ofertas asociadas con este post
+    const offers = await Offer.find({ post: req.params.id });
+
+    // Eliminar las fotos de las ofertas asociadas con este post
+    for (const offer of offers) {
+      if (offer.photo) {
+        try {
+          const imagePath = path.join(__dirname, '..', offer.photo);
+          fs.unlinkSync(imagePath);
+        } catch (err) {
+          console.error(`Error deleting image for offer ${offer._id}: ${err.message}`);
+        }
+      }
+    }
+
     // Eliminar las ofertas y notificaciones relacionadas con el post
     await Offer.deleteMany({ post: req.params.id });
     await Notification.deleteMany({ postId: req.params.id });
@@ -150,6 +165,21 @@ exports.deletePostById = async (postId) => {
     return;
   }
 
+  // Buscar todas las ofertas asociadas con este post
+  const offers = await Offer.find({ post: postId });
+
+  // Eliminar las fotos de las ofertas asociadas con este post
+  for (const offer of offers) {
+    if (offer.photo) {
+      try {
+        const imagePath = path.join(__dirname, '..', offer.photo);
+        fs.unlinkSync(imagePath);
+      } catch (err) {
+        console.error(`Error deleting image for offer ${offer._id}: ${err.message}`);
+      }
+    }
+  }
+
   // Eliminar las ofertas y notificaciones relacionadas con el post
   await Offer.deleteMany({ post: postId });
   await Notification.deleteMany({ postId });
@@ -157,8 +187,6 @@ exports.deletePostById = async (postId) => {
   // Eliminar la imagen del post
   if (post.photo) {
     try {
-      const fs = require('fs');
-      const path = require('path');
       const imagePath = path.join(__dirname, '..', post.photo);
       fs.unlinkSync(imagePath);
     } catch (err) {
@@ -168,7 +196,6 @@ exports.deletePostById = async (postId) => {
 
   await Post.deleteOne({ _id: postId });
 };
-
 
 // controllers/postController.js
 
