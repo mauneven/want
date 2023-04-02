@@ -2,8 +2,28 @@ const Post = require('../models/post');
 const Report = require('../models/report');
 const User = require('../models/user');
 const Offer = require('../models/offer');
+const path = require('path');
+const fs = require('fs');
 
 // controllers/reportController.js
+
+async function deleteOffersAndPhotos(postId) {
+  const offers = await Offer.find({ post: postId });
+
+  for (const offer of offers) {
+    if (offer.photo) {
+      const imagePath = path.join(__dirname, '..', offer.photo);
+      fs.unlink(imagePath, (err) => {
+        if (err) {
+          console.error('Error al eliminar la imagen:', err);
+        } else {
+          console.log('Imagen eliminada:', imagePath);
+        }
+      });
+    }
+    await Offer.deleteOne({ _id: offer._id });
+  }
+}
 
 exports.createPostReport = async (req, res, next) => {
   try {
@@ -45,9 +65,22 @@ exports.createPostReport = async (req, res, next) => {
     }
 
     if (post.reports.length >= 1) {
+      // Eliminar la imagen asociada con el post
+      if (post.photo) {
+        const imagePath = path.join(__dirname, '..', post.photo);
+        fs.unlink(imagePath, (err) => {
+          if (err) {
+            console.error('Error al eliminar la imagen:', err);
+          } else {
+            console.log('Imagen eliminada:', imagePath);
+          }
+        });
+      }
       await Post.deleteOne({ _id: postId });
+    
+      // Eliminar las ofertas y sus fotos relacionadas con el post eliminado
+      await deleteOffersAndPhotos(postId);
     }
-
     res.status(201).json(report);
   } catch (err) {
     next(err);
@@ -123,6 +156,17 @@ exports.createOfferReport = async (req, res, next) => {
     }
 
     if (offer.reports.length >= 1) {
+      // Eliminar la imagen asociada con la oferta
+      if (offer.photo) {
+        const imagePath = path.join(__dirname, '..', offer.photo);
+        fs.unlink(imagePath, (err) => {
+          if (err) {
+            console.error('Error al eliminar la imagen:', err);
+          } else {
+            console.log('Imagen eliminada:', imagePath);
+          }
+        });
+      }
       await Offer.deleteOne({ _id: offerId });
     }
 
