@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  blocked: {
+    type: Boolean,
+    default: false
+  },
   reports: [
     {
       type: mongoose.Schema.Types.ObjectId,

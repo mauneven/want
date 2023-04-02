@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import ContentLoader from "react-content-loader";
+import ReportPostModal from "../report/ReportPostModal";
 
 const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter }) => {
   const [posts, setPosts] = useState([]);
@@ -28,19 +29,19 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
 
   const fetchPostsByCategory = (postsData) => {
     console.log("Filtering by category:", categoryFilter);
-  
+
     if (categoryFilter && categoryFilter.mainCategory) {
       postsData = postsData.filter((post) => {
         const mainCategoryMatch =
           post.mainCategory === categoryFilter.mainCategory;
-  
+
         const subCategoryMatch =
           categoryFilter.subCategory
             ? post.subCategory === categoryFilter.subCategory
             : true;
-  
+
         const isMatch = mainCategoryMatch && subCategoryMatch;
-  
+
         if (!isMatch) {
           console.log(
             "Filtered out post:",
@@ -51,13 +52,13 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
             post.subCategory
           );
         }
-  
+
         return isMatch;
       });
     }
-  
+
     return postsData;
-  };  
+  };
 
   const fetchPostsBySearch = (postsData) => {
     if (searchTerm) {
@@ -95,24 +96,47 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
     let postsData = await fetchPostsByLocation();
     postsData = fetchPostsByCategory(postsData); // Agrega esta línea
     postsData = fetchPostsBySearch(postsData);
-  
+
     // Establece el total de posts antes del paginado
     setTotalPosts(postsData.length);
-  
+
     const start = (currentPage - 1) * pageSize;
     const end = start + pageSize;
     setPosts(postsData.slice(start, end));
-  
+
     setIsLoading(false);
-  };  
+  };
 
   useEffect(() => {
     const fetchAndSetPosts = async () => {
       await fetchPosts();
     };
-  
+
     fetchAndSetPosts();
   }, [locationFilter, userIdFilter, searchTerm, categoryFilter, currentPage, pageSize]);
+
+  const handleReportPost = async (postId, description) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/report/post/${postId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ description }),
+        credentials: 'include', // Añade esta línea
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Reporte de post exitoso:', data);
+        // Puedes agregar cualquier otra acción después de reportar el post aquí, como mostrar una notificación o cerrar el modal.
+      } else {
+        console.error('Error al reportar el post:', response);
+      }
+    } catch (error) {
+      console.error('Error al reportar el post:', error);
+    }
+  };  
 
   const Placeholder = () => (
     <div className="col-md-3">
@@ -156,42 +180,40 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
         {!isLoading
           ? posts.length > 0
             ? posts.map((post) => (
-                <div key={post._id} className="col">
-                  <div className="card post rounded-5">
-                    <button className="rounded-circle btn-report" title="Report">
-                    <i className="bi bi-flag"></i>
-                    </button>
-                    <button className="rounded-circle btn-save" title="Save">
+              <div key={post._id} className="col">
+                <div className="card post rounded-5">
+                <ReportPostModal postId={post._id} onReport={handleReportPost} />
+                  <button className="rounded-circle btn-save" title="Save">
                     <i className="bi bi-heart"></i>
-                    </button>
-                    {post.photo && (
-                      <div style={{ height: "200px", overflow: "hidden" }}>
-                        <img
-                          src={`http://localhost:4000/${post.photo}`}
-                          className="card-img-top"
-                          alt={post.title}
-                          style={{ objectFit: "cover", height: "100%" }}
-                        />
-                      </div>
-                    )}
-                    <div className="card-body">
-                      <h5 className="card-title post-title mb-2">{post.title}</h5>
-                      <h5 className="text-success">
-                        ${post.price.toLocaleString()}
-                      </h5>
-                      <p className="card-text post-text mb-2">
-                        {post.description.length > 100
-                          ? post.description.substring(0, 100) + "..."
-                          : post.description}
-                      </p>
-                      <Link className="d-flex justify-content-center" href={`/post/[id]`} as={`/post/${post._id}`}>
-                        <button className="offer-btn btn rounded-pill">Ver detalles</button>
-                      </Link>
+                  </button>
+                  {post.photo && (
+                    <div style={{ height: "200px", overflow: "hidden" }}>
+                      <img
+                        src={`http://localhost:4000/${post.photo}`}
+                        className="card-img-top"
+                        alt={post.title}
+                        style={{ objectFit: "cover", height: "100%" }}
+                      />
                     </div>
-                    
+                  )}
+                  <div className="card-body">
+                    <h5 className="card-title post-title mb-2">{post.title}</h5>
+                    <h5 className="text-success">
+                      ${post.price.toLocaleString()}
+                    </h5>
+                    <p className="card-text post-text mb-2">
+                      {post.description.length > 100
+                        ? post.description.substring(0, 100) + "..."
+                        : post.description}
+                    </p>
+                    <Link className="d-flex justify-content-center" href={`/post/[id]`} as={`/post/${post._id}`}>
+                      <button className="offer-btn btn rounded-pill">Ver detalles</button>
+                    </Link>
                   </div>
+
                 </div>
-              ))
+              </div>
+            ))
             : (
               <div className="col-md-12">
                 <p>No se encontraron posts con los filtros aplicados.</p>
@@ -220,6 +242,6 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   );
 };
 
-export default PostsList;
- 
+export default PostsList;
+
 

@@ -1,9 +1,11 @@
-// controllers/reportController.js
-
 const Post = require('../models/post');
 const Report = require('../models/report');
+const User = require('../models/user');
+const Offer = require('../models/offer');
 
-exports.createReport = async (req, res, next) => {
+// controllers/reportController.js
+
+exports.createPostReport = async (req, res, next) => {
   try {
     const postId = req.params.id;
     const { description } = req.body;
@@ -13,8 +15,14 @@ exports.createReport = async (req, res, next) => {
       return res.status(404).send('Post not found');
     }
 
+    const existingReport = await Report.findOne({ postId: postId, createdBy: req.session.userId });
+    if (existingReport) {
+      return res.status(400).send('Ya has reportado este post');
+    }
+
     const report = new Report({
       description,
+      postId,
       createdBy: req.session.userId
     });
 
@@ -23,9 +31,96 @@ exports.createReport = async (req, res, next) => {
     post.reports.push(report);
     await post.save();
 
-    // Si hay más de 5 reportes, eliminar el post automáticamente
-    if (post.reports.length > 5) {
+    const user = await User.findById(post.createdBy);
+    if (user) {
+      user.reports.push(report);
+      await user.save();
+
+      if (user.reports.length >= 2) {
+        user.isBlocked = true;
+        await user.save();
+      }
+    }
+
+    // Verificar la cantidad de reportes del post después de agregar el reporte al usuario
+    if (post.reports.length >= 1) {
       await Post.deleteOne({ _id: postId });
+    }
+
+    res.status(201).json(report);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.createUserReport = async (req, res, next) => {
+  try {
+    ensureLoggedIn(req, res, () => {});
+
+    const userId = req.params.id;
+    const { description } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    const report = new Report({
+      description,
+      createdBy: req.session.userId
+    });
+
+    await report.save();
+
+    user.reports.push(report);
+    await user.save();
+
+    if (user.reports.length >= 2) {
+      user.isBlocked = true;
+      await user.save();
+    }
+
+    res.status(201).json(report);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.createOfferReport = async (req, res, next) => {
+  try {
+    ensureLoggedIn(req, res, () => {});
+
+    const offerId = req.params.id;
+    const { description } = req.body;
+
+    const offer = await Offer.findById(offerId);
+    if (!offer) {
+      return res.status(404).send('Offer not found');
+    }
+
+    const report = new Report({
+      description,
+      createdBy: req.session.userId
+    });
+
+    await report.save();
+
+    offer.reports.push(report);
+    await offer.save();
+
+    const user = await User.findById(offer.createdBy);
+    if (user) {
+      user.reports.push(report);
+      await user.save();
+
+      if (offer.reports.length >= 1) {
+        await Offer.deleteOne({ _id: offerId });
+      }
+
+      if (user.reports.length >= 2) {
+        user.isBlocked = true;
+        await user.save();
+      }
     }
 
     res.status(201).json(report);

@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const { default: mongoose } = require('mongoose');
-const User = require('../models/User');
+const User = require('../models/user');
 
 const db = require('../config/database');
 const nodemailer = require('nodemailer');
@@ -68,14 +68,13 @@ exports.login = async (req, res, next) => {
   }
 };
 
-exports.isLoggedIn = (req, res) => {
+exports.isLoggedIn = (req, res, next) => {
   if (req.session.userId) {
-    res.sendStatus(200);
+    next();
   } else {
-    res.sendStatus(401);
+    res.status(401).send('Unauthorized');
   }
 };
-
 
 exports.logout = async (req, res, next) => {
   try {
@@ -201,3 +200,10 @@ exports.changePassword = async (req, res, next) => {
   }
 };
 
+exports.checkLoggedIn = (req, res) => {
+  if (req.session.userId) {
+    res.status(200).json({ loggedIn: true, userId: req.session.userId });
+  } else {
+    res.status(200).json({ loggedIn: false });
+  }
+};
