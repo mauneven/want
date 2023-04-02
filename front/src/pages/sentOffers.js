@@ -7,18 +7,27 @@ export default function sentOffers() {
   const router = useRouter();
 
   useEffect(() => {
-    const checkLoggedIn = async () => {
-        const response = await fetch('http://localhost:4000/api/is-logged-in', {
-            credentials: 'include',
-        });
+    const checkLoggedInAndBlocked = async () => {
+      const loggedInResponse = await fetch('http://localhost:4000/api/is-logged-in', {
+        credentials: 'include',
+      });
 
-        if (!response.ok) {
-            router.push('/login');
-        }
+      if (!loggedInResponse.ok) {
+        router.push('/login');
+        return;
+      }
+
+      const blockedResponse = await fetch('http://localhost:4000/api/is-blocked', {
+        credentials: 'include',
+      });
+
+      if (!blockedResponse.ok) {
+        router.push('/blocked');
+      }
     };
 
-    checkLoggedIn();
-}, []);
+    checkLoggedInAndBlocked();
+  }, []);
 
   useEffect(() => {
     const fetchMyOffers = async () => {

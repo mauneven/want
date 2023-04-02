@@ -36,13 +36,14 @@ exports.createPostReport = async (req, res, next) => {
       user.reports.push(report);
       await user.save();
 
-      if (user.reports.length >= 2) {
-        user.isBlocked = true;
-        await user.save();
+      const updatedUser = await User.findById(post.createdBy).populate('reports');
+
+      if (updatedUser.reports.length >= 2) {
+        updatedUser.isBlocked = true;
+        await updatedUser.save();
       }
     }
 
-    // Verificar la cantidad de reportes del post después de agregar el reporte al usuario
     if (post.reports.length >= 1) {
       await Post.deleteOne({ _id: postId });
     }
@@ -55,7 +56,6 @@ exports.createPostReport = async (req, res, next) => {
 
 exports.createUserReport = async (req, res, next) => {
   try {
-    ensureLoggedIn(req, res, () => {});
 
     const userId = req.params.id;
     const { description } = req.body;
@@ -75,9 +75,11 @@ exports.createUserReport = async (req, res, next) => {
     user.reports.push(report);
     await user.save();
 
-    if (user.reports.length >= 2) {
-      user.isBlocked = true;
-      await user.save();
+    const updatedUser = await User.findById(userId).populate('reports');
+
+    if (updatedUser.reports.length >= 2) {
+      updatedUser.isBlocked = true;
+      await updatedUser.save();
     }
 
     res.status(201).json(report);
@@ -88,7 +90,6 @@ exports.createUserReport = async (req, res, next) => {
 
 exports.createOfferReport = async (req, res, next) => {
   try {
-    ensureLoggedIn(req, res, () => {});
 
     const offerId = req.params.id;
     const { description } = req.body;
@@ -113,14 +114,16 @@ exports.createOfferReport = async (req, res, next) => {
       user.reports.push(report);
       await user.save();
 
-      if (offer.reports.length >= 1) {
-        await Offer.deleteOne({ _id: offerId });
-      }
+      const updatedUser = await User.findById(offer.createdBy).populate('reports');
 
-      if (user.reports.length >= 2) {
-        user.isBlocked = true;
-        await user.save();
+      if (updatedUser.reports.length >= 2) {
+        updatedUser.isBlocked = true;
+        await updatedUser.save();
       }
+    }
+
+    if (offer.reports.length >= 1) {
+      await Offer.deleteOne({ _id: offerId });
     }
 
     res.status(201).json(report);

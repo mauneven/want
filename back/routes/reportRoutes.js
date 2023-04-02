@@ -7,5 +7,6 @@ const router = express.Router();
 router.post('/report/post/:id', isLoggedIn, reportController.createPostReport);
 router.post('/report/user/:id', isLoggedIn, reportController.createUserReport);
 router.post('/report/offer/:id', isLoggedIn, reportController.createOfferReport);
+router.post('/offers/:id/report', reportController.createOfferReport);
 
 module.exports = router;
