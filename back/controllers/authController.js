@@ -32,7 +32,7 @@ exports.register = async (req, res, next) => {
       firstName,
       lastName,
       verificationToken: token,
-      verificationTokenExpires: Date.now() + 30 * 1000,
+      verificationTokenExpires: Date.now() + 1800000,
     });
     await user.save();
 
@@ -68,7 +68,7 @@ exports.resendVerification = async (req, res, next) => {
 
     // Store new verification token and expiration time in user document
     user.verificationToken = token;
-    user.verificationTokenExpires = Date.now() + 30 * 1000; // Set new expiration time
+    user.verificationTokenExpires = Date.now() + 1800000; // Set new expiration time
     await user.save();
 
     // Send verification email with the new token
