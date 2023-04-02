@@ -17,6 +17,7 @@ router.post('/reset-password/:token', authController.resetPassword);
 router.put('/change-password', authController.changePassword);
 router.get('/is-blocked', authController.checkBlocked);
 router.post('/verify/:token', authController.verifyUser);
+router.post('/resend-verification', authController.resendVerification);
 router.get('/is-verified', authController.isLoggedIn, authController.checkVerified);
 
 module.exports = router;

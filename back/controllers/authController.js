@@ -23,7 +23,7 @@ exports.register = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Generate verification token
-    const token = await (await bcrypt.hash(Date.now().toString(), 10)).replace("/", "n");
+    const token = await (await bcrypt.hash(Date.now().toString(), 10)).replace(/\//g, "n");
 
     // Create user
     const user = new User({
@@ -32,12 +32,12 @@ exports.register = async (req, res, next) => {
       firstName,
       lastName,
       verificationToken: token,
+      verificationTokenExpires: Date.now() + 30 * 1000,
     });
     await user.save();
 
     // Send verification email
     await sendVerificationEmail(email, token);
-
 
     // Store user data in session
     req.session.userId = user._id;
@@ -48,17 +48,69 @@ exports.register = async (req, res, next) => {
   }
 };
 
+exports.resendVerification = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    // Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).send('User with that email does not exist');
+    }
+
+    // Check if user is already verified
+    if (user.isVerified) {
+      return res.status(400).send('User is already verified');
+    }
+
+    // Generate new verification token
+    const token = await (await bcrypt.hash(Date.now().toString(), 10)).replace(/\//g, "n");
+
+    // Store new verification token and expiration time in user document
+    user.verificationToken = token;
+    user.verificationTokenExpires = Date.now() + 30 * 1000; // Set new expiration time
+    await user.save();
+
+    // Send verification email with the new token
+    await sendVerificationEmail(email, token);
+
+    res.status(200).send('Verification email resent');
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.verifyUser = async (req, res, next) => {
   try {
     const { token } = req.params;
 
-    const user = await User.findOne({ verificationToken: token });
+    const user = await User.findOne({ verificationToken: token, verificationTokenExpires: { $gt: Date.now() } });
     if (!user) {
       return res.status(400).send('Invalid verification token');
     }
 
+    if (user.verificationTokenExpires <= Date.now()) {
+      // Check if the user has requested a new token
+      const newToken = await User.findOne({
+        email: user.email,
+        verificationTokenExpires: { $gt: Date.now() },
+      });
+
+      // If a new token is found, return an error
+      if (newToken) {
+        return res.status(400).send('A new token has been requested. Please use the new token.');
+      } else {
+        return res.status(410).send('Expired verification token');
+      }
+    }
+
+    if (user.isVerified) {
+      return res.status(409).send('Already verified');
+    }
+
     user.isVerified = true;
     user.verificationToken = undefined;
+    user.verificationTokenExpires = undefined;
     await user.save();
 
     res.status(200).send('User successfully verified');
@@ -152,7 +204,7 @@ exports.forgotPassword = async (req, res, next) => {
     }
 
     // Generate reset password token
-    const token = await (await bcrypt.hash(Date.now().toString(), 10)).replace("/", "n");
+    const token = await (await bcrypt.hash(Date.now().toString(), 10)).replace(/\//g, "n");
 
     // Store reset password token and expiration date in user document
     user.resetPasswordToken = token;
