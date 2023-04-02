@@ -12,28 +12,36 @@ export default function MyPosts() {
   const router = useRouter();
 
   useEffect(() => {
-    const checkLoggedInAndBlocked = async () => {
+    const checkLoggedInAndBlockedAndVerified = async () => {
       const loggedInResponse = await fetch('http://localhost:4000/api/is-logged-in', {
         credentials: 'include',
       });
-
+  
       if (!loggedInResponse.ok) {
         router.push('/login');
         return;
       }
-
+  
       const blockedResponse = await fetch('http://localhost:4000/api/is-blocked', {
         credentials: 'include',
       });
-
+  
       if (!blockedResponse.ok) {
         router.push('/blocked');
+        return;
+      }
+  
+      const verifiedResponse = await fetch('http://localhost:4000/api/is-verified', {
+        credentials: 'include',
+      });
+  
+      if (!verifiedResponse.ok) {
+        router.push('/verify-email');
       }
     };
-
-    checkLoggedInAndBlocked();
+  
+    checkLoggedInAndBlockedAndVerified();
   }, []);
-
 
   useEffect(() => {
     const fetchMyPosts = async () => {

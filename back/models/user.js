@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
   isBlocked: {
     type: Boolean,
     default: false
@@ -40,6 +44,7 @@ const userSchema = new mongoose.Schema({
       ref: 'Report'
     }
   ],
+  verificationToken: String,
   resetPasswordToken: String,
   resetPasswordExpires: Date
 });

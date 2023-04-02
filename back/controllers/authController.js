@@ -22,19 +22,46 @@ exports.register = async (req, res, next) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Generate verification token
+    const token = await (await bcrypt.hash(Date.now().toString(), 10)).replace("/", "n");
+
     // Create user
     const user = new User({
       email,
       password: hashedPassword,
       firstName,
-      lastName
+      lastName,
+      verificationToken: token,
     });
     await user.save();
+
+    // Send verification email
+    await sendVerificationEmail(email, token);
+
 
     // Store user data in session
     req.session.userId = user._id;
 
     res.status(201).json(user);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.verifyUser = async (req, res, next) => {
+  try {
+    const { token } = req.params;
+
+    const user = await User.findOne({ verificationToken: token });
+    if (!user) {
+      return res.status(400).send('Invalid verification token');
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    await user.save();
+
+    res.status(200).send('User successfully verified');
   } catch (err) {
     next(err);
   }
@@ -125,7 +152,7 @@ exports.forgotPassword = async (req, res, next) => {
     }
 
     // Generate reset password token
-    const token = await (await bcrypt.hash(Date.now().toString(), 10)).replace("/","n");
+    const token = await (await bcrypt.hash(Date.now().toString(), 10)).replace("/", "n");
 
     // Store reset password token and expiration date in user document
     user.resetPasswordToken = token;
@@ -217,6 +244,54 @@ exports.checkBlocked = async (req, res) => {
           res.status(403).json({ error: 'User is blocked' });
         } else {
           res.status(200).json({ message: 'User is not blocked' });
+        }
+      } else {
+        res.status(404).json({ error: 'User not found' });
+      }
+    } else {
+      res.status(401).json({ error: 'Unauthorized' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const sendVerificationEmail = async (email, verificationToken) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: "wanttests@gmail.com",
+      pass: "hgdxskaqpsunouin"
+    },
+  });
+
+  const mailOptions = {
+    from: 'want <wanttests@gmail.com>',
+    to: email,
+    subject: 'Verifica tu correo electrónico',
+    html: `
+    <p>Please verify your email address by clicking on the following link:</p>
+    <a href="http://localhost:3000/verify-email/${verificationToken}">Verify Email Address</a>
+  `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Verification email sent');
+  } catch (err) {
+    console.error('Error sending verification email:', err);
+  }
+};
+
+exports.checkVerified = async (req, res) => {
+  try {
+    if (req.session.userId) {
+      const user = await User.findById(req.session.userId);
+      if (user) {
+        if (user.isVerified) {
+          res.status(200).json({ message: 'User is verified' });
+        } else {
+          res.status(403).json({ error: 'User is not verified' });
         }
       } else {
         res.status(404).json({ error: 'User not found' });
