@@ -19,7 +19,7 @@ const ChangePassword = () => {
         }
 
         try {
-            const response = await fetch('http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/change-password', {
+            const response = await fetch('want.com.co/api/change-password', {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json',

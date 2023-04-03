@@ -11,7 +11,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   const [totalPosts, setTotalPosts] = useState(0);
 
   const fetchPostsByLocation = async () => {
-    const response = await fetch("http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/posts");
+    const response = await fetch("want.com.co/api/posts");
     let postsData = await response.json();
 
     if (locationFilter) {
@@ -117,7 +117,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
 
   const handleReportPost = async (postId, description) => {
     try {
-      const response = await fetch(`http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/report/post/${postId}`, {
+      const response = await fetch(`want.com.co/api/report/post/${postId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -207,7 +207,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                         : post.description}
                     </p>
                     <Link className="d-flex justify-content-center" href={`/post/[id]`} as={`/post/${post._id}`}>
-                      <button className="offer-btn btn rounded-pill">Ver detalles</button>
+                      <button className="offer-btn btn rounded-pill">View details</button>
                     </Link>
                   </div>
 
@@ -216,7 +216,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
             ))
             : (
               <div className="col-md-12">
-                <p>No se encontraron posts con los filtros aplicados.</p>
+                <p>There are no post's with that information.</p>
               </div>
             )
           : (

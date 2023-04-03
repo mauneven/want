@@ -13,7 +13,7 @@ export default function MyPosts() {
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
-      const loggedInResponse = await fetch('http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/is-logged-in', {
+      const loggedInResponse = await fetch('want.com.co/api/is-logged-in', {
         credentials: 'include',
       });
   
@@ -22,7 +22,7 @@ export default function MyPosts() {
         return;
       }
   
-      const blockedResponse = await fetch('http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/is-blocked', {
+      const blockedResponse = await fetch('want.com.co/api/is-blocked', {
         credentials: 'include',
       });
   
@@ -31,7 +31,7 @@ export default function MyPosts() {
         return;
       }
   
-      const verifiedResponse = await fetch('http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/is-verified', {
+      const verifiedResponse = await fetch('want.com.co/api/is-verified', {
         credentials: 'include',
       });
   
@@ -45,7 +45,7 @@ export default function MyPosts() {
 
   useEffect(() => {
     const fetchMyPosts = async () => {
-      const response = await fetch('http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/my-posts', {
+      const response = await fetch('want.com.co/api/my-posts', {
         credentials: 'include',
       });
 
@@ -60,7 +60,7 @@ export default function MyPosts() {
 
   const handleDeletePost = async () => {
     try {
-      const response = await fetch(`http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/posts/${selectedPostId}`, {
+      const response = await fetch(`want.com.co/api/posts/${selectedPostId}`, {
         method: 'DELETE',
         credentials: 'include',
       });

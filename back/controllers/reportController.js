@@ -64,7 +64,7 @@ exports.createPostReport = async (req, res, next) => {
       }
     }
 
-    if (post.reports.length >= 1) {
+    if (post.reports.length >= 5) {
       // Eliminar la imagen asociada con el post
       if (post.photo) {
         const imagePath = path.join(__dirname, '..', post.photo);
@@ -110,7 +110,7 @@ exports.createUserReport = async (req, res, next) => {
 
     const updatedUser = await User.findById(userId).populate('reports');
 
-    if (updatedUser.reports.length >= 2) {
+    if (updatedUser.reports.length >= 15) {
       updatedUser.isBlocked = true;
       await updatedUser.save();
     }
@@ -149,7 +149,7 @@ exports.createOfferReport = async (req, res, next) => {
 
       const updatedUser = await User.findById(offer.createdBy).populate('reports');
 
-      if (updatedUser.reports.length >= 2) {
+      if (updatedUser.reports.length >= 15) {
         updatedUser.isBlocked = true;
         await updatedUser.save();
       }
