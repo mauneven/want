@@ -8,7 +8,7 @@ export default function sentOffers() {
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
-      const loggedInResponse = await fetch('http://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/is-logged-in', {
+      const loggedInResponse = await fetch('http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/is-logged-in', {
         credentials: 'include',
       });
   
@@ -17,7 +17,7 @@ export default function sentOffers() {
         return;
       }
   
-      const blockedResponse = await fetch('http://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/is-blocked', {
+      const blockedResponse = await fetch('http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/is-blocked', {
         credentials: 'include',
       });
   
@@ -26,7 +26,7 @@ export default function sentOffers() {
         return;
       }
   
-      const verifiedResponse = await fetch('http://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/is-verified', {
+      const verifiedResponse = await fetch('http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/is-verified', {
         credentials: 'include',
       });
   
@@ -40,7 +40,7 @@ export default function sentOffers() {
 
   useEffect(() => {
     const fetchMyOffers = async () => {
-      const response = await fetch('http://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/my-offers', {
+      const response = await fetch('http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/my-offers', {
         credentials: 'include',
       });
 

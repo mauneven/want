@@ -112,7 +112,7 @@ export default function MegaMenu({
 
   useEffect(() => {
     const checkSession = async () => {
-      const response = await fetch("http://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/user", {
+      const response = await fetch("http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/user", {
         method: "GET",
         credentials: "include",
       });

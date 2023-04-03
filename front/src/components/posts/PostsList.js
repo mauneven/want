@@ -11,7 +11,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   const [totalPosts, setTotalPosts] = useState(0);
 
   const fetchPostsByLocation = async () => {
-    const response = await fetch("http://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/posts");
+    const response = await fetch("http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/posts");
     let postsData = await response.json();
 
     if (locationFilter) {
@@ -117,7 +117,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
 
   const handleReportPost = async (postId, description) => {
     try {
-      const response = await fetch(`http://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/report/post/${postId}`, {
+      const response = await fetch(`http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/report/post/${postId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

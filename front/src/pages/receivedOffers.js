@@ -11,7 +11,7 @@ export default function ReceivedOffers() {
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
-      const loggedInResponse = await fetch('http://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/is-logged-in', {
+      const loggedInResponse = await fetch('http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/is-logged-in', {
         credentials: 'include',
       });
   
@@ -20,7 +20,7 @@ export default function ReceivedOffers() {
         return;
       }
   
-      const blockedResponse = await fetch('http://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/is-blocked', {
+      const blockedResponse = await fetch('http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/is-blocked', {
         credentials: 'include',
       });
   
@@ -29,7 +29,7 @@ export default function ReceivedOffers() {
         return;
       }
   
-      const verifiedResponse = await fetch('http://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/is-verified', {
+      const verifiedResponse = await fetch('http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/is-verified', {
         credentials: 'include',
       });
   
@@ -43,7 +43,7 @@ export default function ReceivedOffers() {
 
   useEffect(() => {
     const fetchReceivedOffers = async () => {
-      const response = await fetch('http://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/received', {
+      const response = await fetch('http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/received', {
         credentials: 'include',
       });
 
@@ -58,7 +58,7 @@ export default function ReceivedOffers() {
 
   const handleReportOffer = async (offerId, description) => {
     try {
-      const response = await fetch(`http://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/offers/${offerId}/report`, {
+      const response = await fetch(`http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/offers/${offerId}/report`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ export default function ReceivedOffers() {
 
   const handleDeleteOffer = async () => {
     try {
-      const response = await fetch(`http://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/${selectedOfferId}`, {
+      const response = await fetch(`http://ec2-34-192-108-182.compute-1.amazonaws.com:4000/api/${selectedOfferId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
