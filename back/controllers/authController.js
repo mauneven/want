@@ -167,25 +167,23 @@ exports.logout = async (req, res, next) => {
 
 exports.sendResetPasswordEmail = async ({ email, token }) => {
   // create reusable transporter object using the default SMTP transport
-  let transporter = nodemailer.createTransport({
-    host: "sandbox.smtp.mailtrap.io",
-    port: 2525,
-    //secure: true, // true for 2525, false for other ports
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
     auth: {
-      user: "771665ecc3651e",
-      pass: "7b644c3d808283"
-    }
+      user: "wanttests@gmail.com",
+      pass: "hgdxskaqpsunouin"
+    },
   });
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: 'want <want-support@gmail.com>', // sender address
+    from: 'Want Password <wanttests@gmail.com>', // sender address
     to: email, // list of receivers
     subject: 'Password Reset Request', // Subject line
     html: `
       <p>You have requested a password reset for your account. Please follow the link below to reset your password:</p>
-      <a href="http://http://want.com.co/recoveryPassword/${token}">Reset Password</a>
-      <p>"http://http://want.com.co/recoveryPassword/${token}"></p>
+      <a href="http://want.com.co/recoveryPassword/${token}">Reset Password</a>
+      <p>"http://want.com.co/recoveryPassword/${token}"></p>
       <p>If you did not make this request, please ignore this email and your password will remain unchanged.</p>
     `
   });
@@ -318,9 +316,9 @@ const sendVerificationEmail = async (email, verificationToken) => {
   });
 
   const mailOptions = {
-    from: 'want <wanttests@gmail.com>',
+    from: 'Want Account <wanttests@gmail.com>',
     to: email,
-    subject: 'Verifica tu correo electrónico',
+    subject: 'Verify your account',
     html: `
     <p>Please verify your email address by clicking on the following link:</p>
     <a href="http://want.com.co/verify-email/${verificationToken}">Verify Email Address</a>

@@ -31,7 +31,7 @@ export default function MyPosts() {
         return;
       }
   
-      const verifiedResponse = await fetch('http://want.com.co/api/is-verified', {
+      const verifiedResponse = await fetch('http://want.com.co/api/is-not-verified', {
         credentials: 'include',
       });
   
