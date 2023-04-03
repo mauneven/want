@@ -31,7 +31,7 @@ const EditPost = () => {
 
     useEffect(() => {
         const checkLoggedIn = async () => {
-            const response = await fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com/api/is-logged-in', {
+            const response = await fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/is-logged-in', {
                 credentials: 'include',
             });
 
@@ -45,11 +45,11 @@ const EditPost = () => {
 
     useEffect(() => {
         if (id) {
-            fetch(`https://ec2-100-25-111-207.compute-1.amazonaws.com/api/posts/${id}`)
+            fetch(`https://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/posts/${id}`)
                 .then((response) => response.json())
                 .then((data) => {
                     // Verificar si el usuario actual es el propietario del post
-                    fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com/api/user')
+                    fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/user')
                         .then((res) => res.json())
                         .then((user) => {
                             if (user._id !== data.createdBy) {
@@ -124,7 +124,7 @@ const EditPost = () => {
                 formData.append('photo', imageFile);
             }
 
-            const response = await fetch(`https://ec2-100-25-111-207.compute-1.amazonaws.com/api/posts/${id}`, {
+            const response = await fetch(`https://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/posts/${id}`, {
                 method: 'PUT',
                 credentials: 'include',
                 body: formData,

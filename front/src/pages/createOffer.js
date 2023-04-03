@@ -16,7 +16,7 @@ const CreateOffer = () => {
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
-      const loggedInResponse = await fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com/api/is-logged-in', {
+      const loggedInResponse = await fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/is-logged-in', {
         credentials: 'include',
       });
   
@@ -25,7 +25,7 @@ const CreateOffer = () => {
         return;
       }
   
-      const blockedResponse = await fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com/api/is-blocked', {
+      const blockedResponse = await fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/is-blocked', {
         credentials: 'include',
       });
   
@@ -34,7 +34,7 @@ const CreateOffer = () => {
         return;
       }
   
-      const verifiedResponse = await fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com/api/is-verified', {
+      const verifiedResponse = await fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/is-verified', {
         credentials: 'include',
       });
   
@@ -49,7 +49,7 @@ const CreateOffer = () => {
   useEffect(() => {
     const fetchPost = async () => {
       // Llama a la API para obtener el post por ID.
-      const response = await fetch(`https://ec2-100-25-111-207.compute-1.amazonaws.com/api/posts/${postId}`);
+      const response = await fetch(`https://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/posts/${postId}`);
       const data = await response.json();
       setPost(data);
     };
@@ -85,7 +85,7 @@ const CreateOffer = () => {
 
     try {
       // Llama a la API para crear la oferta
-      const response = await fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com/api/create', {
+      const response = await fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/create', {
         method: 'POST',
         headers: {
             Accept: 'application/json'

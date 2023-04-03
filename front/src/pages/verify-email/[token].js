@@ -9,7 +9,7 @@ const VerifyEmail = () => {
 
   useEffect(() => {
     if (token) {
-      fetch(`https://ec2-100-25-111-207.compute-1.amazonaws.com/api/verify/${token}`, { method: 'POST' })
+      fetch(`https://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/verify/${token}`, { method: 'POST' })
         .then(async (response) => {
           if (response.status === 200) {
             setVerificationMessage('Acabas de verificarte, ya puedes postear.');
@@ -32,7 +32,7 @@ const VerifyEmail = () => {
     e.preventDefault();
 
     // Reemplazar esta URL con la URL de tu API que maneja el reenvío de verificación
-    const response = await fetch(`https://ec2-100-25-111-207.compute-1.amazonaws.com/api/resend-verification`, {
+    const response = await fetch(`https://ec2-100-25-111-207.compute-1.amazonaws.com:4000/api/resend-verification`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
