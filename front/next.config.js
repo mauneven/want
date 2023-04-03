@@ -1,7 +1,6 @@
 module.exports = {
-  reactStrictMode: true,
-  server: {
-    port: 80,
-    host: '0.0.0.0',
+  serverRuntimeConfig: {
+    host: "0.0.0.0",
+    port: 3000,
   },
 };
