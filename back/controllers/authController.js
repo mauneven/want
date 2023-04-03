@@ -323,7 +323,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
     subject: 'Verifica tu correo electrónico',
     html: `
     <p>Please verify your email address by clicking on the following link:</p>
-    <a href="http://http://want.com.co/verify-email/${verificationToken}">Verify Email Address</a>
+    <a href="http://want.com.co/verify-email/${verificationToken}">Verify Email Address</a>
   `,
   };
 
