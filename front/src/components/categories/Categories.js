@@ -7,7 +7,7 @@ const categories = [  { id: 1, name: 'Technology', subcategories: ['Computers', 
   { id: 4, name: 'Health & Beauty', subcategories: ['Makeup', 'Skin Care', 'Hair Care', 'Fragrances', 'Personal Hygiene', 'Supplements & Vitamins', 'Medical Equipment', 'Massagers & Relaxation'] },
   { id: 5, name: 'Vehicles', subcategories: ['Cars', 'Motorcycles', 'SUVs', 'Trucks', 'Bicycles', 'Boats', 'Airplanes', 'Helicopters'] },
   { id: 6, name: 'Home & Garden', subcategories: ['Furniture', 'Decor', 'Lighting', 'Bathroom', 'Kitchen & Dining', 'Outdoor & Garden', 'Cleaning Supplies'] },
-  { id: 7, name: 'Streaming', subcategories: ['Netflix', 'Spotify', 'Apple Music', 'HBO Max', 'Crunchyroll', 'Tidal', 'Amazon Prime Video', 'Disney+'] },
+  { id: 7, name: 'Subscriptions', subcategories: ['Netflix', 'Spotify', 'Apple Music', 'HBO Max', 'Crunchyroll', 'Tidal', 'Amazon Prime Video', 'Disney+', 'Xbox Game Pass', 'Play Station Plus', 'Discord Nitro'] },
   { id: 8, name: 'Heavy Machinery', subcategories: ['Tippers', 'Excavators', 'Motor Graders', 'Backhoes', 'Forklifts', 'Cranes', 'Bulldozers', 'Front-End Loaders'] },
 ];
 
