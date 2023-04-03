@@ -15,9 +15,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-  origin: 'http://www.want.com.co:3000',
+  origin: ['http://www.want.com.co:3000', 'http://34.199.141.195:3000', 'http://localhost:3000'],
   credentials: true
 }));
+
 app.use('/uploads', express.static('uploads'));
 app.use(session({
   secret: 'my-secret',
