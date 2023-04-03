@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-  origin: ['http://www.want.com.co:3000', 'https://34.192.108.182/3000', 'https://34.192.108.182/3000', 'http://localhost:3000', 'http://ec2-34-192-108-182.compute-1.amazonaws.com:3000', 'https://ec2-34-192-108-182.compute-1.amazonaws.com:3000/'],
+  origin: ['http://www.want.com.co:3000', 'https://www.want.com.co:3000', 'http://34.192.108.182:3000', 'https://34.192.108.182:3000', 'http://localhost:3000', 'http://ec2-34-192-108-182.compute-1.amazonaws.com:3000', 'https://ec2-34-192-108-182.compute-1.amazonaws.com:3000/'],
   credentials: true
 }));
 
