@@ -31,7 +31,7 @@ const EditPost = () => {
 
     useEffect(() => {
         const checkLoggedIn = async () => {
-            const response = await fetch('http://localhost:4000/api/is-logged-in', {
+            const response = await fetch('http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/is-logged-in', {
                 credentials: 'include',
             });
 
@@ -45,11 +45,11 @@ const EditPost = () => {
 
     useEffect(() => {
         if (id) {
-            fetch(`http://localhost:4000/api/posts/${id}`)
+            fetch(`http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/posts/${id}`)
                 .then((response) => response.json())
                 .then((data) => {
                     // Verificar si el usuario actual es el propietario del post
-                    fetch('http://localhost:4000/api/user')
+                    fetch('http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/user')
                         .then((res) => res.json())
                         .then((user) => {
                             if (user._id !== data.createdBy) {
@@ -124,7 +124,7 @@ const EditPost = () => {
                 formData.append('photo', imageFile);
             }
 
-            const response = await fetch(`http://localhost:4000/api/posts/${id}`, {
+            const response = await fetch(`http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/posts/${id}`, {
                 method: 'PUT',
                 credentials: 'include',
                 body: formData,

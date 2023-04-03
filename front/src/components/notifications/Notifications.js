@@ -13,14 +13,14 @@ export default function Notifications() {
       console.error('Error: postId is undefined');
       return '';
     }
-    const response = await fetch(`http://localhost:4000/api/posts/${postId}`);
+    const response = await fetch(`http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/posts/${postId}`);
     const data = await response.json();
     return data.title;
   };
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      const response = await fetch('http://localhost:4000/api/notifications', {
+      const response = await fetch('http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/notifications', {
         credentials: 'include',
       });
 
@@ -44,7 +44,7 @@ export default function Notifications() {
     setUnreadNotifications(unreadNotifications.filter((notification) => notification._id !== notificationId));
 
     // Marcar la notificación como leída en el servidor
-    await fetch(`http://localhost:4000/api/notifications/${notificationId}/read`, {
+    await fetch(`http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/notifications/${notificationId}/read`, {
       method: 'PATCH',
       credentials: 'include',
     });

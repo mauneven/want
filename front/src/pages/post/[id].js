@@ -11,7 +11,7 @@ const PostDetails = () => {
   useEffect(() => {
     const fetchPost = async () => {
       // Llama a la API para obtener el post por ID.
-      const response = await fetch(`http://localhost:4000/api/posts/${id}`);
+      const response = await fetch(`http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/posts/${id}`);
       const data = await response.json();
       setPost(data);
     };

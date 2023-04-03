@@ -19,7 +19,7 @@ const ResetPassword = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:4000/api/reset-password/${token}`, {
+      const response = await fetch(`http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/reset-password/${token}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

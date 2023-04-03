@@ -10,7 +10,7 @@ const PasswordRecovery = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:4000/api/forgot-password', {
+      const response = await fetch('http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
