@@ -31,7 +31,7 @@ const EditPost = () => {
 
     useEffect(() => {
         const checkLoggedIn = async () => {
-            const response = await fetch('want.com.co/api/is-logged-in', {
+            const response = await fetch('http://want.com.co/api/is-logged-in', {
                 credentials: 'include',
             });
 
@@ -45,11 +45,11 @@ const EditPost = () => {
 
     useEffect(() => {
         if (id) {
-            fetch(`want.com.co/api/posts/${id}`)
+            fetch(`http://want.com.co/api/posts/${id}`)
                 .then((response) => response.json())
                 .then((data) => {
                     // Verificar si el usuario actual es el propietario del post
-                    fetch('want.com.co/api/user')
+                    fetch('http://want.com.co/api/user')
                         .then((res) => res.json())
                         .then((user) => {
                             if (user._id !== data.createdBy) {
@@ -69,7 +69,7 @@ const EditPost = () => {
                     setPrice(data.price);
                     setMainCategory(data.mainCategory);
                     setSubCategory(data.subCategory);
-                    setPhotoUrl(`http://localhost:4000/${data.photo}`);
+                    setPhotoUrl(`http://want.com.co/${data.photo}`);
                 });
         }
     }, [id]);
@@ -124,7 +124,7 @@ const EditPost = () => {
                 formData.append('photo', imageFile);
             }
 
-            const response = await fetch(`want.com.co/api/posts/${id}`, {
+            const response = await fetch(`http://want.com.co/api/posts/${id}`, {
                 method: 'PUT',
                 credentials: 'include',
                 body: formData,

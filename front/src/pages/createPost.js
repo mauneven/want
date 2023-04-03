@@ -27,7 +27,7 @@ const CreatePost = () => {
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
-      const loggedInResponse = await fetch('want.com.co/api/is-logged-in', {
+      const loggedInResponse = await fetch('http://want.com.co/api/is-logged-in', {
         credentials: 'include',
       });
   
@@ -36,7 +36,7 @@ const CreatePost = () => {
         return;
       }
   
-      const blockedResponse = await fetch('want.com.co/api/is-blocked', {
+      const blockedResponse = await fetch('http://want.com.co/api/is-blocked', {
         credentials: 'include',
       });
   
@@ -45,7 +45,7 @@ const CreatePost = () => {
         return;
       }
   
-      const verifiedResponse = await fetch('want.com.co/api/is-verified', {
+      const verifiedResponse = await fetch('http://want.com.co/api/is-verified', {
         credentials: 'include',
       });
   
@@ -101,7 +101,7 @@ const CreatePost = () => {
     }
   
     try {
-      const response = await fetch('want.com.co/api/posts', {
+      const response = await fetch('http://want.com.co/api/posts', {
         method: 'POST',
         headers: {
           Accept: 'application/json'

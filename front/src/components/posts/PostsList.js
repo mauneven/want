@@ -11,7 +11,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   const [totalPosts, setTotalPosts] = useState(0);
 
   const fetchPostsByLocation = async () => {
-    const response = await fetch("want.com.co/api/posts");
+    const response = await fetch("http://want.com.co/api/posts");
     let postsData = await response.json();
 
     if (locationFilter) {
@@ -117,7 +117,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
 
   const handleReportPost = async (postId, description) => {
     try {
-      const response = await fetch(`want.com.co/api/report/post/${postId}`, {
+      const response = await fetch(`http://want.com.co/api/report/post/${postId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -189,7 +189,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                   {post.photo && (
                     <div style={{ height: "200px", overflow: "hidden" }}>
                       <img
-                        src={`http://localhost:4000/${post.photo}`}
+                        src={`http://want.com.co/${post.photo}`}
                         className="card-img-top"
                         alt={post.title}
                         style={{ objectFit: "cover", height: "100%" }}

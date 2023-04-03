@@ -19,7 +19,7 @@ const ChangePassword = () => {
         }
 
         try {
-            const response = await fetch('want.com.co/api/change-password', {
+            const response = await fetch('http://want.com.co/api/change-password', {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json',

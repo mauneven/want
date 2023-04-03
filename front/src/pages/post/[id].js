@@ -11,7 +11,7 @@ const PostDetails = () => {
   useEffect(() => {
     const fetchPost = async () => {
       // Llama a la API para obtener el post por ID.
-      const response = await fetch(`want.com.co/api/posts/${id}`);
+      const response = await fetch(`http://want.com.co/api/posts/${id}`);
       const data = await response.json();
       setPost(data);
     };
@@ -30,7 +30,7 @@ const PostDetails = () => {
       <div className="row">
         <div className="col-lg-6">
           <img
-            src={`http://localhost:4000/${post.photo}`}
+            src={`http://want.com.co/${post.photo}`}
             className="card-img-top"
             alt={post.title}
             style={{ objectFit: "cover", height: "100%" }}

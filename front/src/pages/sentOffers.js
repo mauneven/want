@@ -8,7 +8,7 @@ export default function sentOffers() {
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
-      const loggedInResponse = await fetch('want.com.co/api/is-logged-in', {
+      const loggedInResponse = await fetch('http://want.com.co/api/is-logged-in', {
         credentials: 'include',
       });
   
@@ -17,7 +17,7 @@ export default function sentOffers() {
         return;
       }
   
-      const blockedResponse = await fetch('want.com.co/api/is-blocked', {
+      const blockedResponse = await fetch('http://want.com.co/api/is-blocked', {
         credentials: 'include',
       });
   
@@ -26,7 +26,7 @@ export default function sentOffers() {
         return;
       }
   
-      const verifiedResponse = await fetch('want.com.co/api/is-verified', {
+      const verifiedResponse = await fetch('http://want.com.co/api/is-verified', {
         credentials: 'include',
       });
   
@@ -40,7 +40,7 @@ export default function sentOffers() {
 
   useEffect(() => {
     const fetchMyOffers = async () => {
-      const response = await fetch('want.com.co/api/my-offers', {
+      const response = await fetch('http://want.com.co/api/my-offers', {
         credentials: 'include',
       });
 

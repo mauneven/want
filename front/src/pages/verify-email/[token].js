@@ -9,7 +9,7 @@ const VerifyEmail = () => {
 
   useEffect(() => {
     if (token) {
-      fetch(`want.com.co/api/verify/${token}`, { method: 'POST' })
+      fetch(`http://want.com.co/api/verify/${token}`, { method: 'POST' })
         .then(async (response) => {
           if (response.status === 200) {
             setVerificationMessage('Acabas de verificarte, ya puedes postear.');
@@ -32,7 +32,7 @@ const VerifyEmail = () => {
     e.preventDefault();
 
     // Reemplazar esta URL con la URL de tu API que maneja el reenvío de verificación
-    const response = await fetch(`want.com.co/api/resend-verification`, {
+    const response = await fetch(`http://want.com.co/api/resend-verification`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
