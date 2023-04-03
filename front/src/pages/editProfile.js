@@ -15,7 +15,7 @@ const EditProfile = () => {
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
-      const loggedInResponse = await fetch('http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/is-logged-in', {
+      const loggedInResponse = await fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com/api/is-logged-in', {
         credentials: 'include',
       });
   
@@ -24,7 +24,7 @@ const EditProfile = () => {
         return;
       }
   
-      const blockedResponse = await fetch('http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/is-blocked', {
+      const blockedResponse = await fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com/api/is-blocked', {
         credentials: 'include',
       });
   
@@ -33,7 +33,7 @@ const EditProfile = () => {
         return;
       }
   
-      const verifiedResponse = await fetch('http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/is-verified', {
+      const verifiedResponse = await fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com/api/is-verified', {
         credentials: 'include',
       });
   
@@ -46,7 +46,7 @@ const EditProfile = () => {
   }, []);
 
   useEffect(() => {
-    fetch('http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/user', { credentials: 'include' })
+    fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com/api/user', { credentials: 'include' })
       .then((response) => {
         if (!response.ok) {
           // Si el usuario no está autenticado, redirigir a la página de inicio de sesión
@@ -104,7 +104,7 @@ const EditProfile = () => {
         formData.append('photo', photo);
       }
 
-      const response = await fetch('http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/users/me', {
+      const response = await fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com/api/users/me', {
         method: 'PUT',
         credentials: 'include',
         body: formData

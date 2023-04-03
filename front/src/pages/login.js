@@ -27,7 +27,7 @@ export default function Login() {
       password,
       ...(isLogin ? {} : { firstName, lastName, phone, birthdate }),
     };
-    const response = await fetch(`http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/${isLogin ? 'login' : 'register'}`, {
+    const response = await fetch(`https://ec2-100-25-111-207.compute-1.amazonaws.com/api/${isLogin ? 'login' : 'register'}`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -44,7 +44,7 @@ export default function Login() {
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
-      const loggedInResponse = await fetch('http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/is-logged-in', {
+      const loggedInResponse = await fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com/api/is-logged-in', {
         credentials: 'include',
       });
   
@@ -53,7 +53,7 @@ export default function Login() {
         return;
       }
   
-      const blockedResponse = await fetch('http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/is-blocked', {
+      const blockedResponse = await fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com/api/is-blocked', {
         credentials: 'include',
       });
   
@@ -62,7 +62,7 @@ export default function Login() {
         return;
       }
   
-      const verifiedResponse = await fetch('http://ec2-3-89-21-249.compute-1.amazonaws.com:4000/api/is-verified', {
+      const verifiedResponse = await fetch('https://ec2-100-25-111-207.compute-1.amazonaws.com/api/is-verified', {
         credentials: 'include',
       });
   
