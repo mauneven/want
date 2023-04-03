@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'http://ec2-3-89-21-249.compute-1.amazonaws.com:3000',
   credentials: true
 }));
 app.use('/uploads', express.static('uploads'));
