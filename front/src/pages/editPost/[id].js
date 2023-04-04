@@ -32,15 +32,6 @@ const EditPost = () => {
 
     useEffect(() => {
         const fetchCurrentUserAndPost = async () => {
-            const response = await fetch('http://want.com.co/api/is-logged-in', {
-                credentials: 'include',
-            });
-
-            if (!response.ok) {
-                router.push('/login');
-                return;
-            }
-
             if (id) {
                 try {
                     const postResponse = await fetch(`http://want.com.co/api/posts/${id}`);
@@ -90,7 +81,7 @@ const EditPost = () => {
         const file = e.target.files[0];
         if (file) {
             setImageFile(file);
-            setPreviewImage(URL.createObjectURL(file)); // Cambiar aquí
+            setPreviewImage(URL.createObjectURL(file));
         }
     };
 
