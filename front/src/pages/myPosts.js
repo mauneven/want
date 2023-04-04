@@ -132,7 +132,7 @@ export default function MyPosts() {
                   >
                     <i className="bi bi-trash-fill">Delete this post</i>
                   </button>
-                  <Link href={`/editPost/uploads/${post._id}`}>
+                  <Link href={`/editPost/${post._id}`}>
                       <button className="ms-2 text-decoration-none btn btn-outline-success btn-sm">
                         <i className="bi bi-pencil-fill">Edit post</i>
                       </button>
