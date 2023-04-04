@@ -27,7 +27,7 @@ export default function Login() {
       password,
       ...(isLogin ? {} : { firstName, lastName, phone, birthdate }),
     };
-    const response = await fetch(`http://want.com.co/api/${isLogin ? 'login' : 'register'}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/${isLogin ? 'login' : 'register'}`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -44,7 +44,7 @@ export default function Login() {
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
-      const loggedInResponse = await fetch('http://want.com.co/api/is-logged-in', {
+      const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
         credentials: 'include',
       });
   
@@ -53,7 +53,7 @@ export default function Login() {
         return;
       }
   
-      const blockedResponse = await fetch('http://want.com.co/api/is-blocked', {
+      const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
         credentials: 'include',
       });
   
@@ -62,7 +62,7 @@ export default function Login() {
         return;
       }
   
-      const verifiedResponse = await fetch('http://want.com.co/api/check-verified', {
+      const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
         credentials: 'include',
       });
   

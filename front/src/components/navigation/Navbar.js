@@ -112,7 +112,7 @@ export default function MegaMenu({
 
   useEffect(() => {
     const checkSession = async () => {
-      const response = await fetch("http://want.com.co/api/user", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`, {
         method: "GET",
         credentials: "include",
       });
@@ -140,7 +140,7 @@ export default function MegaMenu({
 
   function getUserImageUrl() {
     if (user && user.photo) {
-      return `http://want.com.co/${user.photo}`;
+      return `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}`;
     }
   }
 
@@ -206,7 +206,7 @@ export default function MegaMenu({
                     <img
                       src={
                         user.photo
-                          ? `http://want.com.co/${user.photo}`
+                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}`
                           : "icons/person-circle.svg"
                       }
                       alt="Profile"

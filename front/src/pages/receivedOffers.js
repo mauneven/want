@@ -11,7 +11,7 @@ export default function ReceivedOffers() {
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
-      const loggedInResponse = await fetch('http://want.com.co/api/is-logged-in', {
+      const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
         credentials: 'include',
       });
   
@@ -20,7 +20,7 @@ export default function ReceivedOffers() {
         return;
       }
   
-      const blockedResponse = await fetch('http://want.com.co/api/is-blocked', {
+      const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
         credentials: 'include',
       });
   
@@ -29,7 +29,7 @@ export default function ReceivedOffers() {
         return;
       }
   
-      const verifiedResponse = await fetch('http://want.com.co/api/check-verified', {
+      const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
         credentials: 'include',
       });
   
@@ -43,7 +43,7 @@ export default function ReceivedOffers() {
 
   useEffect(() => {
     const fetchReceivedOffers = async () => {
-      const response = await fetch('http://want.com.co/api/received', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/received`, {
         credentials: 'include',
       });
 
@@ -58,7 +58,7 @@ export default function ReceivedOffers() {
 
   const handleReportOffer = async (offerId, description) => {
     try {
-      const response = await fetch(`http://want.com.co/api/offers/${offerId}/report`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/offers/${offerId}/report`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ export default function ReceivedOffers() {
 
   const handleDeleteOffer = async () => {
     try {
-      const response = await fetch(`http://want.com.co/api/${selectedOfferId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/${selectedOfferId}`, {
         method: 'DELETE',
         credentials: 'include',
       });

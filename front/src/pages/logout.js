@@ -3,14 +3,14 @@ import { useEffect } from 'react';
 export default function Logout() {
   useEffect(() => {
     const logout = async () => {
-      const response = await fetch('http://want.com.co/api/logout', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/logout`, {
         method: 'POST',
         credentials: 'include',
       });
 
       if (response.ok) {
         // Eliminamos el estado del usuario tanto en el servidor como en el cliente
-        await fetch('http://want.com.co/api/user/logout', {
+        await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/logout`, {
           method: 'POST',
           credentials: 'include',
         });

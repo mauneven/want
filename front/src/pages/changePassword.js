@@ -12,7 +12,7 @@ const ChangePassword = () => {
 
     useEffect(() => {
         const checkLoggedInAndBlockedAndVerified = async () => {
-          const loggedInResponse = await fetch('http://want.com.co/api/is-logged-in', {
+          const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
             credentials: 'include',
           });
       
@@ -21,7 +21,7 @@ const ChangePassword = () => {
             return;
           }
       
-          const blockedResponse = await fetch('http://want.com.co/api/is-blocked', {
+          const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
             credentials: 'include',
           });
       
@@ -30,7 +30,7 @@ const ChangePassword = () => {
             return;
           }
       
-          const verifiedResponse = await fetch('http://want.com.co/api/check-verified', {
+          const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
             credentials: 'include',
           });
       
@@ -51,7 +51,7 @@ const ChangePassword = () => {
         }
 
         try {
-            const response = await fetch('http://want.com.co/api/change-password', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/change-password`, {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json',

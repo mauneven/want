@@ -13,14 +13,14 @@ export default function Notifications() {
       console.error('Error: postId is undefined');
       return '';
     }
-    const response = await fetch(`http://want.com.co/api/posts/${postId}`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`);
     const data = await response.json();
     return data.title;
   };
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      const response = await fetch('http://want.com.co/api/notifications', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/notifications`, {
         credentials: 'include',
       });
 
@@ -44,7 +44,7 @@ export default function Notifications() {
     setUnreadNotifications(unreadNotifications.filter((notification) => notification._id !== notificationId));
 
     // Marcar la notificación como leída en el servidor
-    await fetch(`http://want.com.co/api/notifications/${notificationId}/read`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/notifications/${notificationId}/read`, {
       method: 'PATCH',
       credentials: 'include',
     });

@@ -182,8 +182,8 @@ exports.sendResetPasswordEmail = async ({ email, token }) => {
     subject: 'Password Reset Request', // Subject line
     html: `
       <p>You have requested a password reset for your account. Please follow the link below to reset your password:</p>
-      <a href="http://want.com.co/recoveryPassword/${token}">Reset Password</a>
-      <p>"http://want.com.co/recoveryPassword/${token}"></p>
+      <a href="${process.env.NEXT_PUBLIC_API_BASE_URL}/recoveryPassword/${token}">Reset Password</a>
+      <p>"${process.env.NEXT_PUBLIC_API_BASE_URL}/recoveryPassword/${token}"></p>
       <p>If you did not make this request, please ignore this email and your password will remain unchanged.</p>
     `
   });
@@ -321,7 +321,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
     subject: 'Verify your account',
     html: `
     <p>Please verify your email address by clicking on the following link:</p>
-    <a href="http://want.com.co/verify-email/${verificationToken}">Verify Email Address</a>
+    <a href="${process.env.NEXT_PUBLIC_API_BASE_URL}/verify-email/${verificationToken}">Verify Email Address</a>
   `,
   };
 

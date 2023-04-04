@@ -13,7 +13,7 @@ export default function MyPosts() {
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
-      const loggedInResponse = await fetch('http://want.com.co/api/is-logged-in', {
+      const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
         credentials: 'include',
       });
   
@@ -22,7 +22,7 @@ export default function MyPosts() {
         return;
       }
   
-      const blockedResponse = await fetch('http://want.com.co/api/is-blocked', {
+      const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
         credentials: 'include',
       });
   
@@ -31,7 +31,7 @@ export default function MyPosts() {
         return;
       }
   
-      const verifiedResponse = await fetch('http://want.com.co/api/check-verified', {
+      const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
         credentials: 'include',
       });
   
@@ -45,7 +45,7 @@ export default function MyPosts() {
 
   useEffect(() => {
     const fetchMyPosts = async () => {
-      const response = await fetch('http://want.com.co/api/my-posts', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/my-posts`, {
         credentials: 'include',
       });
 
@@ -60,7 +60,7 @@ export default function MyPosts() {
 
   const handleDeletePost = async () => {
     try {
-      const response = await fetch(`http://want.com.co/api/posts/${selectedPostId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${selectedPostId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -103,7 +103,7 @@ export default function MyPosts() {
                 {post.photo && (
                   <div style={{ height: "200px", overflow: "hidden" }}>
                     <img
-                      src={`http://want.com.co/${post.photo}`}
+                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.photo}`}
                       className="card-img-top"
                       alt={post.title}
                       style={{ objectFit: "cover", height: "100%" }}

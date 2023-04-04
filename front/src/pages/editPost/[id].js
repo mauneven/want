@@ -9,6 +9,8 @@ const EditPost = () => {
     const { id } = router.query;
 
     const [post, setPost] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null);
+    const [isPostLoaded, setIsPostLoaded] = useState(false);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [country, setCountry] = useState('');
@@ -29,52 +31,36 @@ const EditPost = () => {
     const [previewPrice, setPreviewPrice] = useState('');
     const [previewImage, setPreviewImage] = useState(null);
     const [photoUrl, setPhotoUrl] = useState(null);
+    const [isDataLoaded, setIsDataLoaded] = useState(false);
 
     useEffect(() => {
-        const fetchCurrentUserAndPost = async () => {
-            if (id) {
-                try {
-                    const postResponse = await fetch(`http://want.com.co/api/posts/${id}`);
-                    const postData = await postResponse.json();
-                    
-                    const userResponse = await fetch('http://want.com.co/api/user');
-                    const user = await userResponse.json();
-    
-                    if (user._id !== postData.createdBy) {
-                        router.push('/404');
-                    } else {
-                        setPost(postData);
-                        setTitle(postData.title);
-                        setDescription(postData.description);
-                        setCountry(postData.country);
-                        setState(postData.state);
-                        setCity(postData.city);
-                        setPrice(postData.price);
-                        setMainCategory(postData.mainCategory);
-                        setSubCategory(postData.subCategory);
-                        setPhotoUrl(`http://want.com.co/${postData.photo}`);
-                    }
-                } catch (error) {
-                    console.error('Error fetching post or user:', error);
-                }
+        const fetchPostData = async () => {
+            const response = await fetch(`/api/posts/${id}`);
+            if (response.ok) {
+                const postData = await response.json();
+                setPost(postData.post);
+                setCurrentUser(postData.currentUser);
+                setIsPostLoaded(true);
+            } else {
+                router.push('/404');
             }
-            setIsLoading(false); // Establecer isLoading en false cuando la verificación esté completa
         };
-    
-        fetchCurrentUserAndPost();
-    }, [id]);       
+
+        fetchPostData();
+    }, [id]);
 
     useEffect(() => {
-        setPreviewTitle(title);
-        setPreviewDescription(description);
-        setPreviewLocation(`${city}, ${state}, ${country}`);
-        setPreviewCategory(`${mainCategory} > ${subCategory}`);
-        setPreviewPrice(Number(price).toLocaleString());
-    }, [title, description, country, state, city, mainCategory, subCategory, price]);
+        if (currentUser && isPostLoaded) {
+            setIsDataLoaded(true);
+        }
+    }, [currentUser, isPostLoaded]);
 
-    // Verificar si el objeto 'post' está definido antes de renderizar el contenido del componente
-    if (!post) {
+    if (!post || !post.createdBy || !currentUser) {
         return <div>Loading...</div>;
+    }
+
+    if (post.createdBy.toString() !== currentUser._id && currentUser.role !== 'admin') {
+        return <div>Unauthorized</div>;
     }
 
     const handleFileChange = (e) => {
@@ -114,7 +100,7 @@ const EditPost = () => {
                 formData.append('photo', imageFile);
             }
 
-            const response = await fetch(`http://want.com.co/api/posts/${id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`, {
                 method: 'PUT',
                 credentials: 'include',
                 body: formData,

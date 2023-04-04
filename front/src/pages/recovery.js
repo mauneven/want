@@ -10,7 +10,7 @@ const PasswordRecovery = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://want.com.co/api/forgot-password', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/forgot-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

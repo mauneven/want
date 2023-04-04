@@ -16,7 +16,7 @@ const CreateOffer = () => {
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
-      const loggedInResponse = await fetch('http://want.com.co/api/is-logged-in', {
+      const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
         credentials: 'include',
       });
   
@@ -25,7 +25,7 @@ const CreateOffer = () => {
         return;
       }
   
-      const blockedResponse = await fetch('http://want.com.co/api/is-blocked', {
+      const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
         credentials: 'include',
       });
   
@@ -34,7 +34,7 @@ const CreateOffer = () => {
         return;
       }
   
-      const verifiedResponse = await fetch('http://want.com.co/api/check-verified', {
+      const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
         credentials: 'include',
       });
   
@@ -49,7 +49,7 @@ const CreateOffer = () => {
   useEffect(() => {
     const fetchPost = async () => {
       // Llama a la API para obtener el post por ID.
-      const response = await fetch(`http://want.com.co/api/posts/${postId}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`);
       const data = await response.json();
       setPost(data);
     };
@@ -85,7 +85,7 @@ const CreateOffer = () => {
 
     try {
       // Llama a la API para crear la oferta
-      const response = await fetch('http://want.com.co/api/create', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/create`, {
         method: 'POST',
         headers: {
             Accept: 'application/json'
