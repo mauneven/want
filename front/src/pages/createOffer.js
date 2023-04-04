@@ -34,12 +34,12 @@ const CreateOffer = () => {
         return;
       }
   
-      const verifiedResponse = await fetch('http://want.com.co/api/is-not-verified', {
+      const verifiedResponse = await fetch('http://want.com.co/api/verify-email', {
         credentials: 'include',
       });
   
       if (!verifiedResponse.ok) {
-        router.push('/verify-email');
+        router.push('/is-not-verified');
       }
     };
   
