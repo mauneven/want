@@ -44,35 +44,37 @@ const EditPost = () => {
     }, []);
 
     useEffect(() => {
-        if (id) {
-            fetch(`http://want.com.co/api/posts/${id}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    // Verificar si el usuario actual es el propietario del post
-                    fetch('http://want.com.co/api/user')
-                        .then((res) => res.json())
-                        .then((user) => {
-                            if (user._id !== data.createdBy) {
-                                router.push('/404');
-                            }
-                        })
-                        .catch((error) => {
-                            console.error('Error fetching user:', error);
-                        });
-
-                    setPost(data);
-                    setTitle(data.title);
-                    setDescription(data.description);
-                    setCountry(data.country);
-                    setState(data.state);
-                    setCity(data.city);
-                    setPrice(data.price);
-                    setMainCategory(data.mainCategory);
-                    setSubCategory(data.subCategory);
-                    setPhotoUrl(`http://want.com.co/${post.photo}`);
-                });
-        }
-    }, [id]);
+        const fetchPostAndUser = async () => {
+            if (id) {
+                try {
+                    const response = await fetch(`http://want.com.co/api/posts/${id}`);
+                    const data = await response.json();
+                    
+                    const userResponse = await fetch('http://want.com.co/api/user');
+                    const user = await userResponse.json();
+    
+                    if (user._id !== data.createdBy) {
+                        router.push('/404');
+                    } else {
+                        setPost(data);
+                        setTitle(data.title);
+                        setDescription(data.description);
+                        setCountry(data.country);
+                        setState(data.state);
+                        setCity(data.city);
+                        setPrice(data.price);
+                        setMainCategory(data.mainCategory);
+                        setSubCategory(data.subCategory);
+                        setPhotoUrl(`http://want.com.co/${post.photo}`);
+                    }
+                } catch (error) {
+                    console.error('Error fetching post or user:', error);
+                }
+            }
+        };
+    
+        fetchPostAndUser();
+    }, [id]);    
 
     useEffect(() => {
         setPreviewTitle(title);
