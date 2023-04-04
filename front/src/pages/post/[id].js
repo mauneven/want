@@ -62,7 +62,7 @@ const PostDetails = () => {
       <div className="row">
         <div className="col-lg-6">
           <img
-            src={`http://want.com.co/${post.photo}`}
+            src={`http://want.com.co/uploads/${post.photo}`}
             className="card-img-top"
             alt={post.title}
             style={{ objectFit: "cover", height: "100%" }}

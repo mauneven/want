@@ -69,7 +69,7 @@ const EditPost = () => {
                     setPrice(data.price);
                     setMainCategory(data.mainCategory);
                     setSubCategory(data.subCategory);
-                    setPhotoUrl(`http://want.com.co/${data.photo}`);
+                    setPhotoUrl(`http://want.com.co/uploads/${post.photo}`);
                 });
         }
     }, [id]);
