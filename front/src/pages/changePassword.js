@@ -10,6 +10,38 @@ const ChangePassword = () => {
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [message, setMessage] = useState('');
 
+    useEffect(() => {
+        const checkLoggedInAndBlockedAndVerified = async () => {
+          const loggedInResponse = await fetch('http://want.com.co/api/is-logged-in', {
+            credentials: 'include',
+          });
+      
+          if (!loggedInResponse.ok) {
+            router.push('/login');
+            return;
+          }
+      
+          const blockedResponse = await fetch('http://want.com.co/api/is-blocked', {
+            credentials: 'include',
+          });
+      
+          if (!blockedResponse.ok) {
+            router.push('/blocked');
+            return;
+          }
+      
+          const verifiedResponse = await fetch('http://want.com.co/api/check-verified', {
+            credentials: 'include',
+          });
+      
+          if (!verifiedResponse.ok) {
+            router.push('/is-not-verified');
+          }
+        };
+      
+        checkLoggedInAndBlockedAndVerified();
+      }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 

@@ -29,7 +29,7 @@ export default function ReceivedOffers() {
         return;
       }
   
-      const verifiedResponse = await fetch('http://want.com.co/api/verify-email', {
+      const verifiedResponse = await fetch('http://want.com.co/api/check-verified', {
         credentials: 'include',
       });
   
