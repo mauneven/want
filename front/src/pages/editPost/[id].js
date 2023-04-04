@@ -20,6 +20,7 @@ const EditPost = () => {
     const [subCategory, setSubCategory] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const [previewTitle, setPreviewTitle] = useState('');
     const [previewDescription, setPreviewDescription] = useState('');
@@ -71,10 +72,11 @@ const EditPost = () => {
                     console.error('Error fetching post or user:', error);
                 }
             }
+            setIsLoading(false); // Establecer isLoading en false cuando la verificación esté completa
         };
     
         fetchPostAndUser();
-    }, [id]);    
+    }, [id]);       
 
     useEffect(() => {
         setPreviewTitle(title);
