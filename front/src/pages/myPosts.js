@@ -103,7 +103,7 @@ export default function MyPosts() {
                 {post.photo && (
                   <div style={{ height: "200px", overflow: "hidden" }}>
                     <img
-                      src={`http://want.com.co/${post.photo}`}
+                      src={`http://want.com.co/uploads/${post.photo}`}
                       className="card-img-top"
                       alt={post.title}
                       style={{ objectFit: "cover", height: "100%" }}
@@ -132,7 +132,7 @@ export default function MyPosts() {
                   >
                     <i className="bi bi-trash-fill">Delete this post</i>
                   </button>
-                  <Link href={`/editPost/${post._id}`}>
+                  <Link href={`/editPost/uploads/${post._id}`}>
                       <button className="ms-2 text-decoration-none btn btn-outline-success btn-sm">
                         <i className="bi bi-pencil-fill">Edit post</i>
                       </button>
