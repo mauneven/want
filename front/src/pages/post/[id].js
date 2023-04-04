@@ -22,7 +22,7 @@ const PostDetails = () => {
   }, [id]);
 
   if (!post) {
-    return <p className="container mt-5">Cargando...</p>;
+    return <p className="container mt-5">Loading...</p>;
   }
 
   return (
@@ -39,15 +39,15 @@ const PostDetails = () => {
         <div className="col-lg-6">
           <h1 className="mb-4">{post.title}</h1>
           <h5>{post.description}</h5>
-          <p><strong>Precio: </strong>{post.price} USD</p>
-          <p><strong>País: </strong>{post.country}</p>
-          <p><strong>Estado: </strong>{post.state}</p>
-          <p><strong>Ciudad: </strong>{post.city}</p>
-          <p><strong>Categoría principal: </strong>{post.mainCategory}</p>
-          <p><strong>Subcategoría: </strong>{post.subCategory}</p>
+          <p><strong>Price: </strong>{post.price}</p>
+          <p><strong>Country: </strong>{post.country}</p>
+          <p><strong>State: </strong>{post.state}</p>
+          <p><strong>City: </strong>{post.city}</p>
+          <p><strong>Main category: </strong>{post.mainCategory}</p>
+          <p><strong>Sub category: </strong>{post.subCategory}</p>
           {/* Agrega aquí más campos si es necesario */}
           <Link href={`/createOffer?postId=${id}`}>
-            <button className="btn btn-primary mt-3">Ofertar</button>
+            <button className="btn btn-primary mt-3">Make an offer</button>
           </Link>
         </div>
       </div>
