@@ -226,3 +226,12 @@ exports.getPostsByCurrentUser = async (req, res, next) => {
   }
 };
 
+exports.isPostCreatedByUser = async (userId, postId) => {
+  const post = await Post.findById(postId);
+  if (!post) {
+    return false;
+  }
+  return post.createdBy.toString() === userId;
+};
+
+
