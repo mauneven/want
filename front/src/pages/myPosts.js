@@ -103,7 +103,7 @@ export default function MyPosts() {
                 {post.photo && (
                   <div style={{ height: "200px", overflow: "hidden" }}>
                     <img
-                      src={`http://want.com.co/${post.photo}`}
+                      src={`http://want.com.co/uploads/${post.photo}`}
                       className="card-img-top"
                       alt={post.title}
                       style={{ objectFit: "cover", height: "100%" }}
