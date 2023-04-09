@@ -19,8 +19,7 @@ const EditPost = () => {
     const [subCategory, setSubCategory] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [imageFile, setImageFile] = useState(post.photo);
-
+    const [imageFile, setImageFile] = useState('');
 
     const [previewTitle, setPreviewTitle] = useState('');
     const [previewDescription, setPreviewDescription] = useState('');
@@ -74,7 +73,7 @@ const EditPost = () => {
                     setPrice(data.price);
                     setMainCategory(data.mainCategory);
                     setSubCategory(data.subCategory);
-                    setImageFile(data.photo); // Definir el estado de imageFile aquí
+                    setImageFile(data.photo);
                 });
         }
     }, [id]);
