@@ -30,30 +30,30 @@ const CreatePost = () => {
       const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
         credentials: 'include',
       });
-  
+
       if (!loggedInResponse.ok) {
         router.push('/login');
         return;
       }
-  
+
       const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
         credentials: 'include',
       });
-  
+
       if (!blockedResponse.ok) {
         router.push('/blocked');
         return;
       }
-  
+
       const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
         credentials: 'include',
       });
-  
+
       if (!verifiedResponse.ok) {
         router.push('/is-not-verified');
       }
     };
-  
+
     checkLoggedInAndBlockedAndVerified();
   }, []);
 
@@ -70,11 +70,11 @@ const CreatePost = () => {
   }, [title, description, country, state, city, mainCategory, subCategory, price]);
 
   const bwf = new WordsFilter();
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     if (bwf.containsBadWord(title)) {
       alert(`Escribiste una mala palabra en el titulo: ${bwf.devolverPalabra(title)}`);
       return;
@@ -84,9 +84,9 @@ const CreatePost = () => {
       alert(`Escribiste una mala palabra en la descripción: ${bwf.devolverPalabra(description)}`);
       return;
     }
-  
+
     console.log('Submitting post with values:', { title, description, country, state, city, mainCategory, subCategory, price, photo });
-  
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
@@ -99,7 +99,7 @@ const CreatePost = () => {
     if (photo) {
       formData.append('photo', photo);
     }
-  
+
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`, {
         method: 'POST',
@@ -109,12 +109,12 @@ const CreatePost = () => {
         credentials: 'include',
         body: formData
       });
-  
+
       if (!response.ok) {
         const error = await response.text();
         throw new Error(error);
       }
-  
+
       setLoading(false);
       router.push('/'); // Redirige al inicio después de crear un post exitosamente
     } catch (error) {
@@ -168,13 +168,14 @@ const CreatePost = () => {
                 onCountryChange={(selectedCountry) => setCountry(selectedCountry)}
                 onStateChange={(selectedState) => setState(selectedState)}
                 onCityChange={(selectedCity) => setCity(selectedCity)}
+                isRequired
               />
             </div>
             <div className="mb-3">
-            <PostCategory
-  onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
-  onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)} // Cambia "onSubCategoryChange" a "onSubcategoryChange"
-/>
+              <PostCategory
+                onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
+                onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)} // Cambia "onSubCategoryChange" a "onSubcategoryChange"
+              />
             </div>
             <div className="mb-3">
               <label htmlFor="photo" className="form-label">Upload a photo about what you want</label>
@@ -188,7 +189,7 @@ const CreatePost = () => {
             </div>
             <button type="submit" className="btn btn-primary">Create Post</button>
           </form>
-          </div>
+        </div>
         <div className="col-md-3">
           <div className="card post rounded-5 card-preview">
             {photo && (
@@ -211,8 +212,8 @@ const CreatePost = () => {
       </div>
     </div>
   );
-  
-  
+
+
 };
 
 export default CreatePost;

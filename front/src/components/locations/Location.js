@@ -23,7 +23,8 @@ const modifiedCountries = countries.countries.map((country) => {
   };
 });
 
-const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSelected }) => {
+const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSelected, isRequired = false }) => {
+
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");  
@@ -86,7 +87,7 @@ const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSele
       <label htmlFor="country-select" className="me-2 mb-0">
         Country:
       </label>
-      <select id="country-select" className="form-select me-4" value={selectedCountry?.id} onChange={handleCountryChange}>
+      <select id="country-select" className="form-select me-4" value={selectedCountry?.id} onChange={handleCountryChange} required={isRequired}>
         <option value="">Choose your country</option>
         {modifiedCountries.map((country) => (
           <option key={country.id} value={country.id}>
@@ -100,7 +101,7 @@ const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSele
           <label htmlFor="state-select" className="me-2 mb-0">
             State:
           </label>
-          <select id="state-select" className="form-select me-4" value={selectedState?.id} onChange={handleStateChange}>
+          <select id="state-select" className="form-select me-4" value={selectedState?.id} onChange={handleStateChange} required={isRequired}>
             <option value="">Seleccione un estado</option>
             {selectedCountry.states.map((state) => (
               <option key={state.id} value={state.id}>
@@ -116,7 +117,7 @@ const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSele
           <label htmlFor="city-select" className="me-2 mb-0">
             City:
           </label>
-          <select id="city-select" className="form-select" value={selectedCity} onChange={handleCityChange}>
+          <select id="city-select" className="form-select" value={selectedCity} onChange={handleCityChange} required={isRequired}>
             <option value="">Seleccione una ciudad</option>
             {selectedState.cities.map((city) => (
               <option key={city} value={city}>
