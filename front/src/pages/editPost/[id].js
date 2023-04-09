@@ -216,26 +216,14 @@ const EditPost = () => {
                     </div>
                     <div className="col-md-3">
                         <div className="card post rounded-5 card-preview">
-                            {!imageFile && post.photo && (
-                                <div style={{ height: "200px", overflow: "hidden" }}>
-                                    <img
-                                        src={post.photo} // Asegúrate de que 'post.photo' tenga la ruta correcta de la imagen original
-                                        className="card-img-top"
-                                        alt="Original"
-                                        style={{ objectFit: "cover", height: "100%" }}
-                                    />
-                                </div>
-                            )}
-                            {imageFile && (
-                                <div style={{ height: "200px", overflow: "hidden" }}>
-                                    <img
-                                        src={URL.createObjectURL(imageFile)}
-                                        className="card-img-top"
-                                        alt="Nueva imagen"
-                                        style={{ objectFit: "cover", height: "100%" }}
-                                    />
-                                </div>
-                            )}
+                            <div style={{ height: "200px", overflow: "hidden" }}>
+                                <img
+                                    src={imageFile ? URL.createObjectURL(imageFile) : post.photo}
+                                    className="card-img-top"
+                                    alt="Imagen"
+                                    style={{ objectFit: "cover", height: "100%" }}
+                                />
+                            </div>
                             <div className="card-body">
                                 <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>
                                 <h5 className="text-success">${previewPrice}</h5>
