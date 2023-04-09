@@ -27,19 +27,36 @@ const EditPost = () => {
     const [previewCategory, setPreviewCategory] = useState('');
     const [previewPrice, setPreviewPrice] = useState('');
 
-
     useEffect(() => {
-        const checkLoggedIn = async () => {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
+        const checkLoggedInAndBlockedAndVerified = async () => {
+            const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
                 credentials: 'include',
             });
 
-            if (!response.ok) {
+            if (!loggedInResponse.ok) {
                 router.push('/login');
+                return;
+            }
+
+            const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
+                credentials: 'include',
+            });
+
+            if (!blockedResponse.ok) {
+                router.push('/blocked');
+                return;
+            }
+
+            const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
+                credentials: 'include',
+            });
+
+            if (!verifiedResponse.ok) {
+                router.push('/is-not-verified');
             }
         };
 
-        checkLoggedIn();
+        checkLoggedInAndBlockedAndVerified();
     }, []);
 
     useEffect(() => {
@@ -129,94 +146,106 @@ const EditPost = () => {
         }
     };
     return (
-        <div className="mt-5 mb-5">
-            <div className="row row-cols-1 row-cols-md-4 g-4">
-                <div className="col-md-6">
-                    <form onSubmit={handleSubmit} className="container">
-                        <div className="mb-3">
-                            <label htmlFor="title" className="form-label">What do you Want?</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="title"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="description" className="form-label">Give some details to the people about it</label>
-                            <textarea
-                                className="form-control"
-                                id="description"
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                required
-                            ></textarea>
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="price" className="form-label">Max Price</label>
-                            <input
-                                type="number"
-                                className="form-control"
-                                id="price"
-                                value={price}
-                                onChange={(e) => setPrice(e.target.value)}
-                                required
-                            />
-                            {price ? (
-                                <small className="form-text text-muted">Price: {Number(price).toLocaleString()}</small>
-                            ) : null}
-                        </div>
-                        <div className="mb-3">
-                            <Location
-                                onCountryChange={(selectedCountry) => setCountry(selectedCountry)}
-                                onStateChange={(selectedState) => setState(selectedState)}
-                                onCityChange={(selectedCity) => setCity(selectedCity)}
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <PostCategory
-                                onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
-                                onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)}
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="photo" className="form-label">Upload a photo about what you want</label>
-                            <input
-                                type="file"
-                                className="form-control"
-                                id="photo"
-                                accept="image/*"
-                                onChange={handleFileChange}
-                            />
-                        </div>
-                        <button type="submit" className="btn btn-primary">Save Changes</button>
-                        <button type="button" className="btn btn-secondary" onClick={() => router.back()}>Cancel</button>
-                    </form>
-                </div>
-                <div className="col-md-3">
-                    <div className="card post rounded-5 card-preview">
-                        {!imageFile && post.photo && (
-                            <div style={{ height: "200px", overflow: "hidden" }}>
-                                <img
-                                    src={post.photo} // Asegúrate de que 'post.photo' tenga la ruta correcta de la imagen original
-                                    className="card-img-top"
-                                    alt="Original"
-                                    style={{ objectFit: "cover", height: "100%" }}
+        <>
+            <h1>Edit your Post</h1>
+            <div className="mt-5 mb-5">
+                <div className="row row-cols-1 row-cols-md-4 g-4">
+                    <div className="col-md-6">
+                        <form onSubmit={handleSubmit} className="container">
+                            <div className="mb-3">
+                                <label htmlFor="title" className="form-label">What do you Want?</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="title"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    required
                                 />
                             </div>
-                        )}
-                        <div className="card-body">
-                            <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>
-                            <h5 className="text-success">${previewPrice}</h5>
-                            <p className="card-text post-text mb-2">{previewDescription || "Description"}</p>
+                            <div className="mb-3">
+                                <label htmlFor="description" className="form-label">Give some details to the people about it</label>
+                                <textarea
+                                    className="form-control"
+                                    id="description"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    required
+                                ></textarea>
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="price" className="form-label">Max Price</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    id="price"
+                                    value={price}
+                                    onChange={(e) => setPrice(e.target.value)}
+                                    required
+                                />
+                                {price ? (
+                                    <small className="form-text text-muted">Price: {Number(price).toLocaleString()}</small>
+                                ) : null}
+                            </div>
+                            <div className="mb-3">
+                                <Location
+                                    onCountryChange={(selectedCountry) => setCountry(selectedCountry)}
+                                    onStateChange={(selectedState) => setState(selectedState)}
+                                    onCityChange={(selectedCity) => setCity(selectedCity)}
+                                />
+                            </div>
+                            <div className="mb-3">
+                                <PostCategory
+                                    onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
+                                    onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)}
+                                />
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="photo" className="form-label">Upload a photo about what you want</label>
+                                <input
+                                    type="file"
+                                    className="form-control"
+                                    id="photo"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                />
+                            </div>
+                            <button type="submit" className="btn btn-primary">Save Changes</button>
+                            <button type="button" className="btn btn-secondary" onClick={() => router.back()}>Cancel</button>
+                        </form>
+                    </div>
+                    <div className="col-md-3">
+                        <div className="card post rounded-5 card-preview">
+                            {!imageFile && post.photo && (
+                                <div style={{ height: "200px", overflow: "hidden" }}>
+                                    <img
+                                        src={post.photo} // Asegúrate de que 'post.photo' tenga la ruta correcta de la imagen original
+                                        className="card-img-top"
+                                        alt="Original"
+                                        style={{ objectFit: "cover", height: "100%" }}
+                                    />
+                                </div>
+                            )}
+                            {imageFile && (
+                                <div style={{ height: "200px", overflow: "hidden" }}>
+                                    <img
+                                        src={URL.createObjectURL(imageFile)}
+                                        className="card-img-top"
+                                        alt="Nueva imagen"
+                                        style={{ objectFit: "cover", height: "100%" }}
+                                    />
+                                </div>
+                            )}
+                            <div className="card-body">
+                                <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>
+                                <h5 className="text-success">${previewPrice}</h5>
+                                <p className="card-text post-text mb-2">{previewDescription || "Description"}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </div>
-        </div>
+        </>
     );
 };
 
