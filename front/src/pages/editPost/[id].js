@@ -36,7 +36,8 @@ const EditPost = () => {
           const userResponse = await fetch(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
             {
-              credentials: 'include'
+              method: "GET",
+              credentials: "include",
             }
           );
           const user = await userResponse.json();
