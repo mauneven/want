@@ -16,10 +16,11 @@ const EditPost = () => {
     const [city, setCity] = useState('');
     const [price, setPrice] = useState('');
     const [mainCategory, setMainCategory] = useState('');
-    const [imageFile, setImageFile] = useState(null);
     const [subCategory, setSubCategory] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [imageFile, setImageFile] = useState(post.photo);
+
 
     const [previewTitle, setPreviewTitle] = useState('');
     const [previewDescription, setPreviewDescription] = useState('');
@@ -73,9 +74,10 @@ const EditPost = () => {
                     setPrice(data.price);
                     setMainCategory(data.mainCategory);
                     setSubCategory(data.subCategory);
+                    setImageFile(data.photo); // Definir el estado de imageFile aquí
                 });
         }
-    }, [id]);
+    }, [id]);    
 
     useEffect(() => {
         setPreviewTitle(title);
@@ -92,8 +94,12 @@ const EditPost = () => {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        setImageFile(file);
-    };
+        if (file) {
+            setImageFile(URL.createObjectURL(file));
+        } else {
+            setImageFile(post.photo);
+        }
+    };    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -217,12 +223,12 @@ const EditPost = () => {
                     <div className="col-md-3">
                         <div className="card post rounded-5 card-preview">
                             <div style={{ height: "200px", overflow: "hidden" }}>
-                                <img
-                                    src={imageFile ? URL.createObjectURL(imageFile) : post.photo}
-                                    className="card-img-top"
-                                    alt="Imagen"
-                                    style={{ objectFit: "cover", height: "100%" }}
-                                />
+                            <img
+    src={imageFile}
+    className="card-img-top"
+    alt="Imagen"
+    style={{ objectFit: "cover", height: "100%" }}
+/>
                             </div>
                             <div className="card-body">
                                 <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>
