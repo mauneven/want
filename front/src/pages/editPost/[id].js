@@ -33,36 +33,43 @@ const EditPost = () => {
     useEffect(() => {
         const fetchCurrentUserAndPost = async () => {
             if (id) {
-                try {
-                    const postResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`);
-                    const postData = await postResponse.json();
-
-                    const userResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`);
-                    const user = await userResponse.json();
-
-                    console.log('User ID:', user._id);
-                    console.log('Post created by:', postData.createdBy);
-
-                    if (user._id !== postData.createdBy) {
-                        router.push('/404');
-                    } else {
-                        setPost(postData);
-                        setTitle(postData.title);
-                        setDescription(postData.description);
-                        setCountry(postData.country);
-                        setState(postData.state);
-                        setCity(postData.city);
-                        setPrice(postData.price);
-                        setMainCategory(postData.mainCategory);
-                        setSubCategory(postData.subCategory);
-                        setPhotoUrl(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${postData.photo}`);
-                    }
-                } catch (error) {
-                    console.error('Error fetching post or user:', error);
+              try {
+                const postResponse = await fetch(
+                  `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`
+                );
+                const postData = await postResponse.json();
+          
+                const userResponse = await fetch(
+                  `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
+                  {
+                    credentials: 'include'
+                  }
+                );
+                const user = await userResponse.json();
+          
+                console.log('User ID:', user._id);
+                console.log('Post created by:', postData.createdBy);
+          
+                if (user._id !== postData.createdBy._id) {
+                  router.push('/404');
+                } else {
+                  setPost(postData);
+                  setTitle(postData.title);
+                  setDescription(postData.description);
+                  setCountry(postData.country);
+                  setState(postData.state);
+                  setCity(postData.city);
+                  setPrice(postData.price);
+                  setMainCategory(postData.mainCategory);
+                  setSubCategory(postData.subCategory);
+                  setPhotoUrl(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${postData.photo}`);
                 }
+              } catch (error) {
+                console.error('Error fetching post or user:', error);
+              }
             }
-            setIsLoading(false); // Establecer isLoading en false cuando la verificación esté completa
-        };
+            setIsLoading(false);
+          };          
 
         fetchCurrentUserAndPost();
     }, [id]);
