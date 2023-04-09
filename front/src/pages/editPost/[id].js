@@ -220,7 +220,7 @@ const EditPost = () => {
                         <div className="card post rounded-5 card-preview">
                             <div style={{ height: "200px", overflow: "hidden" }}>
                                 <img
-                                    src={post && imageFile ? URL.createObjectURL(imageFile) : post.photo}
+                                    src={imageFile ? URL.createObjectURL(imageFile) : post.photo}
                                     className="card-img-top"
                                     alt="Imagen"
                                     style={{ objectFit: "cover", height: "100%" }}
