@@ -26,6 +26,7 @@ const EditPost = () => {
     const [previewLocation, setPreviewLocation] = useState('');
     const [previewCategory, setPreviewCategory] = useState('');
     const [previewPrice, setPreviewPrice] = useState('');
+    const [previewImageUrl, setPreviewImageUrl] = useState(post.photo);
 
     useEffect(() => {
         const checkLoggedInAndBlockedAndVerified = async () => {
@@ -93,6 +94,7 @@ const EditPost = () => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         setImageFile(file);
+        setPreviewImageUrl(URL.createObjectURL(file));
     };
 
     const handleSubmit = async (e) => {
@@ -218,7 +220,7 @@ const EditPost = () => {
                         <div className="card post rounded-5 card-preview">
                             <div style={{ height: "200px", overflow: "hidden" }}>
                                 <img
-                                    src={imageFile ? URL.createObjectURL(imageFile) : post.photo}
+                                    src={previewImageUrl}
                                     className="card-img-top"
                                     alt="Imagen"
                                     style={{ objectFit: "cover", height: "100%" }}
