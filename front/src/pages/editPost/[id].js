@@ -9,8 +9,6 @@ const EditPost = () => {
     const { id } = router.query;
 
     const [post, setPost] = useState(null);
-    const [currentUser, setCurrentUser] = useState(null);
-    const [isPostLoaded, setIsPostLoaded] = useState(false);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [country, setCountry] = useState('');
@@ -22,49 +20,63 @@ const EditPost = () => {
     const [subCategory, setSubCategory] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
 
     const [previewTitle, setPreviewTitle] = useState('');
     const [previewDescription, setPreviewDescription] = useState('');
     const [previewLocation, setPreviewLocation] = useState('');
     const [previewCategory, setPreviewCategory] = useState('');
     const [previewPrice, setPreviewPrice] = useState('');
-    const [previewImage, setPreviewImage] = useState(null);
-    const [photoUrl, setPhotoUrl] = useState(null);
-    const [isDataLoaded, setIsDataLoaded] = useState(false);
+
 
     useEffect(() => {
-        const fetchPostData = async () => {
-            const response = await fetch(`/api/posts/${id}`);
-            if (response.ok) {
-                const postData = await response.json();
-                setPost(postData.post);
-                setCurrentUser(postData.currentUser);
-                setIsPostLoaded(true); // Añadir esta línea
-                setIsLoading(false);
-            } else {
-                setIsPostLoaded(true); // Añadir esta línea
+        const checkLoggedIn = async () => {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                router.push('/login');
             }
         };
 
-        fetchPostData();
+        checkLoggedIn();
+    }, []);
+
+    useEffect(() => {
+        if (id) {
+            fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    setPost(data);
+                    setTitle(data.title);
+                    setDescription(data.description);
+                    setCountry(data.country);
+                    setState(data.state);
+                    setCity(data.city);
+                    setPrice(data.price);
+                    setMainCategory(data.mainCategory);
+                    setSubCategory(data.subCategory);
+                });
+        }
     }, [id]);
 
+    useEffect(() => {
+        setPreviewTitle(title);
+        setPreviewDescription(description);
+        setPreviewLocation(`${city}, ${state}, ${country}`);
+        setPreviewCategory(`${mainCategory} > ${subCategory}`);
+        setPreviewPrice(Number(price).toLocaleString());
+    }, [title, description, country, state, city, mainCategory, subCategory, price]);
+
+    // Verificar si el objeto 'post' está definido antes de renderizar el contenido del componente
     if (!post) {
-        router.push('/404');
+        return <div>Loading...</div>;
     }
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        if (file) {
-            setImageFile(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreviewImage(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };    
+        setImageFile(file);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -97,8 +109,11 @@ const EditPost = () => {
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`, {
                 method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 credentials: 'include',
-                body: formData,
+                body: JSON.stringify(Object.fromEntries(formData)),
             });
 
             if (!response.ok) {
@@ -182,34 +197,24 @@ const EditPost = () => {
                 </div>
                 <div className="col-md-3">
                     <div className="card post rounded-5 card-preview">
-                        {previewImage ? (
-                            <div style={{ height: "200px", overflow: "hidden" }}>
-                                <img
-                                    src={previewImage}
-                                    className="card-img-top"
-                                    alt="Preview"
-                                    style={{ objectFit: "cover", height: "100%" }}
-                                />
-                            </div>
-                        ) : (
-                            <div style={{ height: "200px", overflow: "hidden" }}>
-                                <img
-                                    src={photoUrl}
-                                    className="card-img-top"
-                                    alt="Post"
-                                    style={{ objectFit: "cover", height: "100%" }}
-                                />
-                            </div>
-                        )}
-
+                    {!imageFile && post.photo && (
+    <div style={{ height: "200px", overflow: "hidden" }}>
+        <img
+            src={post.photo} // Asegúrate de que 'post.photo' tenga la ruta correcta de la imagen original
+            className="card-img-top"
+            alt="Original"
+            style={{ objectFit: "cover", height: "100%" }}
+        />
+    </div>
+)}
                         <div className="card-body">
                             <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>
                             <h5 className="text-success">${previewPrice}</h5>
                             <p className="card-text post-text mb-2">{previewDescription || "Description"}</p>
                         </div>
                     </div>
-
                 </div>
+
             </div>
         </div>
     );
