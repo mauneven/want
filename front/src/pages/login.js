@@ -67,7 +67,7 @@ export default function Login() {
       });
   
       if (!verifiedResponse.ok) {
-        router.push('/is-not-verified');
+        router.push('/');
       }
     };
   

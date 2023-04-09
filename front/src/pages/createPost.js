@@ -169,12 +169,14 @@ const CreatePost = () => {
                 onStateChange={(selectedState) => setState(selectedState)}
                 onCityChange={(selectedCity) => setCity(selectedCity)}
                 isRequired
+                required
               />
             </div>
             <div className="mb-3">
               <PostCategory
                 onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
                 onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)} // Cambia "onSubCategoryChange" a "onSubcategoryChange"
+                required
               />
             </div>
             <div className="mb-3">
