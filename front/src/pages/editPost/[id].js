@@ -54,10 +54,6 @@ const EditPost = () => {
         router.push('/404');
     }
 
-    if (post.createdBy.toString() !== currentUser._id && currentUser.role !== 'admin') {
-        return <div>Unauthorized</div>;
-    }
-
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
