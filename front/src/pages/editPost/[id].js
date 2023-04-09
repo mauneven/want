@@ -16,68 +16,53 @@ const EditPost = () => {
     const [city, setCity] = useState('');
     const [price, setPrice] = useState('');
     const [mainCategory, setMainCategory] = useState('');
+    const [imageFile, setImageFile] = useState(null);
     const [subCategory, setSubCategory] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [imageFile, setImageFile] = useState(null);
-    const [imageUrl, setImageUrl] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
 
     const [previewTitle, setPreviewTitle] = useState('');
     const [previewDescription, setPreviewDescription] = useState('');
     const [previewLocation, setPreviewLocation] = useState('');
     const [previewCategory, setPreviewCategory] = useState('');
     const [previewPrice, setPreviewPrice] = useState('');
+    const [previewImage, setPreviewImage] = useState(null);
+    const [photoUrl, setPhotoUrl] = useState(null);
 
     useEffect(() => {
-        const checkLoggedInAndBlockedAndVerified = async () => {
-            const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
-                credentials: 'include',
-            });
-
-            if (!loggedInResponse.ok) {
-                router.push('/login');
-                return;
+        const fetchCurrentUserAndPost = async () => {
+            if (id) {
+                try {
+                    const postResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`);
+                    const postData = await postResponse.json();
+                    
+                    const userResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`);
+                    const user = await userResponse.json();
+    
+                    if (user._id !== postData.createdBy) {
+                        router.push('/404');
+                    } else {
+                        setPost(postData);
+                        setTitle(postData.title);
+                        setDescription(postData.description);
+                        setCountry(postData.country);
+                        setState(postData.state);
+                        setCity(postData.city);
+                        setPrice(postData.price);
+                        setMainCategory(postData.mainCategory);
+                        setSubCategory(postData.subCategory);
+                        setPhotoUrl(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${postData.photo}`);
+                    }
+                } catch (error) {
+                    console.error('Error fetching post or user:', error);
+                }
             }
-
-            const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
-                credentials: 'include',
-            });
-
-            if (!blockedResponse.ok) {
-                router.push('/blocked');
-                return;
-            }
-
-            const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
-                credentials: 'include',
-            });
-
-            if (!verifiedResponse.ok) {
-                router.push('/is-not-verified');
-            }
+            setIsLoading(false); // Establecer isLoading en false cuando la verificación esté completa
         };
-
-        checkLoggedInAndBlockedAndVerified();
-    }, []);
-
-    useEffect(() => {
-        if (id) {
-            fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    setPost(data);
-                    setTitle(data.title);
-                    setDescription(data.description);
-                    setCountry(data.country);
-                    setState(data.state);
-                    setCity(data.city);
-                    setPrice(data.price);
-                    setMainCategory(data.mainCategory);
-                    setSubCategory(data.subCategory);
-                    setImageUrl(data.photo || ''); // Agrega un valor predeterminado vacío aquí
-                });
-        }
-    }, [id]);
+    
+        fetchCurrentUserAndPost();
+    }, [id]);       
 
     useEffect(() => {
         setPreviewTitle(title);
@@ -96,9 +81,7 @@ const EditPost = () => {
         const file = e.target.files[0];
         if (file) {
             setImageFile(file);
-            setImageUrl(''); // Set imageUrl to an empty string
-        } else {
-            setImageFile(null);
+            setPreviewImage(URL.createObjectURL(file));
         }
     };
 
@@ -133,11 +116,8 @@ const EditPost = () => {
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 credentials: 'include',
-                body: JSON.stringify(Object.fromEntries(formData)),
+                body: formData,
             });
 
             if (!response.ok) {
@@ -153,94 +133,104 @@ const EditPost = () => {
         }
     };
     return (
-        <>
-            <h1>Edit your Post</h1>
-            <div className="mt-5 mb-5">
-                <div className="row row-cols-1 row-cols-md-4 g-4">
-                    <div className="col-md-6">
-                        <form onSubmit={handleSubmit} className="container">
-                            <div className="mb-3">
-                                <label htmlFor="title" className="form-label">What do you Want?</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="title"
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label htmlFor="description" className="form-label">Give some details to the people about it</label>
-                                <textarea
-                                    className="form-control"
-                                    id="description"
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
-                                    required
-                                ></textarea>
-                            </div>
-                            <div className="mb-3">
-                                <label htmlFor="price" className="form-label">Max Price</label>
-                                <input
-                                    type="number"
-                                    className="form-control"
-                                    id="price"
-                                    value={price}
-                                    onChange={(e) => setPrice(e.target.value)}
-                                    required
-                                />
-                                {price ? (
-                                    <small className="form-text text-muted">Price: {Number(price).toLocaleString()}</small>
-                                ) : null}
-                            </div>
-                            <div className="mb-3">
-                                <Location
-                                    onCountryChange={(selectedCountry) => setCountry(selectedCountry)}
-                                    onStateChange={(selectedState) => setState(selectedState)}
-                                    onCityChange={(selectedCity) => setCity(selectedCity)}
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <PostCategory
-                                    onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
-                                    onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)}
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label htmlFor="photo" className="form-label">Upload a photo about what you want</label>
-                                <input
-                                    type="file"
-                                    className="form-control"
-                                    id="photo"
-                                    accept="image/*"
-                                    onChange={handleFileChange}
-                                />
-                            </div>
-                            <button type="submit" className="btn btn-primary">Save Changes</button>
-                            <button type="button" className="btn btn-secondary" onClick={() => router.back()}>Cancel</button>
-                        </form>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="card post rounded-5 card-preview">
+        <div className="mt-5 mb-5">
+            <div className="row row-cols-1 row-cols-md-4 g-4">
+                <div className="col-md-6">
+                    <form onSubmit={handleSubmit} className="container">
+                        <div className="mb-3">
+                            <label htmlFor="title" className="form-label">What do you Want?</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="title"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="description" className="form-label">Give some details to the people about it</label>
+                            <textarea
+                                className="form-control"
+                                id="description"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                required
+                            ></textarea>
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="price" className="form-label">Max Price</label>
+                            <input
+                                type="number"
+                                className="form-control"
+                                id="price"
+                                value={price}
+                                onChange={(e) => setPrice(e.target.value)}
+                                required
+                            />
+                            {price ? (
+                                <small className="form-text text-muted">Price: {Number(price).toLocaleString()}</small>
+                            ) : null}
+                        </div>
+                        <div className="mb-3">
+                            <Location
+                                onCountryChange={(selectedCountry) => setCountry(selectedCountry)}
+                                onStateChange={(selectedState) => setState(selectedState)}
+                                onCityChange={(selectedCity) => setCity(selectedCity)}
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <PostCategory
+                                onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
+                                onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)}
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="photo" className="form-label">Upload a photo about what you want</label>
+                            <input
+                                type="file"
+                                className="form-control"
+                                id="photo"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                            />
+                        </div>
+                        <button type="submit" className="btn btn-primary">Save Changes</button>
+                        <button type="button" className="btn btn-secondary" onClick={() => router.back()}>Cancel</button>
+                    </form>
+                </div>
+                <div className="col-md-3">
+                    <div className="card post rounded-5 card-preview">
+                        {previewImage ? (
                             <div style={{ height: "200px", overflow: "hidden" }}>
                                 <img
-                                    src={imageFile ? URL.createObjectURL(imageFile) : (imageUrl || 'URL_DE_IMAGEN_POR_DEFECTO')}
+                                    src={previewImage}
                                     className="card-img-top"
-                                    alt="Imagen"
+                                    alt="Preview"
                                     style={{ objectFit: "cover", height: "100%" }}
                                 />
                             </div>
-                            <div className="card-body">
-                                <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>
-                                <h5 className="text-success">${previewPrice}</h5>
-                                <p className="card-text post-text mb-2">{previewDescription || "Description"}</p>
+                        ) : (
+                            <div style={{ height: "200px", overflow: "hidden" }}>
+                                <img
+                                    src={photoUrl}
+                                    className="card-img-top"
+                                    alt="Post"
+                                    style={{ objectFit: "cover", height: "100%" }}
+                                />
                             </div>
+                        )}
+
+                        <div className="card-body">
+                            <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>
+                            <h5 className="text-success">${previewPrice}</h5>
+                            <p className="card-text post-text mb-2">{previewDescription || "Description"}</p>
                         </div>
                     </div>
+
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 
