@@ -62,6 +62,7 @@ const EditPost = () => {
       const fetchData = async () => {
         const [user, postData] = await Promise.all([fetchCurrentUser(), fetchPost()]);
       
+        console.log("Current user:", user);
         console.log("Current user:", user._id);
         console.log("Post creator:", postData.createdBy._id);
       
