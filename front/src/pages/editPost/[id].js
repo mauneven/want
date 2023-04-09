@@ -26,7 +26,6 @@ const EditPost = () => {
     const [previewLocation, setPreviewLocation] = useState('');
     const [previewCategory, setPreviewCategory] = useState('');
     const [previewPrice, setPreviewPrice] = useState('');
-    const [previewImageUrl, setPreviewImageUrl] = useState(post.photo);
 
     useEffect(() => {
         const checkLoggedInAndBlockedAndVerified = async () => {
@@ -94,7 +93,6 @@ const EditPost = () => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         setImageFile(file);
-        setPreviewImageUrl(URL.createObjectURL(file));
     };
 
     const handleSubmit = async (e) => {
