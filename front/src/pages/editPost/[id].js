@@ -7,7 +7,7 @@ import PostCategory from '@/components/categories/Categories';
 const EditPost = () => {
     const router = useRouter();
     const { id } = router.query;
-
+  
     const [post, setPost] = useState(null);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -21,7 +21,7 @@ const EditPost = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-
+  
     const [previewTitle, setPreviewTitle] = useState('');
     const [previewDescription, setPreviewDescription] = useState('');
     const [previewLocation, setPreviewLocation] = useState('');
@@ -29,120 +29,119 @@ const EditPost = () => {
     const [previewPrice, setPreviewPrice] = useState('');
     const [previewImage, setPreviewImage] = useState(null);
     const [photoUrl, setPhotoUrl] = useState(null);
-
+  
     useEffect(() => {
-        const fetchCurrentUserAndPost = async () => {
-            if (id) {
-              try {
-                const postResponse = await fetch(
-                  `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`
-                );
-                const postData = await postResponse.json();
-          
-                const userResponse = await fetch(
-                  `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
-                  {
-                    credentials: 'include'
-                  }
-                );
-                const user = await userResponse.json();
-          
-                console.log('User ID:', user._id);
-                console.log('Post created by:', postData.createdBy);
-          
-                if (user._id !== postData.createdBy._id) {
-                  router.push('/404');
-                } else {
-                  setPost(postData);
-                  setTitle(postData.title);
-                  setDescription(postData.description);
-                  setCountry(postData.country);
-                  setState(postData.state);
-                  setCity(postData.city);
-                  setPrice(postData.price);
-                  setMainCategory(postData.mainCategory);
-                  setSubCategory(postData.subCategory);
-                  setPhotoUrl(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${postData.photo}`);
-                }
-              } catch (error) {
-                console.error('Error fetching post or user:', error);
-              }
+      const fetchCurrentUser = async () => {
+        try {
+          const userResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
+            {
+              credentials: 'include'
             }
-            setIsLoading(false);
-          };          
-
-        fetchCurrentUserAndPost();
-    }, [id]);
-
+          );
+          const user = await userResponse.json();
+          return user;
+        } catch (error) {
+          console.error('Error fetching current user:', error);
+        }
+      };
+  
+      const fetchPost = async () => {
+        try {
+          const postResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`
+          );
+          const postData = await postResponse.json();
+          return postData;
+        } catch (error) {
+          console.error('Error fetching post:', error);
+        }
+      };
+  
+      const fetchData = async () => {
+        const [user, postData] = await Promise.all([fetchCurrentUser(), fetchPost()]);
+  
+        if (postData.createdBy._id !== user._id) {
+          router.push('/404');
+        } else {
+          setPost(postData);
+          setTitle(postData.title);
+          setDescription(postData.description);
+          setCountry(postData.country);
+          setState(postData.state);
+          setCity(postData.city);
+          setPrice(postData.price);
+          setMainCategory(postData.mainCategory);
+          setSubCategory(postData.subCategory);
+          setPhotoUrl(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${postData.photo}`);
+        }
+        setIsLoading(false);
+      };
+  
+      if (id) {
+        fetchData();
+      }
+    }, [id, router]);
+  
     useEffect(() => {
-        setPreviewTitle(title);
-        setPreviewDescription(description);
-        setPreviewLocation(`${city}, ${state}, ${country}`);
-        setPreviewCategory(`${mainCategory} > ${subCategory}`);
-        setPreviewPrice(Number(price).toLocaleString());
+      setPreviewTitle(title);
+      setPreviewDescription(description);
+      setPreviewLocation(`${city}, ${state}, ${country}`);
+      setPreviewCategory(`${mainCategory} > ${subCategory}`);
+      setPreviewPrice(Number(price).toLocaleString());
     }, [title, description, country, state, city, mainCategory, subCategory, price]);
-
+  
     // Verificar si el objeto 'post' está definido antes de renderizar el contenido del componente
     if (!post) {
-        return <div>Loading...</div>;
+      return <div>Loading...</div>;
     }
-
+  
     const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setImageFile(file);
-            setPreviewImage(URL.createObjectURL(file));
-        }
+      const file = e.target.files[0];
+      if (file) {
+        setImageFile(file);
+        setPreviewImage(URL.createObjectURL(file));
+      }
     };
-
+  
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-
-        console.log('Submitting post with values:', {
-            title,
-            description,
-            country,
-            state,
-            city,
-            price,
-            mainCategory,
-            subCategory,
-        });
-
+      
         try {
-            const formData = new FormData();
-            formData.append('title', title);
-            formData.append('description', description);
-            formData.append('country', country);
-            formData.append('state', state);
-            formData.append('city', city);
-            formData.append('price', price);
-            formData.append('mainCategory', mainCategory);
-            formData.append('subCategory', subCategory);
-            if (imageFile) {
-                formData.append('photo', imageFile);
-            }
-
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`, {
-                method: 'PUT',
-                credentials: 'include',
-                body: formData,
-            });
-
-            if (!response.ok) {
-                const error = await response.text();
-                throw new Error(error);
-            }
-
-            setLoading(false);
-            router.push('/myPosts'); // Redirige a "Mis Posts" después de editar un post exitosamente
+          const formData = new FormData();
+          formData.append('title', title);
+          formData.append('description', description);
+          formData.append('country', country);
+          formData.append('state', state);
+          formData.append('city', city);
+          formData.append('price', price);
+          formData.append('mainCategory', mainCategory);
+          formData.append('subCategory', subCategory);
+          if (imageFile) {
+            formData.append('photo', imageFile);
+          }
+      
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`, {
+            method: 'PUT',
+            credentials: 'include',
+            body: formData,
+          });
+      
+          if (!response.ok) {
+            const error = await response.text();
+            throw new Error(error);
+          }
+      
+          setLoading(false);
+          router.push('/myPosts'); // Redirige a "Mis Posts" después de editar un post exitosamente
         } catch (error) {
-            setLoading(false);
-            setError(error.message);
+          setLoading(false);
+          setError(error.message);
         }
-    };
-    return (
+      };
+      
+      return (
         <div className="mt-5 mb-5">
             <div className="row row-cols-1 row-cols-md-4 g-4">
                 <div className="col-md-6">
@@ -241,7 +240,8 @@ const EditPost = () => {
                 </div>
             </div>
         </div>
-    );
-};
+      );
+}
 
 export default EditPost;
+  
