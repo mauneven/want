@@ -19,7 +19,8 @@ const EditPost = () => {
     const [subCategory, setSubCategory] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [imageFile, setImageFile] = useState('');
+    const [imageFile, setImageFile] = useState(null);
+    const [imageUrl, setImageUrl] = useState('');
 
     const [previewTitle, setPreviewTitle] = useState('');
     const [previewDescription, setPreviewDescription] = useState('');
@@ -73,7 +74,7 @@ const EditPost = () => {
                     setPrice(data.price);
                     setMainCategory(data.mainCategory);
                     setSubCategory(data.subCategory);
-                    setImageFile(data.photo);
+                    setImageUrl(data.photo);
                 });
         }
     }, [id]);
@@ -94,7 +95,8 @@ const EditPost = () => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setImageFile(URL.createObjectURL(file));
+            setImageFile(file);
+            setImageUrl(''); // Set imageUrl to an empty string
         } else {
             setImageFile(null);
         }
@@ -223,7 +225,7 @@ const EditPost = () => {
                         <div className="card post rounded-5 card-preview">
                             <div style={{ height: "200px", overflow: "hidden" }}>
                                 <img
-                                    src={imageFile || post.photo}
+                                    src={imageFile ? URL.createObjectURL(imageFile) : imageUrl}
                                     className="card-img-top"
                                     alt="Imagen"
                                     style={{ objectFit: "cover", height: "100%" }}
