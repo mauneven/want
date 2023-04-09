@@ -38,9 +38,13 @@ export default function Login() {
     const responseData = await response.json();
     console.log(responseData);
     if (response.ok) {
-      router.push('/is-not-verified');
+      if (!responseData.isVerified) {
+        router.push('/is-not-verified');
+      } else {
+        router.push('/');
+      }
     }
-  };
+  };  
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {

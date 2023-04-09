@@ -50,10 +50,6 @@ const EditPost = () => {
         fetchPostData();
     }, [id]);
 
-    if (!post || !post.createdBy || !currentUser) {
-        return <div>Loading...</div>;
-    }
-
     if (!post) {
         router.push('/404');
     }
