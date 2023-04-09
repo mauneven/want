@@ -74,7 +74,7 @@ const EditPost = () => {
                     setPrice(data.price);
                     setMainCategory(data.mainCategory);
                     setSubCategory(data.subCategory);
-                    setImageUrl(data.photo);
+                    setImageUrl(data.photo || ''); // Agrega un valor predeterminado vacío aquí
                 });
         }
     }, [id]);
@@ -225,7 +225,7 @@ const EditPost = () => {
                         <div className="card post rounded-5 card-preview">
                             <div style={{ height: "200px", overflow: "hidden" }}>
                                 <img
-                                    src={imageFile ? URL.createObjectURL(imageFile) : imageUrl}
+                                    src={imageFile ? URL.createObjectURL(imageFile) : (imageUrl || 'URL_DE_IMAGEN_POR_DEFECTO')}
                                     className="card-img-top"
                                     alt="Imagen"
                                     style={{ objectFit: "cover", height: "100%" }}
