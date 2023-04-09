@@ -11,7 +11,7 @@ const categories = [  { id: 1, name: 'Technology', subcategories: ['Computers', 
   { id: 8, name: 'Heavy Machinery', subcategories: ['Tippers', 'Excavators', 'Motor Graders', 'Backhoes', 'Forklifts', 'Cranes', 'Bulldozers', 'Front-End Loaders'] },
 ];
 
-export default function PostCategory({ onMainCategoryChange, onSubcategoryChange, externalSelectedSubcategory }) {
+export default function PostCategory({ onMainCategoryChange, onSubcategoryChange, externalSelectedSubcategory, isRequired = false  }) {
 
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
@@ -73,7 +73,7 @@ export default function PostCategory({ onMainCategoryChange, onSubcategoryChange
   return (
     <div className="d-flex flex-wrap align-items-center">
       <label htmlFor="category-select" className="me-2 mb-0">Category</label>
-      <select id="category-select" className="form-select me-4" value={selectedCategory?.id} onChange={handleCategoryChange}>
+      <select id="category-select" className="form-select me-4" value={selectedCategory?.id} onChange={handleCategoryChange} required={isRequired}>
         <option value="">Choose the category</option>
         {categoryOptions}
       </select>
@@ -81,7 +81,7 @@ export default function PostCategory({ onMainCategoryChange, onSubcategoryChange
       {selectedCategory && (
         <>
           <label htmlFor="subcategory-select" className="me-2 mb-0">Sub Category</label>
-          <select id="subcategory-select" className="form-select" value={selectedSubcategory} onChange={handleSubcategoryChange}>
+          <select id="subcategory-select" className="form-select" value={selectedSubcategory} onChange={handleSubcategoryChange} required={isRequired}>
           <option value="">Choose the subcategory</option>
             {subcategoryOptions}
           </select>
