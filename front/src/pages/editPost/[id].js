@@ -36,10 +36,13 @@ const EditPost = () => {
                 try {
                     const postResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`);
                     const postData = await postResponse.json();
-                    
+
                     const userResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`);
                     const user = await userResponse.json();
-    
+
+                    console.log('User ID:', user._id);
+                    console.log('Post created by:', postData.createdBy);
+
                     if (user._id !== postData.createdBy) {
                         router.push('/404');
                     } else {
@@ -60,9 +63,9 @@ const EditPost = () => {
             }
             setIsLoading(false); // Establecer isLoading en false cuando la verificación esté completa
         };
-    
+
         fetchCurrentUserAndPost();
-    }, [id]);       
+    }, [id]);
 
     useEffect(() => {
         setPreviewTitle(title);
