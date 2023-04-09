@@ -50,12 +50,6 @@ const EditPost = () => {
         fetchPostData();
     }, [id]);
 
-    useEffect(() => {
-        if (currentUser && isPostLoaded) {
-            setIsDataLoaded(true);
-        }
-    }, [currentUser, isPostLoaded]);
-
     if (!post || !post.createdBy || !currentUser) {
         return <div>Loading...</div>;
     }
