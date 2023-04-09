@@ -63,10 +63,10 @@ const EditPost = () => {
         const [user, postData] = await Promise.all([fetchCurrentUser(), fetchPost()]);
       
         console.log("Current user:", user);
-        console.log("Current user:", user._id);
+        console.log("Current user:", user.user._id);
         console.log("Post creator:", postData.createdBy._id);
       
-        if (postData.createdBy._id !== user._id) {
+        if (postData.createdBy._id !== user.user._id) {
           router.push('/404');
         } else {
           setPost(postData);
