@@ -40,9 +40,10 @@ const EditPost = () => {
                 const postData = await response.json();
                 setPost(postData.post);
                 setCurrentUser(postData.currentUser);
-                setIsPostLoaded(true);
+                setIsPostLoaded(true); // Añadir esta línea
+                setIsLoading(false);
             } else {
-                router.push('/404');
+                setIsPostLoaded(true); // Añadir esta línea
             }
         };
 
@@ -59,6 +60,10 @@ const EditPost = () => {
         return <div>Loading...</div>;
     }
 
+    if (!post) {
+        router.push('/404');
+    }
+
     if (post.createdBy.toString() !== currentUser._id && currentUser.role !== 'admin') {
         return <div>Unauthorized</div>;
     }
@@ -67,9 +72,13 @@ const EditPost = () => {
         const file = e.target.files[0];
         if (file) {
             setImageFile(file);
-            setPreviewImage(URL.createObjectURL(file));
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreviewImage(reader.result);
+            };
+            reader.readAsDataURL(file);
         }
-    };
+    };    
 
     const handleSubmit = async (e) => {
         e.preventDefault();

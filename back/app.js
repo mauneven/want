@@ -8,6 +8,8 @@ const reportRoutes = require('./routes/reportRoutes');
 const User = require('./models/user');
 const offerRoutes = require('./routes/offerRoutes');
 const docxRoutes = require('./routes/docxRoutes.js');
+const https = require('https');
+const fs = require('fs');
 
 const app = express();
 
@@ -19,11 +21,9 @@ app.use(cors({
     'http://www.want.com.co:3000',
     'https://www.want.com.co:3000',
     'http://want.com.co',
-    'http://34.192.108.182:3000',
-    'https://34.192.108.182:3000',
-    'http://localhost:3000',
-    'http://ec2-34-192-108-182.compute-1.amazonaws.com:3000',
-    'https://ec2-34-192-108-182.compute-1.amazonaws.com:3000'
+    'https://want.com.co',
+    'http://35.225.113.125',
+    'https://35.225.113.125/'
   ],
   credentials: true
 }));
@@ -69,6 +69,11 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
-app.listen(4000, () => {
-  console.log('Server started on port 4000');
+const options = {
+  key: fs.readFileSync('/etc/letsencrypt/live/want.com.co/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/want.com.co/fullchain.pem')
+};
+
+https.createServer(options, app).listen(443, () => {
+  console.log('Server started on port 443');
 });
