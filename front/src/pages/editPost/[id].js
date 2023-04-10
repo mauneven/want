@@ -191,12 +191,14 @@ const EditPost = () => {
                                 onCountryChange={(selectedCountry) => setCountry(selectedCountry)}
                                 onStateChange={(selectedState) => setState(selectedState)}
                                 onCityChange={(selectedCity) => setCity(selectedCity)}
+                                isRequired = {true}
                             />
                         </div>
                         <div className="mb-3">
                             <PostCategory
                                 onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
                                 onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)}
+                                isRequired = {true}
                             />
                         </div>
                         <div className="mb-3">

@@ -5,14 +5,35 @@ import Link from 'next/link';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
+  const [alertMessage, setAlertMessage] = useState('');
   const router = useRouter();
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
   };
 
+  const validateAgeAndParentPermission = (birthdate) => {
+    const today = new Date();
+    const birthDate = new Date(birthdate);
+    const ageDiff = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    const dayDiff = today.getDate() - birthDate.getDate();
+    const age = monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) ? ageDiff - 1 : ageDiff;
+
+    if (age < 14) {
+      setAlertMessage('No puedes crear una cuenta. Debes tener al menos 14 años de edad.');
+      return false;
+    } else if (age >= 14 && age < 18 && !document.getElementById('parentPermission').checked) {
+      setAlertMessage('Debes marcar la casilla de obtener el permiso de tus padres.');
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setAlertMessage('');
     const email = event.target.email.value;
     const password = event.target.password.value;
     let firstName, lastName, phone, birthdate;
@@ -21,6 +42,10 @@ export default function Login() {
       lastName = event.target.lastName.value;
       phone = event.target.phone.value;
       birthdate = event.target.birthdate.value;
+  
+      if (!validateAgeAndParentPermission(birthdate)) {
+        return;
+      }
     }
     const data = {
       email,
@@ -35,13 +60,20 @@ export default function Login() {
       },
       body: JSON.stringify(data),
     });
-    const responseData = await response.json();
-    console.log(responseData);
+    
     if (response.ok) {
+      const responseData = await response.json();
       if (!responseData.isVerified) {
         router.push('/is-not-verified');
       } else {
         router.push('/');
+      }
+    } else {
+      if (response.headers.get('Content-Type') === 'application/json') {
+        const responseData = await response.json();
+        setAlertMessage(responseData.error || 'El correo electrónico o la contraseña están incorrectos.');
+      } else {
+        setAlertMessage('El correo electrónico o la contraseña están incorrectos.');
       }
     }
   };  
@@ -77,11 +109,15 @@ export default function Login() {
   
     checkLoggedInAndBlockedAndVerified();
   }, []);
-  
 
   return (
     <div className="container">
       <h1 className="text-center">{isLogin ? 'Iniciar sesión' : 'Registrarse'}</h1>
+      {alertMessage && (
+        <div className="alert alert-danger" role="alert">
+          {alertMessage}
+        </div>
+      )}
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">Correo electrónico:</label>
@@ -120,8 +156,9 @@ export default function Login() {
         <button onClick={toggleForm} className="btn btn-link">{isLogin ? 'Regístrate' : 'Inicia sesión'}</button>
       </div>
       <Link href="/recovery">
-        <span className="nav-link">Forgot my password</span>
+        <span className="nav-link">Olvidé mi contraseña</span>
       </Link>
     </div>
   );
+  
 }

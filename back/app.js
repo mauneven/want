@@ -23,7 +23,8 @@ app.use(cors({
     'http://want.com.co',
     'https://want.com.co',
     'http://35.225.113.125',
-    'https://35.225.113.125/'
+    'https://35.225.113.125/',
+    'http://localhost:3000',
   ],
   credentials: true
 }));
@@ -57,7 +58,6 @@ app.use(async (req, res, next) => {
   next();
 });
 
-
 app.use('/api', authRoutes);
 app.use('/api', postRoutes);
 app.use('/api', offerRoutes);
@@ -69,11 +69,20 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
-const options = {
+
+// para la main
+
+/*const options = {
   key: fs.readFileSync('/etc/letsencrypt/live/want.com.co/privkey.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/live/want.com.co/fullchain.pem')
-};
+};*/
 
-https.createServer(options, app).listen(4000, () => {
+/*https.createServer(options, app).listen(4000, () => {
   console.log('Server started on port 4000');
+});*/
+
+// para development
+
+app.listen(4000, () => {
+  console.log(`Server started on port 4000`);
 });

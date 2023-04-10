@@ -174,18 +174,17 @@ exports.sendResetPasswordEmail = async ({ email, token }) => {
       pass: "hgdxskaqpsunouin"
     },
   });
-
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: 'Want Password <wanttests@gmail.com>', // sender address
+    from: 'Want - Seguridad <wanttests@gmail.com>', // sender address
     to: email, // list of receivers
-    subject: 'Password Reset Request', // Subject line
+    subject: 'Restablece tu contrasena', // Subject line
     html: `
-      <p>You have requested a password reset for your account. Please follow the link below to reset your password:</p>
-      <a href="${process.env.NEXT_PUBLIC_API_BASE_URL}/recoveryPassword/${token}">Reset Password</a>
-      <p>"${process.env.NEXT_PUBLIC_API_BASE_URL}/recoveryPassword/${token}"></p>
-      <p>If you did not make this request, please ignore this email and your password will remain unchanged.</p>
-    `
+    <p>You have requested a password reset for your account. Please follow the link below to reset your password:</p>
+    <a href="want.com.co/recoveryPassword/${token}">Reset Password</a>
+    <p>want.com.co/recoveryPassword/${token}</p>
+    <p>If you did not make this request, please ignore this email and your password will remain unchanged.</p>
+  `
   });
 
   //console.log('Message sent: %s', info.messageId);
