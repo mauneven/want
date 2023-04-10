@@ -320,7 +320,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
     subject: 'Verify your account',
     html: `
     <p>Please verify your email address by clicking on the following link:</p>
-    <a href="${process.env.NEXT_PUBLIC_API_BASE_URL}/verify-email/${verificationToken}">Verify Email Address</a>
+    <a href="want.com.co/verify-email/${verificationToken}">Verify Email Address</a>
   `,
   };
 
