@@ -71,11 +71,17 @@ app.use((err, req, res, next) => {
 
 // para la main
 
-const options = {
+/* const options = {
   key: fs.readFileSync('/etc/letsencrypt/live/want.com.co/privkey.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/live/want.com.co/fullchain.pem')
 };
 
 https.createServer(options, app).listen(4000, () => {
   console.log('Server started on port 4000');
-});
+}); */
+
+// para la develop
+
+app.listen(4000, () =>{
+  console.log("servidor iniciado en el 4000")
+})
