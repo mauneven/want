@@ -122,7 +122,7 @@ const EditProfile = () => {
 
   const inputFields = [{ name: 'firstName', label: 'First Name', type: 'text', value: firstName, onChange: (e) => setFirstName(e.target.value), required: true, }, { name: 'lastName', label: 'Last Name', type: 'text', value: lastName, onChange: (e) => setLastName(e.target.value), required: true, }, { name: 'phone', label: 'Phone', type: 'text', value: phone, onChange: (e) => setPhone(e.target.value), required: true, }, {
     name: 'birthdate',
-    label: 'Birthdate',
+    label: 'Fecha de nacimiento',
     type: 'date',
     value: birthdate,
     onChange: (e) => setBirthdate(e.target.value),
@@ -156,7 +156,7 @@ const EditProfile = () => {
                   alignItems: 'center',
                 }}
               >
-                <i className="bi bi-pencil text-primary"></i> Change photo
+                <i className="bi bi-pencil text-primary"></i> Cambiar foto de perfil
               </div>
             </label>
             <input
@@ -201,14 +201,14 @@ const EditProfile = () => {
                   className="btn btn-secondary me-3"
                   onClick={handleCancel}
                 >
-                  Cancel
+                  Cancelar y dejar como estaba
                 </button>
                 <button
                   type="submit"
                   className="btn btn-primary"
                   disabled={!photo}
                 >
-                  Save Changes
+                  Guardar los nuevos cambios
                 </button>
               </>
             )}
@@ -219,20 +219,20 @@ const EditProfile = () => {
                   className="btn btn-secondary me-3"
                   onClick={handleCancel}
                 >
-                  Cancel
+                  Cancelar y dejar como estaba
                 </button>
                 <button
                   type="submit"
                   className="btn btn-primary"
                   disabled={!editingField}
                 >
-                  Save Changes
+                  Guardar los nuevos cambios
                 </button>
               </>
             )}
           </form>
           <Link href="/changePassword">
-            <button className="btn btn-success">Change my password</button>
+            <button className="btn btn-success">Cambiar contraseña</button>
           </Link>
         </div>
       </div>

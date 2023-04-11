@@ -152,7 +152,7 @@ const EditPost = () => {
                 <div className="col-md-6">
                     <form onSubmit={handleSubmit} className="container">
                         <div className="mb-3">
-                            <label htmlFor="title" className="form-label">What do you Want?</label>
+                            <label htmlFor="title" className="form-label">Dale un título a lo que quieres</label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -163,7 +163,7 @@ const EditPost = () => {
                             />
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="description" className="form-label">Give some details to the people about it</label>
+                            <label htmlFor="description" className="form-label">Ahora descríbelo con mas detalle</label>
                             <textarea
                                 className="form-control"
                                 id="description"
@@ -173,7 +173,7 @@ const EditPost = () => {
                             ></textarea>
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="price" className="form-label">Max Price</label>
+                            <label htmlFor="price" className="form-label">Cuanto pagarías por lo que quieres</label>
                             <input
                                 type="number"
                                 className="form-control"
@@ -183,7 +183,7 @@ const EditPost = () => {
                                 required
                             />
                             {price ? (
-                                <small className="form-text text-muted">Price: {Number(price).toLocaleString()}</small>
+                                <small className="form-text text-muted">Precio: {Number(price).toLocaleString()}</small>
                             ) : null}
                         </div>
                         <div className="mb-3">
@@ -202,17 +202,18 @@ const EditPost = () => {
                             />
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="photo" className="form-label">Upload a photo about what you want</label>
+                            <label htmlFor="photo" className="form-label">Sube una foto guía de lo que quieres</label>
                             <input
                                 type="file"
                                 className="form-control"
                                 id="photo"
                                 accept="image/*"
                                 onChange={handleFileChange}
+                                required
                             />
                         </div>
-                        <button type="submit" className="btn btn-primary">Save Changes</button>
-                        <button type="button" className="btn btn-secondary" onClick={() => router.back()}>Cancel</button>
+                        <button type="submit" className="btn btn-primary">Guardar cambios</button>
+                        <button type="button" className="btn btn-secondary" onClick={() => router.back()}>Cancelar y dejar como estaba</button>
                     </form>
                 </div>
                 <div className="col-md-3">

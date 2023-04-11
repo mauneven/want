@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-const categories = [  { id: 1, name: 'Technology', subcategories: ['Computers', 'Tablets', 'Cell Phones', 'Device Accessories', 'Cameras & Photography', 'Audio & Sound', 'Video Games Consoles'] },
-  { id: 2, name: 'Clothing', subcategories: ['Shirts', 'T-Shirts', 'Jackets', 'Coats', 'Pants', 'Skirts', 'Dresses', 'Shoes', 'Tennis', 'Boots', 'Sandals', 'Sneakers'] },
-  { id: 3, name: 'Appliances', subcategories: ['Refrigerators', 'Washing Machines', 'Dryers', 'Coffee Makers', 'Microwaves', 'Blenders', 'Vacuum Cleaners', 'Irons'] },
-  { id: 4, name: 'Health & Beauty', subcategories: ['Makeup', 'Skin Care', 'Hair Care', 'Fragrances', 'Personal Hygiene', 'Supplements & Vitamins', 'Medical Equipment', 'Massagers & Relaxation'] },
-  { id: 5, name: 'Vehicles', subcategories: ['Cars', 'Motorcycles', 'SUVs', 'Trucks', 'Bicycles', 'Boats', 'Airplanes', 'Helicopters'] },
-  { id: 6, name: 'Home & Garden', subcategories: ['Furniture', 'Decor', 'Lighting', 'Bathroom', 'Kitchen & Dining', 'Outdoor & Garden', 'Cleaning Supplies'] },
-  { id: 7, name: 'Subscriptions', subcategories: ['Netflix', 'Spotify', 'Apple Music', 'HBO Max', 'Crunchyroll', 'Tidal', 'Amazon Prime Video', 'Disney+', 'Xbox Game Pass', 'Play Station Plus', 'Discord Nitro'] },
-  { id: 8, name: 'Heavy Machinery', subcategories: ['Tippers', 'Excavators', 'Motor Graders', 'Backhoes', 'Forklifts', 'Cranes', 'Bulldozers', 'Front-End Loaders'] },
+const categories = [
+  { id: 1, nombre: 'Tecnología', subcategorias: ['Portátiles', 'PC de escritorio', 'Celulares', 'Tablets', 'Smartwatches', 'Accesorios para Dispositivos', 'Cámaras y Fotografía', 'Audio y Sonido', 'Consolas de Videojuegos'] },
+  { id: 2, nombre: 'Ropa', subcategorias: ['Camisas', 'Camisetas', 'Chaquetas', 'Abrigos', 'Pantalones', 'Faldas', 'Vestidos', 'Zapatos', 'Tenis', 'Botas', 'Sandalias', 'Zapatillas', 'Sombreros'] },
+  { id: 3, nombre: 'Electrodomésticos', subcategorias: ['Refrigeradores', 'Lavadoras', 'Secadoras', 'Cafeteras', 'Microondas', 'Licuadoras', 'Aspiradoras', 'Planchas'] },
+  { id: 4, nombre: 'Salud y Belleza', subcategorias: ['Maquillaje', 'Cuidado de la Piel', 'Cuidado del Cabello', 'Fragancias', 'Suplementos y Vitaminas', 'Masajeadores y Relajación'] },
+  { id: 5, nombre: 'Vehículos', subcategorias: ['Automóviles', 'Motocicletas', 'Camionetas', 'Bicicletas', 'Botes'] },
+  { id: 6, nombre: 'Del Hogar', subcategorias: ['Muebles', 'Decoración', 'Iluminación', 'Baño', 'Cocina y Comedor', 'Exterior y Jardín', 'Suministros de Limpieza'] },
+  { id: 7, nombre: 'Vivienda y Hospedaje', subcategorias: ['Casas en Arriendo', 'Casas en Venta', 'Apartamentos en Arriendo', 'Apartamentos en Venta', 'Apartaestudios', 'Casa Quinta en Arriendo', 'Habitaciones', 'Terrenos'] },
+  { id: 8, nombre: 'Suscripciones', subcategorias: ['Netflix', 'Spotify', 'Apple Music', 'HBO Max', 'Crunchyroll', 'Tidal', 'Amazon Prime Video', 'Disney+', 'Xbox Game Pass', 'Play Station Plus', 'Discord Nitro'] },
+  { id: 9, nombre: 'Maquinaria Pesada', subcategorias: ['Volquetas', 'Excavadoras', 'Motoniveladoras', 'Retroexcavadoras', 'Montacargas', 'Grúas', 'Bulldozers', 'Cargadores Frontales'] },
 ];
 
 export default function PostCategory({ onMainCategoryChange, onSubcategoryChange, externalSelectedSubcategory, isRequired = false  }) {
@@ -24,8 +26,6 @@ export default function PostCategory({ onMainCategoryChange, onSubcategoryChange
     // Establece el valor de la subcategoría en null cada vez que se cambia la categoría principal
     setSelectedSubcategory(null);
   
-    console.log("Maincategory:", category);
-  
     if (onMainCategoryChange) {
       onMainCategoryChange(category ? category.name : '');
     }
@@ -39,7 +39,6 @@ export default function PostCategory({ onMainCategoryChange, onSubcategoryChange
   const handleSubcategoryChange = (event) => {
     const subcategory = event.target.value;
     setSelectedSubcategory(subcategory);
-    console.log("Subcategory:", subcategory);
   
     // Cambia "onSubCategoryChange" a "onSubcategoryChange"
     if (onSubcategoryChange) {
@@ -67,22 +66,22 @@ export default function PostCategory({ onMainCategoryChange, onSubcategoryChange
       </option>
     ))
   ) : (
-    <option value="">Choose the subcategory</option>
+    <option value="">Elije la subcategoría</option>
   );
 
   return (
     <div className="d-flex flex-wrap align-items-center">
-      <label htmlFor="category-select" className="me-2 mb-0">Category</label>
+      <label htmlFor="category-select" className="me-2 mb-0">Categoría</label>
       <select id="category-select" className="form-select me-4" value={selectedCategory?.id} onChange={handleCategoryChange} required={isRequired}>
-        <option value="">Choose the category</option>
+        <option value="">Elije una categoría</option>
         {categoryOptions}
       </select>
 
       {selectedCategory && (
         <>
-          <label htmlFor="subcategory-select" className="me-2 mb-0">Sub Category</label>
+          <label htmlFor="subcategory-select" className="me-2 mb-0">Sub categoría</label>
           <select id="subcategory-select" className="form-select" value={selectedSubcategory} onChange={handleSubcategoryChange} required={isRequired}>
-          <option value="">Choose the subcategory</option>
+          <option value="">Elije la sub categoría</option>
             {subcategoryOptions}
           </select>
         </>

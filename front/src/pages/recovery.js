@@ -30,11 +30,11 @@ const PasswordRecovery = () => {
 
   return (
     <div className="container">
-      <h1>Password Recovery</h1>
+      <h1>Recuperar mi cuenta</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">
-            Email address
+            Correo electronico
           </label>
           <input
             type="email"
@@ -46,7 +46,7 @@ const PasswordRecovery = () => {
           />
         </div>
         <button type="submit" className="btn btn-primary">
-          Recover Account
+          Enviarme un correo para recuperar mi cuenta
         </button>
       </form>
       {message && (

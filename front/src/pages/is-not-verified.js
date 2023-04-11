@@ -4,10 +4,10 @@ import Link from 'next/link';
 const isNotVerfied = () => {
   return (
     <div>
-      <h1>Wow, not so fast</h1>
-      <p>First validate your account by opening the link that we sent you to your email.</p>
+      <h1>Nos falta un ultimo paso</h1>
+      <p>Tienes que validar tu cuenta para que sepamos que eres tu, por eso hemos enviado un correo con un link para que puedas verificar tu cuenta.</p>
       <Link href="/">
-        <h1>Go back home</h1>
+        <h1>Mientras tanto puedes volver al inicio</h1>
       </Link>
     </div>
   );

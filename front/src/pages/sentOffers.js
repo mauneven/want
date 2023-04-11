@@ -55,7 +55,7 @@ export default function sentOffers() {
 
   return (
     <div className="container">
-      <h1>Mis Ofertas</h1>
+      <h1>Ofertas que he hecho</h1>
       <div className="row">
         {offers.map((offer) => (
           <div key={offer._id} className="col-md-4">

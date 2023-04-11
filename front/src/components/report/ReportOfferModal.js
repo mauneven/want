@@ -25,12 +25,12 @@ const ReportOfferModal = ({ offerId, onReport }) => {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Report Offer</Modal.Title>
+          <Modal.Title>Reportar oferta</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
             <Form.Group>
-              <Form.Label>Description</Form.Label>
+              <Form.Label>Describe el por que reportas esta oferta</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
@@ -40,7 +40,7 @@ const ReportOfferModal = ({ offerId, onReport }) => {
               />
             </Form.Group>
             <Button variant="primary" type="submit">
-              Submit Report
+              Enviar reporte
             </Button>
           </Form>
         </Modal.Body>

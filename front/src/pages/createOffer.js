@@ -148,7 +148,7 @@ if (!post) {
               ></textarea>
             </div>
             <div className="mb-3">
-              <label htmlFor="price" className="form-label">Precio ofrecido</label>
+              <label htmlFor="price" className="form-label">Precio que ofreces</label>
               <input
                 type="number"
                 className="form-control"
@@ -162,7 +162,7 @@ if (!post) {
               ) : null}
             </div>
             <div className="mb-3">
-              <label htmlFor="photo" className="form-label">Foto opcional</label>
+              <label htmlFor="photo" className="form-label">Foto guía de tu oferta</label>
               <input
                 type="file"
                 className="form-control"
@@ -187,7 +187,7 @@ if (!post) {
             )}
             <div className="card-body">
               <h5 className="card-title">{title || "Título de la oferta"}</h5>
-              <h5 className="text-success">{Number(price).toLocaleString()} USD</h5>
+              <h5 className="text-success">{Number(price).toLocaleString()}</h5>
               <p className="card-text">{description || "Descripción de la oferta"}</p>
               <p className="card-text">{contact || "Contacto"}</p>
             </div>

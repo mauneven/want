@@ -8,7 +8,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, o
   const [show, setShow] = useState(false);
   const [mainCategory, setMainCategory] = useState('');
   const [subCategory, setSubcategory] = useState('');
-  const [displayCategory, setDisplayCategory] = useState('All Categories');
+  const [displayCategory, setDisplayCategory] = useState('Todas las categorías');
 
   const handleShow = () => setShow(true);
   const handleClose = () => {
@@ -26,10 +26,10 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, o
     } else if (mainCategory) {
       setDisplayCategory(mainCategory);
     } else {
-      setDisplayCategory('All Categories');
+      setDisplayCategory('Todas las categorías');
     }
   
-    if (displayCategory === 'All Categories') {
+    if (displayCategory === 'Todas las categorías') {
       setMainCategory('');
       setSubcategory('');
       if (onMainCategoryChange) {
@@ -47,7 +47,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, o
   const handleSeeAllCategories = () => {
     setMainCategory('');
     setSubcategory('');
-    setDisplayCategory('All Categories');
+    setDisplayCategory('Todas las categorías');
     if (onMainCategoryChange) {
       onMainCategoryChange('');
     }
@@ -68,7 +68,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, o
 
       <Modal show={show || isShown} onHide={handleClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Choose a category</Modal.Title>
+          <Modal.Title>Elije una categoría</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <PostCategory
@@ -78,9 +78,9 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, o
           />
         </Modal.Body>
         <Modal.Footer>
-        <Button variant="secondary" onClick={handleSeeAllCategories}>See all Categories</Button>
-          <Button variant="primary" onClick={handleClose}>Cancel</Button>
-          <Button variant="success" onClick={handleAccept}>Accept</Button>
+        <Button variant="secondary" onClick={handleSeeAllCategories}>Ver todas las categorías</Button>
+          <Button variant="primary" onClick={handleClose}>Cancelar</Button>
+          <Button variant="success" onClick={handleAccept}>Aceptar</Button>
         </Modal.Footer>
       </Modal>
     </>

@@ -207,7 +207,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                         : post.description}
                     </p>
                     <Link className="d-flex justify-content-center" href={`/post/[id]`} as={`/post/${post._id}`}>
-                      <button className="offer-btn btn rounded-pill">View details</button>
+                      <button className="offer-btn btn rounded-pill">Ver mas detalles</button>
                     </Link>
                   </div>
 
@@ -216,7 +216,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
             ))
             : (
               <div className="col-md-12">
-                <p>There are no post's with that information.</p>
+                <p>No hay post's con esos filtros.</p>
               </div>
             )
           : (

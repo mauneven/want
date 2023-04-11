@@ -95,7 +95,7 @@ export default function MyPosts() {
         </Modal.Footer>
       </Modal>
       <div className="container">
-        <h1>My Posts</h1>
+        <h1>Mis posts</h1>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
           {posts.map((post) => (
             <div key={post._id} className="col">
@@ -130,11 +130,11 @@ export default function MyPosts() {
                       setShowModal(true);
                     }}
                   >
-                    <i className="bi bi-trash-fill">Delete this post</i>
+                    <i className="bi bi-trash-fill">Eliminar post</i>
                   </button>
                   <Link href={`/editPost/${post._id}`}>
                       <button className="ms-2 text-decoration-none btn btn-outline-success btn-sm">
-                        <i className="bi bi-pencil-fill">Edit post</i>
+                        <i className="bi bi-pencil-fill">Editar Post</i>
                       </button>
                     </Link>
                 </div>

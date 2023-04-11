@@ -129,7 +129,7 @@ const CreatePost = () => {
         <div className="col-md-6">
           <form onSubmit={handleSubmit} className="container">
             <div className="mb-3">
-              <label htmlFor="title" className="form-label">What do you Want?</label>
+              <label htmlFor="title" className="form-label">Dale un título a lo que quieres</label>
               <input
                 type="text"
                 className="form-control"
@@ -140,7 +140,7 @@ const CreatePost = () => {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="description" className="form-label">Give some details to the people about it</label>
+              <label htmlFor="description" className="form-label">Ahora describelo con mas detalle</label>
               <textarea
                 className="form-control"
                 id="description"
@@ -150,7 +150,7 @@ const CreatePost = () => {
               ></textarea>
             </div>
             <div className="mb-3">
-              <label htmlFor="price" className="form-label">Max Price</label>
+              <label htmlFor="price" className="form-label">Cuanto pagarías por lo que quieres</label>
               <input
                 type="number"
                 className="form-control"
@@ -160,7 +160,7 @@ const CreatePost = () => {
                 required
               />
               {price ? (
-                <small className="form-text text-muted">Price: {Number(price).toLocaleString()}</small>
+                <small className="form-text text-muted">Precio: {Number(price).toLocaleString()}</small>
               ) : null}
             </div>
             <div className="mb-3">
@@ -179,7 +179,7 @@ const CreatePost = () => {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="photo" className="form-label">Upload a photo about what you want</label>
+              <label htmlFor="photo" className="form-label">Sube una foto guía de lo que quieres</label>
               <input
                 type="file"
                 className="form-control"
@@ -188,7 +188,7 @@ const CreatePost = () => {
                 onChange={handleFileChange}
               />
             </div>
-            <button type="submit" className="btn btn-primary">Create Post</button>
+            <button type="submit" className="btn btn-primary">Publicar lo que quiero</button>
           </form>
         </div>
         <div className="col-md-3">

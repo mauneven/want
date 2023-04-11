@@ -127,7 +127,7 @@ export default function MegaMenu({
     };
 
     checkSession();
-  }, [router.pathname]); // Agrega la dependencia del router.pathname aquí
+  }, [router.pathname]);
 
   useEffect(() => {
     const locationFilterString = localStorage.getItem("locationFilter");
@@ -136,7 +136,7 @@ export default function MegaMenu({
       setLocationFilter(parsedLocationFilter);
       onLocationFilterChange(parsedLocationFilter);
     }
-  }, []); // Agrega la matriz de dependencias vacía aquí
+  }, []);
 
   function getUserImageUrl() {
     if (user && user.photo) {
@@ -146,13 +146,13 @@ export default function MegaMenu({
 
   return (
     <Navbar
-      style={{ top: 0, zIndex: 1000 }} // Añade estilos en línea aquí
+      style={{ top: 0, zIndex: 1000 }}
       className="sticky-top sticky-nav navbar-blur"
       bg="light"
       expand="lg"
     >
       <Container className="sticky-top">
-      <Navbar.Brand onClick={handleLogoClick} className="divhover">
+        <Navbar.Brand onClick={handleLogoClick} className="divhover">
           <Image
             className="want-logo"
             src="/icons/want-logo.svg"
@@ -172,7 +172,7 @@ export default function MegaMenu({
           />
           <FormControl
             type="search"
-            placeholder=" The people want..."
+            placeholder=" La gente quiere..."
             className="mr-2 form-control-sm p-1 px-3 search-bar-input border-top-0 border-bottom-0 border-start-0 border-end"
             aria-label="Search"
             name="search"
@@ -192,7 +192,7 @@ export default function MegaMenu({
             />
             <Nav.Link className="nav-item" onClick={() => router.push('/createPost')}>
               <Button className="btn-post rounded-pill p-2">
-                You Want something?
+                ¿Quieres algo?
               </Button>
             </Nav.Link>
             <Nav.Link className="nav-item">
@@ -222,25 +222,25 @@ export default function MegaMenu({
                 id="user-dropdown"
               >
                 <NavDropdown.Item onClick={() => router.push('/myPosts')}>
-                  <i className="bi bi-stickies-fill me-3"></i>My posts
+                  <i className="bi bi-stickies-fill me-3"></i>Mis publicaciones
                 </NavDropdown.Item>
                 <NavDropdown.Item onClick={() => router.push('/sentOffers')}>
-                  <i className="bi bi-send-check-fill me-3"></i>Sent Offers
+                  <i className="bi bi-send-check-fill me-3"></i>Ofertas enviadas
                 </NavDropdown.Item>
                 <NavDropdown.Item onClick={() => router.push('/receivedOffers')}>
-                  <i className="bi bi-receipt me-3"></i>Received Offers
+                  <i className="bi bi-receipt me-3"></i>Ofertas recibidas
                 </NavDropdown.Item>
                 <NavDropdown.Item onClick={() => router.push('/editProfile')}>
-                  <i className="bi bi-person-lines-fill me-3"></i>Profile
+                  <i className="bi bi-person-lines-fill me-3"></i>Mi perfil
                 </NavDropdown.Item>
                 <hr />
                 <NavDropdown.Item onClick={() => router.push('/logout')}>
-                  <i className="bi bi-box-arrow-right me-3"></i>Logout
+                  <i className="bi bi-box-arrow-right me-3"></i>Cerrar sesión
                 </NavDropdown.Item>
               </NavDropdown>
             ) : (
               <Nav.Link onClick={() => router.push('/login')} className="nav-item">
-                <span className="nav-link">Login or Sign Up</span>
+                <span className="nav-link">Ingresar</span>
               </Nav.Link>
             )}
           </Nav>
