@@ -1,0 +1,61 @@
+body {
+    background: url("../icons/90.png");
+    background-size: auto;
+    background-position-x: center;
+}
+
+.form-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    height: 80vh;
+}
+
+body .login-form{
+    margin-top: 100px;
+    margin-bottom: 100px;
+    background-color: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(15px);
+    width: 600px;
+    max-width: 1000px;
+}
+
+body .btn-login{
+    background-color: #1b9f78;
+    border:none;
+    transition: 0.3s;
+}
+
+body .btn-login:hover{
+    background-color: #198678;
+}
+
+body .user-link{
+    color: #1b9f78;
+    transition: 0.1s;
+}
+body .user-link:hover{
+    color: #198678;
+}
+
+body .user-link:active{
+    color: #198678;
+    box-shadow: 0 0 2px #1b9f78;
+}
+
+body .rst-pwd{
+    color: black;
+    text-decoration: none;
+    transition: 0.1s;
+}
+
+body .rst-pwd:hover{
+    color: #1b9f78;
+    text-decoration: underline;
+}
+
+body .form-control{
+    background-color: rgba(255, 255, 255, 0.5)
+}

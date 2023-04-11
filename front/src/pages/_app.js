@@ -1,5 +1,5 @@
 // _app.js
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container } from 'react-bootstrap';
 import MegaMenu from '@/components/navigation/Navbar';
 import { useState } from 'react';

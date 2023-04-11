@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import Link from 'next/link';
+import Head from 'next/head';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -58,48 +59,59 @@ export default function Login() {
   }, []);
 
   return (
-    <div className="container">
-      <h1 className="text-center">{isLogin ? 'Iniciar sesión' : 'Registrarse'}</h1>
+  <>
+  <Head>
+    <link rel="stylesheet" href='css/login.css'/>
+  </Head>
+
+    <div className="container form-container">
+      <div className='card login-form rounded-5 p-3'>
+        <div className='card-body'>
+      <h1 className="text-center">{isLogin ? 'Login' : 'Sign Up'}</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor="email" className="form-label">Correo electrónico:</label>
-          <input type="email" className="form-control" id="email" name="email" required />
+          <label htmlFor="email" className="form-label">E-mail:</label>
+          <input type="email" className="form-control rounded-pill" id="email" name="email" placeholder="you@example.com" required />
         </div>
         <div className="mb-3">
-          <label htmlFor="password" className="form-label">Contraseña:</label>
-          <input type="password" className="form-control" id="password" name="password" required />
+          <label htmlFor="password" className="form-label">Password:</label>
+          <input type="password" className="form-control rounded-pill" id="password" name="password" placeholder="your password" required />
         </div>
         {!isLogin && (
           <>
             <div className="mb-3">
-              <label htmlFor="firstName" className="form-label">Nombre:</label>
-              <input type="text" className="form-control" id="firstName" name="firstName" required />
+              <label htmlFor="firstName" className="form-label">First name:</label>
+              <input type="text" className="form-control rounded-pill" id="firstName" name="firstName" required />
             </div>
             <div className="mb-3">
-              <label htmlFor="lastName" className="form-label">Apellido:</label>
-              <input type="text" className="form-control" id="lastName" name="lastName" required />
+              <label htmlFor="lastName" className="form-label">Last name:</label>
+              <input type="text" className="form-control rounded-pill" id="lastName" name="lastName" required />
             </div>
             <div className="mb-3">
-              <label htmlFor="phone" className="form-label">Número de teléfono:</label>
-              <input type="tel" className="form-control" id="phone" name="phone" required />
+              <label htmlFor="phone" className="form-label">Phone number:</label>
+              <input type="tel" className="form-control rounded-pill" id="phone" name="phone" required />
             </div>
             <div className="mb-3">
-              <label htmlFor="birthdate" className="form-label">Fecha de nacimiento:</label>
-              <input type="date" className="form-control" id="birthdate" name="birthdate" required />
+              <label htmlFor="birthdate" className="form-label">birthdate:</label>
+              <input type="date" className="form-control rounded-pill" id="birthdate" name="birthdate" required />
             </div>
           </>
         )}
         <div className="mb-3">
-          <button type="submit" className="btn btn-primary">{isLogin ? 'Iniciar sesión' : 'Registrarse'}</button>
+          <button type="submit" className="btn btn-success rounded-pill btn-login">{isLogin ? 'Login' : 'Sign up'}</button>
         </div>
       </form>
       <div>
-        {isLogin ? '¿No tienes una cuenta?' : '¿Ya tienes una cuenta?'}
-        <button onClick={toggleForm} className="btn btn-link">{isLogin ? 'Regístrate' : 'Inicia sesión'}</button>
+        {isLogin ? "Don't have an account?" : 'already have an account?'}
+        <button onClick={toggleForm} className="btn btn-link user-link">{isLogin ? 'Sign up' : 'Login'}</button>
       </div>
       <Link href="/recovery">
-        <span className="nav-link">Forgot my password</span>
+        <span className="rst-pwd">Forgot my password</span>
       </Link>
+      </div>
+      </div>
     </div>
+    </>
+
   );
 }
