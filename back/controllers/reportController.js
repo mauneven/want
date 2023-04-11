@@ -58,7 +58,7 @@ exports.createPostReport = async (req, res, next) => {
 
       const updatedUser = await User.findById(post.createdBy).populate('reports');
 
-      if (updatedUser.reports.length >= 2) {
+      if (updatedUser.reports.length >= 15) {
         updatedUser.isBlocked = true;
         await updatedUser.save();
       }
