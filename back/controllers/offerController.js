@@ -1,5 +1,5 @@
-const Offer = require('../models/Offer');
-const Post = require('../models/Post');
+const Offer = require('../models/offer');
+const Post = require('../models/post');
 const multer = require('multer');
 const path = require('path');
 const Notification = require('../models/notification');
@@ -20,7 +20,7 @@ exports.uploadPhoto = upload.single('photo');
 
 exports.createOffer = async (req, res, next) => {
     try {
-      const { title, description, price, postId } = req.body;
+      const { title, description, price, contact, postId } = req.body;
       const photo = req.file ? req.file.path : null;
       const post = await Post.findById(postId);
   
@@ -36,6 +36,7 @@ exports.createOffer = async (req, res, next) => {
         description,
         price,
         photo,
+        contact,
         createdBy: req.session.userId,
         receivedBy: post.createdBy,
         post: postId,
@@ -70,21 +71,15 @@ exports.getOffersReceivedByCurrentUser = async (req, res, next) => {
 };
 
 exports.getNotifications = async (req, res, next) => {
-    try {
-      const notifications = await Notification.find({ recipient: req.session.userId })
-        .sort({ createdAt: -1 });
-  
-      // Marcar notificaciones como leídas
-      await Notification.updateMany(
-        { recipient: req.session.userId, isRead: false },
-        { isRead: true }
-      );
-  
-      res.status(200).json(notifications);
-    } catch (err) {
-      next(err);
-    }
-  };
+  try {
+    const notifications = await Notification.find({ recipient: req.session.userId })
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(notifications);
+  } catch (err) {
+    next(err);
+  }
+};
   
   exports.sendNotification = async (recipientId, content, postId) => {
     const notification = new Notification({ content, recipient: recipientId, postId }); // Añade postId aquí
@@ -108,15 +103,16 @@ exports.getNotifications = async (req, res, next) => {
       }
   
       // Encuentra la notificación correspondiente al postId de la oferta que se está eliminando.
-      const notification = await Notification.findOne({ postId: offer.post });
+      const notification = await Notification.findOne({ postId: offer.post, content: `"${offer.post.title}"` });
   
       // Eliminar la imagen asociada con la oferta
       if (offer.photo) {
-        fs.unlink(offer.photo, (err) => {
+        const imagePath = path.join(__dirname, '..', offer.photo);
+        fs.unlink(imagePath, (err) => {
           if (err) {
             console.error('Error al eliminar la imagen:', err);
           } else {
-            console.log('Imagen eliminada:', offer.photo);
+            console.log('Imagen eliminada:', imagePath);
           }
         });
       }
@@ -132,7 +128,7 @@ exports.getNotifications = async (req, res, next) => {
     } catch (err) {
       next(err);
     }
-  };   
+  };  
 
 exports.createReport = async (req, res, next) => {
     try {
@@ -164,3 +160,21 @@ exports.createReport = async (req, res, next) => {
         next(err);
     }
 };
+
+exports.markNotificationAsRead = async (req, res, next) => {
+  try {
+    const notificationId = req.params.id;
+    const notification = await Notification.findById(notificationId);
+
+    if (!notification) {
+      return res.status(404).send('Notification not found');
+    }
+
+    notification.isRead = true;
+    await notification.save();
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+};
+

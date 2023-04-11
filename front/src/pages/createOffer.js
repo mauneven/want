@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect,  } from 'react';
+import WordsFilter from '@/badWordsFilter/WordsFilter';
 
 const CreateOffer = () => {
   const router = useRouter();
@@ -9,27 +10,46 @@ const CreateOffer = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [contact, setContact] = useState ('');
   const [photo, setPhoto] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const checkLoggedIn = async () => {
-        const response = await fetch('http://localhost:4000/api/is-logged-in', {
-            credentials: 'include',
-        });
-
-        if (!response.ok) {
-            router.push('/login');
-        }
+    const checkLoggedInAndBlockedAndVerified = async () => {
+      const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
+        credentials: 'include',
+      });
+  
+      if (!loggedInResponse.ok) {
+        router.push('/login');
+        return;
+      }
+  
+      const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
+        credentials: 'include',
+      });
+  
+      if (!blockedResponse.ok) {
+        router.push('/blocked');
+        return;
+      }
+  
+      const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
+        credentials: 'include',
+      });
+  
+      if (!verifiedResponse.ok) {
+        router.push('/is-not-verified');
+      }
     };
-
-    checkLoggedIn();
-}, []);
+  
+    checkLoggedInAndBlockedAndVerified();
+  }, []);
 
   useEffect(() => {
     const fetchPost = async () => {
       // Llama a la API para obtener el post por ID.
-      const response = await fetch(`http://localhost:4000/api/posts/${postId}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`);
       const data = await response.json();
       setPost(data);
     };
@@ -39,21 +59,33 @@ const CreateOffer = () => {
     }
   }, [postId]);
 
+  const bwf = new WordsFilter();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+
+    if (bwf.containsBadWord(title)) {
+      alert(`Escribiste una mala palabra en el titulo: ${bwf.devolverPalabra(title)}`);
+      return;
+    }
+
+    if (bwf.containsBadWord(description)) {
+      alert(`Escribiste una mala palabra en la descripción: ${bwf.devolverPalabra(description)}`);
+      return;
+    }
 
     // Preparar los datos de la oferta
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
     formData.append('price', price);
+    formData.append('contact', contact)
     formData.append('photo', photo);
     formData.append('postId', postId);
 
     try {
       // Llama a la API para crear la oferta
-      const response = await fetch('http://localhost:4000/api/create', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/create`, {
         method: 'POST',
         headers: {
             Accept: 'application/json'
@@ -106,7 +138,17 @@ if (!post) {
               ></textarea>
             </div>
             <div className="mb-3">
-              <label htmlFor="price" className="form-label">Precio ofrecido</label>
+              <label htmlFor="contact" className="form-label">Describe tu contacto</label>
+              <textarea
+                className="form-control"
+                id="contact"
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+                required
+              ></textarea>
+            </div>
+            <div className="mb-3">
+              <label htmlFor="price" className="form-label">Precio que ofreces</label>
               <input
                 type="number"
                 className="form-control"
@@ -120,7 +162,7 @@ if (!post) {
               ) : null}
             </div>
             <div className="mb-3">
-              <label htmlFor="photo" className="form-label">Foto opcional</label>
+              <label htmlFor="photo" className="form-label">Foto guía de tu oferta</label>
               <input
                 type="file"
                 className="form-control"
@@ -145,8 +187,9 @@ if (!post) {
             )}
             <div className="card-body">
               <h5 className="card-title">{title || "Título de la oferta"}</h5>
-              <h5 className="text-success">{Number(price).toLocaleString()} USD</h5>
+              <h5 className="text-success">{Number(price).toLocaleString()}</h5>
               <p className="card-text">{description || "Descripción de la oferta"}</p>
+              <p className="card-text">{contact || "Contacto"}</p>
             </div>
           </div>
         </div>

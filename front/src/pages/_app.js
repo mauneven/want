@@ -41,7 +41,6 @@ export default function MyApp({ Component, pageProps }) {
           onCategoryFilterChange={handleCategoryFilterChange}
         />
         <link rel="stylesheet" href="/css/navbar.css" />
-        <link rel="stylesheet" href="/css/notifications.css" />
       </header>
       <Container className='containerboy'>
         <Component
@@ -51,6 +50,7 @@ export default function MyApp({ Component, pageProps }) {
           categoryFilter={categoryFilter}
         />
         <link rel="stylesheet" href="/css/posts.css" />
+        <link rel="stylesheet" href="/css/modals.css" />
       </Container>
       <footer>
         <Footer />

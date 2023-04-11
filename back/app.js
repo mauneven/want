@@ -5,9 +5,11 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const postRoutes = require('./routes/postRoutes');
 const reportRoutes = require('./routes/reportRoutes');
-const User = require('./models/User');
+const User = require('./models/user');
 const offerRoutes = require('./routes/offerRoutes');
 const docxRoutes = require('./routes/docxRoutes.js');
+const https = require('https');
+const fs = require('fs');
 
 const app = express();
 
@@ -15,9 +17,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: [
+    'http://www.want.com.co:3000',
+    'https://www.want.com.co:3000',
+    'http://want.com.co',
+    'https://want.com.co',
+    'http://35.225.113.125',
+    'https://35.225.113.125/',
+    'http://localhost:3000',
+  ],
   credentials: true
 }));
+
 app.use('/uploads', express.static('uploads'));
 app.use(session({
   secret: 'my-secret',
@@ -47,18 +58,24 @@ app.use(async (req, res, next) => {
   next();
 });
 
-
 app.use('/api', authRoutes);
 app.use('/api', postRoutes);
-app.use('/api', reportRoutes);
 app.use('/api', offerRoutes);
 app.use("/api", docxRoutes);
+app.use('/api', reportRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).send('Something broke!');
 });
 
-app.listen(4000, () => {
+// para la main
+
+const options = {
+  key: fs.readFileSync('/etc/letsencrypt/live/want.com.co/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/want.com.co/fullchain.pem')
+};
+
+https.createServer(options, app).listen(4000, () => {
   console.log('Server started on port 4000');
 });

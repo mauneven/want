@@ -1,6 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-}
-
-module.exports = nextConfig
+module.exports = {
+  serverRuntimeConfig: {
+    host: "0.0.0.0",
+    port: 3000,
+  },
+};

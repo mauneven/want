@@ -1,26 +1,26 @@
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { NavDropdown, Badge } from 'react-bootstrap';
-
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const router = useRouter();
-  const hasUnreadNotifications = notifications.some((notification) => !notification.isRead);
+  const [unreadNotifications, setUnreadNotifications] = useState([]);
 
   const fetchPostName = async (postId) => {
     if (!postId) {
       console.error('Error: postId is undefined');
       return '';
     }
-    const response = await fetch(`http://localhost:4000/api/posts/${postId}`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`);
     const data = await response.json();
     return data.title;
-  };  
+  };
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      const response = await fetch('http://localhost:4000/api/notifications', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/notifications`, {
         credentials: 'include',
       });
 
@@ -33,45 +33,53 @@ export default function Notifications() {
           })
         );
         setNotifications(notificationsWithPostName);
+        setUnreadNotifications(notificationsData.filter((notification) => !notification.isRead));
       }
     };
 
     fetchNotifications();
   }, []);
 
-  const handleClick = () => {
+  const handleNotificationClick = async (notificationId) => {
+    setUnreadNotifications(unreadNotifications.filter((notification) => notification._id !== notificationId));
+
+    // Marcar la notificación como leída en el servidor
+    await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/notifications/${notificationId}/read`, {
+      method: 'PATCH',
+      credentials: 'include',
+    });
+
     router.push('/receivedOffers');
   };
 
   return (
     <NavDropdown
-    title={
-      <>
-        <i className="bi bi-bell fs-20 navbar-icon"></i>
-        {hasUnreadNotifications && (
-          <Badge pill bg="danger" className="position-absolute" style={{ top: -5, right: -10 }}>
-            {notifications.filter((notification) => !notification.isRead).length}
-          </Badge>
-        )}
-      </>
-    }
-    id="notification-dropdown"
-    className={hasUnreadNotifications ? "text-success" : ""}
-  >
+      title={
+        <div style={{ position: 'relative' }}>
+          <i className="bi bi-bell fs-20"></i>
+          {unreadNotifications.length > 0 && (
+            <Badge pill bg="danger" className="position-absolute" style={{ top: -5, right: -10 }}>
+              {unreadNotifications.length}
+            </Badge>
+          )}
+        </div>
+      }
+      id="notification-dropdown"
+      className={`notification-dropdown ${unreadNotifications.length > 0 ? 'text-success' : ''} no-dropdown-toggle`}
+    >
       {notifications.length > 0 ? (
         notifications.map((notification) => (
           <NavDropdown.Item
             key={notification._id}
-            onClick={() => router.push('/receivedOffers')}
+            onClick={() => handleNotificationClick(notification._id)}
             className={!notification.isRead ? 'bg-primary text-white' : ''}
           >
             {notification.content}
           </NavDropdown.Item>
         ))
       ) : (
-        <NavDropdown.Item disabled>Empty</NavDropdown.Item>
+        <NavDropdown.Item disabled>No hay notificaciones por ahora</NavDropdown.Item>
       )}
     </NavDropdown>
   );
-  
 }

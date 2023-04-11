@@ -10,27 +10,27 @@ const Footer = () => {
       <Container>
         <Row className="g-3">
           <Col md="3">
-            <h5>Company</h5>
+            <h5>Want</h5>
             <ul className="list-unstyled">
               <li>
                 <div className="text-dark divhover" onClick={() => router.push('/about-us')}>
-                  About Us
+                  Acerca de nosotros
                 </div>
               </li>
               <li>
                 <div className="text-dark divhover" onClick={() => router.push('/careers')}>
-                  Company Data
+                  Datos de la empresa
                 </div>
               </li>
               <li>
                 <div className="text-dark divhover" onClick={() => router.push('/contact-us')}>
-                  Contact Us
+                  Contáctanos
                 </div>
               </li>
             </ul>
           </Col>
           <Col md="3">
-            <h5>Subscriptions</h5>
+            <h5>Suscripciones</h5>
             <ul className="list-unstyled">
               <li>
                 <div className="text-dark divhover" onClick={() => router.push('/about/wantplus')}>
@@ -39,12 +39,12 @@ const Footer = () => {
               </li>
               <li>
                 <div className="text-dark divhover" onClick={() => router.push('/pricing')}>
-                  Features
+                  Características
                 </div>
               </li>
               <li>
                 <div className="text-dark divhover" onClick={() => router.push('/download')}>
-                  Limitations
+                  Limitaciones
                 </div>
               </li>
             </ul>
@@ -54,32 +54,32 @@ const Footer = () => {
             <ul className="list-unstyled">
               <li>
                 <div className="text-dark divhover" onClick={() => router.push('/privacy-policy')}>
-                  Privacy Policy
+                  Política de privacidad
                 </div>
               </li>
               <li>
                 <div className="text-dark divhover" onClick={() => router.push('/about/terms-and-conditions')}>
-                  Terms of Service
+                  Términos de servicio
                 </div>
               </li>
             </ul>
           </Col>
           <Col md="3">
-            <h5>Help</h5>
+            <h5>Ayuda</h5>
             <ul className="list-unstyled">
               <li>
                 <div className="text-dark divhover" onClick={() => router.push('/')}>
-                  How to use Want
+                  Cómo usar Want
                 </div>
               </li>
               <li>
                 <div className="text-dark divhover" onClick={() => router.push('')}>
-                  Contact support
+                  Contactar soporte
                 </div>
               </li>
               <li>
                 <div className="text-dark divhover" onClick={() => router.push('')}>
-                  Frequent questions
+                  Preguntas frecuentes
                 </div>
               </li>
             </ul>
@@ -88,7 +88,7 @@ const Footer = () => {
         <hr />
         <Row>
           <Col className="text-center">
-            <p className="mb-0">&copy; {new Date().getFullYear()} Want, Inc. All Rights Reserved.</p>
+            <p className="mb-0">&copy; {new Date().getFullYear()} Want, S.A.S. Todos los derechos reservados.</p>
           </Col>
         </Row>
       </Container>

@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useEffect } from 'react';
 
 const ChangePassword = () => {
     const router = useRouter();
@@ -9,6 +10,38 @@ const ChangePassword = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        const checkLoggedInAndBlockedAndVerified = async () => {
+          const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
+            credentials: 'include',
+          });
+      
+          if (!loggedInResponse.ok) {
+            router.push('/login');
+            return;
+          }
+      
+          const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
+            credentials: 'include',
+          });
+      
+          if (!blockedResponse.ok) {
+            router.push('/blocked');
+            return;
+          }
+      
+          const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
+            credentials: 'include',
+          });
+      
+          if (!verifiedResponse.ok) {
+            router.push('/is-not-verified');
+          }
+        };
+      
+        checkLoggedInAndBlockedAndVerified();
+      }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -19,7 +52,7 @@ const ChangePassword = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:4000/api/change-password', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/change-password`, {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json',
@@ -41,11 +74,11 @@ const ChangePassword = () => {
 
     return (
         <div className="container">
-            <h1>Change Password</h1>
+            <h1>Cambiar mi contraseña</h1>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label htmlFor="currentPassword" className="form-label">
-                        Current Password
+                        Contraseña actual
                     </label>
                     <input
                         type="password"
@@ -58,7 +91,7 @@ const ChangePassword = () => {
                 </div>
                 <div className="mb-3">
                     <label htmlFor="newPassword" className="form-label">
-                        New Password
+                        Nueva contraseña
                     </label>
                     <input
                         type="password"
@@ -71,7 +104,7 @@ const ChangePassword = () => {
                 </div>
                 <div className="mb-3">
                     <label htmlFor="confirmNewPassword" className="form-label">
-                        Confirm New Password
+                        Confirma la nueva contraseña
                     </label>
                     <input
                         type="password"
@@ -83,7 +116,7 @@ const ChangePassword = () => {
                     />
                 </div>
                 <button type="submit" className="btn btn-primary">
-                    Change Password
+                    Aceptar y cambiar contraseña
                 </button>
             </form>
             {message && (

@@ -23,7 +23,8 @@ const modifiedCountries = countries.countries.map((country) => {
   };
 });
 
-const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSelected }) => {
+const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSelected, isRequired = false }) => {
+
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");  
@@ -60,7 +61,7 @@ const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSele
     setSelectedState(foundState);
     console.log("Selected State:", foundState);
     onStateChange && onStateChange(foundState?.name !== 'Seleccione un estado' ? foundState?.name : null);
-    resetCity(); // Agregar esta línea
+    resetCity();
   };
   
   const handleCityChange = (event) => {
@@ -68,7 +69,7 @@ const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSele
     setSelectedCity(city);
     console.log("Selected City:", city);
     onCityChange && onCityChange(city !== 'Seleccione una ciudad' ? city : null);
-    handleLocationSelected(); // Agregar esta línea
+    handleLocationSelected();
   };  
 
   const handleLocationSelected = () => {
@@ -84,10 +85,10 @@ const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSele
   return (
     <div className="d-flex flex-wrap align-items-center">
       <label htmlFor="country-select" className="me-2 mb-0">
-        Country:
+        País:
       </label>
-      <select id="country-select" className="form-select me-4" value={selectedCountry?.id} onChange={handleCountryChange}>
-        <option value="">Choose your country</option>
+      <select id="country-select" className="form-select me-4" value={selectedCountry?.id} onChange={handleCountryChange} required={isRequired}>
+        <option value="">Elije el país</option>
         {modifiedCountries.map((country) => (
           <option key={country.id} value={country.id}>
             {country.name}
@@ -98,10 +99,10 @@ const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSele
       {selectedCountry && (
         <React.Fragment>
           <label htmlFor="state-select" className="me-2 mb-0">
-            State:
+            Estado:
           </label>
-          <select id="state-select" className="form-select me-4" value={selectedState?.id} onChange={handleStateChange}>
-            <option value="">Seleccione un estado</option>
+          <select id="state-select" className="form-select me-4" value={selectedState?.id} onChange={handleStateChange} required={isRequired}>
+            <option value="">Elije un estado</option>
             {selectedCountry.states.map((state) => (
               <option key={state.id} value={state.id}>
                 {state.name}
@@ -114,10 +115,10 @@ const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSele
       {selectedState && (
         <React.Fragment>
           <label htmlFor="city-select" className="me-2 mb-0">
-            City:
+            Ciudad:
           </label>
-          <select id="city-select" className="form-select" value={selectedCity} onChange={handleCityChange}>
-            <option value="">Seleccione una ciudad</option>
+          <select id="city-select" className="form-select" value={selectedCity} onChange={handleCityChange} required={isRequired}>
+            <option value="">Elije una ciudad</option>
             {selectedState.cities.map((city) => (
               <option key={city} value={city}>
                 {city}

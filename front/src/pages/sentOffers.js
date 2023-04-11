@@ -7,22 +7,40 @@ export default function sentOffers() {
   const router = useRouter();
 
   useEffect(() => {
-    const checkLoggedIn = async () => {
-        const response = await fetch('http://localhost:4000/api/is-logged-in', {
-            credentials: 'include',
-        });
-
-        if (!response.ok) {
-            router.push('/login');
-        }
+    const checkLoggedInAndBlockedAndVerified = async () => {
+      const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
+        credentials: 'include',
+      });
+  
+      if (!loggedInResponse.ok) {
+        router.push('/login');
+        return;
+      }
+  
+      const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
+        credentials: 'include',
+      });
+  
+      if (!blockedResponse.ok) {
+        router.push('/blocked');
+        return;
+      }
+  
+      const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
+        credentials: 'include',
+      });
+  
+      if (!verifiedResponse.ok) {
+        router.push('/is-not-verified');
+      }
     };
-
-    checkLoggedIn();
-}, []);
+  
+    checkLoggedInAndBlockedAndVerified();
+  }, []);
 
   useEffect(() => {
     const fetchMyOffers = async () => {
-      const response = await fetch('http://localhost:4000/api/my-offers', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/my-offers`, {
         credentials: 'include',
       });
 
@@ -37,7 +55,7 @@ export default function sentOffers() {
 
   return (
     <div className="container">
-      <h1>Mis Ofertas</h1>
+      <h1>Ofertas que he hecho</h1>
       <div className="row">
         {offers.map((offer) => (
           <div key={offer._id} className="col-md-4">

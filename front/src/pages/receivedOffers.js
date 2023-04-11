@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { useRouter } from 'next/router';
+import ReportOfferModal from '@/components/report/ReportOfferModal';
 
 export default function ReceivedOffers() {
   const [offers, setOffers] = useState([]);
@@ -9,22 +10,40 @@ export default function ReceivedOffers() {
   const router = useRouter();
 
   useEffect(() => {
-    const checkLoggedIn = async () => {
-        const response = await fetch('http://localhost:4000/api/is-logged-in', {
-            credentials: 'include',
-        });
-
-        if (!response.ok) {
-            router.push('/login');
-        }
+    const checkLoggedInAndBlockedAndVerified = async () => {
+      const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
+        credentials: 'include',
+      });
+  
+      if (!loggedInResponse.ok) {
+        router.push('/login');
+        return;
+      }
+  
+      const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
+        credentials: 'include',
+      });
+  
+      if (!blockedResponse.ok) {
+        router.push('/blocked');
+        return;
+      }
+  
+      const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
+        credentials: 'include',
+      });
+  
+      if (!verifiedResponse.ok) {
+        router.push('/is-not-verified');
+      }
     };
-
-    checkLoggedIn();
-}, []);
+  
+    checkLoggedInAndBlockedAndVerified();
+  }, []);
 
   useEffect(() => {
     const fetchReceivedOffers = async () => {
-      const response = await fetch('http://localhost:4000/api/received', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/received`, {
         credentials: 'include',
       });
 
@@ -37,9 +56,31 @@ export default function ReceivedOffers() {
     fetchReceivedOffers();
   }, []);
 
+  const handleReportOffer = async (offerId, description) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/offers/${offerId}/report`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ description }),
+      });
+  
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error);
+      }
+  
+      alert('Offer reported successfully');
+    } catch (error) {
+      console.error('Error reporting offer:', error.message);
+    }
+  };  
+
   const handleDeleteOffer = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/api/${selectedOfferId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/${selectedOfferId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -96,6 +137,7 @@ export default function ReceivedOffers() {
                   >
                     Eliminar
                   </button>
+                  <ReportOfferModal offerId={offer._id} onReport={handleReportOffer} />
                 </div>
               </div>
             </div>

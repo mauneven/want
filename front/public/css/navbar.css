@@ -90,10 +90,14 @@ header{
 }
 
 .navbar-blur{
-  background-color: rgba(255, 255, 255, 0.9)!important;
+  background-color: rgba(240, 248, 255, 0.877)!important;
   backdrop-filter: blur(9px);
 }
 
-.containerboy{
-  min-height: 83vh;
+.notification-dropdown .dropdown-toggle::after {
+  content: none;
+}
+
+.notification-dropdown .bi-bell {
+  font-size: 20px;
 }

@@ -14,21 +14,39 @@ const EditProfile = () => {
   const [editingField, setEditingField] = useState(null);
 
   useEffect(() => {
-    const checkLoggedIn = async () => {
-        const response = await fetch('http://localhost:4000/api/is-logged-in', {
-            credentials: 'include',
-        });
-
-        if (!response.ok) {
-            router.push('/login');
-        }
+    const checkLoggedInAndBlockedAndVerified = async () => {
+      const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
+        credentials: 'include',
+      });
+  
+      if (!loggedInResponse.ok) {
+        router.push('/login');
+        return;
+      }
+  
+      const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
+        credentials: 'include',
+      });
+  
+      if (!blockedResponse.ok) {
+        router.push('/blocked');
+        return;
+      }
+  
+      const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
+        credentials: 'include',
+      });
+  
+      if (!verifiedResponse.ok) {
+        router.push('/is-not-verified');
+      }
     };
-
-    checkLoggedIn();
-}, []);
+  
+    checkLoggedInAndBlockedAndVerified();
+  }, []);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/user', { credentials: 'include' })
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`, { credentials: 'include' })
       .then((response) => {
         if (!response.ok) {
           // Si el usuario no está autenticado, redirigir a la página de inicio de sesión
@@ -86,7 +104,7 @@ const EditProfile = () => {
         formData.append('photo', photo);
       }
 
-      const response = await fetch('http://localhost:4000/api/users/me', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me`, {
         method: 'PUT',
         credentials: 'include',
         body: formData
@@ -104,14 +122,14 @@ const EditProfile = () => {
 
   const inputFields = [{ name: 'firstName', label: 'First Name', type: 'text', value: firstName, onChange: (e) => setFirstName(e.target.value), required: true, }, { name: 'lastName', label: 'Last Name', type: 'text', value: lastName, onChange: (e) => setLastName(e.target.value), required: true, }, { name: 'phone', label: 'Phone', type: 'text', value: phone, onChange: (e) => setPhone(e.target.value), required: true, }, {
     name: 'birthdate',
-    label: 'Birthdate',
+    label: 'Fecha de nacimiento',
     type: 'date',
     value: birthdate,
     onChange: (e) => setBirthdate(e.target.value),
     required: true,
   },
   ];
-  const photoUrl = typeof File !== 'undefined' && photo instanceof File ? URL.createObjectURL(photo) : (user?.photo ? `http://localhost:4000/${user.photo}` : "icons/person-circle.svg");
+  const photoUrl = typeof File !== 'undefined' && photo instanceof File ? URL.createObjectURL(photo) : (user?.photo ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}` : "icons/person-circle.svg");
 
   return (
     <div className="container">
@@ -138,7 +156,7 @@ const EditProfile = () => {
                   alignItems: 'center',
                 }}
               >
-                <i className="bi bi-pencil text-primary"></i> Change photo
+                <i className="bi bi-pencil text-primary"></i> Cambiar foto de perfil
               </div>
             </label>
             <input
@@ -183,14 +201,14 @@ const EditProfile = () => {
                   className="btn btn-secondary me-3"
                   onClick={handleCancel}
                 >
-                  Cancel
+                  Cancelar y dejar como estaba
                 </button>
                 <button
                   type="submit"
                   className="btn btn-primary"
                   disabled={!photo}
                 >
-                  Save Changes
+                  Guardar los nuevos cambios
                 </button>
               </>
             )}
@@ -201,20 +219,20 @@ const EditProfile = () => {
                   className="btn btn-secondary me-3"
                   onClick={handleCancel}
                 >
-                  Cancel
+                  Cancelar y dejar como estaba
                 </button>
                 <button
                   type="submit"
                   className="btn btn-primary"
                   disabled={!editingField}
                 >
-                  Save Changes
+                  Guardar los nuevos cambios
                 </button>
               </>
             )}
           </form>
           <Link href="/changePassword">
-            <button className="btn btn-success">Change my password</button>
+            <button className="btn btn-success">Cambiar contraseña</button>
           </Link>
         </div>
       </div>

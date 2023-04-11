@@ -7,7 +7,7 @@ if (!fs.existsSync(uploadDirectory)) {
 }
 
 const mongoose = require('mongoose');
-const User = require('../models/User');
+const User = require('../models/user');
 const multer = require('multer');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

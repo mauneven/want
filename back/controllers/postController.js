@@ -1,8 +1,9 @@
-const Post = require('../models/Post');
+const Post = require('../models/post');
 const multer = require('multer');
 const path = require('path');
-const Offer = require('../models/Offer');
+const Offer = require('../models/offer');
 const Notification = require('../models/notification');
+const fs = require('fs');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -15,8 +16,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-exports.uploadPhoto = upload.single('photo');
-
+exports.uploadPhotoMiddleware = upload.single('photo');
 
 exports.getAllPosts = async (req, res, next) => {
   try {
@@ -74,7 +74,7 @@ exports.updatePost = async (req, res, next) => {
       return res.status(401).send('You must be logged in to edit a post');
     }
 
-    const { title, description, country, state, city, mainCategory, subCategory } = req.body;
+    const { title, description, country, state, city, mainCategory, subCategory, price } = req.body;
 
     const post = await Post.findById(req.params.id);
     if (!post) {
@@ -92,6 +92,22 @@ exports.updatePost = async (req, res, next) => {
     post.city = city;
     post.mainCategory = mainCategory;
     post.subCategory = subCategory;
+    post.price = price;
+
+    if (req.file) {
+      if (post.photo) {
+        // Elimina la foto anterior si existe
+        const oldPhotoPath = path.join(__dirname, '..', post.photo);
+        fs.unlink(oldPhotoPath, (err) => {
+          if (err) {
+            console.error('Error removing old post picture:', err);
+          }
+        });
+      }
+      // Guarda la URL de la nueva foto en la base de datos
+      post.photo = req.file.path;
+    }
+
     await post.save();
 
     res.status(200).json(post);
@@ -99,7 +115,6 @@ exports.updatePost = async (req, res, next) => {
     next(err);
   }
 };
-
 
 exports.deletePost = async (req, res, next) => {
   try {
@@ -113,18 +128,30 @@ exports.deletePost = async (req, res, next) => {
       return res.status(401).send('You are not authorized to delete this post');
     }
 
+    // Buscar todas las ofertas asociadas con este post
+    const offers = await Offer.find({ post: req.params.id });
+
+    // Eliminar las fotos de las ofertas asociadas con este post
+    for (const offer of offers) {
+      if (offer.photo) {
+        try {
+          const imagePath = path.join(__dirname, '..', offer.photo);
+          fs.unlinkSync(imagePath);
+        } catch (err) {
+          console.error(`Error deleting image for offer ${offer._id}: ${err.message}`);
+        }
+      }
+    }
+
     // Eliminar las ofertas y notificaciones relacionadas con el post
     await Offer.deleteMany({ post: req.params.id });
     await Notification.deleteMany({ postId: req.params.id });
-
-    await Post.deleteOne({ _id: req.params.id });
 
     await exports.deletePostById(req.params.id);
     res.sendStatus(204);
   } catch (err) {
     next(err);
   }
-
 };
 
 // controllers/postController.js
@@ -132,8 +159,25 @@ exports.deletePost = async (req, res, next) => {
 exports.deletePostById = async (postId) => {
   const post = await Post.findById(postId);
 
+  // Verificar si el post ya ha sido eliminado
   if (!post) {
-    throw new Error('Post not found');
+    console.log('Post already deleted');
+    return;
+  }
+
+  // Buscar todas las ofertas asociadas con este post
+  const offers = await Offer.find({ post: postId });
+
+  // Eliminar las fotos de las ofertas asociadas con este post
+  for (const offer of offers) {
+    if (offer.photo) {
+      try {
+        const imagePath = path.join(__dirname, '..', offer.photo);
+        fs.unlinkSync(imagePath);
+      } catch (err) {
+        console.error(`Error deleting image for offer ${offer._id}: ${err.message}`);
+      }
+    }
   }
 
   // Eliminar las ofertas y notificaciones relacionadas con el post
@@ -143,8 +187,6 @@ exports.deletePostById = async (postId) => {
   // Eliminar la imagen del post
   if (post.photo) {
     try {
-      const fs = require('fs');
-      const path = require('path');
       const imagePath = path.join(__dirname, '..', post.photo);
       fs.unlinkSync(imagePath);
     } catch (err) {
@@ -154,7 +196,6 @@ exports.deletePostById = async (postId) => {
 
   await Post.deleteOne({ _id: postId });
 };
-
 
 // controllers/postController.js
 
@@ -167,8 +208,6 @@ exports.schedulePostDeletion = async (postId, delay) => {
     }
   }, delay);
 };
-
-
 
 
 exports.getPostsByCurrentUser = async (req, res, next) => {
@@ -186,4 +225,13 @@ exports.getPostsByCurrentUser = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.isPostCreatedByUser = async (userId, postId) => {
+  const post = await Post.findById(postId);
+  if (!post) {
+    return false;
+  }
+  return post.createdBy.toString() === userId;
+};
+
 

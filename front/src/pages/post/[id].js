@@ -11,7 +11,7 @@ const PostDetails = () => {
   useEffect(() => {
     const fetchPost = async () => {
       // Llama a la API para obtener el post por ID.
-      const response = await fetch(`http://localhost:4000/api/posts/${id}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`);
       const data = await response.json();
       setPost(data);
     };
@@ -22,7 +22,7 @@ const PostDetails = () => {
   }, [id]);
 
   if (!post) {
-    return <p className="container mt-5">Cargando...</p>;
+    return <p className="container mt-5">Loading...</p>;
   }
 
   return (
@@ -30,7 +30,7 @@ const PostDetails = () => {
       <div className="row">
         <div className="col-lg-6">
           <img
-            src={`http://localhost:4000/${post.photo}`}
+            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.photo}`}
             className="card-img-top"
             alt={post.title}
             style={{ objectFit: "cover", height: "100%" }}
@@ -39,15 +39,15 @@ const PostDetails = () => {
         <div className="col-lg-6">
           <h1 className="mb-4">{post.title}</h1>
           <h5>{post.description}</h5>
-          <p><strong>Precio: </strong>{post.price} USD</p>
-          <p><strong>País: </strong>{post.country}</p>
-          <p><strong>Estado: </strong>{post.state}</p>
-          <p><strong>Ciudad: </strong>{post.city}</p>
-          <p><strong>Categoría principal: </strong>{post.mainCategory}</p>
-          <p><strong>Subcategoría: </strong>{post.subCategory}</p>
+          <p><strong>Price: </strong>{post.price}</p>
+          <p><strong>Country: </strong>{post.country}</p>
+          <p><strong>State: </strong>{post.state}</p>
+          <p><strong>City: </strong>{post.city}</p>
+          <p><strong>Main category: </strong>{post.mainCategory}</p>
+          <p><strong>Sub category: </strong>{post.subCategory}</p>
           {/* Agrega aquí más campos si es necesario */}
           <Link href={`/createOffer?postId=${id}`}>
-            <button className="btn btn-primary mt-3">Ofertar</button>
+            <button className="btn btn-primary mt-3">Make an offer</button>
           </Link>
         </div>
       </div>

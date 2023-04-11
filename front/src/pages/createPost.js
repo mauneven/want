@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import PostCategory from '@/components/categories/Categories';
 import Location from '@/components/locations/Location';
+import WordsFilter from '@/badWordsFilter/WordsFilter.js';
 
 const CreatePost = () => {
   const [title, setTitle] = useState('');
@@ -25,18 +26,36 @@ const CreatePost = () => {
   const [previewPrice, setPreviewPrice] = useState('');
 
   useEffect(() => {
-    const checkLoggedIn = async () => {
-        const response = await fetch('http://localhost:4000/api/is-logged-in', {
-            credentials: 'include',
-        });
+    const checkLoggedInAndBlockedAndVerified = async () => {
+      const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
+        credentials: 'include',
+      });
 
-        if (!response.ok) {
-            router.push('/login');
-        }
+      if (!loggedInResponse.ok) {
+        router.push('/login');
+        return;
+      }
+
+      const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
+        credentials: 'include',
+      });
+
+      if (!blockedResponse.ok) {
+        router.push('/blocked');
+        return;
+      }
+
+      const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
+        credentials: 'include',
+      });
+
+      if (!verifiedResponse.ok) {
+        router.push('/is-not-verified');
+      }
     };
 
-    checkLoggedIn();
-}, []);
+    checkLoggedInAndBlockedAndVerified();
+  }, []);
 
   const handleFileChange = (e) => {
     setPhoto(e.target.files[0]);
@@ -50,12 +69,24 @@ const CreatePost = () => {
     setPreviewPrice(Number(price).toLocaleString());
   }, [title, description, country, state, city, mainCategory, subCategory, price]);
 
+  const bwf = new WordsFilter();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-  
+
+    if (bwf.containsBadWord(title)) {
+      alert(`Escribiste una mala palabra en el titulo: ${bwf.devolverPalabra(title)}`);
+      return;
+    }
+
+    if (bwf.containsBadWord(description)) {
+      alert(`Escribiste una mala palabra en la descripción: ${bwf.devolverPalabra(description)}`);
+      return;
+    }
+
     console.log('Submitting post with values:', { title, description, country, state, city, mainCategory, subCategory, price, photo });
-  
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
@@ -68,9 +99,9 @@ const CreatePost = () => {
     if (photo) {
       formData.append('photo', photo);
     }
-  
+
     try {
-      const response = await fetch('http://localhost:4000/api/posts', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`, {
         method: 'POST',
         headers: {
           Accept: 'application/json'
@@ -78,12 +109,12 @@ const CreatePost = () => {
         credentials: 'include',
         body: formData
       });
-  
+
       if (!response.ok) {
         const error = await response.text();
         throw new Error(error);
       }
-  
+
       setLoading(false);
       router.push('/'); // Redirige al inicio después de crear un post exitosamente
     } catch (error) {
@@ -93,12 +124,12 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="container">
+    <div className="mt-5 mb-5">
       <div className="row row-cols-1 row-cols-md-4 g-4">
         <div className="col-md-6">
           <form onSubmit={handleSubmit} className="container">
             <div className="mb-3">
-              <label htmlFor="title" className="form-label">What do you Want?</label>
+              <label htmlFor="title" className="form-label">Dale un título a lo que quieres</label>
               <input
                 type="text"
                 className="form-control"
@@ -109,7 +140,7 @@ const CreatePost = () => {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="description" className="form-label">Give some details to the people about it</label>
+              <label htmlFor="description" className="form-label">Ahora describelo con mas detalle</label>
               <textarea
                 className="form-control"
                 id="description"
@@ -119,7 +150,7 @@ const CreatePost = () => {
               ></textarea>
             </div>
             <div className="mb-3">
-              <label htmlFor="price" className="form-label">Max Price</label>
+              <label htmlFor="price" className="form-label">Cuanto pagarías por lo que quieres</label>
               <input
                 type="number"
                 className="form-control"
@@ -129,7 +160,7 @@ const CreatePost = () => {
                 required
               />
               {price ? (
-                <small className="form-text text-muted">Price: {Number(price).toLocaleString()}</small>
+                <small className="form-text text-muted">Precio: {Number(price).toLocaleString()}</small>
               ) : null}
             </div>
             <div className="mb-3">
@@ -137,16 +168,18 @@ const CreatePost = () => {
                 onCountryChange={(selectedCountry) => setCountry(selectedCountry)}
                 onStateChange={(selectedState) => setState(selectedState)}
                 onCityChange={(selectedCity) => setCity(selectedCity)}
+                isRequired = {true}
               />
             </div>
             <div className="mb-3">
-            <PostCategory
-  onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
-  onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)} // Cambia "onSubCategoryChange" a "onSubcategoryChange"
-/>
+              <PostCategory
+                onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
+                onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)} // Cambia "onSubCategoryChange" a "onSubcategoryChange"
+                isRequired = {true}
+              />
             </div>
             <div className="mb-3">
-              <label htmlFor="photo" className="form-label">Upload a photo about what you want</label>
+              <label htmlFor="photo" className="form-label">Sube una foto guía de lo que quieres</label>
               <input
                 type="file"
                 className="form-control"
@@ -155,35 +188,33 @@ const CreatePost = () => {
                 onChange={handleFileChange}
               />
             </div>
-            <button type="submit" className="btn btn-primary">Create Post</button>
+            <button type="submit" className="btn btn-primary">Publicar lo que quiero</button>
           </form>
         </div>
-        <div className="col-md-6">
-          <div className="card">
+        <div className="col-md-3">
+          <div className="card post rounded-5 card-preview">
             {photo && (
-              <img
-                src={URL.createObjectURL(photo)}
-                className="card-img-top"
-                alt="Preview"
-              />
+              <div style={{ height: "200px", overflow: "hidden" }}>
+                <img
+                  src={URL.createObjectURL(photo)}
+                  className="card-img-top"
+                  alt="Preview"
+                  style={{ objectFit: "cover", height: "100%" }}
+                />
+              </div>
             )}
             <div className="card-body">
-              <h5 className="card-title">{title || "Title"}</h5>
-              <h5 className="text-success">${Number(price).toLocaleString()}</h5>
-              <p className="card-text">{description || "Description"}</p>
-            </div>
-            <div className="card-footer">
-              <small className="text-muted">
-                {country || "Country"}, {state || "State"}, {city || "City"}
-              </small>
+              <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>
+              <h5 className="text-success">${previewPrice}</h5>
+              <p className="card-text post-text mb-2">{previewDescription || "Description"}</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  );  
-  
-  
+  );
+
+
 };
 
 export default CreatePost;

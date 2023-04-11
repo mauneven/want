@@ -12,23 +12,40 @@ export default function MyPosts() {
   const router = useRouter();
 
   useEffect(() => {
-    const checkLoggedIn = async () => {
-        const response = await fetch('http://localhost:4000/api/is-logged-in', {
-            credentials: 'include',
-        });
-
-        if (!response.ok) {
-            router.push('/login');
-        }
+    const checkLoggedInAndBlockedAndVerified = async () => {
+      const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
+        credentials: 'include',
+      });
+  
+      if (!loggedInResponse.ok) {
+        router.push('/login');
+        return;
+      }
+  
+      const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
+        credentials: 'include',
+      });
+  
+      if (!blockedResponse.ok) {
+        router.push('/blocked');
+        return;
+      }
+  
+      const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
+        credentials: 'include',
+      });
+  
+      if (!verifiedResponse.ok) {
+        router.push('/is-not-verified');
+      }
     };
-
-    checkLoggedIn();
-}, []);
-
+  
+    checkLoggedInAndBlockedAndVerified();
+  }, []);
 
   useEffect(() => {
     const fetchMyPosts = async () => {
-      const response = await fetch('http://localhost:4000/api/my-posts', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/my-posts`, {
         credentials: 'include',
       });
 
@@ -43,7 +60,7 @@ export default function MyPosts() {
 
   const handleDeletePost = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/api/posts/${selectedPostId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${selectedPostId}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -78,21 +95,32 @@ export default function MyPosts() {
         </Modal.Footer>
       </Modal>
       <div className="container">
-        <h1>Mis Posts</h1>
-        <div className="row">
+        <h1>Mis posts</h1>
+        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
           {posts.map((post) => (
-            <div key={post._id} className="col-md-4">
-              <div className="card mb-4">
+            <div key={post._id} className="col">
+              <div className="card post rounded-5">
+                {post.photo && (
+                  <div style={{ height: "200px", overflow: "hidden" }}>
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.photo}`}
+                      className="card-img-top"
+                      alt={post.title}
+                      style={{ objectFit: "cover", height: "100%" }}
+                    />
+                  </div>
+                )}
                 <div className="card-body">
-                  <h5 className="card-title">
-                    <Link href={`/editPost/${post._id}`}>
-                      <span className="link-with-icon">
-                        {post.title}
-                        <i className="bi bi-pencil-fill ms-2"></i>
-                      </span>
-                    </Link>
+                  <h5 className="card-title post-title mb-2">{post.title}
                   </h5>
-                  <p className="card-text">{post.description}</p>
+                  <h5 className="text-success">
+                    ${post.price.toLocaleString()}
+                  </h5>
+                  <p className="card-text post-text mb-2">
+                    {post.description.length > 100
+                      ? post.description.substring(0, 100) + "..."
+                      : post.description}
+                  </p>
                 </div>
                 <div className="card-footer">
                   <button
@@ -102,8 +130,13 @@ export default function MyPosts() {
                       setShowModal(true);
                     }}
                   >
-                    <i className="bi bi-trash-fill"></i>
+                    <i className="bi bi-trash-fill">Eliminar post</i>
                   </button>
+                  <Link href={`/editPost/${post._id}`}>
+                      <button className="ms-2 text-decoration-none btn btn-outline-success btn-sm">
+                        <i className="bi bi-pencil-fill">Editar Post</i>
+                      </button>
+                    </Link>
                 </div>
               </div>
             </div>
@@ -111,5 +144,5 @@ export default function MyPosts() {
         </div>
       </div>
     </>
-  );  
+  );
 }

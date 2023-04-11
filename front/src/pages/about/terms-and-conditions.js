@@ -6,7 +6,7 @@ function Terms({ html }) {
 
 export async function getServerSideProps() {
   // Obtiene el HTML desde el back-end
-  const response = await axios.get("http://localhost:4000/api/convertDocxToHtml");
+  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/convertDocxToHtml`);
   const html = response.data;
 
   return {

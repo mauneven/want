@@ -6,14 +6,35 @@ import Head from 'next/head';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
+  const [alertMessage, setAlertMessage] = useState('');
   const router = useRouter();
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
   };
 
+  const validateAgeAndParentPermission = (birthdate) => {
+    const today = new Date();
+    const birthDate = new Date(birthdate);
+    const ageDiff = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    const dayDiff = today.getDate() - birthDate.getDate();
+    const age = monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) ? ageDiff - 1 : ageDiff;
+
+    if (age < 14) {
+      setAlertMessage('No puedes crear una cuenta. Debes tener al menos 14 años de edad.');
+      return false;
+    } else if (age >= 14 && age < 18 && !document.getElementById('parentPermission').checked) {
+      setAlertMessage('Debes marcar la casilla de obtener el permiso de tus padres.');
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setAlertMessage('');
     const email = event.target.email.value;
     const password = event.target.password.value;
     let firstName, lastName, phone, birthdate;
@@ -22,13 +43,17 @@ export default function Login() {
       lastName = event.target.lastName.value;
       phone = event.target.phone.value;
       birthdate = event.target.birthdate.value;
+  
+      if (!validateAgeAndParentPermission(birthdate)) {
+        return;
+      }
     }
     const data = {
       email,
       password,
       ...(isLogin ? {} : { firstName, lastName, phone, birthdate }),
     };
-    const response = await fetch(`http://localhost:4000/api/${isLogin ? 'login' : 'register'}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/${isLogin ? 'login' : 'register'}`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -36,38 +61,67 @@ export default function Login() {
       },
       body: JSON.stringify(data),
     });
-    const responseData = await response.json();
-    console.log(responseData);
+    
     if (response.ok) {
-      router.push('/');
+      const responseData = await response.json();
+      if (!responseData.isVerified) {
+        router.push('/is-not-verified');
+      } else {
+        router.push('/');
+      }
+    } else {
+      if (response.headers.get('Content-Type') === 'application/json') {
+        const responseData = await response.json();
+        setAlertMessage(responseData.error || 'El correo electrónico o la contraseña están incorrectos.');
+      } else {
+        setAlertMessage('El correo electrónico o la contraseña están incorrectos.');
+      }
     }
-  };
-
+  };  
 
   useEffect(() => {
-    const checkLoggedIn = async () => {
-      const response = await fetch('http://localhost:4000/api/is-logged-in', {
+    const checkLoggedInAndBlockedAndVerified = async () => {
+      const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
         credentials: 'include',
       });
-
-      if (response.ok) {
+  
+      if (!loggedInResponse.ok) {
+        router.push('/login');
+        return;
+      }
+  
+      const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
+        credentials: 'include',
+      });
+  
+      if (!blockedResponse.ok) {
+        router.push('/blocked');
+        return;
+      }
+  
+      const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
+        credentials: 'include',
+      });
+  
+      if (!verifiedResponse.ok) {
         router.push('/');
       }
     };
-
-    checkLoggedIn();
+  
+    checkLoggedInAndBlockedAndVerified();
   }, []);
 
   return (
-  <>
-  <Head>
-    <link rel="stylesheet" href='css/login.css'/>
-  </Head>
-
     <div className="container form-container">
       <div className='card login-form rounded-5 p-3'>
         <div className='card-body'>
-      <h1 className="text-center">{isLogin ? 'Login' : 'Sign Up'}</h1>
+    <div className="container">
+      <h1 className="text-center">{isLogin ? 'Iniciar sesión' : 'Registrarse'}</h1>
+      {alertMessage && (
+        <div className="alert alert-danger" role="alert">
+          {alertMessage}
+        </div>
+      )}
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">E-mail:</label>
@@ -106,12 +160,13 @@ export default function Login() {
         <button onClick={toggleForm} className="btn btn-link user-link">{isLogin ? 'Sign up' : 'Login'}</button>
       </div>
       <Link href="/recovery">
-        <span className="rst-pwd">Forgot my password</span>
+        <span className="rsp-pwd">Olvidé mi contraseña</span>
       </Link>
       </div>
       </div>
     </div>
-    </>
+    </div>
 
   );
+  
 }

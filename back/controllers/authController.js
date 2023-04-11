@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const { default: mongoose } = require('mongoose');
-const User = require('../models/User');
+const User = require('../models/user');
 
 const db = require('../config/database');
 const nodemailer = require('nodemailer');
@@ -22,19 +22,98 @@ exports.register = async (req, res, next) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Generate verification token
+    const token = await (await bcrypt.hash(Date.now().toString(), 10)).replace(/\//g, "n");
+
     // Create user
     const user = new User({
       email,
       password: hashedPassword,
       firstName,
-      lastName
+      lastName,
+      verificationToken: token,
+      verificationTokenExpires: Date.now() + 1800000,
     });
     await user.save();
+
+    // Send verification email
+    await sendVerificationEmail(email, token);
 
     // Store user data in session
     req.session.userId = user._id;
 
     res.status(201).json(user);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.resendVerification = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    // Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).send('User with that email does not exist');
+    }
+
+    // Check if user is already verified
+    if (user.isVerified) {
+      return res.status(400).send('User is already verified');
+    }
+
+    // Generate new verification token
+    const token = await (await bcrypt.hash(Date.now().toString(), 10)).replace(/\//g, "n");
+
+    // Store new verification token and expiration time in user document
+    user.verificationToken = token;
+    user.verificationTokenExpires = Date.now() + 1800000; // Set new expiration time
+    await user.save();
+
+    // Send verification email with the new token
+    await sendVerificationEmail(email, token);
+
+    res.status(200).send('Verification email resent');
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.verifyUser = async (req, res, next) => {
+  try {
+    const { token } = req.params;
+
+    const user = await User.findOne({ verificationToken: token, verificationTokenExpires: { $gt: Date.now() } });
+    if (!user) {
+      return res.status(400).send('Invalid verification token');
+    }
+
+    if (user.verificationTokenExpires <= Date.now()) {
+      // Check if the user has requested a new token
+      const newToken = await User.findOne({
+        email: user.email,
+        verificationTokenExpires: { $gt: Date.now() },
+      });
+
+      // If a new token is found, return an error
+      if (newToken) {
+        return res.status(400).send('A new token has been requested. Please use the new token.');
+      } else {
+        return res.status(410).send('Expired verification token');
+      }
+    }
+
+    if (user.isVerified) {
+      return res.status(409).send('Already verified');
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpires = undefined;
+    await user.save();
+
+    res.status(200).send('User successfully verified');
   } catch (err) {
     next(err);
   }
@@ -68,14 +147,13 @@ exports.login = async (req, res, next) => {
   }
 };
 
-exports.isLoggedIn = (req, res) => {
+exports.isLoggedIn = (req, res, next) => {
   if (req.session.userId) {
-    res.sendStatus(200);
+    next();
   } else {
-    res.sendStatus(401);
+    res.status(401).send('Unauthorized');
   }
 };
-
 
 exports.logout = async (req, res, next) => {
   try {
@@ -89,27 +167,23 @@ exports.logout = async (req, res, next) => {
 
 exports.sendResetPasswordEmail = async ({ email, token }) => {
   // create reusable transporter object using the default SMTP transport
-  let transporter = nodemailer.createTransport({
-    host: "sandbox.smtp.mailtrap.io",
-    port: 2525,
-    //secure: true, // true for 2525, false for other ports
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
     auth: {
-      user: "771665ecc3651e",
-      pass: "7b644c3d808283"
-    }
+      user: "wanttests@gmail.com",
+      pass: "hgdxskaqpsunouin"
+    },
   });
-
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: 'want <want-support@gmail.com>', // sender address
+    from: 'Want | Seguridad <wanttests@gmail.com>', // sender address
     to: email, // list of receivers
-    subject: 'Password Reset Request', // Subject line
+    subject: 'Restablece tu contraseña', // Subject line
     html: `
-      <p>You have requested a password reset for your account. Please follow the link below to reset your password:</p>
-      <a href="http://localhost:3000/recoveryPassword/${token}">Reset Password</a>
-      <p>"http://localhost:3000/recoveryPassword/${token}"></p>
-      <p>If you did not make this request, please ignore this email and your password will remain unchanged.</p>
-    `
+    <p>Haz pedido restablecer tu contraseña en Want, puedes hacerlo en el siguiente link:</p>
+    <a href="want.com.co/recoveryPassword/${token}">Reset Password</a>
+    <p>Si tu no pediste restablecer tu contraseña, pasa este mail por alto y tu contraseña no va a cambiarse</p>
+  `
   });
 
   //console.log('Message sent: %s', info.messageId);
@@ -126,7 +200,7 @@ exports.forgotPassword = async (req, res, next) => {
     }
 
     // Generate reset password token
-    const token = await (await bcrypt.hash(Date.now().toString(), 10)).replace("/","n");
+    const token = await (await bcrypt.hash(Date.now().toString(), 10)).replace(/\//g, "n");
 
     // Store reset password token and expiration date in user document
     user.resetPasswordToken = token;
@@ -201,3 +275,79 @@ exports.changePassword = async (req, res, next) => {
   }
 };
 
+exports.checkLoggedIn = (req, res) => {
+  if (req.session.userId) {
+    res.status(200).json({ loggedIn: true, userId: req.session.userId });
+  } else {
+    res.status(200).json({ loggedIn: false });
+  }
+};
+
+exports.checkBlocked = async (req, res) => {
+  try {
+    if (req.session.userId) {
+      const user = await User.findById(req.session.userId);
+      if (user) {
+        if (user.isBlocked) {
+          res.status(403).json({ error: 'User is blocked' });
+        } else {
+          res.status(200).json({ message: 'User is not blocked' });
+        }
+      } else {
+        res.status(404).json({ error: 'User not found' });
+      }
+    } else {
+      res.status(401).json({ error: 'Unauthorized' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const sendVerificationEmail = async (email, verificationToken) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: "wanttests@gmail.com",
+      pass: "hgdxskaqpsunouin"
+    },
+  });
+
+  const mailOptions = {
+    from: 'Want | Verificacion <wanttests@gmail.com>',
+    to: email,
+    subject: 'Verifica tu cuenta',
+    html: `
+    <p>Estas a un paso de verificar tu cuenta en Want, si quieres hacer da click al siguiente link:</p>
+    <a href="want.com.co/verify-email/${verificationToken}">Verify Email Address</a>
+  `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Verification email sent');
+  } catch (err) {
+    console.error('Error sending verification email:', err);
+  }
+};
+
+exports.checkVerified = async (req, res) => {
+  try {
+    if (req.session.userId) {
+      const user = await User.findById(req.session.userId);
+      if (user) {
+        if (user.isVerified) {
+          res.status(200).json({ message: 'User is verified' });
+        } else {
+          res.status(403).json({ error: 'User is not verified' });
+        }
+      } else {
+        res.status(404).json({ error: 'User not found' });
+      }
+    } else {
+      res.status(401).json({ error: 'Unauthorized' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

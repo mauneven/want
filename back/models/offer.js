@@ -17,6 +17,10 @@ const offerSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  contact: {
+    type: String,
+    required: true
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
