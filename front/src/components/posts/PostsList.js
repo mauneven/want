@@ -138,6 +138,10 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
     }
   };  
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber)
+  };
+
   const Placeholder = () => (
     <div className="col-md-3">
       <ContentLoader speed={2} width={260} height={450} viewBox="0 0 260 450" backgroundColor="#f3f3f3" foregroundColor="#ecebeb">
