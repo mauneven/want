@@ -1,23 +1,13 @@
-body {
-    background: url("../icons/90.png");
-    background-size: auto;
-    background-position-x: center;
-}
 
 .form-container{
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    height: 80vh;
 }
 
 body .login-form{
     margin-top: 100px;
     margin-bottom: 100px;
-    background-color: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(15px);
     width: 600px;
     max-width: 1000px;
 }
