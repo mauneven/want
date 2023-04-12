@@ -7,7 +7,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(12);
+  const [pageSize, setPageSize] = useState(1);
   const [totalPosts, setTotalPosts] = useState(0);
 
   const fetchPostsByLocation = async () => {
