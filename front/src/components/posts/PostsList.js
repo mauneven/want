@@ -9,6 +9,8 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(1);
   const [totalPosts, setTotalPosts] = useState(0);
+  const maxPagesToShow = 6;
+  const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
 
   const fetchPostsByLocation = async () => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`);
@@ -156,13 +158,23 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
 
   const renderPageNumbers = () => {
     const pageNumbers = [];
-    // Utiliza totalPosts en lugar de posts.length para calcular la cantidad de páginas
-    for (let i = 1; i <= Math.ceil(totalPosts / pageSize); i++) {
+  
+    for (let i = startPage; i < startPage + maxPagesToShow && i <= Math.ceil(totalPosts / pageSize); i++) {
       pageNumbers.push(i);
     }
+  
     return (
       <nav aria-label="Page navigation example pt-2 pb-2">
         <ul className="pagination justify-content-center">
+          <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              className="btn btn-success"
+              disabled={currentPage === 1}
+            >
+              {"<"}
+            </button>
+          </li>
           {pageNumbers.map((number) => (
             <li key={number} className="page-item">
               <button
@@ -173,6 +185,15 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
               </button>
             </li>
           ))}
+          <li className={`page-item ${currentPage === Math.ceil(totalPosts / pageSize) ? "disabled" : ""}`}>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              className="btn btn-success"
+              disabled={currentPage === Math.ceil(totalPosts / pageSize)}
+            >
+              {">"}
+            </button>
+          </li>
         </ul>
       </nav>
     );
