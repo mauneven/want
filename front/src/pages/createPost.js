@@ -186,6 +186,7 @@ const CreatePost = () => {
                 id="photo"
                 accept="image/*"
                 onChange={handleFileChange}
+                required
               />
             </div>
             <button type="submit" className="btn btn-primary">Publicar lo que quiero</button>

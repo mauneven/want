@@ -78,8 +78,8 @@ const options = {
 
 https.createServer(options, app).listen(4000, () => {
   console.log('Server started on port 4000');
-});*/
+}); */
 
-app.listen(4000, ()=> {
-  "servidor iniciado en el 4000"
-})
+app.listen(4000, () => {
+  console.log('Server started on port 4000');
+});
