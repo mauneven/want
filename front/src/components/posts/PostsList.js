@@ -64,9 +64,9 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
 
   const fetchPostsBySearch = (postsData) => {
 
-    // Reinicia la página actual a 1 cuando se realiza una nueva búsqueda
-    if (currentPage !== 1) setCurrentPage(1);
     if (searchTerm) {
+          // Reinicia la página actual a 1 cuando se realiza una nueva búsqueda
+      if (currentPage !== 1) setCurrentPage(1);
       const lowerCaseSearchTerm = searchTerm.toLowerCase();
       postsData = postsData.filter(
         (post) =>
