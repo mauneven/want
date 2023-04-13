@@ -94,20 +94,23 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   };
 
   const fetchPosts = async () => {
+    // Reinicia la página actual a 1 cuando se realiza una nueva búsqueda
+    if (currentPage !== 1) setCurrentPage(1);
+  
     setIsLoading(true);
     let postsData = await fetchPostsByLocation();
-    postsData = fetchPostsByCategory(postsData); // Agrega esta línea
+    postsData = fetchPostsByCategory(postsData);
     postsData = fetchPostsBySearch(postsData);
-
+  
     // Establece el total de posts antes del paginado
     setTotalPosts(postsData.length);
-
-    const start = (currentPage - 1) * pageSize;
+  
+    const start = 0;
     const end = start + pageSize;
     setPosts(postsData.slice(start, end));
-
+  
     setIsLoading(false);
-  };
+  };  
 
   useEffect(() => {
     const fetchAndSetPosts = async () => {
