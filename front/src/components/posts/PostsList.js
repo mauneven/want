@@ -97,21 +97,21 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   };
 
   const fetchPosts = async () => {
-
     setIsLoading(true);
     let postsData = await fetchPostsByLocation();
     postsData = fetchPostsByCategory(postsData);
     postsData = fetchPostsBySearch(postsData);
-
+  
     // Establece el total de posts antes del paginado
     setTotalPosts(postsData.length);
-
-    const start = 0;
+  
+    // Realiza la paginación aquí
+    const start = (currentPage - 1) * pageSize;
     const end = start + pageSize;
     setPosts(postsData.slice(start, end));
-
+  
     setIsLoading(false);
-  };
+  };  
 
   useEffect(() => {
     const fetchAndSetPosts = async () => {
