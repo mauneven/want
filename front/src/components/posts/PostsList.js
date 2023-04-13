@@ -250,7 +250,8 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                       }}
                     />
                       <small className="text-muted text-center">
-                      {post.createdBy.firstName} {post.createdBy.lastName}
+                        {  console.log( `creador por : ${post.createdBy.role}`)}
+                      {post.createdBy.firstName}
                       </small>
                 </div>
                 </div>

@@ -69,6 +69,7 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
+/*
 const options = {
   key: fs.readFileSync('/etc/letsencrypt/live/want.com.co/privkey.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/live/want.com.co/fullchain.pem')
@@ -76,4 +77,8 @@ const options = {
 
 https.createServer(options, app).listen(4000, () => {
   console.log('Server started on port 4000');
-}); 
+}); */
+
+app.listen(4000, () => {
+  console.log('Server started on port 4000');
+});
