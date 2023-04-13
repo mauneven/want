@@ -235,13 +235,30 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                       <button className="offer-btn btn rounded-pill">Ver mas detalles</button>
                     </Link>
                   </div>
-
+                  <div className="card-footer text-center">
+                  <img
+                      src={
+                        post.createdBy.photo
+                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}`
+                          : "icons/person-circle.svg"
+                      }
+                      alt="Profile"
+                      style={{
+                        borderRadius: "50%",
+                        width: "30px",
+                        height: "30px",
+                      }}
+                    />
+                      <small className="text-muted text-center">
+                      {post.createdBy.firstName} {post.createdBy.lastName}
+                      </small>
+                </div>
                 </div>
               </div>
             ))
             : (
               <div className="col-md-12">
-                <p>No hay post's con esos filtros.</p>
+                <p>La gente aun no quiere lo que buscas.</p>
               </div>
             )
           : (
