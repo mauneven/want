@@ -66,7 +66,10 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   };
 
   const fetchPostsBySearch = (postsData) => {
+
     if (searchTerm) {
+          // Reinicia la página actual a 1 cuando se realiza una nueva búsqueda
+      if (currentPage !== 1) setCurrentPage(1);
       const lowerCaseSearchTerm = searchTerm.toLowerCase();
       postsData = postsData.filter(
         (post) =>
@@ -99,18 +102,19 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   const fetchPosts = async () => {
     setIsLoading(true);
     let postsData = await fetchPostsByLocation();
-    postsData = fetchPostsByCategory(postsData); // Agrega esta línea
+    postsData = fetchPostsByCategory(postsData);
     postsData = fetchPostsBySearch(postsData);
-
+  
     // Establece el total de posts antes del paginado
     setTotalPosts(postsData.length);
-
+  
+    // Realiza la paginación aquí
     const start = (currentPage - 1) * pageSize;
     const end = start + pageSize;
     setPosts(postsData.slice(start, end));
-
+  
     setIsLoading(false);
-  };
+  };  
 
   useEffect(() => {
     const fetchAndSetPosts = async () => {
@@ -135,7 +139,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
         body: JSON.stringify({ description }),
         credentials: 'include', // Añade esta línea
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         console.log('Reporte de post exitoso:', data);
@@ -146,7 +150,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
     } catch (error) {
       console.error('Error al reportar el post:', error);
     }
-  };  
+  };
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber)
@@ -166,11 +170,11 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
 
   const renderPageNumbers = () => {
     const pageNumbers = [];
-  
+
     for (let i = startPage; i < startPage + maxPagesToShow && i <= Math.ceil(totalPosts / pageSize); i++) {
       pageNumbers.push(i);
     }
-  
+
     return (
       <nav aria-label="Page navigation example pt-2 pb-2">
         <ul className="pagination justify-content-center">
@@ -222,7 +226,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
             ? posts.map((post) => (
               <div key={post._id} className="col">
                 <div className="card post rounded-5">
-                <ReportPostModal postId={post._id} onReport={handleReportPost} />
+                  <ReportPostModal postId={post._id} onReport={handleReportPost} />
                   <button className="rounded-circle btn-save" title="Save">
                     <i className="bi bi-heart"></i>
                   </button>
@@ -251,7 +255,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                     </Link>
                   </div>
                   <div className="card-footer text-center">
-                  <img
+                    <img
                       src={
                         post.createdBy.photo
                           ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
@@ -264,11 +268,11 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                         height: "30px",
                       }}
                     />
-                      <small className="text-muted text-center">
-                        {  console.log( `creador por : ${post.createdBy.role}`)}
+                    <small className="text-muted text-center">
+                      {console.log(`creador por : ${post.createdBy.role}`)}
                       {post.createdBy.firstName}
-                      </small>
-                </div>
+                    </small>
+                  </div>
                 </div>
               </div>
             ))
