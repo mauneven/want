@@ -210,7 +210,6 @@ export default function MobileMenu({
                             <Nav.Link onClick={() => { router.push("/login"); closeMenu(); }}>
                                 Ingresar
                             </Nav.Link>
-
                         </>
                     )}
                 </Nav>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import ContentLoader from "react-content-loader";
 import ReportPostModal from "../report/ReportPostModal";
+import { useRouter } from "next/router";
 
 const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter }) => {
   const [posts, setPosts] = useState([]);
@@ -11,6 +12,8 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   const [totalPosts, setTotalPosts] = useState(0);
   const maxPagesToShow = 6;
   const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+  const router = useRouter();
+  const [isMobile, setIsMobile] = useState(false);
 
   const fetchPostsByLocation = async () => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`);
@@ -117,6 +120,11 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
     fetchAndSetPosts();
   }, [locationFilter, userIdFilter, searchTerm, categoryFilter, currentPage, pageSize]);
 
+  useEffect(() => {
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    setIsMobile(isMobile);
+  }, []);  
+
   const handleReportPost = async (postId, description) => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/report/post/${postId}`, {
@@ -201,6 +209,13 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
 
   return (
     <div className="container">
+      {isMobile && (
+        <div className="floating-btn-container">
+  <button className="btn-post rounded-pill p-2" onClick={() => router.push("/createPost")}>
+    CREAR POST
+  </button>
+</div>
+)}
       <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 pb-5">
         {!isLoading
           ? posts.length > 0
@@ -282,6 +297,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
       </div>
       {posts.length > 0 && renderPageNumbers()}
     </div>
+    
   );
 };
 
