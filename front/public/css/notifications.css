@@ -1,0 +1,25 @@
+.notification-item {
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .notification-item:hover {
+    background-color: #f8f8f8;
+  }
+
+  .no-dropdown-toggle {
+    pointer-events: none;
+  }
+
+  .modal-dialog {
+    max-width: 500px;
+  }
+
+  .modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .notification-icon i {
+    font-size: 30px;
+  }

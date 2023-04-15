@@ -73,6 +73,7 @@ export default function MyApp({ Component, pageProps }) {
         <link rel="stylesheet" href="/css/posts.css" />
         <link rel="stylesheet" href="/css/modals.css" />
         <link rel="stylesheet" href="/css/login.css" />
+        <link rel="stylesheet" href="/css/notifications.css" />
       </Container>
       <footer>
         <Footer />
