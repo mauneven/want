@@ -4,6 +4,7 @@ const User = require('../models/user');
 const Offer = require('../models/offer');
 const path = require('path');
 const fs = require('fs');
+const { isUserVerified } = require('./authController')
 
 // controllers/reportController.js
 
@@ -29,6 +30,10 @@ exports.createPostReport = async (req, res, next) => {
   try {
     const postId = req.params.id;
     const { description } = req.body;
+
+    if (!(await isUserVerified(req.session.userId))) {
+      return res.status(403).send('User no verified');
+    }
 
     const post = await Post.findById(postId);
     if (!post) {
@@ -93,6 +98,10 @@ exports.createUserReport = async (req, res, next) => {
     const userId = req.params.id;
     const { description } = req.body;
 
+    if (!(await isUserVerified(req.session.userId))) {
+      return res.status(403).send('User no verified');
+    }
+
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).send('User not found');
@@ -126,6 +135,10 @@ exports.createOfferReport = async (req, res, next) => {
 
     const offerId = req.params.id;
     const { description } = req.body;
+
+    if (!(await isUserVerified(req.session.userId))) {
+      return res.status(403).send('User no verified');
+    }
 
     const offer = await Offer.findById(offerId);
     if (!offer) {

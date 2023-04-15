@@ -351,3 +351,19 @@ exports.checkVerified = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+exports.isUserVerified = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return false;
+    }
+
+    return user.isVerified;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+};
+
