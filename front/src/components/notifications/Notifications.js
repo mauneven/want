@@ -58,7 +58,7 @@ export default function Notifications() {
       <div className='notification-icon' onClick={() => setShowModal(true)}>
         <i className="bi bi-bell fs-20"></i>
         {unreadNotifications.length > 0 && (
-          <Badge pill bg="danger" className="position-absolute" style={{ top: -5, right: -10 }}>
+          <Badge pill bg="danger" className="position-absolute" style={{ top: -5, right: -1 }}>
             {unreadNotifications.length}
           </Badge>
         )}
