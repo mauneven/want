@@ -35,7 +35,7 @@ export default function MegaMenu({
     onSearchTermChange("");
     router.push("/");
     onCategoryFilterChange({ mainCategory: "", subCategory: "" });
-    setCategoriesButtonText("Todas las categorías");
+    setCategoriesButtonText("All categories");
   };
 
   const handleCloseCategories = () => setShowCategoriesModal(false);
@@ -56,7 +56,7 @@ export default function MegaMenu({
     } else if (mainCategory) {
       setCategoriesButtonText(mainCategory);
     } else {
-      setCategoriesButtonText("Todas las categorías");
+      setCategoriesButtonText("All categories");
     }
   };
 
@@ -183,7 +183,7 @@ export default function MegaMenu({
           />
           <FormControl
             type="search"
-            placeholder=" La gente quiere..."
+            placeholder="The people want..."
             className="mr-2 form-control-sm p-1 px-3 search-bar-input border-top-0 border-bottom-0 border-start-0 border-end"
             aria-label="Search"
             name="search"
@@ -203,12 +203,10 @@ export default function MegaMenu({
             />
             <Nav.Link className="nav-item" onClick={() => router.push('/createPost')}>
               <Button className="btn-post rounded-pill p-2">
-                ¿Quieres algo?
+                Want somehting?
               </Button>
             </Nav.Link>
-            <Nav.Link className="nav-item">
-              {user ? <Notifications /> : ""}
-            </Nav.Link>
+            {user ? <Nav.Link className="nav-item"><Notifications/></Nav.Link> : null}
             {user ? (
               <NavDropdown
                 className="nav-link"
@@ -233,25 +231,25 @@ export default function MegaMenu({
                 id="user-dropdown"
               >
                 <NavDropdown.Item onClick={() => router.push('/myPosts')}>
-                  <i className="bi bi-stickies-fill me-3"></i>Mis publicaciones
+                  <i className="bi bi-stickies-fill me-3"></i>Things that i Want
                 </NavDropdown.Item>
                 <NavDropdown.Item onClick={() => router.push('/sentOffers')}>
-                  <i className="bi bi-send-check-fill me-3"></i>Ofertas enviadas
+                  <i className="bi bi-send-check-fill me-3"></i>Sent offers
                 </NavDropdown.Item>
                 <NavDropdown.Item onClick={() => router.push('/receivedOffers')}>
-                  <i className="bi bi-receipt me-3"></i>Ofertas recibidas
+                  <i className="bi bi-receipt me-3"></i>Received offers
                 </NavDropdown.Item>
                 <NavDropdown.Item onClick={() => router.push('/editProfile')}>
-                  <i className="bi bi-person-lines-fill me-3"></i>Mi perfil
+                  <i className="bi bi-person-lines-fill me-3"></i>My profile
                 </NavDropdown.Item>
                 <hr />
                 <NavDropdown.Item onClick={() => router.push('/logout')}>
-                  <i className="bi bi-box-arrow-right me-3"></i>Cerrar sesión
+                  <i className="bi bi-box-arrow-right me-3"></i>Log out
                 </NavDropdown.Item>
               </NavDropdown>
             ) : (
               <Nav.Link onClick={() => router.push('/login')} className="nav-item">
-                <span className="nav-link">Ingresar</span>
+                <span className="nav-link">Login</span>
               </Nav.Link>
             )}
           </Nav>

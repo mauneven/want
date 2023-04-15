@@ -25,12 +25,12 @@ const ReportPostModal = ({ postId, onReport }) => {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Reportar Post</Modal.Title>
+          <Modal.Title>Report this post</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
             <Form.Group>
-              <Form.Label>Describe el por que reportas este post</Form.Label>
+              <Form.Label>Describe why you're reporting this post</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
@@ -40,7 +40,7 @@ const ReportPostModal = ({ postId, onReport }) => {
               />
             </Form.Group>
             <Button variant="primary" type="submit">
-              Enviar reporte
+              Send report
             </Button>
           </Form>
         </Modal.Body>

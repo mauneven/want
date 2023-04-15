@@ -6,11 +6,10 @@ import { Container } from 'react-bootstrap';
 const Blocked = () => {
   return (
     <Container>
-      <h1>Has sido bloqueado</h1>
-      <p>Tu cuenta ha sido bloqueada debido a múltiples informes.</p>
+      <h1>You have been banned</h1>
+      <p>Your account has been blocked due to multiple reports.</p>
       <p>
-        Si crees que esto es un error, por favor, ponte en contacto con el
-        soporte.
+      If you think this is a mistake, please contact support.
       </p>
     </Container>
   );

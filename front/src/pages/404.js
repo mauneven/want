@@ -4,10 +4,10 @@ import Link from 'next/link';
 const Custom404 = () => {
   return (
     <div>
-      <h1>Ups, esta pagina no es para ti</h1>
-      <p>Lo sentimos, la página que estás buscando no existe.</p>
+      <h1>Ups, this page ins't for you</h1>
+      <p>Sorry, the page you are looking for does not exist.</p>
       <Link href="/">
-        <h1>Ir al inicio</h1>
+        <h1>Go home</h1>
       </Link>
     </div>
   );

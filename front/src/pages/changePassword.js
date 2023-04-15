@@ -74,11 +74,11 @@ const ChangePassword = () => {
 
     return (
         <div className="container">
-            <h1>Cambiar mi contraseña</h1>
+            <h1>Change Password</h1>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label htmlFor="currentPassword" className="form-label">
-                        Contraseña actual
+                        Old Password
                     </label>
                     <input
                         type="password"
@@ -91,7 +91,7 @@ const ChangePassword = () => {
                 </div>
                 <div className="mb-3">
                     <label htmlFor="newPassword" className="form-label">
-                        Nueva contraseña
+                        New Password
                     </label>
                     <input
                         type="password"
@@ -104,7 +104,7 @@ const ChangePassword = () => {
                 </div>
                 <div className="mb-3">
                     <label htmlFor="confirmNewPassword" className="form-label">
-                        Confirma la nueva contraseña
+                        Confirm New Password
                     </label>
                     <input
                         type="password"
@@ -116,7 +116,7 @@ const ChangePassword = () => {
                     />
                 </div>
                 <button type="submit" className="btn btn-primary">
-                    Aceptar y cambiar contraseña
+                    Change my password
                 </button>
             </form>
             {message && (

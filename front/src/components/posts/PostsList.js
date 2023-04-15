@@ -143,7 +143,6 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
       if (response.ok) {
         const data = await response.json();
         console.log('Reporte de post exitoso:', data);
-        // Puedes agregar cualquier otra acción después de reportar el post aquí, como mostrar una notificación o cerrar el modal.
       } else {
         console.error('Error al reportar el post:', response);
       }
@@ -216,7 +215,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
       {isMobile && (
         <div className="floating-btn-container">
   <button className="btn-post rounded-pill p-2" onClick={() => router.push("/createPost")}>
-    CREAR POST
+    Create Post
   </button>
 </div>
 )}
@@ -251,7 +250,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                         : post.description}
                     </p>
                     <Link className="d-flex justify-content-center" href={`/post/[id]`} as={`/post/${post._id}`}>
-                      <button className="offer-btn btn rounded-pill">Ver mas detalles</button>
+                      <button className="offer-btn btn rounded-pill">View details</button>
                     </Link>
                   </div>
                   <div className="card-footer text-center">
@@ -278,7 +277,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
             ))
             : (
               <div className="col-md-12">
-                <p>La gente aun no quiere lo que buscas.</p>
+                <p>The people doesn't want what your're looking for yet.</p>
               </div>
             )
           : (

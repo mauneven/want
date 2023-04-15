@@ -78,7 +78,7 @@ export default function Notifications() {
           </NavDropdown.Item>
         ))
       ) : (
-        <NavDropdown.Item disabled>No hay notificaciones por ahora</NavDropdown.Item>
+        <NavDropdown.Item disabled>Empty</NavDropdown.Item>
       )}
     </NavDropdown>
   );
