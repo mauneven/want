@@ -32,17 +32,12 @@ export default function MegaMenu({
   const router = useRouter();
 
   const handleLogoClick = () => {
-    setSearchTerm("want");
-    onSearchTermChange("want");
+    onSearchTermChange("");
     onCategoryFilterChange({ mainCategory: "", subCategory: "" });
     setCategoriesButtonText("All categories");
     router.push("/");
-  
-    setTimeout(() => {
-      setSearchTerm("");
-      onSearchTermChange("");
-    }, 1);
-  };  
+    localStorage.setItem("currentPage", 1);
+  };
 
   const handleCloseCategories = () => setShowCategoriesModal(false);
 

@@ -107,6 +107,10 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   
     // Establece el total de posts antes del paginado
     setTotalPosts(postsData.length);
+
+      // Lee el valor de la página actual desde el localStorage
+  const storedCurrentPage = parseInt(localStorage.getItem("currentPage")) || 1;
+  setCurrentPage(storedCurrentPage);
   
     // Realiza la paginación aquí
     const start = (currentPage - 1) * pageSize;
@@ -152,8 +156,9 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   };
 
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber)
-  };
+    setCurrentPage(pageNumber);
+    localStorage.setItem("currentPage", pageNumber);
+  };  
 
   const Placeholder = () => (
     <div className="col-md-3">
