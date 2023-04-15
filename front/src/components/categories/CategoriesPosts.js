@@ -30,7 +30,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
     }
   
     handleClose();
-  };  
+  };
 
   const handleSeeAllCategories = () => {
     setMainCategory('');

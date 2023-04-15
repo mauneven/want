@@ -13,7 +13,6 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Notifications from "../notifications/Notifications";
 import CategoriesModal from "../categories/CategoriesPosts";
-import { useRef } from "react";
 
 export default function MegaMenu({
   onLocationFilterChange,
@@ -27,7 +26,6 @@ export default function MegaMenu({
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
-  const searchInputRef = useRef(null); // Nuevo estado
   const [categoriesButtonText, setCategoriesButtonText] = useState("Todas las categorías");
 
   const router = useRouter();
