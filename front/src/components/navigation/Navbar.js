@@ -42,6 +42,7 @@ export default function MegaMenu({
   const handleCloseCategories = () => setShowCategoriesModal(false);
 
   const handleCategorySelected = (mainCategory, subCategory) => {
+    localStorage.setItem("currentPage", 1);
     console.log("Selected Category: ", mainCategory);
     console.log("Selected Subcategory: ", subCategory);
     const selectedCategory = {
@@ -104,6 +105,7 @@ export default function MegaMenu({
   }, [locationFilter]); // Deja solo la dependencia de locationFilter
 
   const handleSearchSubmit = (e) => {
+    localStorage.setItem("currentPage", 1);
     e.preventDefault();
     const newSearchTerm = e.target.search.value;
     setSearchTerm(newSearchTerm);
