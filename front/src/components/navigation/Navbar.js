@@ -32,8 +32,8 @@ export default function MegaMenu({
   const router = useRouter();
 
   const handleLogoClick = () => {
-    setSearchTerm("hola");
-    onSearchTermChange("hola");
+    setSearchTerm("want");
+    onSearchTermChange("want");
     onCategoryFilterChange({ mainCategory: "", subCategory: "" });
     setCategoriesButtonText("All categories");
     router.push("/");
