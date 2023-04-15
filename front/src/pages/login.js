@@ -37,28 +37,30 @@ export default function Login() {
     setAlertMessage('');
     const email = event.target.email.value;
     const password = event.target.password.value;
-    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
-    const confirmPassword = event.target.confirmPassword.value;
     let firstName, lastName, phone, birthdate;
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+    const confirmPassword = event.target.confirmPassword ? event.target.confirmPassword.value : '';
+    
     if (!isLogin) {
       firstName = event.target.firstName.value;
       lastName = event.target.lastName.value;
       phone = event.target.phone.value;
       birthdate = event.target.birthdate.value;
 
+      if (password !== confirmPassword) {
+        setAlertMessage('Las contraseñas no coinciden.');
+        return;
+      }
+  
+      if (!passwordRegex.test(password)) {
+        setAlertMessage('La contraseña debe tener al menos una letra y un número.');
+        return;
+        
+      }
+
       if (!validateAgeAndParentPermission(birthdate)) {
         return;
       }
-    }
-
-    if (password !== confirmPassword) {
-      setAlertMessage('Las contraseñas no coinciden.');
-      return;
-    }
-
-    if (!passwordRegex.test(password)) {
-      setAlertMessage('La contraseña debe tener al menos una letra y un número.');
-      return;
     }
 
     const data = {
@@ -89,6 +91,11 @@ export default function Login() {
       } else {
         setAlertMessage('El correo electrónico o la contraseña están incorrectos.');
       }
+
+      setTimeout(() => {
+        setAlertMessage('');
+      }, 5000);
+
     }
   };
 
