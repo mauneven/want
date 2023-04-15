@@ -37,17 +37,30 @@ export default function Login() {
     setAlertMessage('');
     const email = event.target.email.value;
     const password = event.target.password.value;
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+    const confirmPassword = event.target.confirmPassword.value;
     let firstName, lastName, phone, birthdate;
     if (!isLogin) {
       firstName = event.target.firstName.value;
       lastName = event.target.lastName.value;
       phone = event.target.phone.value;
       birthdate = event.target.birthdate.value;
-  
+
       if (!validateAgeAndParentPermission(birthdate)) {
         return;
       }
     }
+
+    if (password !== confirmPassword) {
+      setAlertMessage('Las contraseñas no coinciden.');
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      setAlertMessage('La contraseña debe tener al menos una letra y un número.');
+      return;
+    }
+
     const data = {
       email,
       password,
@@ -61,7 +74,7 @@ export default function Login() {
       },
       body: JSON.stringify(data),
     });
-    
+
     if (response.ok) {
       const responseData = await response.json();
       if (!responseData.isVerified) {
@@ -77,37 +90,37 @@ export default function Login() {
         setAlertMessage('El correo electrónico o la contraseña están incorrectos.');
       }
     }
-  };  
+  };
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
       const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
         credentials: 'include',
       });
-  
+
       if (!loggedInResponse.ok) {
         router.push('/login');
         return;
       }
-  
+
       const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
         credentials: 'include',
       });
-  
+
       if (!blockedResponse.ok) {
         router.push('/blocked');
         return;
       }
-  
+
       const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
         credentials: 'include',
       });
-  
+
       if (!verifiedResponse.ok) {
         router.push('/');
       }
     };
-  
+
     checkLoggedInAndBlockedAndVerified();
   }, []);
 
@@ -115,58 +128,64 @@ export default function Login() {
     <div className="container form-container">
       <div className='card login-form rounded-5 p-3'>
         <div className='card-body'>
-    <div className="container">
-      <h1 className="text-center">{isLogin ? 'Iniciar sesión' : 'Registrarse'}</h1>
-      {alertMessage && (
-        <div className="alert alert-danger" role="alert">
-          {alertMessage}
-        </div>
-      )}
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">E-mail:</label>
-          <input type="email" className="form-control rounded-pill" id="email" name="email" placeholder="you@example.com" required />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">Password:</label>
-          <input type="password" className="form-control rounded-pill" id="password" name="password" placeholder="your password" required />
-        </div>
-        {!isLogin && (
-          <>
-            <div className="mb-3">
-              <label htmlFor="firstName" className="form-label">First name:</label>
-              <input type="text" className="form-control rounded-pill" id="firstName" name="firstName" required />
+          <div className="container">
+            <h1 className="text-center">{isLogin ? 'Iniciar sesión' : 'Registrarse'}</h1>
+            {alertMessage && (
+              <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                {alertMessage}
+                <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={() => setAlertMessage('')}></button>
+              </div>
+            )}
+            <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label htmlFor="email" className="form-label">E-mail:</label>
+                <input type="email" className="form-control rounded-pill" id="email" name="email" placeholder="you@example.com" required />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="password" className="form-label">Password:</label>
+                <input type="password" className="form-control rounded-pill" id="password" name="password" placeholder="your password" required />
+              </div>
+              {!isLogin && (
+                <>
+                  <div className="mb-3">
+                    <label htmlFor="confirmPassword" className="form-label">Confirmar password:</label>
+                    <input type="password" className="form-control rounded-pill" id="confirmPassword" name="confirmPassword" placeholder="confirm your password" required />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="firstName" className="form-label">First name:</label>
+                    <input type="text" className="form-control rounded-pill" id="firstName" name="firstName" required />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="lastName" className="form-label">Last name:</label>
+                    <input type="text" className="form-control rounded-pill" id="lastName" name="lastName" required />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="phone" className="form-label">Phone number:</label>
+                    <input type="tel" className="form-control rounded-pill" id="phone" name="phone" required />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="birthdate" className="form-label">birthdate:</label>
+                    <input type="date" className="form-control rounded-pill" id="birthdate" name="birthdate" required />
+                  </div>
+                </>
+              )}
+              <div className="mb-3">
+                <button type="submit" className="btn btn-success rounded-pill btn-login">{isLogin ? 'Login' : 'Sign up'}</button>
+              </div>
+            </form>
+            <div>
+              {isLogin ? "Don't have an account?" : 'already have an account?'}
+              <button onClick={toggleForm} className="btn btn-link user-link">{isLogin ? 'Sign up' : 'Login'}</button>
             </div>
-            <div className="mb-3">
-              <label htmlFor="lastName" className="form-label">Last name:</label>
-              <input type="text" className="form-control rounded-pill" id="lastName" name="lastName" required />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="phone" className="form-label">Phone number:</label>
-              <input type="tel" className="form-control rounded-pill" id="phone" name="phone" required />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="birthdate" className="form-label">birthdate:</label>
-              <input type="date" className="form-control rounded-pill" id="birthdate" name="birthdate" required />
-            </div>
-          </>
-        )}
-        <div className="mb-3">
-          <button type="submit" className="btn btn-success rounded-pill btn-login">{isLogin ? 'Login' : 'Sign up'}</button>
+            <Link href="/recovery">
+              <span className="rsp-pwd">Olvidé mi contraseña</span>
+            </Link>
+          </div>
         </div>
-      </form>
-      <div>
-        {isLogin ? "Don't have an account?" : 'already have an account?'}
-        <button onClick={toggleForm} className="btn btn-link user-link">{isLogin ? 'Sign up' : 'Login'}</button>
       </div>
-      <Link href="/recovery">
-        <span className="rsp-pwd">Olvidé mi contraseña</span>
-      </Link>
-      </div>
-      </div>
-    </div>
     </div>
 
   );
-  
+
 }
