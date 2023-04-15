@@ -3,7 +3,7 @@ import { Modal, Button } from 'react-bootstrap';
 import PostCategory from './Categories';
 import { useEffect } from 'react';
 
-export default function CategoriesModal({ isShown, onHide, onCategorySelected, onMainCategoryChange, onSubcategoryChange }) {
+export default function CategoriesModal({ isShown, onHide, onCategorySelected, buttonText }) {
 
   const [show, setShow] = useState(false);
   const [mainCategory, setMainCategory] = useState('');
@@ -29,41 +29,23 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, o
       setDisplayCategory('Todas las categorías');
     }
   
-    if (displayCategory === 'Todas las categorías') {
-      setMainCategory('');
-      setSubcategory('');
-      if (onMainCategoryChange) {
-        onMainCategoryChange('');
-      }
-      if (onSubcategoryChange) {
-        onSubcategoryChange('');
-      }
-    }
-  
     handleClose();
-  };
-
+  };  
 
   const handleSeeAllCategories = () => {
     setMainCategory('');
     setSubcategory('');
     setDisplayCategory('Todas las categorías');
-    if (onMainCategoryChange) {
-      onMainCategoryChange('');
-    }
-    if (onSubcategoryChange) {
-      onSubcategoryChange('');
-    }
     if (onCategorySelected) {
       onCategorySelected('', '');
     }
     handleClose();
-  };
-  
+  };  
+
   return (
     <>
       <Button variant="" onClick={handleShow}>
-        {displayCategory}
+        {buttonText}
       </Button>
 
       <Modal show={show || isShown} onHide={handleClose} centered>
@@ -78,7 +60,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, o
           />
         </Modal.Body>
         <Modal.Footer>
-        <Button variant="secondary" onClick={handleSeeAllCategories}>Ver todas las categorías</Button>
+          <Button variant="secondary" onClick={handleSeeAllCategories}>Ver todas las categorías</Button>
           <Button variant="primary" onClick={handleClose}>Cancelar</Button>
           <Button variant="success" onClick={handleAccept}>Aceptar</Button>
         </Modal.Footer>

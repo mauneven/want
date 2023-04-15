@@ -28,6 +28,7 @@ export default function MegaMenu({
   const [searchTerm, setSearchTerm] = useState("");
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
   const searchInputRef = useRef(null); // Nuevo estado
+  const [categoriesButtonText, setCategoriesButtonText] = useState("Todas las categorías");
 
   const router = useRouter();
 
@@ -35,6 +36,8 @@ export default function MegaMenu({
     setSearchTerm("");
     onSearchTermChange("");
     router.push("/");
+    onCategoryFilterChange({ mainCategory: "", subCategory: "" });
+    setCategoriesButtonText("Todas las categorías");
   };
 
   const handleCloseCategories = () => setShowCategoriesModal(false);
@@ -48,6 +51,15 @@ export default function MegaMenu({
     };
     onCategoryFilterChange(selectedCategory);
     handleCloseCategories();
+
+    // Actualiza el texto del botón
+    if (subCategory) {
+      setCategoriesButtonText(subCategory);
+    } else if (mainCategory) {
+      setCategoriesButtonText(mainCategory);
+    } else {
+      setCategoriesButtonText("Todas las categorías");
+    }
   };
 
   const handleCategoryCleared = () => {
@@ -105,6 +117,7 @@ export default function MegaMenu({
     setSearchTerm(e.target.search.value);
     onSearchTermChange(e.target.search.value);
     setSearchTerm(e.target.search.value);
+    router.push('/');
   };
 
   const handleClose = () => setShowLocationModal(false);
@@ -188,7 +201,7 @@ export default function MegaMenu({
               isShown={showCategoriesModal}
               onHide={() => setShowCategoriesModal(false)}
               onCategorySelected={handleCategorySelected}
-              onCategoryCleared={handleCategoryCleared}
+              buttonText={categoriesButtonText}
             />
             <Nav.Link className="nav-item" onClick={() => router.push('/createPost')}>
               <Button className="btn-post rounded-pill p-2">

@@ -186,7 +186,7 @@ export default function Login() {
               <button onClick={toggleForm} className="btn btn-link user-link">{isLogin ? 'Sign up' : 'Login'}</button>
             </div>
             <Link href="/recovery">
-              <span className="rsp-pwd">Olvidé mi contraseña</span>
+              <span className="rsp-pwd">I forgot my password, help</span>
             </Link>
           </div>
         </div>
