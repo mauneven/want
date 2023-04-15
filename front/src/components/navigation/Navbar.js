@@ -26,17 +26,23 @@ export default function MegaMenu({
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
-  const [categoriesButtonText, setCategoriesButtonText] = useState("Todas las categorías");
+  const [categoriesButtonText, setCategoriesButtonText] = useState("All categories");
+  const [logoClickCount, setLogoClickCount] = useState(0);
 
   const router = useRouter();
 
   const handleLogoClick = () => {
-    setSearchTerm("");
-    onSearchTermChange("");
-    router.push("/");
+    setSearchTerm("hola");
+    onSearchTermChange("hola");
     onCategoryFilterChange({ mainCategory: "", subCategory: "" });
     setCategoriesButtonText("All categories");
-  };
+    router.push("/");
+  
+    setTimeout(() => {
+      setSearchTerm("");
+      onSearchTermChange("");
+    }, 1);
+  };  
 
   const handleCloseCategories = () => setShowCategoriesModal(false);
 
@@ -58,14 +64,6 @@ export default function MegaMenu({
     } else {
       setCategoriesButtonText("All categories");
     }
-  };
-
-  const handleCategoryCleared = () => {
-    const clearedCategory = {
-      mainCategory: "",
-      subCategory: "",
-    };
-    onCategoryFilterChange(clearedCategory);
   };
 
   const handleLocationSelected = (country, state, city) => {
@@ -112,11 +110,11 @@ export default function MegaMenu({
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    setSearchTerm(e.target.search.value);
-    onSearchTermChange(e.target.search.value);
-    setSearchTerm(e.target.search.value);
-    router.push('/');
-  };
+    const newSearchTerm = e.target.search.value;
+    setSearchTerm(newSearchTerm);
+    onSearchTermChange(newSearchTerm);
+    router.push("/");
+  };  
 
   const handleClose = () => setShowLocationModal(false);
   const handleShow = () => setShowLocationModal(true);
@@ -148,12 +146,6 @@ export default function MegaMenu({
       onLocationFilterChange(parsedLocationFilter);
     }
   }, []);
-
-  function getUserImageUrl() {
-    if (user && user.photo) {
-      return `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}`;
-    }
-  }
 
   return (
     <Navbar

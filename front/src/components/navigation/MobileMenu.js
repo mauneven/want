@@ -19,7 +19,8 @@ export default function MobileMenu({
     const [showLocationModal, setShowLocationModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [showCategoriesModal, setShowCategoriesModal] = useState(false);
-    const searchInputRef = useRef(null);
+    const [categoriesButtonText, setCategoriesButtonText] = useState("All categories");
+    
     const closeMenu = () => {
         document.querySelector(".navbar-toggler").click();
     };
@@ -30,6 +31,8 @@ export default function MobileMenu({
         setSearchTerm("");
         onSearchTermChange("");
         router.push("/");
+        onCategoryFilterChange({ mainCategory: "", subCategory: "" });
+        setCategoriesButtonText("All categories");
     };
 
     const handleCloseCategories = () => setShowCategoriesModal(false);
@@ -43,6 +46,15 @@ export default function MobileMenu({
         };
         onCategoryFilterChange(selectedCategory);
         handleCloseCategories();
+
+        // Actualiza el texto del botón
+        if (subCategory) {
+            setCategoriesButtonText(subCategory);
+        } else if (mainCategory) {
+            setCategoriesButtonText(mainCategory);
+        } else {
+            setCategoriesButtonText("All categories");
+        }
     };
 
     const handleCategoryCleared = () => {
@@ -100,6 +112,7 @@ export default function MobileMenu({
         setSearchTerm(e.target.search.value);
         onSearchTermChange(e.target.search.value);
         setSearchTerm(e.target.search.value);
+        router.push('/');
     };
 
     const handleClose = () => setShowLocationModal(false);
@@ -190,25 +203,25 @@ export default function MobileMenu({
                             </div>
 
                             <Nav.Link onClick={() => { router.push("/myPosts"); closeMenu(); }}>
-                                Mis publicaciones
+                                Things that i want
                             </Nav.Link>
                             <Nav.Link onClick={() => { router.push("/sentOffers"); closeMenu(); }}>
-                                Ofertas enviadas
+                                Sent offers
                             </Nav.Link>
                             <Nav.Link onClick={() => { router.push("/receivedOffers"); closeMenu(); }}>
-                                Ofertas recibidas
+                                Received offers
                             </Nav.Link>
                             <Nav.Link onClick={() => { router.push("/editProfile"); closeMenu(); }}>
-                                Mi perfil
+                                My profile
                             </Nav.Link>
                             <Nav.Link onClick={() => { router.push("/logout"); closeMenu(); }}>
-                                Cerrar sesión
+                                Log out
                             </Nav.Link>
                         </>
                     ) : (
                         <>
                             <Nav.Link onClick={() => { router.push("/login"); closeMenu(); }}>
-                                Ingresar
+                                Login
                             </Nav.Link>
                         </>
                     )}
@@ -239,7 +252,7 @@ export default function MobileMenu({
                 isShown={showCategoriesModal}
                 onHide={() => setShowCategoriesModal(false)}
                 onCategorySelected={handleCategorySelected}
-                onCategoryCleared={handleCategoryCleared}
+                buttonText={categoriesButtonText}
             />
         </Navbar>
     );
