@@ -53,12 +53,51 @@ export default function Notifications() {
     router.push('/receivedOffers');
   };
 
+  const handleModalOpen = async () => {
+    setShowModal(true);
+    await markAllNotificationsAsRead();
+    updateNotifications();
+  };
+  
+  const markAllNotificationsAsRead = async () => {
+    await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/notifications/markAllAsRead`, {
+      method: 'PATCH',
+      credentials: 'include',
+    });
+  };
+  
+  const updateNotifications = async () => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/notifications`, {
+      credentials: 'include',
+    });
+
+    if (response.ok) {
+      const notificationsData = await response.json();
+      const notificationsWithPostName = await Promise.all(
+        notificationsData.map(async (notification) => {
+          const postName = await fetchPostName(notification.postId);
+          return { ...notification, postName };
+        })
+      );
+      setNotifications(notificationsWithPostName);
+      setUnreadNotifications(notificationsData.filter((notification) => !notification.isRead));
+    }
+  };
+
+  // Actualizar las notificaciones automáticamente cada 5 segundos (5000 milisegundos)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      updateNotifications();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
-      <div className='notification-icon' onClick={() => setShowModal(true)}>
-        <i className="bi bi-bell fs-20"></i>
+      <div className='notification-icon' onClick={handleModalOpen}>
+        <i className="bi bi-bell fs-24"></i>
         {unreadNotifications.length > 0 && (
-          <Badge pill bg="danger" className="position-absolute" style={{ top: -5, right: -1 }}>
+          <Badge pill bg="danger" className="position-absolute" style={{ top: -5, right: -10 }}>
             {unreadNotifications.length}
           </Badge>
         )}

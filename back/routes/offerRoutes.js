@@ -12,5 +12,6 @@ router.post('/:id/report', offerController.createReport);
 router.get('/my-offers', offerController.getOffersByCurrentUser);
 router.get('/notifications', offerController.getNotifications);
 router.patch('/notifications/:id/read', offerController.markNotificationAsRead);
+router.patch('/markAllAsRead', offerController.markAllNotificationsAsRead);
 
 module.exports = router;

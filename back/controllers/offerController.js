@@ -178,3 +178,14 @@ exports.markNotificationAsRead = async (req, res, next) => {
   }
 };
 
+exports.markAllNotificationsAsRead = async (req, res, next) => {
+  try {
+    await Notification.updateMany(
+      { recipient: req.session.userId, isRead: false },
+      { $set: { isRead: true } }
+    );
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+};

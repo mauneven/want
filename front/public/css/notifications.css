@@ -20,6 +20,13 @@
     overflow-y: auto;
   }
 
-  .notification-icon i {
-    font-size: 30px;
+  .notification-icon {
+    position: relative;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+  } 
+  .notification-icon i.bi-bell {
+    font-size: 28px;
   }
+   
