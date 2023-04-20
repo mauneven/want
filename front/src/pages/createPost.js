@@ -25,24 +25,6 @@ const CreatePost = () => {
   const [previewCategory, setPreviewCategory] = useState('');
   const [previewPrice, setPreviewPrice] = useState('');
 
-  const compressImage = async (inputFile) => {
-    try {
-      const compressedBuffer = await sharp(inputFile)
-        .resize(800, 800, { fit: 'inside', withoutEnlargement: true }) // Cambia el tamaño de la imagen sin agrandarla
-        .jpeg({ quality: 70 }) // Puedes cambiar a .webp({ quality: 70 }) si prefieres el formato webp
-        .toBuffer();
-  
-      const compressedFile = new File([compressedBuffer], inputFile.name, {
-        type: 'image/jpeg', // Cambia a 'image/webp' si prefieres el formato webp
-        lastModified: Date.now(),
-      });
-  
-      return compressedFile;
-    } catch (error) {
-      console.error('Error al comprimir la imagen:', error);
-    }
-  };  
-
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
       const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
@@ -75,34 +57,9 @@ const CreatePost = () => {
     checkLoggedInAndBlockedAndVerified();
   }, []);
 
-  const handleFileChange = async (e) => {
-    const originalFile = e.target.files[0];
-  
-    const reader = new FileReader();
-    reader.readAsDataURL(originalFile);
-    reader.onloadend = async () => {
-      const base64data = reader.result.split(',')[1];
-      try {
-        const response = await fetch('/api/compressImage', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(base64data),
-        });
-  
-        const { compressedBase64 } = await response.json();
-        const compressedFile = new File([Buffer.from(compressedBase64, 'base64')], originalFile.name, {
-          type: 'image/jpeg',
-          lastModified: Date.now(),
-        });
-  
-        setPhoto(compressedFile);
-      } catch (error) {
-        console.error('Error al comprimir la imagen:', error);
-      }
-    };
-  };   
+  const handleFileChange = (e) => {
+    setPhoto(e.target.files[0]);
+  };
 
   useEffect(() => {
     setPreviewTitle(title);
