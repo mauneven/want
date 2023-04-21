@@ -12,6 +12,7 @@ const EditProfile = () => {
   const [birthdate, setBirthdate] = useState('');
   const [photo, setPhoto] = useState(null);
   const [editingField, setEditingField] = useState(null);
+  const [fileSizeError, setFileSizeError] = useState(false);
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {

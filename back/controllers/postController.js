@@ -4,6 +4,8 @@ const path = require('path');
 const Offer = require('../models/offer');
 const Notification = require('../models/notification');
 const fs = require('fs');
+const sharp = require('sharp');
+const { v4: uuidv4 } = require('uuid');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -43,8 +45,15 @@ exports.getPostById = async (req, res, next) => {
 
 exports.createPost = async (req, res, next) => {
   try {
-    const { title, description, country, state, city, mainCategory, subCategory,price } = req.body;
+    const { title, description, country, state, city, mainCategory, subCategory, price } = req.body;
     const photo = req.file ? req.file.path : null;
+
+    if (photo) {
+      const compressedImagePath = `uploads/${uuidv4()}.jpg`; // genera un nombre de archivo único para la imagen comprimida
+      await sharp(photo).resize({ width: 500 }).toFile(compressedImagePath);
+      fs.unlinkSync(photo); // elimina el archivo original de la imagen
+      req.file.path = compressedImagePath; // actualiza la propiedad "path" de "req.file" con la nueva ruta
+    }
 
     const post = new Post({
       title,
@@ -56,7 +65,7 @@ exports.createPost = async (req, res, next) => {
       mainCategory,
       subCategory,
       price,
-      photo
+      photo: req.file ? req.file.path : null, // utiliza la nueva ruta de la imagen comprimida
     });
     await post.save();
 
@@ -95,16 +104,15 @@ exports.updatePost = async (req, res, next) => {
     post.price = price;
 
     if (req.file) {
+      const photo = req.file.path;
+      const compressedImagePath = `uploads/${uuidv4()}.jpg`;
+      await sharp(photo).resize({ width: 500 }).toFile(compressedImagePath);
+      fs.unlinkSync(photo);
+      req.file.path = compressedImagePath;
       if (post.photo) {
-        // Elimina la foto anterior si existe
         const oldPhotoPath = path.join(__dirname, '..', post.photo);
-        fs.unlink(oldPhotoPath, (err) => {
-          if (err) {
-            console.error('Error removing old post picture:', err);
-          }
-        });
+        fs.unlinkSync(oldPhotoPath);
       }
-      // Guarda la URL de la nueva foto en la base de datos
       post.photo = req.file.path;
     }
 

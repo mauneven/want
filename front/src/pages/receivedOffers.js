@@ -124,6 +124,16 @@ export default function ReceivedOffers() {
           {offers.map((offer) => (
             <div key={offer._id} className="col-md-4">
               <div className="card mb-4">
+              {offer.photo && (
+                  <div style={{ height: "200px", overflow: "hidden" }}>
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${offer.photo}`}
+                      className="card-img-top"
+                      alt={offer.title}
+                      style={{ objectFit: "cover", height: "100%" }}
+                    />
+                  </div>
+                )}
                 <div className="card-body">
                   <h5 className="card-title">{offer.title}</h5>
                   <p className="card-text">{offer.description}</p>
@@ -131,6 +141,21 @@ export default function ReceivedOffers() {
                   <p className="card-text">
                     Post relacionado: {offer.post && offer.post.title}
                   </p>
+                  <img
+                      src={
+                        offer.createdBy.photo
+                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${offer.createdBy.photo}`
+                          : "icons/person-circle.svg"
+                      }
+                      alt="Profile"
+                      style={{
+                        borderRadius: "50%",
+                        width: "30px",
+                        height: "30px",
+                      }}
+                    />
+                  <p className='card-text'>offer by: {offer.createdBy.firstName}</p>
+                  <p className='card-text'>Contact: {offer.contact}</p>
                   <button
                     className="btn btn-danger"
                     onClick={() => handleShowModal(offer._id)}

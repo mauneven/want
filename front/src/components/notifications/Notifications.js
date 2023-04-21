@@ -55,17 +55,16 @@ export default function Notifications() {
 
   const handleModalOpen = async () => {
     setShowModal(true);
-    await markAllNotificationsAsRead();
     updateNotifications();
   };
-  
+
   const markAllNotificationsAsRead = async () => {
     await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/notifications/markAllAsRead`, {
       method: 'PATCH',
       credentials: 'include',
     });
-  };
-  
+  };  
+
   const updateNotifications = async () => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/notifications`, {
       credentials: 'include',
@@ -125,6 +124,18 @@ export default function Notifications() {
             <div className="notification-item">Empty</div>
           )}
         </Modal.Body>
+        <Modal.Footer>
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              markAllNotificationsAsRead();
+              updateNotifications();
+            }}
+          >
+            Mark all as read
+          </button>
+        </Modal.Footer>
+
       </Modal>
     </>
   );
