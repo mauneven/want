@@ -23,11 +23,20 @@ const modifiedCountries = countries.countries.map((country) => {
   };
 });
 
-const Location = ({ onCountryChange, onStateChange, onCityChange, onLocationSelected, isRequired = false }) => {
-
-  const [selectedCountry, setSelectedCountry] = useState("");
-  const [selectedState, setSelectedState] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");  
+const Location = ({ 
+  onCountryChange, 
+  onStateChange, 
+  onCityChange, 
+  onLocationSelected, 
+  isRequired = false, 
+  initialCountry = "", 
+  initialState = "", 
+  initialCity = "" 
+}) => {
+  
+  const [selectedCountry, setSelectedCountry] = useState(modifiedCountries.find(country => country.name === initialCountry) || "");
+  const [selectedState, setSelectedState] = useState(selectedCountry && selectedCountry.states.find(state => state.name === initialState) || "");
+  const [selectedCity, setSelectedCity] = useState(initialCity);
 
   useEffect(() => {
     handleLocationSelected();

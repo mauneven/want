@@ -187,19 +187,24 @@ const EditPost = () => {
                             ) : null}
                         </div>
                         <div className="mb-3">
-                            <Location
-                                onCountryChange={(selectedCountry) => setCountry(selectedCountry)}
-                                onStateChange={(selectedState) => setState(selectedState)}
-                                onCityChange={(selectedCity) => setCity(selectedCity)}
-                                isRequired = {true}
-                            />
+                        <Location
+    onCountryChange={(selectedCountry) => setCountry(selectedCountry)}
+    onStateChange={(selectedState) => setState(selectedState)}
+    onCityChange={(selectedCity) => setCity(selectedCity)}
+    isRequired = {true}
+    initialCountry={country}
+    initialState={state}
+    initialCity={city}
+/>
                         </div>
                         <div className="mb-3">
-                            <PostCategory
-                                onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
-                                onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)}
-                                isRequired = {true}
-                            />
+                        <PostCategory
+  onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
+  onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)}
+  initialMainCategory={mainCategory}
+  initialSubcategory={subCategory}
+  isRequired = {true}
+/>
                         </div>
                         <div className="mb-3">
                             <label htmlFor="photo" className="form-label">Upload a guide photo of what you want</label>

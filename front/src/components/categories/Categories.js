@@ -13,10 +13,16 @@ const categories = [
   { id: 9, name: 'Maquinaria Pesada', subcategories: ['Volquetas', 'Excavadoras', 'Motoniveladoras', 'Retroexcavadoras', 'Montacargas', 'Grúas', 'Bulldozers', 'Cargadores Frontales'] },
 ];
 
-export default function PostCategory({ onMainCategoryChange, onSubcategoryChange, externalSelectedSubcategory, isRequired = false  }) {
+export default function PostCategory({ 
+  onMainCategoryChange, 
+  onSubcategoryChange, 
+  initialMainCategory = "", 
+  initialSubcategory = "", 
+  isRequired = false
+}) {
 
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(categories.find(category => category.name === initialMainCategory) || null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState(initialSubcategory);
 
   const handleCategoryChange = (event) => {
     const categoryId = parseInt(event.target.value);
@@ -47,11 +53,10 @@ export default function PostCategory({ onMainCategoryChange, onSubcategoryChange
   };   
 
   useEffect(() => {
-    // Utiliza `externalSelectedSubcategory` en lugar de `selectedSubcategory`
-    if (externalSelectedSubcategory && externalSelectedSubcategory !== selectedSubcategory) {
-      setSelectedSubcategory(externalSelectedSubcategory);
+    if (initialSubcategory && initialSubcategory !== selectedSubcategory) {
+      setSelectedSubcategory(initialSubcategory);
     }
-  }, [externalSelectedSubcategory]);
+  }, [initialSubcategory]);  
 
   const categoryOptions = categories.map((category) => (
     <option key={category.id} value={category.id}>
