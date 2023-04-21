@@ -22,12 +22,11 @@ export default function MegaMenu({
   const [user, setUser] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
   const [locationFilter, setLocationFilter] = useState(null);
-  const [filterVersion, setFilterVersion] = useState(0);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
   const [categoriesButtonText, setCategoriesButtonText] = useState("All categories");
-  const [logoClickCount, setLogoClickCount] = useState(0);
+  const [selectedLocation, setSelectedLocation] = useState({ country: "", state: "", city: "" });
 
   const router = useRouter();
 
@@ -63,30 +62,7 @@ export default function MegaMenu({
   };
 
   const handleLocationSelected = (country, state, city) => {
-    let newLocationFilter = {
-      country: country,
-      state: state && state !== "Choose an state" ? state : null,
-      city: city && city !== "Choose a city" ? city : null,
-      timestamp: new Date().getTime(),
-    };
-
-    // Si el país ha cambiado o solo el país está seleccionado, limpiar el estado y la ciudad
-    if (
-      !locationFilter ||
-      country !== locationFilter.country ||
-      (country && !state && !city)
-    ) {
-      newLocationFilter.state = null;
-      newLocationFilter.city = null;
-    }
-
-    // Almacenar los datos de la ubicación en el localStorage
-    localStorage.setItem("locationFilter", JSON.stringify(newLocationFilter));
-
-    setLocationFilter(newLocationFilter);
-    onLocationFilterChange(newLocationFilter);
-    setFilterVersion(filterVersion + 1);
-    handleClose();
+    setSelectedLocation({ country, state, city });
   };
 
   useEffect(() => {
@@ -98,12 +74,6 @@ export default function MegaMenu({
     }
   }, []); // Elimina la dependencia de locationFilter
 
-  useEffect(() => {
-    if (locationFilter) {
-      onLocationFilterChange(locationFilter);
-    }
-  }, [locationFilter]); // Deja solo la dependencia de locationFilter
-
   const handleSearchSubmit = (e) => {
     localStorage.setItem("currentPage", 1);
     e.preventDefault();
@@ -111,7 +81,7 @@ export default function MegaMenu({
     setSearchTerm(newSearchTerm);
     onSearchTermChange(newSearchTerm);
     router.push("/");
-  };  
+  };
 
   const handleClose = () => setShowLocationModal(false);
   const handleShow = () => setShowLocationModal(true);
@@ -169,6 +139,8 @@ export default function MegaMenu({
             show={showLocationModal}
             onHide={() => setShowLocationModal(false)}
             onLocationSelected={handleLocationSelected}
+            onLocationFilterChange={onLocationFilterChange} // Agrega esta línea
+            selectedLocation={selectedLocation}
           />
           <FormControl
             type="search"
@@ -195,7 +167,7 @@ export default function MegaMenu({
                 Want somehting?
               </Button>
             </Nav.Link>
-            {user ? <Nav.Link className="nav-item"><Notifications/></Nav.Link> : null}
+            {user ? <Nav.Link className="nav-item"><Notifications /></Nav.Link> : null}
             {user ? (
               <NavDropdown
                 className="nav-link"
