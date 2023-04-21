@@ -68,7 +68,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   const fetchPostsBySearch = (postsData) => {
 
     if (searchTerm) {
-          // Reinicia la página actual a 1 cuando se realiza una nueva búsqueda
+      // Reinicia la página actual a 1 cuando se realiza una nueva búsqueda
       if (currentPage !== 1) setCurrentPage(1);
       const lowerCaseSearchTerm = searchTerm.toLowerCase();
       postsData = postsData.filter(
@@ -104,21 +104,21 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
     let postsData = await fetchPostsByLocation();
     postsData = fetchPostsByCategory(postsData);
     postsData = fetchPostsBySearch(postsData);
-  
+
     // Establece el total de posts antes del paginado
     setTotalPosts(postsData.length);
 
-      // Lee el valor de la página actual desde el localStorage
-  const storedCurrentPage = parseInt(localStorage.getItem("currentPage")) || 1;
-  setCurrentPage(storedCurrentPage);
-  
+    // Lee el valor de la página actual desde el localStorage
+    const storedCurrentPage = parseInt(localStorage.getItem("currentPage")) || 1;
+    setCurrentPage(storedCurrentPage);
+
     // Realiza la paginación aquí
     const start = (currentPage - 1) * pageSize;
     const end = start + pageSize;
     setPosts(postsData.slice(start, end));
-  
+
     setIsLoading(false);
-  };  
+  };
 
   useEffect(() => {
     const fetchAndSetPosts = async () => {
@@ -131,7 +131,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   useEffect(() => {
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
     setIsMobile(isMobile);
-  }, []);  
+  }, []);
 
   const handleReportPost = async (postId, description) => {
     try {
@@ -158,7 +158,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
     localStorage.setItem("currentPage", pageNumber);
-  };  
+  };
 
   const Placeholder = () => (
     <div className="col-md-3">
@@ -219,11 +219,11 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
     <div className="container">
       {isMobile && (
         <div className="floating-btn-container">
-  <button className="btn-post rounded-pill p-2" onClick={() => router.push("/createPost")}>
-    Create Post
-  </button>
-</div>
-)}
+          <button className="btn-post rounded-pill p-2" onClick={() => router.push("/createPost")}>
+            Create Post
+          </button>
+        </div>
+      )}
       <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 pb-5">
         {!isLoading
           ? posts.length > 0
@@ -266,11 +266,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                           : "icons/person-circle.svg"
                       }
                       alt="Profile"
-                      style={{
-                        borderRadius: "50%",
-                        width: "30px",
-                        height: "30px",
-                      }}
+                      className="createdBy-photo"
                     />
                     <small className="text-muted text-center">
                       {console.log(`creador por : ${post.createdBy.role}`)}
@@ -305,7 +301,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
       </div>
       {posts.length > 0 && renderPageNumbers()}
     </div>
-    
+
   );
 };
 

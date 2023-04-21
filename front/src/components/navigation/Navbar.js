@@ -180,11 +180,7 @@ export default function MegaMenu({
                           : "icons/person-circle.svg"
                       }
                       alt="Profile"
-                      style={{
-                        borderRadius: "50%",
-                        width: "30px",
-                        height: "30px",
-                      }}
+className="createdBy-photo"
                     />{" "}
                     {`${user.firstName}`}
                   </>
