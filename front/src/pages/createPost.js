@@ -75,13 +75,16 @@ const CreatePost = () => {
     e.preventDefault();
     setLoading(true);
 
+    // Check for bad words in title and description
     if (bwf.containsBadWord(title)) {
       alert(`Escribiste una mala palabra en el titulo: ${bwf.devolverPalabra(title)}`);
+      setLoading(false);
       return;
     }
 
     if (bwf.containsBadWord(description)) {
       alert(`Escribiste una mala palabra en la descripción: ${bwf.devolverPalabra(description)}`);
+      setLoading(false);
       return;
     }
 
@@ -168,14 +171,14 @@ const CreatePost = () => {
                 onCountryChange={(selectedCountry) => setCountry(selectedCountry)}
                 onStateChange={(selectedState) => setState(selectedState)}
                 onCityChange={(selectedCity) => setCity(selectedCity)}
-                isRequired = {true}
+                isRequired={true}
               />
             </div>
             <div className="mb-3">
               <PostCategory
                 onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
                 onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)} // Cambia "onSubCategoryChange" a "onSubcategoryChange"
-                isRequired = {true}
+                isRequired={true}
               />
             </div>
             <div className="mb-3">
@@ -189,7 +192,13 @@ const CreatePost = () => {
                 required
               />
             </div>
-            <button type="submit" className="btn btn-primary">Publicar lo que quiero</button>
+            <button type="submit" className="btn btn-primary" disabled={loading}>
+              {loading ? (
+                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              ) : (
+                "Publicar lo que quiero"
+              )}
+            </button>
           </form>
         </div>
         <div className="col-md-3">

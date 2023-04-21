@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useState, useEffect,  } from 'react';
+import { useState, useEffect } from 'react';
 import WordsFilter from '@/badWordsFilter/WordsFilter';
 
 const CreateOffer = () => {
@@ -10,7 +10,7 @@ const CreateOffer = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [contact, setContact] = useState ('');
+  const [contact, setContact] = useState('');
   const [photo, setPhoto] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -19,30 +19,30 @@ const CreateOffer = () => {
       const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
         credentials: 'include',
       });
-  
+
       if (!loggedInResponse.ok) {
         router.push('/login');
         return;
       }
-  
+
       const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
         credentials: 'include',
       });
-  
+
       if (!blockedResponse.ok) {
         router.push('/blocked');
         return;
       }
-  
+
       const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
         credentials: 'include',
       });
-  
+
       if (!verifiedResponse.ok) {
         router.push('/is-not-verified');
       }
     };
-  
+
     checkLoggedInAndBlockedAndVerified();
   }, []);
 
@@ -66,11 +66,13 @@ const CreateOffer = () => {
 
     if (bwf.containsBadWord(title)) {
       alert(`Escribiste una mala palabra en el titulo: ${bwf.devolverPalabra(title)}`);
+      setIsSubmitting(false);
       return;
     }
 
     if (bwf.containsBadWord(description)) {
       alert(`Escribiste una mala palabra en la descripción: ${bwf.devolverPalabra(description)}`);
+      setIsSubmitting(false);
       return;
     }
 
@@ -79,7 +81,7 @@ const CreateOffer = () => {
     formData.append('title', title);
     formData.append('description', description);
     formData.append('price', price);
-    formData.append('contact', contact)
+    formData.append('contact', contact);
     formData.append('photo', photo);
     formData.append('postId', postId);
 
@@ -88,11 +90,11 @@ const CreateOffer = () => {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/create`, {
         method: 'POST',
         headers: {
-            Accept: 'application/json'
-          },
-          credentials: 'include',
-          body: formData
-      });      
+          Accept: 'application/json'
+        },
+        credentials: 'include',
+        body: formData
+      });
 
       if (response.ok) {
         alert('Oferta creada exitosamente');
@@ -107,7 +109,7 @@ const CreateOffer = () => {
     }
   };
 
-if (!post) {
+  if (!post) {
     return <p className="container mt-5">Cargando...</p>;
   }
   
@@ -171,8 +173,15 @@ if (!post) {
                 onChange={(e) => setPhoto(e.target.files[0])}
               />
             </div>
-            <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-              {isSubmitting ? 'Creando oferta...' : 'Crear oferta'}
+            <button type="submit" className="btn btn-primary position-relative">
+              {isSubmitting ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Creando oferta...
+                </>
+              ) : (
+                "Crear oferta"
+              )}
             </button>
           </form>
         </div>
@@ -195,7 +204,7 @@ if (!post) {
         </div>
       </div>
     </div>
-  );
+  );   
   
 };
 
