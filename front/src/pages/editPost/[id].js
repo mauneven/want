@@ -214,7 +214,6 @@ const EditPost = () => {
                                 id="photo"
                                 accept="image/*"
                                 onChange={handleFileChange}
-                                required
                             />
                         </div>
                         <button type="submit" className="btn btn-primary">Update my post</button>
