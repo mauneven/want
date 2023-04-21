@@ -72,15 +72,27 @@ const EditProfile = () => {
       });
   }, []);
   
-  const handlePhotoChange = (e) => {
+  const handlePhotoChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
       const fileName = user._id + '_' + file.name; // Renombrar el archivo con el id del usuario
       const renamedFile = new File([file], fileName, {type: file.type}); // Crear un nuevo objeto File con el archivo renombrado
       setPhoto(renamedFile);
       setEditingField('photo');
+  
+      // Actualizar el estado de la foto del usuario en la base de datos
+      const formData = new FormData();
+      formData.append('photo', renamedFile);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/photo`, {
+        method: 'PUT',
+        credentials: 'include',
+        body: formData
+      });
+      if (!response.ok) {
+        console.error('Error updating user photo');
+      }
     }
-  };
+  };  
 
   const handleCancel = () => {
     setFirstName(user.firstName);

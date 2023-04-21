@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 1024 * 1024 * 10 // 10MB
+    fileSize: 1024 * 1024 * 50 // 50MB
   },
   fileFilter: function (req, file, cb) {
     if (file.mimetype.startsWith('image/')) {
@@ -70,23 +70,31 @@ exports.updateCurrentUser = async (req, res, next) => {
 
     if (req.file) {
       const fileExt = path.extname(req.file.originalname);
-      const newFilename = `${uuidv4()}${fileExt}`;
+      const newFilename = `${uuidv4()}_${Date.now()}${fileExt}`;
       const newFilePath = path.join(__dirname, '..', 'uploads', newFilename);
+
+      // Elimina la foto anterior del servidor
+      if (user.photo) {
+        const oldFilePath = path.join(__dirname, '..', user.photo);
+        fs.unlinkSync(oldFilePath);
+      }
+
       await sharp(req.file.path)
-        .resize({ width: 500 })
-        .jpeg({ quality: 80 })
+        .resize({ width: 300 })
+        .jpeg({ quality: 70 })
         .toFile(newFilePath);
 
       // Elimina el archivo original
       fs.unlinkSync(req.file.path);
 
       user.photo = `uploads/${newFilename}`;
-      await user.save();
-
-      res.status(200).send('User updated successfully');
     }
-    
+
+    await user.save();
+
+    res.status(200).send('User updated successfully');
   } catch (err) {
     next(err);
   }
 };
+

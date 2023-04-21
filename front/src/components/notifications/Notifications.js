@@ -8,6 +8,7 @@ export default function Notifications() {
   const router = useRouter();
   const [unreadNotifications, setUnreadNotifications] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchPostName = async (postId) => {
     if (!postId) {
@@ -58,12 +59,18 @@ export default function Notifications() {
     updateNotifications();
   };
 
+
   const markAllNotificationsAsRead = async () => {
+    setIsLoading(true);
     await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/notifications/markAllAsRead`, {
       method: 'PATCH',
       credentials: 'include',
     });
-  };  
+    setTimeout(() => {
+      setIsLoading(false);
+      updateNotifications();
+    }, 3300);
+  };
 
   const updateNotifications = async () => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/notifications`, {
@@ -127,12 +134,17 @@ export default function Notifications() {
         <Modal.Footer>
           <button
             className="btn btn-primary"
-            onClick={() => {
-              markAllNotificationsAsRead();
-              updateNotifications();
-            }}
+            onClick={markAllNotificationsAsRead}
+            disabled={isLoading}
           >
-            Mark all as read
+            {isLoading && (
+              <span
+                className="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            )}
+            {isLoading ? 'Marking as read...' : 'Mark all as read'}
           </button>
         </Modal.Footer>
 

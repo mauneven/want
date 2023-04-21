@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import Location from './Location';
-import { useEffect } from 'react';
 
-const LocationModal = ({ onHide, onLocationSelected }) => {
+const LocationModal = ({ onHide, onLocationSelected, onLocationFilterChange, selectedLocation }) => {
+  const { country, state, city } = selectedLocation;
   const [show, setShow] = useState(false);
-  const [country, setCountry] = useState('');
-  const [state, setState] = useState('');
-  const [city, setCity] = useState('');
   const [locationType, setLocationType] = useState('Location');
+  const [confirmedLocationType, setConfirmedLocationType] = useState('Location');
+
+  const [selectedCountry, setCountry] = useState('');
+  const [selectedState, setState] = useState('');
+  const [selectedCity, setCity] = useState('');
 
   const handleShow = () => setShow(true);
   const handleClose = () => {
@@ -21,44 +23,49 @@ const LocationModal = ({ onHide, onLocationSelected }) => {
     setState('');
     setCity('');
   };
-  
+
   const handleStateChange = (selectedState) => {
     setState(selectedState);
     setCity('');
   };
 
-  useEffect(() => {
-    const locationFilterString = localStorage.getItem("locationFilter");
-    if (locationFilterString) {
-      const parsedLocationFilter = JSON.parse(locationFilterString);
-      if (parsedLocationFilter.city) {
-        setLocationType(parsedLocationFilter.city);
-      } else if (parsedLocationFilter.state) {
-        setLocationType(parsedLocationFilter.state);
-      } else if (parsedLocationFilter.country) {
-        setLocationType(parsedLocationFilter.country);
-      }
-    }
-  }, []);  
-
   const handleAccept = () => {
-    if (onLocationSelected) {
-      onLocationSelected(country, state, city);
-      if (city) {
-        setLocationType(city);
-      } else if (state) {
-        setLocationType(state);
-      } else if (country) {
-        setLocationType(country);
-      }
+    onLocationSelected(selectedCountry, selectedState, selectedCity);
+    onLocationFilterChange({ country: selectedCountry, state: selectedState, city: selectedCity });
+
+    // Update confirmedLocationType
+    if (selectedCity) {
+      setConfirmedLocationType(selectedCity);
+    } else if (selectedState) {
+      setConfirmedLocationType(selectedState);
+    } else if (selectedCountry) {
+      setConfirmedLocationType(selectedCountry);
+    } else {
+      setConfirmedLocationType('Location');
     }
+
+    // Save the selection to localStorage
+    localStorage.setItem("selectedLocation", JSON.stringify({ country: selectedCountry, state: selectedState, city: selectedCity }));
+
     handleClose();
   };
+
+  // Load the selection from localStorage on component mount
+  useEffect(() => {
+    const storedSelection = localStorage.getItem("selectedLocation");
+    if (storedSelection) {
+      const parsedSelection = JSON.parse(storedSelection);
+      setCountry(parsedSelection.country);
+      setState(parsedSelection.state);
+      setCity(parsedSelection.city);
+      setConfirmedLocationType(parsedSelection.city || parsedSelection.state || parsedSelection.country || 'Location');
+    }
+  }, []);
 
   return (
     <>
       <Button variant="" onClick={handleShow} className=' mundi-btn'>
-        <div className="selected-location">{locationType}</div>
+        <div className="selected-location">{confirmedLocationType}</div>
       </Button>
 
       <Modal show={show} onHide={handleClose} centered>
