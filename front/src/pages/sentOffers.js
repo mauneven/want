@@ -106,6 +106,7 @@ export default function sentOffers() {
                   <h5 className="card-title">{offer.title}</h5>
                   <p className="card-text">{offer.description}</p>
                   <p className="card-text">Precio: {offer.price}</p>
+                  <p className='card-text'>Contact: {offer.contact}</p>
                   <button
                     className="btn btn-danger"
                     onClick={() => handleShowModal(offer._id)}

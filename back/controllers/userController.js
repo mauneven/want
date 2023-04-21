@@ -1,24 +1,34 @@
 const fs = require('fs');
 const path = require('path');
-
-const uploadDirectory = path.join(__dirname, '..', 'uploads');
-if (!fs.existsSync(uploadDirectory)) {
-  fs.mkdirSync(uploadDirectory);
-}
+const { v4: uuidv4 } = require('uuid');
+const sharp = require('sharp');
 
 const mongoose = require('mongoose');
 const User = require('../models/user');
 const multer = require('multer');
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/') // Selecciona la carpeta de destino donde se guardarán los archivos subidos
+    cb(null, 'uploads/')
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname) // Usa el nombre original del archivo como nombre de archivo en el servidor
+    cb(null, Date.now() + path.extname(file.originalname));
   }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 10 // 10MB
+  },
+  fileFilter: function (req, file, cb) {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'));
+    }
+  }
+});
 
 exports.getCurrentUser = async (req, res, next) => {
   try {
@@ -38,7 +48,6 @@ exports.getCurrentUser = async (req, res, next) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 
 exports.uploadPhotoMiddleware = upload.single('photo');
 
@@ -60,21 +69,23 @@ exports.updateCurrentUser = async (req, res, next) => {
     user.birthdate = req.body.birthdate;
 
     if (req.file) {
-      if (user.photo) {
-        // Elimina la foto anterior si existe
-        fs.unlink(user.photo, (err) => {
-          if (err) {
-            console.error('Error removing old profile picture:', err);
-          }
-        });
-      }
-      // Guarda la URL de la nueva foto en la base de datos
-      user.photo = req.file.path;
+      const fileExt = path.extname(req.file.originalname);
+      const newFilename = `${uuidv4()}${fileExt}`;
+      const newFilePath = path.join(__dirname, '..', 'uploads', newFilename);
+      await sharp(req.file.path)
+        .resize({ width: 500 })
+        .jpeg({ quality: 80 })
+        .toFile(newFilePath);
+
+      // Elimina el archivo original
+      fs.unlinkSync(req.file.path);
+
+      user.photo = `uploads/${newFilename}`;
+      await user.save();
+
+      res.status(200).send('User updated successfully');
     }
-
-    await user.save();
-
-    res.status(200).send('User updated successfully');
+    
   } catch (err) {
     next(err);
   }
