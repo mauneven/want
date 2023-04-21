@@ -119,7 +119,6 @@ exports.getNotifications = async (req, res, next) => {
   
       await Offer.deleteOne({ _id: req.params.id });
   
-      // Si se encuentra la notificación, elimínala.
       if (notification) {
         await Notification.deleteOne({ _id: notification._id });
       }
