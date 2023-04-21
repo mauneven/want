@@ -4,6 +4,8 @@ const multer = require('multer');
 const path = require('path');
 const Notification = require('../models/notification');
 const fs = require('fs');
+const sharp = require('sharp');
+const { v4: uuidv4 } = require('uuid');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -19,55 +21,74 @@ const upload = multer({ storage: storage });
 exports.uploadPhoto = upload.single('photo');
 
 exports.createOffer = async (req, res, next) => {
-    try {
-      const { title, description, price, contact, postId } = req.body;
-      const photo = req.file ? req.file.path : null;
-      const post = await Post.findById(postId);
-  
-      if (!post) {
-        return res.status(404).send('Post not found');
-      }
-  
-      // Mueve esta línea aquí, dentro de la función createOffer
-      const notificationContent = `"${post.title}"`;
-  
-      const offer = new Offer({
-        title,
-        description,
-        price,
-        photo,
-        contact,
-        createdBy: req.session.userId,
-        receivedBy: post.createdBy,
-        post: postId,
-      });
-      await offer.save();
-  
-      // Enviar notificación al usuario que recibió la oferta
-      await exports.sendNotification(post.createdBy, notificationContent, postId);
-  
-      res.status(201).json(offer);
-    } catch (err) {
-      next(err);
+  try {
+    const { title, description, price, contact, postId } = req.body;
+    const photo = req.file ? req.file.path : null;
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).send('Post not found');
     }
-  };  
+
+    const notificationContent = `"${post.title}"`;
+
+    const offer = new Offer({
+      title,
+      description,
+      price,
+      photo,
+      contact,
+      createdBy: req.session.userId,
+      receivedBy: post.createdBy,
+      post: postId,
+    });
+
+    await offer.save();
+
+    if (req.file) {
+      const fileExt = path.extname(req.file.originalname);
+      const newFilename = `${uuidv4()}${fileExt}`;
+      const newFilePath = path.join(__dirname, '..', 'uploads', newFilename);
+      await sharp(req.file.path)
+        .resize({ width: 500 })
+        .jpeg({ quality: 80 })
+        .toFile(newFilePath);
+
+      // Elimina el archivo original
+      fs.unlinkSync(req.file.path);
+
+      offer.photo = `uploads/${newFilename}`;
+      await offer.save();
+    }
+
+    await exports.sendNotification(post.createdBy, notificationContent, postId);
+
+    res.status(201).json(offer);
+  } catch (err) {
+    next(err);
+  }
+}; 
 
 exports.getOffersByCurrentUser = async (req, res, next) => {
-    try {
-        const offers = await Offer.find({ createdBy: req.session.userId }).populate('post', 'title');
-        res.status(200).json(offers);
-    } catch (err) {
-        next(err);
-    }
+  try {
+      const offers = await Offer.find({ createdBy: req.session.userId })
+          .populate('post', 'title')
+          .populate('createdBy', 'firstName lastName photo');
+      res.status(200).json(offers);
+  } catch (err) {
+      next(err);
+  }
 };
 
 exports.getOffersReceivedByCurrentUser = async (req, res, next) => {
-    try {
-        const offers = await Offer.find({ receivedBy: req.session.userId }).populate('post', 'title');
-        res.status(200).json(offers);
-    } catch (err) {
-        next(err);
-    }
+  try {
+      const offers = await Offer.find({ receivedBy: req.session.userId })
+          .populate('post', 'title')
+          .populate('createdBy', 'firstName lastName photo');
+      res.status(200).json(offers);
+  } catch (err) {
+      next(err);
+  }
 };
 
 exports.getNotifications = async (req, res, next) => {

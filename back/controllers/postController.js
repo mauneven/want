@@ -50,7 +50,7 @@ exports.createPost = async (req, res, next) => {
 
     if (photo) {
       const compressedImagePath = `uploads/${uuidv4()}.jpg`; // genera un nombre de archivo único para la imagen comprimida
-      await sharp(photo).resize({ width: 100 }).toFile(compressedImagePath);
+      await sharp(photo).resize({ width: 500 }).toFile(compressedImagePath);
       fs.unlinkSync(photo); // elimina el archivo original de la imagen
       req.file.path = compressedImagePath; // actualiza la propiedad "path" de "req.file" con la nueva ruta
     }
@@ -106,7 +106,7 @@ exports.updatePost = async (req, res, next) => {
     if (req.file) {
       const photo = req.file.path;
       const compressedImagePath = `uploads/${uuidv4()}.jpg`;
-      await sharp(photo).resize({ width: 100 }).toFile(compressedImagePath);
+      await sharp(photo).resize({ width: 500 }).toFile(compressedImagePath);
       fs.unlinkSync(photo);
       req.file.path = compressedImagePath;
       if (post.photo) {
