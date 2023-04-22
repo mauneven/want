@@ -36,7 +36,7 @@ const Location = ({
   
   const [selectedCountry, setSelectedCountry] = useState(modifiedCountries.find(country => country.name === initialCountry) || "");
   const [selectedState, setSelectedState] = useState(selectedCountry && selectedCountry.states.find(state => state.name === initialState) || "");
-  const [selectedCity, setSelectedCity] = useState(initialCity);
+  const [selectedCity, setSelectedCity] = useState(initialCity);  
 
   useEffect(() => {
     handleLocationSelected();

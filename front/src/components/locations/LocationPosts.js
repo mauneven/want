@@ -73,12 +73,15 @@ const LocationModal = ({ onHide, onLocationSelected, onLocationFilterChange, sel
           <Modal.Title>Elije la ubicación hasta donde desees</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Location
-           onCountryChange={handleCountryChange}
-           onStateChange={handleStateChange}
-           onCityChange={(selectedCity) => setCity(selectedCity)}
-           onLocationSelected={(country, state, city) => onLocationSelected(country, state, city)}
-          />
+        <Location
+  onCountryChange={handleCountryChange}
+  onStateChange={handleStateChange}
+  onCityChange={(selectedCity) => setCity(selectedCity)}
+  onLocationSelected={(country, state, city) => onLocationSelected(country, state, city)}
+  initialCountry={selectedCountry}
+  initialState={selectedState}
+  initialCity={selectedCity}
+/>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
