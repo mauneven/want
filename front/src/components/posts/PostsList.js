@@ -14,23 +14,28 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
+  const [storedLocationFilter, setStoredLocationFilter] = useState(null);
 
   const fetchPostsByLocation = async () => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`);
     let postsData = await response.json();
-
-    if (locationFilter) {
+  
+    // Leer la ubicación filtrada desde el localStorage
+    const storedLocationFilter = localStorage.getItem("selectedLocation");
+    const parsedLocationFilter = storedLocationFilter ? JSON.parse(storedLocationFilter) : null;
+  
+    if (parsedLocationFilter) {
       postsData = postsData.filter((post) => {
-        let countryMatch = locationFilter.country ? post.country === locationFilter.country : true;
-        let stateMatch = locationFilter.state ? post.state === locationFilter.state : true;
-        let cityMatch = locationFilter.city ? post.city === locationFilter.city : true;
-
+        let countryMatch = parsedLocationFilter.country ? post.country === parsedLocationFilter.country : true;
+        let stateMatch = parsedLocationFilter.state ? post.state === parsedLocationFilter.state : true;
+        let cityMatch = parsedLocationFilter.city ? post.city === parsedLocationFilter.city : true;
+  
         return countryMatch && stateMatch && cityMatch;
       });
     }
-
+  
     return postsData;
-  };
+  };  
 
   const fetchPostsByCategory = (postsData) => {
     console.log("Filtering by category:", categoryFilter);
@@ -124,14 +129,21 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
     const fetchAndSetPosts = async () => {
       await fetchPosts();
     };
-
+  
     fetchAndSetPosts();
-  }, [locationFilter, userIdFilter, searchTerm, categoryFilter, currentPage, pageSize]);
+  }, [userIdFilter, searchTerm, categoryFilter, currentPage, pageSize, locationFilter]);
 
   useEffect(() => {
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
     setIsMobile(isMobile);
   }, []);
+
+  useEffect(() => {
+    const storedFilter = localStorage.getItem("selectedLocation");
+    if (storedFilter) {
+      setStoredLocationFilter(JSON.parse(storedFilter));
+    }
+  }, []);  
 
   const handleReportPost = async (postId, description) => {
     try {
