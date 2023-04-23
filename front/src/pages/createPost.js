@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import PostCategory from '@/components/categories/Categories';
 import Location from '@/components/locations/Location';
 import WordsFilter from '@/badWordsFilter/WordsFilter.js';
+import { Carousel } from 'bootstrap';
+import { useRef } from 'react';
 
 const CreatePost = () => {
   const [title, setTitle] = useState('');
@@ -19,6 +20,8 @@ const CreatePost = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [photos, setPhotos] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const carouselRef = useRef(null);
 
   const [previewTitle, setPreviewTitle] = useState('');
   const [previewDescription, setPreviewDescription] = useState('');
@@ -63,11 +66,34 @@ const CreatePost = () => {
     setPhotos([...photos, ...newPhotos]);
   };
 
-  const handleDeletePhoto = (index) => {
-    const newPhotos = [...photos];
-    newPhotos.splice(index, 1);
+  const handleDeletePhoto = (indexToDelete) => {
+    const newPhotos = photos.filter((photo, index) => index !== indexToDelete);
+
     setPhotos(newPhotos);
+
+    if (indexToDelete === activeIndex) {
+      setActiveIndex(0);
+    } else if (indexToDelete < activeIndex) {
+      setActiveIndex(activeIndex - 1);
+    }
   };
+
+  useEffect(() => {
+    const handleSlid = (event) => {
+      setActiveIndex(event.to);
+    };
+
+    if (carouselRef.current) {
+      const carouselInstance = new Carousel(carouselRef.current);
+      carouselRef.current.addEventListener('slid.bs.carousel', handleSlid);
+    }
+
+    return () => {
+      if (carouselRef.current) {
+        carouselRef.current.removeEventListener('slid.bs.carousel', handleSlid);
+      }
+    };
+  }, [photos]);
 
   useEffect(() => {
     setPreviewTitle(title);
@@ -107,7 +133,7 @@ const CreatePost = () => {
     formData.append('mainCategory', mainCategory);
     formData.append('subCategory', subCategory);
     formData.append('price', price);
-    if (photos.length > 0) {
+    if (true) {
       for (let i = 0; i < photos.length; i++) {
         formData.append("photos[]", photos[i]);
       }
@@ -214,14 +240,21 @@ const CreatePost = () => {
         <div className="col-md-3">
           <div className="card post rounded-5 card-preview">
             {photos.length > 0 && (
-              <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
+              <div ref={carouselRef} id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
                 <div className="carousel-inner">
-                  {photos.map((photo, index) => (
-                    <div key={index} className={index === 0 ? "carousel-item active" : "carousel-item"}>
-                      <img src={URL.createObjectURL(photo)} className="d-block w-100" alt={`Photo ${index}`} />
-                      <button className="btn btn-danger btn-sm delete-photo" onClick={() => handleDeletePhoto(index)}>
-                        <i className="bi bi-trash"></i>
-                      </button>
+                  {[0, 1, 2, 3].map((slot) => (
+                    <div key={slot} className={slot === activeIndex ? "carousel-item active" : "carousel-item"}>
+                      {photos[slot] ? (
+                        <img
+                          src={URL.createObjectURL(photos[slot])}
+                          className="d-block w-100"
+                          alt={`Photo ${slot}`}
+                        />
+                      ) : (
+                        <div className="d-flex justify-content-center align-items-center" style={{ height: '200px', backgroundColor: 'lightgray' }}>
+                          <span className="text-muted">Subir foto {slot + 1}</span>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -235,9 +268,16 @@ const CreatePost = () => {
                 </button>
               </div>
             )}
-            <button className="btn btn-danger btn-sm delete-photo" onClick={() => handleDeletePhoto(index)}>
-              <i className="bi bi-trash"></i>
-            </button>
+            {photos.length > 0 && (
+              <div>
+                <button
+                  className="btn btn-danger btn-sm delete-photo"
+                  onClick={() => handleDeletePhoto(activeIndex)}
+                >
+                  <i className="bi bi-trash">Delete this photo</i>
+                </button>
+              </div>
+            )}
             <div className="card-body">
               <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>
               <h5 className="text-success">${previewPrice}</h5>

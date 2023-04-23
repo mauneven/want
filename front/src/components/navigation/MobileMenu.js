@@ -1,156 +1,118 @@
-// components/navigation/MobileMenu.js
-import { useState, useEffect, useRef } from "react";
-import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
+import { useState, useEffect } from "react";
+import {
+  Container,
+  Navbar,
+  Nav,
+  NavDropdown,
+  Form,
+  FormControl,
+  Button,
+} from "react-bootstrap";
 import LocationModal from "../locations/LocationPosts";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Notifications from "../notifications/Notifications";
 import CategoriesModal from "../categories/CategoriesPosts";
 
-export default function MobileMenu({
-    onLocationFilterChange,
-    onSearchTermChange,
-    onCategoryFilterChange,
+export default function MegaMenu({
+  onLocationFilterChange,
+  onSearchTermChange,
+  onCategoryFilterChange,
 }) {
-    const [user, setUser] = useState(null);
-    const [isLogged, setIsLogged] = useState(false);
-    const [locationFilter, setLocationFilter] = useState(null);
-    const [filterVersion, setFilterVersion] = useState(0);
-    const [showLocationModal, setShowLocationModal] = useState(false);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [showCategoriesModal, setShowCategoriesModal] = useState(false);
-    const [categoriesButtonText, setCategoriesButtonText] = useState("All categories");
-    
-    const closeMenu = () => {
-        document.querySelector(".navbar-toggler").click();
+  const [user, setUser] = useState(null);
+  const [isLogged, setIsLogged] = useState(false);
+  const [locationFilter, setLocationFilter] = useState(null);
+  const [showLocationModal, setShowLocationModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showCategoriesModal, setShowCategoriesModal] = useState(false);
+  const [categoriesButtonText, setCategoriesButtonText] = useState("All categories");
+  const [selectedLocation, setSelectedLocation] = useState({ country: "", state: "", city: "" });
+
+  const router = useRouter();
+
+  const handleLogoClick = () => {
+    onSearchTermChange("");
+    onCategoryFilterChange({ mainCategory: "", subCategory: "" });
+    setCategoriesButtonText("All categories");
+    router.push("/");
+    localStorage.setItem("currentPage", 1);
+  };
+
+  const handleCloseCategories = () => setShowCategoriesModal(false);
+
+  const handleCategorySelected = (mainCategory, subCategory) => {
+    localStorage.setItem("currentPage", 1);
+    console.log("Selected Category: ", mainCategory);
+    console.log("Selected Subcategory: ", subCategory);
+    const selectedCategory = {
+      mainCategory: mainCategory,
+      subCategory: subCategory !== "" ? subCategory : null,
     };
+    onCategoryFilterChange(selectedCategory);
+    handleCloseCategories();
 
-    const router = useRouter();
-
-    const handleLogoClick = () => {
-        setSearchTerm("");
-        onSearchTermChange("");
-        router.push("/");
-        onCategoryFilterChange({ mainCategory: "", subCategory: "" });
-        setCategoriesButtonText("All categories");
-    };
-
-    const handleCloseCategories = () => setShowCategoriesModal(false);
-
-    const handleCategorySelected = (mainCategory, subCategory) => {
-        console.log("Selected Category: ", mainCategory);
-        console.log("Selected Subcategory: ", subCategory);
-        const selectedCategory = {
-            mainCategory: mainCategory,
-            subCategory: subCategory !== "" ? subCategory : null,
-        };
-        onCategoryFilterChange(selectedCategory);
-        handleCloseCategories();
-
-        // Actualiza el texto del botón
-        if (subCategory) {
-            setCategoriesButtonText(subCategory);
-        } else if (mainCategory) {
-            setCategoriesButtonText(mainCategory);
-        } else {
-            setCategoriesButtonText("All categories");
-        }
-    };
-
-    const handleCategoryCleared = () => {
-        const clearedCategory = {
-            mainCategory: "",
-            subCategory: "",
-        };
-        onCategoryFilterChange(clearedCategory);
-    };
-
-    const handleLocationSelected = (country, state, city) => {
-        let newLocationFilter = {
-            country: country,
-            state: state && state !== "Choose an state" ? state : null,
-            city: city && city !== "Choose a city" ? city : null,
-            timestamp: new Date().getTime(),
-        };
-
-        // Si el país ha cambiado o solo el país está seleccionado, limpiar el estado y la ciudad
-        if (
-            !locationFilter ||
-            country !== locationFilter.country ||
-            (country && !state && !city)
-        ) {
-            newLocationFilter.state = null;
-            newLocationFilter.city = null;
-        }
-
-        // Almacenar los datos de la ubicación en el localStorage
-        localStorage.setItem("locationFilter", JSON.stringify(newLocationFilter));
-
-        setLocationFilter(newLocationFilter);
-        onLocationFilterChange(newLocationFilter);
-        setFilterVersion(filterVersion + 1);
-        handleClose();
-    };
-
-    useEffect(() => {
-        const locationFilterString = localStorage.getItem("locationFilter");
-        if (locationFilterString) {
-            const parsedLocationFilter = JSON.parse(locationFilterString);
-            setLocationFilter(parsedLocationFilter);
-            onLocationFilterChange(parsedLocationFilter);
-        }
-    }, []); // Elimina la dependencia de locationFilter
-
-    useEffect(() => {
-        if (locationFilter) {
-            onLocationFilterChange(locationFilter);
-        }
-    }, [locationFilter]); // Deja solo la dependencia de locationFilter
-
-    const handleSearchSubmit = (e) => {
-        e.preventDefault();
-        setSearchTerm(e.target.search.value);
-        onSearchTermChange(e.target.search.value);
-        setSearchTerm(e.target.search.value);
-        router.push('/');
-    };
-
-    const handleClose = () => setShowLocationModal(false);
-    const handleShow = () => setShowLocationModal(true);
-
-    useEffect(() => {
-        const checkSession = async () => {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`, {
-                method: "GET",
-                credentials: "include",
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setUser(data.user || null);
-                setIsLogged(true);
-            } else if (response.status === 401) {
-                setIsLogged(false);
-            }
-        };
-
-        checkSession();
-    }, [router.pathname]);
-
-    useEffect(() => {
-        const locationFilterString = localStorage.getItem("locationFilter");
-        if (locationFilterString) {
-            const parsedLocationFilter = JSON.parse(locationFilterString);
-            setLocationFilter(parsedLocationFilter);
-            onLocationFilterChange(parsedLocationFilter);
-        }
-    }, []);
-
-    function getUserImageUrl() {
-        if (user && user.photo) {
-            return `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}`;
-        }
+    // Actualiza el texto del botón
+    if (subCategory) {
+      setCategoriesButtonText(subCategory);
+    } else if (mainCategory) {
+      setCategoriesButtonText(mainCategory);
+    } else {
+      setCategoriesButtonText("All categories");
     }
+  };
+
+  const handleLocationSelected = (country, state, city) => {
+    setSelectedLocation({ country, state, city });
+  };
+
+  useEffect(() => {
+    const locationFilterString = localStorage.getItem("locationFilter");
+    if (locationFilterString) {
+      const parsedLocationFilter = JSON.parse(locationFilterString);
+      setLocationFilter(parsedLocationFilter);
+      onLocationFilterChange(parsedLocationFilter);
+    }
+  }, []); // Elimina la dependencia de locationFilter
+
+  const handleSearchSubmit = (e) => {
+    localStorage.setItem("currentPage", 1);
+    e.preventDefault();
+    const newSearchTerm = e.target.search.value;
+    setSearchTerm(newSearchTerm);
+    onSearchTermChange(newSearchTerm);
+    router.push("/");
+  };
+
+  const handleClose = () => setShowLocationModal(false);
+  const handleShow = () => setShowLocationModal(true);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user || null);
+        setIsLogged(true);
+      } else if (response.status === 401) {
+        setIsLogged(false);
+      }
+    };
+
+    checkSession();
+  }, [router.pathname]);
+
+  useEffect(() => {
+    const locationFilterString = localStorage.getItem("locationFilter");
+    if (locationFilterString) {
+      const parsedLocationFilter = JSON.parse(locationFilterString);
+      setLocationFilter(parsedLocationFilter);
+      onLocationFilterChange(parsedLocationFilter);
+    }
+  }, []);
 
     return (
         <Navbar className="mobile-navbar" expand="lg">
@@ -243,16 +205,17 @@ export default function MobileMenu({
                 </Button>
             </Form>
             <LocationModal
-                className=""
-                show={showLocationModal}
-                onHide={() => setShowLocationModal(false)}
-                onLocationSelected={handleLocationSelected}
-            />
+            show={showLocationModal}
+            onHide={() => setShowLocationModal(false)}
+            onLocationSelected={handleLocationSelected}
+            onLocationFilterChange={onLocationFilterChange} // Agrega esta línea
+            selectedLocation={selectedLocation}
+          />
             <CategoriesModal
-                isShown={showCategoriesModal}
-                onHide={() => setShowCategoriesModal(false)}
-                onCategorySelected={handleCategorySelected}
-                buttonText={categoriesButtonText}
+              isShown={showCategoriesModal}
+              onHide={() => setShowCategoriesModal(false)}
+              onCategorySelected={handleCategorySelected}
+              buttonText={categoriesButtonText}
             />
         </Navbar>
     );

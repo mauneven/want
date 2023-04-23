@@ -1,171 +1,42 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import ContentLoader from "react-content-loader";
-import ReportPostModal from "../report/ReportPostModal";
 import { useRouter } from "next/router";
 
-const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter }) => {
-  const [posts, setPosts] = useState([]);
+const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
+  const [relatedPosts, setRelatedPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(12);
+  const [pageSize, setPageSize] = useState(4);
   const [totalPosts, setTotalPosts] = useState(0);
   const maxPagesToShow = 6;
   const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
   const router = useRouter();
-  const [isMobile, setIsMobile] = useState(false);
-  const [storedLocationFilter, setStoredLocationFilter] = useState(null);
-
-  const fetchPostsByLocation = async () => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`);
-    let postsData = await response.json();
-
-    // Leer la ubicación filtrada desde el localStorage
-    const storedLocationFilter = localStorage.getItem("selectedLocation");
-    const parsedLocationFilter = storedLocationFilter ? JSON.parse(storedLocationFilter) : null;
-
-    if (parsedLocationFilter) {
-      postsData = postsData.filter((post) => {
-        let countryMatch = parsedLocationFilter.country ? post.country === parsedLocationFilter.country : true;
-        let stateMatch = parsedLocationFilter.state ? post.state === parsedLocationFilter.state : true;
-        let cityMatch = parsedLocationFilter.city ? post.city === parsedLocationFilter.city : true;
-
-        return countryMatch && stateMatch && cityMatch;
-      });
-    }
-
-    return postsData;
-  };
-
-  const fetchPostsByCategory = (postsData) => {
-    console.log("Filtering by category:", categoryFilter);
-
-    if (categoryFilter && categoryFilter.mainCategory) {
-      postsData = postsData.filter((post) => {
-        const mainCategoryMatch =
-          post.mainCategory === categoryFilter.mainCategory;
-
-        const subCategoryMatch =
-          categoryFilter.subCategory
-            ? post.subCategory === categoryFilter.subCategory
-            : true;
-
-        const isMatch = mainCategoryMatch && subCategoryMatch;
-
-        if (!isMatch) {
-          console.log(
-            "Filtered out post:",
-            post.title,
-            "mainCategory:",
-            post.mainCategory,
-            "subCategory:",
-            post.subCategory
-          );
-        }
-
-        return isMatch;
-      });
-    }
-
-    return postsData;
-  };
-
-  const fetchPostsBySearch = (postsData) => {
-
-    if (searchTerm) {
-      // Reinicia la página actual a 1 cuando se realiza una nueva búsqueda
-      if (currentPage !== 1) setCurrentPage(1);
-      const lowerCaseSearchTerm = searchTerm.toLowerCase();
-      postsData = postsData.filter(
-        (post) =>
-          post.title.toLowerCase().includes(lowerCaseSearchTerm) ||
-          post.description.toLowerCase().includes(lowerCaseSearchTerm)
-      );
-    }
-
-    postsData.sort((a, b) => {
-      const titleA = a.title.toLowerCase();
-      const titleB = b.title.toLowerCase();
-      const searchTermIndexA = titleA.indexOf(searchTerm.toLowerCase());
-      const searchTermIndexB = titleB.indexOf(searchTerm.toLowerCase());
-
-      if (searchTermIndexA === -1 && searchTermIndexB !== -1) {
-        return 1;
-      }
-      if (searchTermIndexA !== -1 && searchTermIndexB === -1) {
-        return -1;
-      }
-
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    });
-
-    setPosts(postsData);
-    setIsLoading(false);
-    return postsData;
-  };
-
-  const fetchPosts = async () => {
-    setIsLoading(true);
-    let postsData = await fetchPostsByLocation();
-    postsData = fetchPostsByCategory(postsData);
-    postsData = fetchPostsBySearch(postsData);
-
-    // Establece el total de posts antes del paginado
-    setTotalPosts(postsData.length);
-
-    // Lee el valor de la página actual desde el localStorage
-    const storedCurrentPage = parseInt(localStorage.getItem("currentPage")) || 1;
-    setCurrentPage(storedCurrentPage);
-
-    // Realiza la paginación aquí
-    const start = (currentPage - 1) * pageSize;
-    const end = start + pageSize;
-    setPosts(postsData.slice(start, end));
-
-    setIsLoading(false);
-  };
 
   useEffect(() => {
-    const fetchAndSetPosts = async () => {
-      await fetchPosts();
+    const fetchRelatedPosts = async () => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`);
+      let postsData = await response.json();
+  
+      // Filtrar los posts por país, categoría principal y subcategoría
+      if (post) {
+        postsData = postsData.filter((p) => {
+          return (
+            p._id !== post._id &&
+            p.country === locationFilter.country &&
+            p.mainCategory === categoryFilter.mainCategory &&
+            p.subCategory === categoryFilter.subCategory
+          );
+        });
+      }
+  
+      setRelatedPosts(postsData);
+      setTotalPosts(postsData.length);
+      setIsLoading(false);
     };
 
-    fetchAndSetPosts();
-  }, [userIdFilter, searchTerm, categoryFilter, currentPage, pageSize, locationFilter]);
-
-  useEffect(() => {
-    const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    setIsMobile(isMobile);
-  }, []);
-
-  useEffect(() => {
-    const storedFilter = localStorage.getItem("selectedLocation");
-    if (storedFilter) {
-      setStoredLocationFilter(JSON.parse(storedFilter));
-    }
-  }, []);
-
-  const handleReportPost = async (postId, description) => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/report/post/${postId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ description }),
-        credentials: 'include', // Añade esta línea
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Reporte de post exitoso:', data);
-      } else {
-        console.error('Error al reportar el post:', response);
-      }
-    } catch (error) {
-      console.error('Error al reportar el post:', error);
-    }
-  };
+    fetchRelatedPosts();
+  }, [post]);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -183,6 +54,12 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
       </ContentLoader>
     </div>
   );
+  
+  const getPaginatedPosts = () => {
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return relatedPosts.slice(startIndex, endIndex);
+  };
 
   const renderPageNumbers = () => {
     const pageNumbers = [];
@@ -229,20 +106,13 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
 
   return (
     <div className="container">
-      {isMobile && (
-        <div className="floating-btn-container">
-          <button className="btn-post rounded-pill p-2" onClick={() => router.push("/createPost")}>
-            Create Post
-          </button>
-        </div>
-      )}
+      <h3 className="text-center mb-4">Related posts</h3>
       <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 pb-5">
         {!isLoading
-          ? posts.length > 0
-            ? posts.map((post) => (
+          ? getPaginatedPosts().length > 0
+            ? getPaginatedPosts().map((post) => (
               <div key={post._id} className="col">
                 <div className="card post rounded-5">
-                <ReportPostModal postId={post._id} onReport={handleReportPost} />
                   <button className="rounded-circle btn-save" title="Save">
                     <i className="bi bi-heart"></i>
                   </button>
@@ -266,7 +136,6 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                                 className="d-block w-100"
                                 alt={`Slide ${index}`}
                                 style={{ objectFit: "cover", height: "100%" }}
-                                loading="lazy"
                               />
                             </div>
                           );
@@ -341,14 +210,22 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
               <Placeholder />
               <Placeholder />
               <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
+              <Placeholder />
             </>
           )
         }
       </div>
-      {posts.length > 0 && renderPageNumbers()}
+      {relatedPosts.length > 0 && renderPageNumbers()}
     </div>
 
   );
 };
 
-export default PostsList;
+export default RelatedPosts;
