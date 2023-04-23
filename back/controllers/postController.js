@@ -16,16 +16,13 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 50 * 1024 * 1024 } // límite de 50 MB
-});
+const upload = multer({ storage }).array('photos[]', 4);
 
-exports.uploadPhotoMiddleware = upload.single('photo');
+exports.uploadPhotoMiddleware = upload;
 
 exports.getAllPosts = async (req, res, next) => {
   try {
-    const posts = await Post.find().populate('createdBy', 'firstName lastName photo');
+    const posts = await Post.find().populate('createdBy', 'firstName lastName photos');
     res.status(200).json(posts);
   } catch (err) {
     next(err);
@@ -34,7 +31,7 @@ exports.getAllPosts = async (req, res, next) => {
 
 exports.getPostById = async (req, res, next) => {
   try {
-    const post = await Post.findById(req.params.id).populate('createdBy', 'firstName lastName photo');
+    const post = await Post.findById(req.params.id).populate('createdBy', 'firstName lastName photos');
     if (!post) {
       return res.status(404).send('Post not found');
     }
@@ -44,18 +41,25 @@ exports.getPostById = async (req, res, next) => {
   }
 };
 
-// controllers/postController.js
-
 exports.createPost = async (req, res, next) => {
   try {
     const { title, description, country, state, city, mainCategory, subCategory, price } = req.body;
-    const photo = req.file ? req.file.path : null;
+    const photos = req.files.map(file => file.path);
+    let compressedImagePaths = []; // Add this line
 
-    if (photo) {
-      const compressedImagePath = `uploads/${uuidv4()}.jpg`; // genera un nombre de archivo único para la imagen comprimida
-      await sharp(photo).resize({ width: 500 }).toFile(compressedImagePath);
-      fs.unlinkSync(photo); // elimina el archivo original de la imagen
-      req.file.path = compressedImagePath; // actualiza la propiedad "path" de "req.file" con la nueva ruta
+    if (photos.length > 0) {
+      compressedImagePaths = await Promise.all(photos.map(async (photos) => {
+        const compressedImagePath = `uploads/${uuidv4()}.jpg`;
+        await sharp(photos).resize({ width: 500 }).toFile(compressedImagePath);
+        try {
+          await fs.promises.unlink(photos);
+        } catch (err) {
+          console.error(`Error deleting file ${photos}: ${err.message}`);
+        }
+        return compressedImagePath;
+      }));
+
+      req.files = compressedImagePaths.map(path => ({ path }));
     }
 
     const post = new Post({
@@ -68,11 +72,12 @@ exports.createPost = async (req, res, next) => {
       mainCategory,
       subCategory,
       price,
-      photo: req.file ? req.file.path : null, // utiliza la nueva ruta de la imagen comprimida
+      photos: compressedImagePaths || [],
+
     });
     await post.save();
 
-    exports.schedulePostDeletion(post._id, 60 * 60 * 24 * 7 * 1000);
+    exports.schedulePostDeletion(post._id, 60 * 60 * 24 * 7 * 1000); // 7 Days
 
     res.status(201).json(post);
   } catch (err) {
@@ -106,17 +111,31 @@ exports.updatePost = async (req, res, next) => {
     post.subCategory = subCategory;
     post.price = price;
 
-    if (req.file) {
-      const photo = req.file.path;
-      const compressedImagePath = `uploads/${uuidv4()}.jpg`;
-      await sharp(photo).resize({ width: 500 }).toFile(compressedImagePath);
-      fs.unlinkSync(photo);
-      req.file.path = compressedImagePath;
-      if (post.photo) {
-        const oldPhotoPath = path.join(__dirname, '..', post.photo);
-        fs.unlinkSync(oldPhotoPath);
+    if (req.files.length > 0) {
+      const photos = req.files.map(file => file.path);
+      const compressedImagePaths = await Promise.all(photos.map(async (photos) => {
+        const compressedImagePath = `uploads/${uuidv4()}.jpg`;
+        await sharp(photos).resize({ width: 500 }).toFile(compressedImagePath);
+        try {
+          await fs.promises.unlink(photos);
+        } catch (err) {
+          console.error(`Error deleting file ${photos}: ${err.message}`);
+        }
+        return compressedImagePath;
+      }));
+      req.files = compressedImagePaths.map(path => ({ path }));
+      if (post.photos) {
+        const oldPhotoPaths = post.photos;
+        oldPhotoPaths.forEach(async (path) => {
+          const oldPhotoPath = path.join(__dirname, '..', path);
+          try {
+            await fs.promises.unlink(oldPhotoPath);
+          } catch (err) {
+            console.error(`Error deleting file ${oldPhotoPath}: ${err.message}`);
+          }
+        });
       }
-      post.photo = req.file.path;
+      post.photos = req.files.map(file => file.path);
     }
 
     await post.save();
@@ -125,7 +144,7 @@ exports.updatePost = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-};
+}
 
 exports.deletePost = async (req, res, next) => {
   try {
@@ -144,12 +163,14 @@ exports.deletePost = async (req, res, next) => {
 
     // Eliminar las fotos de las ofertas asociadas con este post
     for (const offer of offers) {
-      if (offer.photo) {
-        try {
-          const imagePath = path.join(__dirname, '..', offer.photo);
-          fs.unlinkSync(imagePath);
-        } catch (err) {
-          console.error(`Error deleting image for offer ${offer._id}: ${err.message}`);
+      if (offer.photos) {
+        for (const photo of offer.photos) { // Añade este bucle para iterar sobre el array de fotos
+          try {
+            const imagePath = path.join(__dirname, '..', photo);
+            fs.unlinkSync(imagePath);
+          } catch (err) {
+            console.error(`Error deleting image for offer ${offer._id}: ${err.message}`);
+          }
         }
       }
     }
@@ -165,8 +186,6 @@ exports.deletePost = async (req, res, next) => {
   }
 };
 
-// controllers/postController.js
-
 exports.deletePostById = async (postId) => {
   const post = await Post.findById(postId);
 
@@ -181,9 +200,9 @@ exports.deletePostById = async (postId) => {
 
   // Eliminar las fotos de las ofertas asociadas con este post
   for (const offer of offers) {
-    if (offer.photo) {
+    if (offer.photos) {
       try {
-        const imagePath = path.join(__dirname, '..', offer.photo);
+        const imagePath = path.join(__dirname, '..', offer.photos);
         fs.unlinkSync(imagePath);
       } catch (err) {
         console.error(`Error deleting image for offer ${offer._id}: ${err.message}`);
@@ -195,20 +214,20 @@ exports.deletePostById = async (postId) => {
   await Offer.deleteMany({ post: postId });
   await Notification.deleteMany({ postId });
 
-  // Eliminar la imagen del post
-  if (post.photo) {
-    try {
-      const imagePath = path.join(__dirname, '..', post.photo);
-      fs.unlinkSync(imagePath);
-    } catch (err) {
-      console.error(`Error deleting image for post ${postId}: ${err.message}`);
+  // Eliminar las imágenes del post
+  if (post.photos) {
+    for (const photos of post.photos) {
+      try {
+        const imagePath = path.join(__dirname, '..', photos);
+        await fs.promises.unlink(imagePath);
+      } catch (err) {
+        console.error(`Error deleting image for post ${postId}: ${err.message}`);
+      }
     }
   }
 
   await Post.deleteOne({ _id: postId });
 };
-
-// controllers/postController.js
 
 exports.schedulePostDeletion = async (postId, delay) => {
   setTimeout(async () => {
@@ -229,7 +248,7 @@ exports.getPostsByCurrentUser = async (req, res, next) => {
 
     const posts = await Post.find({ createdBy: req.session.userId }).populate(
       'createdBy',
-      'firstName lastName photo'
+      'firstName lastName photos'
     );
     res.status(200).json(posts);
   } catch (err) {

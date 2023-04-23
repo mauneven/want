@@ -26,17 +26,9 @@ export default function Login() {
         credentials: 'include',
       });
   
-      if (!blockedResponse.ok) {
+      if (blockedResponse.ok) {
         router.push('/blocked');
         return;
-      }
-  
-      const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
-        credentials: 'include',
-      });
-  
-      if (!verifiedResponse.ok) {
-        router.push('/is-not-verified');
       }
     };
   

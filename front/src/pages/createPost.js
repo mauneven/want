@@ -18,6 +18,7 @@ const CreatePost = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [photos, setPhotos] = useState([]);
 
   const [previewTitle, setPreviewTitle] = useState('');
   const [previewDescription, setPreviewDescription] = useState('');
@@ -58,7 +59,14 @@ const CreatePost = () => {
   }, []);
 
   const handleFileChange = (e) => {
-    setPhoto(e.target.files[0]);
+    const newPhotos = Array.from(e.target.files);
+    setPhotos([...photos, ...newPhotos]);
+  };
+
+  const handleDeletePhoto = (index) => {
+    const newPhotos = [...photos];
+    newPhotos.splice(index, 1);
+    setPhotos(newPhotos);
   };
 
   useEffect(() => {
@@ -99,8 +107,10 @@ const CreatePost = () => {
     formData.append('mainCategory', mainCategory);
     formData.append('subCategory', subCategory);
     formData.append('price', price);
-    if (photo) {
-      formData.append('photo', photo);
+    if (photos.length > 0) {
+      for (let i = 0; i < photos.length; i++) {
+        formData.append("photos[]", photos[i]);
+      }
     }
 
     try {
@@ -203,16 +213,31 @@ const CreatePost = () => {
         </div>
         <div className="col-md-3">
           <div className="card post rounded-5 card-preview">
-            {photo && (
-              <div style={{ height: "200px", overflow: "hidden" }}>
-                <img
-                  src={URL.createObjectURL(photo)}
-                  className="card-img-top"
-                  alt="Preview"
-                  style={{ objectFit: "cover", height: "100%" }}
-                />
+            {photos.length > 0 && (
+              <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
+                <div className="carousel-inner">
+                  {photos.map((photo, index) => (
+                    <div key={index} className={index === 0 ? "carousel-item active" : "carousel-item"}>
+                      <img src={URL.createObjectURL(photo)} className="d-block w-100" alt={`Photo ${index}`} />
+                      <button className="btn btn-danger btn-sm delete-photo" onClick={() => handleDeletePhoto(index)}>
+                        <i className="bi bi-trash"></i>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                  <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span className="visually-hidden">Previous</span>
+                </button>
+                <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                  <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span className="visually-hidden">Next</span>
+                </button>
               </div>
             )}
+            <button className="btn btn-danger btn-sm delete-photo" onClick={() => handleDeletePhoto(index)}>
+              <i className="bi bi-trash"></i>
+            </button>
             <div className="card-body">
               <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>
               <h5 className="text-success">${previewPrice}</h5>

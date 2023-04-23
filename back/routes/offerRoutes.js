@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const offerController = require('../controllers/offerController');
 
-router.post('/create', offerController.uploadPhoto, offerController.createOffer);
+router.post('/create', offerController.uploadPhotoMiddleware, offerController.createOffer);
 router.get('/sent', offerController.getOffersByCurrentUser);
 router.get('/received', offerController.getOffersReceivedByCurrentUser);
 router.delete('/:id', offerController.deleteOffer);

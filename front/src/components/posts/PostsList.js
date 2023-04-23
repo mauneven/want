@@ -19,23 +19,23 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   const fetchPostsByLocation = async () => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`);
     let postsData = await response.json();
-  
+
     // Leer la ubicación filtrada desde el localStorage
     const storedLocationFilter = localStorage.getItem("selectedLocation");
     const parsedLocationFilter = storedLocationFilter ? JSON.parse(storedLocationFilter) : null;
-  
+
     if (parsedLocationFilter) {
       postsData = postsData.filter((post) => {
         let countryMatch = parsedLocationFilter.country ? post.country === parsedLocationFilter.country : true;
         let stateMatch = parsedLocationFilter.state ? post.state === parsedLocationFilter.state : true;
         let cityMatch = parsedLocationFilter.city ? post.city === parsedLocationFilter.city : true;
-  
+
         return countryMatch && stateMatch && cityMatch;
       });
     }
-  
+
     return postsData;
-  };  
+  };
 
   const fetchPostsByCategory = (postsData) => {
     console.log("Filtering by category:", categoryFilter);
@@ -129,7 +129,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
     const fetchAndSetPosts = async () => {
       await fetchPosts();
     };
-  
+
     fetchAndSetPosts();
   }, [userIdFilter, searchTerm, categoryFilter, currentPage, pageSize, locationFilter]);
 
@@ -143,7 +143,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
     if (storedFilter) {
       setStoredLocationFilter(JSON.parse(storedFilter));
     }
-  }, []);  
+  }, []);
 
   const handleReportPost = async (postId, description) => {
     try {
@@ -242,18 +242,59 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
             ? posts.map((post) => (
               <div key={post._id} className="col">
                 <div className="card post rounded-5">
-                  <ReportPostModal postId={post._id} onReport={handleReportPost} />
+                <ReportPostModal postId={post._id} onReport={handleReportPost} />
                   <button className="rounded-circle btn-save" title="Save">
                     <i className="bi bi-heart"></i>
                   </button>
-                  {post.photo && (
-                    <div style={{ height: "200px", overflow: "hidden" }}>
-                      <img
-                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.photo}`}
-                        className="card-img-top"
-                        alt={post.title}
-                        style={{ objectFit: "cover", height: "100%" }}
-                      />
+                  {post.photos && post.photos.length > 0 && (
+                    <div
+                      id={`carousel-${post._id}`}
+                      className="carousel slide"
+                      data-bs-ride="carousel"
+                      style={{ height: "200px", overflow: "hidden" }}
+                    >
+                      <div className="carousel-inner">
+                        {post.photos.map((photos, index) => {
+                          console.log("Image URL:", `${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`);
+                          return (
+                            <div
+                              className={`carousel-item ${index === 0 ? "active" : ""}`}
+                              key={index}
+                            >
+                              <img
+                                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`}
+                                className="d-block w-100"
+                                alt={`Slide ${index}`}
+                                style={{ objectFit: "cover", height: "100%" }}
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <button
+                        className="carousel-control-prev"
+                        type="button"
+                        data-bs-target={`#carousel-${post._id}`}
+                        data-bs-slide="prev"
+                      >
+                        <span
+                          className="carousel-control-prev-icon"
+                          aria-hidden="true"
+                        ></span>
+                        <span className="visually-hidden">Previous</span>
+                      </button>
+                      <button
+                        className="carousel-control-next"
+                        type="button"
+                        data-bs-target={`#carousel-${post._id}`}
+                        data-bs-slide="next"
+                      >
+                        <span
+                          className="carousel-control-next-icon"
+                          aria-hidden="true"
+                        ></span>
+                        <span className="visually-hidden">Next</span>
+                      </button>
                     </div>
                   )}
                   <div className="card-body">
@@ -273,12 +314,12 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                   <div className="card-footer text-center">
                     <img
                       src={
-                        post.createdBy.photo
-                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
+                        post.createdBy.photos
+                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photos}`
                           : "icons/person-circle.svg"
                       }
                       alt="Profile"
-                      className="createdBy-photo"
+                      className="createdBy-photos"
                     />
                     <small className="text-muted text-center">
                       {console.log(`creador por : ${post.createdBy.role}`)}
@@ -318,5 +359,3 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
 };
 
 export default PostsList;
-
-
