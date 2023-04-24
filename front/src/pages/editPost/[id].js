@@ -18,6 +18,7 @@ const EditPost = () => {
   const [photos, setPhotos] = useState([]);
   const [price, setPrice] = useState('');
   const [mainCategory, setMainCategory] = useState('');
+  const [activeIndex, setActiveIndex] = useState(0);
   const [imageFile, setImageFile] = useState(null);
   const [subCategory, setSubCategory] = useState('');
   const [error, setError] = useState(null);
@@ -247,7 +248,7 @@ const EditPost = () => {
                 id="photo"
                 accept="image/*"
                 onChange={handleFileChange}
-                disabled={images.length >= 4} // Deshabilitar el botón de subir fotos si la cantidad de imágenes es mayor o igual a 4
+                disabled={images.length >= 4}
                 multiple
               />
             </div>
@@ -257,7 +258,7 @@ const EditPost = () => {
         </div>
         <div className="col-md-3">
           <div className="card post rounded-5 card-preview">
-            <Carousel>
+            <Carousel activeIndex={activeIndex} onSelect={(selectedIndex) => setActiveIndex(selectedIndex)}>
               {images.map((image, index) => (
                 <Carousel.Item key={index}>
                   <img
@@ -266,13 +267,6 @@ const EditPost = () => {
                     alt={`Preview ${index + 1}`}
                     style={{ objectFit: "cover", height: "200px" }}
                   />
-                  <button
-                    type="button"
-                    className="btn btn-danger delete-image-btn"
-                    onClick={() => onDelete(index)}
-                  >
-                    Delete
-                  </button>
                 </Carousel.Item>
               ))}
               {images.length < 4 && (
@@ -286,6 +280,15 @@ const EditPost = () => {
                 </Carousel.Item>
               )}
             </Carousel>
+            {images.length > 0 && (
+              <button
+                type="button"
+                className="btn btn-danger delete-image-btn"
+                onClick={() => onDelete(activeIndex)}
+              >
+                Delete this photo
+              </button>
+            )}
             <div className="card-body">
               <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>
               <h5 className="text-success">${previewPrice}</h5>

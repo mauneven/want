@@ -270,14 +270,13 @@ const CreatePost = () => {
               </div>
             )}
             {photos.length > 0 && (
-              <div>
                 <button
-                  className="btn btn-danger btn-sm delete-photo"
+                  className="btn btn-danger delete-image-btn"
                   onClick={() => handleDeletePhoto(activeIndex)}
                 >
-                  <i className="bi bi-trash">Delete this photo</i>
+                  <i className="bi bi-trash"></i>
+                  Delete this photo
                 </button>
-              </div>
             )}
             <div className="card-body">
               <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>
