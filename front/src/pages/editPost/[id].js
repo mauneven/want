@@ -15,6 +15,7 @@ const EditPost = () => {
   const [country, setCountry] = useState('');
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
+  const [photos, setPhotos] = useState([]);
   const [price, setPrice] = useState('');
   const [mainCategory, setMainCategory] = useState('');
   const [imageFile, setImageFile] = useState(null);
@@ -117,7 +118,10 @@ const EditPost = () => {
       };
     });
 
-    const totalImages = images.length + newImages.length;
+    // Contar el número de imágenes existentes en la base de datos
+    const existingImagesCount = images.filter((image) => image.file === null).length;
+    const totalImages = existingImagesCount + newImages.length;
+
     if (totalImages > 4) {
       setError('You cannot upload more than 4 images.');
     } else {
@@ -146,11 +150,11 @@ const EditPost = () => {
       formData.append('price', price);
       formData.append('mainCategory', mainCategory);
       formData.append('subCategory', subCategory);
-      images.forEach((image, index) => {
-        if (image.file) {
-          formData.append(`photo${index + 1}`, image.file);
+      for (let i = 0; i < images.length; i++) {
+        if (images[i].file) {
+          formData.append("photos[]", images[i].file);
         }
-      });
+      }
 
       // Aquí es donde incluirás las imágenes eliminadas como una cadena separada por comas
       const deletedImagesString = deletedImages.join(',');
@@ -243,6 +247,7 @@ const EditPost = () => {
                 id="photo"
                 accept="image/*"
                 onChange={handleFileChange}
+                disabled={images.length >= 4} // Deshabilitar el botón de subir fotos si la cantidad de imágenes es mayor o igual a 4
                 multiple
               />
             </div>
@@ -270,6 +275,16 @@ const EditPost = () => {
                   </button>
                 </Carousel.Item>
               ))}
+              {images.length < 4 && (
+                <Carousel.Item>
+                  <div
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ height: "200px", backgroundColor: "#f8f9fa" }}
+                  >
+                    <p>Free space for a photo</p>
+                  </div>
+                </Carousel.Item>
+              )}
             </Carousel>
             <div className="card-body">
               <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>
