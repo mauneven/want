@@ -190,7 +190,7 @@ export default function ReceivedOffers() {
             <div className="row">
               {selectedPost &&
                 offers[selectedPost].offers.map((offer) => (
-                  <div key={offer._id} className="col-6">
+                  <div key={offer._id} className="col-12 col-md-6">
                     <div className="card post rounded-5 mb-4">
                       {offer.photos && offer.photos.length > 0 && (
                         <div
