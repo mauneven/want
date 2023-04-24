@@ -9,35 +9,41 @@ export default function ReceivedOffers() {
   const [selectedOfferId, setSelectedOfferId] = useState(null);
   const router = useRouter();
 
+  const [selectedPost, setSelectedPost] = useState(null);
+
+  const handlePostSelect = (postId) => {
+    setSelectedPost(postId);
+  };
+
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
       const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
         credentials: 'include',
       });
-  
+
       if (!loggedInResponse.ok) {
         router.push('/login');
         return;
       }
-  
+
       const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
         credentials: 'include',
       });
-  
+
       if (!blockedResponse.ok) {
         router.push('/blocked');
         return;
       }
-  
+
       const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
         credentials: 'include',
       });
-  
+
       if (!verifiedResponse.ok) {
         router.push('/is-not-verified');
       }
     };
-  
+
     checkLoggedInAndBlockedAndVerified();
   }, []);
 
@@ -56,6 +62,32 @@ export default function ReceivedOffers() {
     fetchReceivedOffers();
   }, []);
 
+  useEffect(() => {
+    const fetchReceivedOffers = async () => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/received`, {
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const offersData = await response.json();
+        const postsWithOffers = offersData.reduce((result, offer) => {
+          const postId = offer.post._id;
+          if (!result[postId]) {
+            result[postId] = {
+              post: offer.post,
+              offers: [],
+            };
+          }
+          result[postId].offers.push(offer);
+          return result;
+        }, {});
+        setOffers(postsWithOffers);
+      }
+    };
+
+    fetchReceivedOffers();
+  }, []);
+
   const handleReportOffer = async (offerId, description) => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/offers/${offerId}/report`, {
@@ -66,17 +98,17 @@ export default function ReceivedOffers() {
         credentials: 'include',
         body: JSON.stringify({ description }),
       });
-  
+
       if (!response.ok) {
         const error = await response.text();
         throw new Error(error);
       }
-  
+
       alert('Offer reported successfully');
     } catch (error) {
       console.error('Error reporting offer:', error.message);
     }
-  };  
+  };
 
   const handleDeleteOffer = async () => {
     try {
@@ -119,12 +151,29 @@ export default function ReceivedOffers() {
         </Modal.Footer>
       </Modal>
       <div className="container">
-        <h1>Ofertas recibidas</h1>
+    <h1>Ofertas recibidas</h1>
+    <div className="row">
+      <div className="col-md-3 border border-secondary">
+        {Object.values(offers).map((postWithOffers) => (
+          <button
+            key={postWithOffers.post._id}
+            className="list-group-item list-group-item-action"
+            onClick={() => handlePostSelect(postWithOffers.post._id)}
+          >
+            {postWithOffers.post.title}
+          </button>
+        ))}
+      </div>
+      <div className="col-md-1 d-none d-md-block">
+        <div className="border-end border-dark h-100"></div>
+      </div>
+      <div className="col-md-8 border border-secondary">
         <div className="row">
-          {offers.map((offer) => (
-            <div key={offer._id} className="col-md-4">
-              <div className="card mb-4">
-              {offer.photos && offer.photos.length > 0 && (
+          {selectedPost &&
+            offers[selectedPost].offers.map((offer) => (
+              <div key={offer._id} className="col-6">
+                <div className="card mb-4">
+                  {offer.photos && offer.photos.length > 0 && (
                     <div
                       id={`carousel-${offer._id}`}
                       className="carousel slide"
@@ -133,10 +182,15 @@ export default function ReceivedOffers() {
                     >
                       <div className="carousel-inner">
                         {offer.photos.map((photos, index) => {
-                          console.log("Image URL:", `${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`);
+                          console.log(
+                            "Image URL:",
+                            `${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`
+                          );
                           return (
                             <div
-                              className={`carousel-item ${index === 0 ? "active" : ""}`}
+                              className={`carousel-item ${
+                                index === 0 ? "active" : ""
+                              }`}
                               key={index}
                             >
                               <img
@@ -175,14 +229,14 @@ export default function ReceivedOffers() {
                       </button>
                     </div>
                   )}
-                <div className="card-body">
-                  <h5 className="card-title">{offer.title}</h5>
-                  <p className="card-text">{offer.description}</p>
-                  <p className="card-text">Precio: {offer.price}</p>
-                  <p className="card-text">
-                    Post relacionado: {offer.post && offer.post.title}
-                  </p>
-                  <img
+                  <div className="card-body">
+                    <h5 className="card-title">{offer.title}</h5>
+                    <p className="card-text">{offer.description}</p>
+                    <p className="card-text">Precio: {offer.price}</p>
+                    <p className="card-text">
+                      Post relacionado: {offer.post && offer.post.title}
+                    </p>
+                    <img
                       src={
                         offer.createdBy.photo
                           ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${offer.createdBy.photo}`
@@ -195,21 +249,24 @@ export default function ReceivedOffers() {
                         height: "30px",
                       }}
                     />
-                  <p className='card-text'>offer by: {offer.createdBy.firstName}</p>
-                  <p className='card-text'>Contact: {offer.contact}</p>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => handleShowModal(offer._id)}
-                  >
-                    Eliminar
-                  </button>
-                  <ReportOfferModal offerId={offer._id} onReport={handleReportOffer} />
-                </div>
-              </div>
-            </div>
-          ))}
+                    <p className="card-text">
+                      offer by: {offer.createdBy.firstName}
+                    </p><p className='card-text'>Contact: {offer.contact}</p>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => handleShowModal(offer._id)}
+                        >
+                          Eliminar
+                        </button>
+                        <ReportOfferModal offerId={offer._id} onReport={handleReportOffer} />
+                      </div>
+                    </div>
+                  </div>
+              ))}
+          </div>
         </div>
       </div>
+    </div>
     </>
   );
 }
