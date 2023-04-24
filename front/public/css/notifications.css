@@ -11,15 +11,6 @@
     pointer-events: none;
   }
 
-  .modal-dialog {
-    max-width: 500px;
-  }
-
-  .modal-body {
-    max-height: 60vh;
-    overflow-y: auto;
-  }
-
   .notification-icon {
     position: relative;
     display: inline-block;
