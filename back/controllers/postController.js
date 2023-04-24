@@ -114,12 +114,9 @@ exports.updatePost = async (req, res, next) => {
 
     if (deletedImages) {
       const deletedImagePaths = deletedImages.split(',');
-      post.photos = post.photos.filter(path => !deletedImagePaths.includes(path));
-    
-      // Guarda los cambios en la instancia del objeto 'post'
-      await post.save();
-      
-      deletedImagePaths.forEach(async (imagePath) => {
+      post.photos = post.photos.filter(photo => !deletedImagePaths.includes(photo)); // Reemplaza pull con filter
+
+      await Promise.all(deletedImagePaths.map(async (imagePath) => {
         const parsedUrl = url.parse(imagePath);
         const localPath = parsedUrl.pathname;
         const oldPhotoPath = path.join(__dirname, '..', localPath);
@@ -128,8 +125,8 @@ exports.updatePost = async (req, res, next) => {
         } catch (err) {
           console.error(`Error deleting file ${oldPhotoPath}: ${err.message}`);
         }
-      });
-    }     
+      }));
+    }
 
     if (req.files.length > 0) {
       const photos = req.files.map(file => file.path);
@@ -147,6 +144,13 @@ exports.updatePost = async (req, res, next) => {
 
       post.photos = [...post.photos, ...compressedImagePaths];
     }
+
+    await Promise.all(post.photos.map(async (photo) => {
+      const exists = await fs.promises.access(photo, fs.constants.F_OK).then(() => true).catch(() => false);
+      if (!exists) {
+        post.photos.pull(photo);
+      }
+    }));
 
     await post.save();
 
