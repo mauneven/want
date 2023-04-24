@@ -6,6 +6,7 @@ const Notification = require('../models/notification');
 const fs = require('fs');
 const sharp = require('sharp');
 const { v4: uuidv4 } = require('uuid');
+const url = require('url');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -91,7 +92,7 @@ exports.updatePost = async (req, res, next) => {
       return res.status(401).send('You must be logged in to edit a post');
     }
 
-    const { title, description, country, state, city, mainCategory, subCategory, price } = req.body;
+    const { title, description, country, state, city, mainCategory, subCategory, price, deletedImages } = req.body;
 
     const post = await Post.findById(req.params.id);
     if (!post) {
@@ -111,31 +112,40 @@ exports.updatePost = async (req, res, next) => {
     post.subCategory = subCategory;
     post.price = price;
 
+    if (deletedImages) {
+      const deletedImagePaths = deletedImages.split(',');
+      post.photos = post.photos.filter(path => !deletedImagePaths.includes(path));
+    
+      // Guarda los cambios en la instancia del objeto 'post'
+      await post.save();
+      
+      deletedImagePaths.forEach(async (imagePath) => {
+        const parsedUrl = url.parse(imagePath);
+        const localPath = parsedUrl.pathname;
+        const oldPhotoPath = path.join(__dirname, '..', localPath);
+        try {
+          await fs.promises.unlink(oldPhotoPath);
+        } catch (err) {
+          console.error(`Error deleting file ${oldPhotoPath}: ${err.message}`);
+        }
+      });
+    }     
+
     if (req.files.length > 0) {
       const photos = req.files.map(file => file.path);
-      const compressedImagePaths = await Promise.all(photos.map(async (photos) => {
+      const compressedImagePaths = await Promise.all(photos.map(async (photo) => {
         const compressedImagePath = `uploads/${uuidv4()}.jpg`;
-        await sharp(photos).resize({ width: 500 }).toFile(compressedImagePath);
+        await sharp(photo).resize({ width: 500 }).toFile(compressedImagePath);
         try {
-          await fs.promises.unlink(photos);
+          await fs.promises.unlink(photo);
         } catch (err) {
-          console.error(`Error deleting file ${photos}: ${err.message}`);
+          console.error(`Error deleting file ${photo}: ${err.message}`);
         }
         return compressedImagePath;
       }));
       req.files = compressedImagePaths.map(path => ({ path }));
-      if (post.photos) {
-        const oldPhotoPaths = post.photos;
-        oldPhotoPaths.forEach(async (path) => {
-          const oldPhotoPath = path.join(__dirname, '..', path);
-          try {
-            await fs.promises.unlink(oldPhotoPath);
-          } catch (err) {
-            console.error(`Error deleting file ${oldPhotoPath}: ${err.message}`);
-          }
-        });
-      }
-      post.photos = req.files.map(file => file.path);
+
+      post.photos = [...post.photos, ...compressedImagePaths];
     }
 
     await post.save();
@@ -144,7 +154,7 @@ exports.updatePost = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-}
+};
 
 exports.deletePost = async (req, res, next) => {
   try {

@@ -218,7 +218,7 @@ const CreatePost = () => {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="photo" className="form-label">Sube una foto guía de lo que quieres</label>
+              <label htmlFor="photo" className="form-label">Upload upto 4 photos if you Want</label>
               <input
                 type="file"
                 className="form-control"
@@ -226,6 +226,7 @@ const CreatePost = () => {
                 accept="image/*"
                 onChange={handleFileChange}
                 required
+                disabled={photos.length >= 4}
               />
             </div>
             <button type="submit" className="btn btn-primary" disabled={loading}>
@@ -252,7 +253,7 @@ const CreatePost = () => {
                         />
                       ) : (
                         <div className="d-flex justify-content-center align-items-center" style={{ height: '200px', backgroundColor: 'lightgray' }}>
-                          <span className="text-muted">Subir foto {slot + 1}</span>
+                          <span className="text-muted">Free space for a photo</span>
                         </div>
                       )}
                     </div>

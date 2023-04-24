@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Location from '@/components/locations/Location';
 import PostCategory from '@/components/categories/Categories';
+import { Carousel } from 'react-bootstrap';
 
 const EditPost = () => {
   const router = useRouter();
@@ -21,6 +22,8 @@ const EditPost = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [images, setImages] = useState([]);
+  const [deletedImages, setDeletedImages] = useState([]);
 
   const [previewTitle, setPreviewTitle] = useState('');
   const [previewDescription, setPreviewDescription] = useState('');
@@ -78,7 +81,12 @@ const EditPost = () => {
         setPrice(postData.price);
         setMainCategory(postData.mainCategory);
         setSubCategory(postData.subCategory);
-        setPhotoUrl(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${postData.photo}`);
+        setImages(
+          postData.photos.map((photo) => ({
+            file: null,
+            preview: `${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`,
+          }))
+        );
       }
       setIsLoading(false);
     };
@@ -102,11 +110,26 @@ const EditPost = () => {
   }
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setPreviewImage(URL.createObjectURL(file));
+    const newImages = [...e.target.files].map((file) => {
+      return {
+        file,
+        preview: URL.createObjectURL(file),
+      };
+    });
+
+    const totalImages = images.length + newImages.length;
+    if (totalImages > 4) {
+      setError('You cannot upload more than 4 images.');
+    } else {
+      setError(null);
+      setImages((prevState) => [...prevState, ...newImages]);
     }
+  };
+
+  const onDelete = (index) => {
+    const deletedImage = images[index].preview;
+    setDeletedImages((prevState) => [...prevState, deletedImage]);
+    setImages(images.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
@@ -123,9 +146,15 @@ const EditPost = () => {
       formData.append('price', price);
       formData.append('mainCategory', mainCategory);
       formData.append('subCategory', subCategory);
-      if (imageFile) {
-        formData.append('photo', imageFile);
-      }
+      images.forEach((image, index) => {
+        if (image.file) {
+          formData.append(`photo${index + 1}`, image.file);
+        }
+      });
+
+      // Aquí es donde incluirás las imágenes eliminadas como una cadena separada por comas
+      const deletedImagesString = deletedImages.join(',');
+      formData.append('deletedImages', deletedImagesString);
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`, {
         method: 'PUT',
@@ -214,6 +243,7 @@ const EditPost = () => {
                 id="photo"
                 accept="image/*"
                 onChange={handleFileChange}
+                multiple
               />
             </div>
             <button type="submit" className="btn btn-primary">Update my post</button>
@@ -222,26 +252,25 @@ const EditPost = () => {
         </div>
         <div className="col-md-3">
           <div className="card post rounded-5 card-preview">
-            {previewImage ? (
-              <div style={{ height: "200px", overflow: "hidden" }}>
-                <img
-                  src={previewImage}
-                  className="card-img-top"
-                  alt="Preview"
-                  style={{ objectFit: "cover", height: "100%" }}
-                />
-              </div>
-            ) : (
-              <div style={{ height: "200px", overflow: "hidden" }}>
-                <img
-                  src={photoUrl}
-                  className="card-img-top"
-                  alt="Post"
-                  style={{ objectFit: "cover", height: "100%" }}
-                />
-              </div>
-            )}
-
+            <Carousel>
+              {images.map((image, index) => (
+                <Carousel.Item key={index}>
+                  <img
+                    className="d-block w-100"
+                    src={image.preview}
+                    alt={`Preview ${index + 1}`}
+                    style={{ objectFit: "cover", height: "200px" }}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-danger delete-image-btn"
+                    onClick={() => onDelete(index)}
+                  >
+                    Delete
+                  </button>
+                </Carousel.Item>
+              ))}
+            </Carousel>
             <div className="card-body">
               <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>
               <h5 className="text-success">${previewPrice}</h5>
