@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import PostCategory from '@/components/categories/Categories';
 import Location from '@/components/locations/Location';
 import WordsFilter from '@/badWordsFilter/WordsFilter.js';
+import { Carousel } from 'bootstrap';
+import { useRef } from 'react';
 
 const CreatePost = () => {
   const [title, setTitle] = useState('');
@@ -18,6 +19,9 @@ const CreatePost = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [photos, setPhotos] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const carouselRef = useRef(null);
 
   const [previewTitle, setPreviewTitle] = useState('');
   const [previewDescription, setPreviewDescription] = useState('');
@@ -58,8 +62,38 @@ const CreatePost = () => {
   }, []);
 
   const handleFileChange = (e) => {
-    setPhoto(e.target.files[0]);
+    const newPhotos = Array.from(e.target.files);
+    setPhotos([...photos, ...newPhotos]);
   };
+
+  const handleDeletePhoto = (indexToDelete) => {
+    const newPhotos = photos.filter((photo, index) => index !== indexToDelete);
+
+    setPhotos(newPhotos);
+
+    if (indexToDelete === activeIndex) {
+      setActiveIndex(0);
+    } else if (indexToDelete < activeIndex) {
+      setActiveIndex(activeIndex - 1);
+    }
+  };
+
+  useEffect(() => {
+    const handleSlid = (event) => {
+      setActiveIndex(event.to);
+    };
+
+    if (carouselRef.current) {
+      const carouselInstance = new Carousel(carouselRef.current);
+      carouselRef.current.addEventListener('slid.bs.carousel', handleSlid);
+    }
+
+    return () => {
+      if (carouselRef.current) {
+        carouselRef.current.removeEventListener('slid.bs.carousel', handleSlid);
+      }
+    };
+  }, [photos]);
 
   useEffect(() => {
     setPreviewTitle(title);
@@ -99,8 +133,10 @@ const CreatePost = () => {
     formData.append('mainCategory', mainCategory);
     formData.append('subCategory', subCategory);
     formData.append('price', price);
-    if (photo) {
-      formData.append('photo', photo);
+    if (true) {
+      for (let i = 0; i < photos.length; i++) {
+        formData.append("photos[]", photos[i]);
+      }
     }
 
     try {
@@ -182,7 +218,7 @@ const CreatePost = () => {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="photo" className="form-label">Sube una foto guía de lo que quieres</label>
+              <label htmlFor="photo" className="form-label">Upload upto 4 photos if you Want</label>
               <input
                 type="file"
                 className="form-control"
@@ -190,6 +226,7 @@ const CreatePost = () => {
                 accept="image/*"
                 onChange={handleFileChange}
                 required
+                disabled={photos.length >= 4}
               />
             </div>
             <button type="submit" className="btn btn-primary" disabled={loading}>
@@ -203,15 +240,43 @@ const CreatePost = () => {
         </div>
         <div className="col-md-3">
           <div className="card post rounded-5 card-preview">
-            {photo && (
-              <div style={{ height: "200px", overflow: "hidden" }}>
-                <img
-                  src={URL.createObjectURL(photo)}
-                  className="card-img-top"
-                  alt="Preview"
-                  style={{ objectFit: "cover", height: "100%" }}
-                />
+            {photos.length > 0 && (
+              <div ref={carouselRef} id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
+                <div className="carousel-inner">
+                  {[0, 1, 2, 3].map((slot) => (
+                    <div key={slot} className={slot === activeIndex ? "carousel-item active" : "carousel-item"}>
+                      {photos[slot] ? (
+                        <img
+                          src={URL.createObjectURL(photos[slot])}
+                          className="d-block w-100"
+                          alt={`Photo ${slot}`}
+                        />
+                      ) : (
+                        <div className="d-flex justify-content-center align-items-center" style={{ height: '200px', backgroundColor: 'lightgray' }}>
+                          <span className="text-muted">Free space for a photo</span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                  <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span className="visually-hidden">Previous</span>
+                </button>
+                <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                  <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span className="visually-hidden">Next</span>
+                </button>
               </div>
+            )}
+            {photos.length > 0 && (
+                <button
+                  className="btn btn-danger delete-image-btn"
+                  onClick={() => handleDeletePhoto(activeIndex)}
+                >
+                  <i className="bi bi-trash"></i>
+                  Delete this photo
+                </button>
             )}
             <div className="card-body">
               <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>

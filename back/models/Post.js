@@ -42,10 +42,10 @@ const postSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  photo: {
+  photos: [{
     type: String,
     required: true
-  },
+  }],  
   reports: [
     {
       type: mongoose.Schema.Types.ObjectId,

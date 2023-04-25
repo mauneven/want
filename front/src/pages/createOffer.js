@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import WordsFilter from '@/badWordsFilter/WordsFilter';
+import { Carousel } from 'react-bootstrap';
 
 const CreateOffer = () => {
   const router = useRouter();
@@ -11,8 +12,14 @@ const CreateOffer = () => {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [contact, setContact] = useState('');
-  const [photo, setPhoto] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [photos, setPhotos] = useState([]);
+
+  const removePhoto = (index) => {
+    const newPhotos = [...photos];
+    newPhotos.splice(index, 1);
+    setPhotos(newPhotos);
+  };
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
@@ -60,6 +67,18 @@ const CreateOffer = () => {
   }, [postId]);
 
   const bwf = new WordsFilter();
+
+  const handleFileChange = (e) => {
+    const newPhotos = Array.from(e.target.files);
+    setPhotos([...photos, ...newPhotos]);
+  };
+
+  const handleDeletePhoto = (index) => {
+    const newPhotos = [...photos];
+    newPhotos.splice(index, 1);
+    setPhotos(newPhotos);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -75,14 +94,17 @@ const CreateOffer = () => {
       setIsSubmitting(false);
       return;
     }
-
-    // Preparar los datos de la oferta
+  
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
     formData.append('price', price);
     formData.append('contact', contact);
-    formData.append('photo', photo);
+    if (photos.length > 0) {
+      for (let i = 0; i < photos.length; i++) {
+        formData.append("photos[]", photos[i]);
+      }
+    }
     formData.append('postId', postId);
 
     try {
@@ -112,7 +134,7 @@ const CreateOffer = () => {
   if (!post) {
     return <p className="container mt-5">Cargando...</p>;
   }
-  
+
   return (
     <div className="container">
       <div className="row row-cols-1 row-cols-md-4 g-4">
@@ -170,7 +192,8 @@ const CreateOffer = () => {
                 className="form-control"
                 id="photo"
                 accept="image/*"
-                onChange={(e) => setPhoto(e.target.files[0])}
+                onChange={handleFileChange}
+                required
               />
             </div>
             <button type="submit" className="btn btn-primary position-relative">
@@ -187,12 +210,27 @@ const CreateOffer = () => {
         </div>
         <div className="col-md-6">
           <div className="card">
-            {photo && (
-              <img
-                src={URL.createObjectURL(photo)}
-                className="card-img-top"
-                alt="Vista previa"
-              />
+          {photos.length > 0 && (
+              <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
+                <div className="carousel-inner">
+                  {photos.map((photo, index) => (
+                    <div key={index} className={index === 0 ? "carousel-item active" : "carousel-item"}>
+                      <img src={URL.createObjectURL(photo)} className="d-block w-100" alt={`Photo ${index}`} />
+                      <button className="btn btn-danger btn-sm delete-photo" onClick={() => handleDeletePhoto(index)}>
+                        <i className="bi bi-trash"></i>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                  <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span className="visually-hidden">Previous</span>
+                </button>
+                <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                  <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span className="visually-hidden">Next</span>
+                </button>
+              </div>
             )}
             <div className="card-body">
               <h5 className="card-title">{title || "Título de la oferta"}</h5>
@@ -204,9 +242,8 @@ const CreateOffer = () => {
         </div>
       </div>
     </div>
-  );   
-  
+  );
+
 };
 
 export default CreateOffer;
-

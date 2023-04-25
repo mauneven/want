@@ -1,44 +1,101 @@
 import { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { useRouter } from 'next/router';
-import ReportOfferModal from '@/components/report/ReportOfferModal';
+import DetailsModal from '@/components/offer/DetailsModal';
 
 export default function ReceivedOffers() {
   const [offers, setOffers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedOfferId, setSelectedOfferId] = useState(null);
   const router = useRouter();
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedOffer, setSelectedOffer] = useState(null);
+
+  const [selectedPost, setSelectedPost] = useState(null);
+
+  const handlePostSelect = (postId) => {
+    setSelectedPost(postId);
+  };
+
+  const handleShowDetailsModal = (offer) => {
+    setSelectedOffer(offer);
+    setShowDetailsModal(true);
+  };
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
       const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
         credentials: 'include',
       });
-  
+
       if (!loggedInResponse.ok) {
         router.push('/login');
         return;
       }
-  
+
       const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
         credentials: 'include',
       });
-  
+
       if (!blockedResponse.ok) {
         router.push('/blocked');
         return;
       }
-  
+
       const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
         credentials: 'include',
       });
-  
+
       if (!verifiedResponse.ok) {
         router.push('/is-not-verified');
       }
     };
-  
+
     checkLoggedInAndBlockedAndVerified();
+  }, []);
+
+  function compareOffersByDate(a, b) {
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
+
+    if (dateA < dateB) {
+      return 1;
+    }
+    if (dateA > dateB) {
+      return -1;
+    }
+    return 0;
+  }
+
+  useEffect(() => {
+    const fetchReceivedOffers = async () => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/received`, {
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const offersData = await response.json();
+
+        // Ordenar las ofertas por fecha de creación descendente
+        offersData.sort(compareOffersByDate);
+
+        const postsWithOffers = offersData.reduce((result, offer) => {
+          const postId = offer.post._id;
+          if (!result[postId]) {
+            result[postId] = {
+              post: offer.post,
+              offers: [],
+            };
+          }
+          result[postId].offers.push(offer);
+          return result;
+        }, {});
+        setOffers(postsWithOffers);
+      }
+
+    };
+
+    fetchReceivedOffers();
   }, []);
 
   useEffect(() => {
@@ -49,34 +106,27 @@ export default function ReceivedOffers() {
 
       if (response.ok) {
         const offersData = await response.json();
-        setOffers(offersData);
+
+        // Ordenar las ofertas por fecha de creación descendente
+        offersData.sort(compareOffersByDate);
+
+        const postsWithOffers = offersData.reduce((result, offer) => {
+          const postId = offer.post._id;
+          if (!result[postId]) {
+            result[postId] = {
+              post: offer.post,
+              offers: [],
+            };
+          }
+          result[postId].offers.push(offer);
+          return result;
+        }, {});
+        setOffers(postsWithOffers);
       }
     };
 
     fetchReceivedOffers();
   }, []);
-
-  const handleReportOffer = async (offerId, description) => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/offers/${offerId}/report`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ description }),
-      });
-  
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error);
-      }
-  
-      alert('Offer reported successfully');
-    } catch (error) {
-      console.error('Error reporting offer:', error.message);
-    }
-  };  
 
   const handleDeleteOffer = async () => {
     try {
@@ -90,7 +140,23 @@ export default function ReceivedOffers() {
         throw new Error(error);
       }
 
-      setOffers(offers.filter((offer) => offer._id !== selectedOfferId));
+      // Encuentra el post que contiene la oferta que se va a eliminar
+      const postToUpdate = Object.values(offers).find(postWithOffers =>
+        postWithOffers.offers.some(offer => offer._id === selectedOfferId)
+      );
+
+      // Filtra las ofertas para excluir la oferta eliminada
+      const updatedOffers = postToUpdate.offers.filter(offer => offer._id !== selectedOfferId);
+
+      // Actualiza el estado de las ofertas
+      setOffers({
+        ...offers,
+        [postToUpdate.post._id]: {
+          ...postToUpdate,
+          offers: updatedOffers,
+        },
+      });
+
       setShowModal(false);
     } catch (error) {
       console.error('Error deleting offer:', error.message);
@@ -104,6 +170,11 @@ export default function ReceivedOffers() {
 
   return (
     <>
+      <DetailsModal
+        show={showDetailsModal}
+        onHide={() => setShowDetailsModal(false)}
+        offer={selectedOffer}
+      />
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Eliminar oferta</Modal.Title>
@@ -118,57 +189,71 @@ export default function ReceivedOffers() {
           </Button>
         </Modal.Footer>
       </Modal>
-      <div className="container">
-        <h1>Ofertas recibidas</h1>
+      <div className="container mt-5">
+        <h1 className='mt-5 mb-5'>Received offers</h1>
         <div className="row">
-          {offers.map((offer) => (
-            <div key={offer._id} className="col-md-4">
-              <div className="card mb-4">
-              {offer.photo && (
-                  <div style={{ height: "200px", overflow: "hidden" }}>
-                    <img
-                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${offer.photo}`}
-                      className="card-img-top"
-                      alt={offer.title}
-                      style={{ objectFit: "cover", height: "100%" }}
-                    />
+          <div className="col-md-3">
+            <h3 className='mb-4'>Your posts</h3>
+            {Object.values(offers).map((postWithOffers) => (
+              <button
+                key={postWithOffers.post._id}
+                className={`list-group-item-action mt-3 mb-3 btn ${selectedPost === postWithOffers.post._id ? "post-received-selected" : "post-received"}`}
+                onClick={() => handlePostSelect(postWithOffers.post._id)}
+              >
+                <h4 className=''>{postWithOffers.post.title}</h4>
+
+              </button>
+            ))}
+          </div>
+          <div className="col-md-1 d-none d-md-block">
+            <div className="separator h-100"></div>
+          </div>
+          <div className="col-md-8 border-secondary">
+            <h3 className='mb-4'>Offers</h3>
+            <div className="row">
+              {selectedPost && offers[selectedPost].offers
+                .slice()
+                .sort(compareOffersByDate)
+                .map((offer) => (
+                  <div key={offer._id} className="col-12 col-md-6">
+                    <div className="card post rounded-5 mb-4">
+                      <div className="card-body d-flex">
+                        {offer.photos && offer.photos.length > 0 && (
+                          <img
+                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${offer.photos[0]}`}
+                            className="d-block"
+                            alt="Offer"
+                            style={{ objectFit: "cover", width: "100px", height: "100px", marginRight: "15px" }}
+                          />
+                        )}
+                        <div>
+                          <h5 className="card-title">{offer.title}</h5>
+                          <p className="card-text">{offer.description}</p>
+                          <p className="card-text">Precio: {offer.price}</p>
+                          <div className="d-flex justify-content-between">
+                            <button
+                              className="btn btn-danger"
+                              onClick={() => handleShowModal(offer._id)}
+                            >
+                              Eliminar
+                            </button>
+                            <button
+                              className="btn btn-info ms-2"
+                              onClick={() => handleShowDetailsModal(offer)}
+                            >
+                              View Details
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                )}
-                <div className="card-body">
-                  <h5 className="card-title">{offer.title}</h5>
-                  <p className="card-text">{offer.description}</p>
-                  <p className="card-text">Precio: {offer.price}</p>
-                  <p className="card-text">
-                    Post relacionado: {offer.post && offer.post.title}
-                  </p>
-                  <img
-                      src={
-                        offer.createdBy.photo
-                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${offer.createdBy.photo}`
-                          : "icons/person-circle.svg"
-                      }
-                      alt="Profile"
-                      style={{
-                        borderRadius: "50%",
-                        width: "30px",
-                        height: "30px",
-                      }}
-                    />
-                  <p className='card-text'>offer by: {offer.createdBy.firstName}</p>
-                  <p className='card-text'>Contact: {offer.contact}</p>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => handleShowModal(offer._id)}
-                  >
-                    Eliminar
-                  </button>
-                  <ReportOfferModal offerId={offer._id} onReport={handleReportOffer} />
-                </div>
-              </div>
+                ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </>
   );
-}
+};
+

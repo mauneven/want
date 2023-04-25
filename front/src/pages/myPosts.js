@@ -100,16 +100,57 @@ export default function MyPosts() {
           {posts.map((post) => (
             <div key={post._id} className="col">
               <div className="card post rounded-5">
-                {post.photo && (
-                  <div style={{ height: "200px", overflow: "hidden" }}>
-                    <img
-                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.photo}`}
-                      className="card-img-top"
-                      alt={post.title}
-                      style={{ objectFit: "cover", height: "100%" }}
-                    />
-                  </div>
-                )}
+{post.photos && post.photos.length > 0 && (
+                    <div
+                      id={`carousel-${post._id}`}
+                      className="carousel slide"
+                      data-bs-ride="carousel"
+                      style={{ height: "200px", overflow: "hidden" }}
+                    >
+                      <div className="carousel-inner">
+                        {post.photos.map((photos, index) => {
+                          console.log("Image URL:", `${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`);
+                          return (
+                            <div
+                              className={`carousel-item ${index === 0 ? "active" : ""}`}
+                              key={index}
+                            >
+                              <img
+                                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`}
+                                className="d-block w-100"
+                                alt={`Slide ${index}`}
+                                style={{ objectFit: "cover", height: "100%" }}
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <button
+                        className="carousel-control-prev"
+                        type="button"
+                        data-bs-target={`#carousel-${post._id}`}
+                        data-bs-slide="prev"
+                      >
+                        <span
+                          className="carousel-control-prev-icon"
+                          aria-hidden="true"
+                        ></span>
+                        <span className="visually-hidden">Previous</span>
+                      </button>
+                      <button
+                        className="carousel-control-next"
+                        type="button"
+                        data-bs-target={`#carousel-${post._id}`}
+                        data-bs-slide="next"
+                      >
+                        <span
+                          className="carousel-control-next-icon"
+                          aria-hidden="true"
+                        ></span>
+                        <span className="visually-hidden">Next</span>
+                      </button>
+                    </div>
+                  )}
                 <div className="card-body">
                   <h5 className="card-title post-title mb-2">{post.title}
                   </h5>

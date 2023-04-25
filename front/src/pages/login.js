@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-//import 'bootstrap/dist/css/bootstrap.min.css';
 import Link from 'next/link';
-import Head from 'next/head';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -12,6 +10,30 @@ export default function Login() {
   const toggleForm = () => {
     setIsLogin(!isLogin);
   };
+
+  useEffect(() => {
+    const checkLoggedInAndBlockedAndVerified = async () => {
+      const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
+        credentials: 'include',
+      });
+  
+      if (loggedInResponse.ok) {
+        router.push('/');
+        return;
+      }
+  
+      const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
+        credentials: 'include',
+      });
+  
+      if (blockedResponse.ok) {
+        router.push('/blocked');
+        return;
+      }
+    };
+  
+    checkLoggedInAndBlockedAndVerified();
+  }, []);
 
   const validateAgeAndParentPermission = (birthdate) => {
     const today = new Date();
@@ -23,9 +45,6 @@ export default function Login() {
 
     if (age < 14) {
       setAlertMessage('No puedes crear una cuenta. Debes tener al menos 14 años de edad.');
-      return false;
-    } else if (age >= 14 && age < 18 && !document.getElementById('parentPermission').checked) {
-      setAlertMessage('Debes marcar la casilla de obtener el permiso de tus padres.');
       return false;
     }
 
@@ -98,38 +117,6 @@ export default function Login() {
 
     }
   };
-
-  useEffect(() => {
-    const checkLoggedInAndBlockedAndVerified = async () => {
-      const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
-        credentials: 'include',
-      });
-
-      if (!loggedInResponse.ok) {
-        router.push('/login');
-        return;
-      }
-
-      const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
-        credentials: 'include',
-      });
-
-      if (!blockedResponse.ok) {
-        router.push('/blocked');
-        return;
-      }
-
-      const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
-        credentials: 'include',
-      });
-
-      if (!verifiedResponse.ok) {
-        router.push('/');
-      }
-    };
-
-    checkLoggedInAndBlockedAndVerified();
-  }, []);
 
   return (
     <div className="container form-container">

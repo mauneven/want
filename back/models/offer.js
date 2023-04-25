@@ -13,10 +13,10 @@ const offerSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  photo: {
+  photos: [{
     type: String,
     required: true
-  },
+  }],
   contact: {
     type: String,
     required: true
