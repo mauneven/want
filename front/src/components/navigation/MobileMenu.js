@@ -30,6 +30,10 @@ export default function MegaMenu({
 
   const router = useRouter();
 
+  const closeMenu = () => {
+    document.querySelector(".navbar-toggler").click();
+  };
+
   const handleLogoClick = () => {
     onSearchTermChange("");
     onCategoryFilterChange({ mainCategory: "", subCategory: "" });
@@ -114,109 +118,109 @@ export default function MegaMenu({
     }
   }, []);
 
-    return (
-        <Navbar className="mobile-navbar" expand="lg">
-            <Nav className="d-flex justify-content-start align-items-center">
-                <Navbar.Brand onClick={handleLogoClick} className="divhover">
-                    <Image
-                        className="want-logo"
-                        src="/icons/want-logo.svg"
-                        alt="Want"
-                        width={90}
-                        height={50}
-                    />
-                </Navbar.Brand>
-            </Nav>
-            {user ? <Notifications /> : null}
-            <Nav className="d-flex justify-content-end align-items-center">
-                <Navbar.Toggle
-                    aria-controls="mobile-navbar-nav"
-                    className="navbar-light"
-                />
-            </Nav>
-            <Navbar.Collapse
-                id="mobile-navbar-nav"
-                className="justify-content-end"
-            >
-                <Nav>
-                    {user ? (
-                        <>
-                            <div className="row">
-                                <div className="col-auto">
-                                    <img
-                                        src={
-                                            user.photo
-                                                ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}`
-                                                : "icons/person-circle.svg"
-                                        }
-                                        alt="Profile"
-                                        style={{
-                                            borderRadius: "50%",
-                                            width: "30px",
-                                            height: "30px",
-                                        }}
-                                        onClick={() => router.push("/editProfile")}
-                                        className="d-flex"
-                                    />
-                                </div>
-                                <div className="col-auto my-auto mx-2">
-                                    <p>{user.firstName}</p>
-                                </div>
-                            </div>
-
-                            <Nav.Link onClick={() => { router.push("/myPosts"); closeMenu(); }}>
-                                Things that i want
-                            </Nav.Link>
-                            <Nav.Link onClick={() => { router.push("/sentOffers"); closeMenu(); }}>
-                                Sent offers
-                            </Nav.Link>
-                            <Nav.Link onClick={() => { router.push("/receivedOffers"); closeMenu(); }}>
-                                Received offers
-                            </Nav.Link>
-                            <Nav.Link onClick={() => { router.push("/editProfile"); closeMenu(); }}>
-                                My profile
-                            </Nav.Link>
-                            <Nav.Link onClick={() => { router.push("/logout"); closeMenu(); }}>
-                                Log out
-                            </Nav.Link>
-                        </>
-                    ) : (
-                        <>
-                            <Nav.Link onClick={() => { router.push("/login"); closeMenu(); }}>
-                                Login
-                            </Nav.Link>
-                        </>
-                    )}
-                </Nav>
-            </Navbar.Collapse>
-            <Form
-                className="d-flex w-100 search-bar border rounded-5"
-                onSubmit={handleSearchSubmit}
-            >
-                <FormControl
-                    type="search"
-                    placeholder="La gente quiere..."
-                    className="mr-2 form-control-sm p-1 px-3 search-bar-input border-top-0 border-bottom-0 border-start-0 border-end"
-                    aria-label="Search"
-                    name="search"
-                />
-                <Button type="submit" variant="ml-2 search-btn">
-                    <i className="bi bi-search"></i>
-                </Button>
-            </Form>
-            <LocationModal
-            show={showLocationModal}
-            onHide={() => setShowLocationModal(false)}
-            onLocationSelected={handleLocationSelected}
-            onLocationFilterChange={onLocationFilterChange} // Agrega esta línea
-            selectedLocation={selectedLocation}
+  return (
+    <Navbar className="mobile-navbar navbar-blur" expand="lg">
+      <Nav className="d-flex justify-content-start align-items-center">
+        <Navbar.Brand onClick={handleLogoClick} className="divhover">
+          <Image
+            className="want-logo"
+            src="/icons/want-logo.svg"
+            alt="Want"
+            width={90}
+            height={50}
           />
-            <CategoriesModal
-              isShown={showCategoriesModal}
-              onHide={() => setShowCategoriesModal(false)}
-              onCategorySelected={handleCategorySelected}
-              buttonText={categoriesButtonText}
-            />
-        </Navbar>
-    );
+        </Navbar.Brand>
+      </Nav>
+      {user ? <Notifications /> : null}
+      <Nav className="d-flex justify-content-end align-items-center">
+        <Navbar.Toggle
+          aria-controls="mobile-navbar-nav"
+          className="navbar-light"
+        />
+      </Nav>
+      <Navbar.Collapse
+        id="mobile-navbar-nav"
+        className="justify-content-end"
+      >
+        <Nav>
+          {user ? (
+            <>
+              <div className="row">
+                <div className="col-auto">
+                  <img
+                    src={
+                      user.photo
+                        ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}`
+                        : "icons/person-circle.svg"
+                    }
+                    alt="Profile"
+                    style={{
+                      borderRadius: "50%",
+                      width: "30px",
+                      height: "30px",
+                    }}
+                    onClick={() => router.push("/editProfile")}
+                    className="d-flex"
+                  />
+                </div>
+                <div className="col-auto my-auto mx-2">
+                  <p>{user.firstName}</p>
+                </div>
+              </div>
+
+              <Nav.Link onClick={() => { router.push("/myPosts"); closeMenu(); }}>
+                Things that i want
+              </Nav.Link>
+              <Nav.Link onClick={() => { router.push("/sentOffers"); closeMenu(); }}>
+                Sent offers
+              </Nav.Link>
+              <Nav.Link onClick={() => { router.push("/receivedOffers"); closeMenu(); }}>
+                Received offers
+              </Nav.Link>
+              <Nav.Link onClick={() => { router.push("/editProfile"); closeMenu(); }}>
+                My profile
+              </Nav.Link>
+              <Nav.Link onClick={() => { router.push("/logout"); closeMenu(); }}>
+                Log out
+              </Nav.Link>
+            </>
+          ) : (
+            <>
+              <Nav.Link onClick={() => { router.push("/login"); closeMenu(); }}>
+                Login
+              </Nav.Link>
+            </>
+          )}
+        </Nav>
+      </Navbar.Collapse>
+      <Form
+        className="d-flex w-100 search-bar border rounded-5"
+        onSubmit={handleSearchSubmit}
+      >
+        <FormControl
+          type="search"
+          placeholder="La gente quiere..."
+          className="mr-2 form-control-sm p-1 px-3 search-bar-input border-top-0 border-bottom-0 border-start-0 border-end"
+          aria-label="Search"
+          name="search"
+        />
+        <Button type="submit" variant="ml-2 search-btn">
+          <i className="bi bi-search"></i>
+        </Button>
+      </Form>
+      <LocationModal
+        show={showLocationModal}
+        onHide={() => setShowLocationModal(false)}
+        onLocationSelected={handleLocationSelected}
+        onLocationFilterChange={onLocationFilterChange} // Agrega esta línea
+        selectedLocation={selectedLocation}
+      />
+      <CategoriesModal
+        isShown={showCategoriesModal}
+        onHide={() => setShowCategoriesModal(false)}
+        onCategorySelected={handleCategorySelected}
+        buttonText={categoriesButtonText}
+      />
+    </Navbar>
+  );
 }

@@ -20,7 +20,7 @@ export default function ReceivedOffers() {
   const handleShowDetailsModal = (offer) => {
     setSelectedOffer(offer);
     setShowDetailsModal(true);
-  };  
+  };
 
   useEffect(() => {
     const checkLoggedInAndBlockedAndVerified = async () => {
@@ -54,6 +54,19 @@ export default function ReceivedOffers() {
     checkLoggedInAndBlockedAndVerified();
   }, []);
 
+  function compareOffersByDate(a, b) {
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
+
+    if (dateA < dateB) {
+      return 1;
+    }
+    if (dateA > dateB) {
+      return -1;
+    }
+    return 0;
+  }
+
   useEffect(() => {
     const fetchReceivedOffers = async () => {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/received`, {
@@ -62,8 +75,24 @@ export default function ReceivedOffers() {
 
       if (response.ok) {
         const offersData = await response.json();
-        setOffers(offersData);
+
+        // Ordenar las ofertas por fecha de creación descendente
+        offersData.sort(compareOffersByDate);
+
+        const postsWithOffers = offersData.reduce((result, offer) => {
+          const postId = offer.post._id;
+          if (!result[postId]) {
+            result[postId] = {
+              post: offer.post,
+              offers: [],
+            };
+          }
+          result[postId].offers.push(offer);
+          return result;
+        }, {});
+        setOffers(postsWithOffers);
       }
+
     };
 
     fetchReceivedOffers();
@@ -77,6 +106,10 @@ export default function ReceivedOffers() {
 
       if (response.ok) {
         const offersData = await response.json();
+
+        // Ordenar las ofertas por fecha de creación descendente
+        offersData.sort(compareOffersByDate);
+
         const postsWithOffers = offersData.reduce((result, offer) => {
           const postId = offer.post._id;
           if (!result[postId]) {
@@ -176,49 +209,51 @@ export default function ReceivedOffers() {
             <div className="separator h-100"></div>
           </div>
           <div className="col-md-8 border-secondary">
-        <h3 className='mb-4'>Offers</h3>
-        <div className="row">
-          {selectedPost &&
-            offers[selectedPost].offers.map((offer) => (
-              <div key={offer._id} className="col-12 col-md-6">
-                <div className="card post rounded-5 mb-4">
-                  <div className="card-body d-flex">
-                    {offer.photos && offer.photos.length > 0 && (
-                      <img
-                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${offer.photos[0]}`}
-                        className="d-block"
-                        alt="Offer"
-                        style={{ objectFit: "cover", width: "100px", height: "100px", marginRight: "15px" }}
-                      />
-                    )}
-                    <div>
-                      <h5 className="card-title">{offer.title}</h5>
-                      <p className="card-text">{offer.description}</p>
-                      <p className="card-text">Precio: {offer.price}</p>
-                      <div className="d-flex justify-content-between">
-                        <button
-                          className="btn btn-danger"
-                          onClick={() => handleShowModal(offer._id)}
-                        >
-                          Eliminar
-                        </button>
-                        <button
-                          className="btn btn-info ms-2"
-                          onClick={() => handleShowDetailsModal(offer)}
-                        >
-                          View Details
-                        </button>
+            <h3 className='mb-4'>Offers</h3>
+            <div className="row">
+              {selectedPost && offers[selectedPost].offers
+                .slice()
+                .sort(compareOffersByDate)
+                .map((offer) => (
+                  <div key={offer._id} className="col-12 col-md-6">
+                    <div className="card post rounded-5 mb-4">
+                      <div className="card-body d-flex">
+                        {offer.photos && offer.photos.length > 0 && (
+                          <img
+                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${offer.photos[0]}`}
+                            className="d-block"
+                            alt="Offer"
+                            style={{ objectFit: "cover", width: "100px", height: "100px", marginRight: "15px" }}
+                          />
+                        )}
+                        <div>
+                          <h5 className="card-title">{offer.title}</h5>
+                          <p className="card-text">{offer.description}</p>
+                          <p className="card-text">Precio: {offer.price}</p>
+                          <div className="d-flex justify-content-between">
+                            <button
+                              className="btn btn-danger"
+                              onClick={() => handleShowModal(offer._id)}
+                            >
+                              Eliminar
+                            </button>
+                            <button
+                              className="btn btn-info ms-2"
+                              onClick={() => handleShowDetailsModal(offer)}
+                            >
+                              View Details
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                ))}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
     </>
   );
 };
-  
+
