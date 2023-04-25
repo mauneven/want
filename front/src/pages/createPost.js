@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import PostCategory from '@/components/categories/Categories';
 import Location from '@/components/locations/Location';
 import WordsFilter from '@/badWordsFilter/WordsFilter.js';
-import { Carousel } from 'bootstrap';
+import { Carousel } from 'react-bootstrap';
 import { useRef } from 'react';
 
 const CreatePost = () => {
