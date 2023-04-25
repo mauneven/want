@@ -3,8 +3,8 @@ import { useRouter } from 'next/router';
 import PostCategory from '@/components/categories/Categories';
 import Location from '@/components/locations/Location';
 import WordsFilter from '@/badWordsFilter/WordsFilter.js';
-import { Carousel } from 'react-bootstrap';
 import { useRef } from 'react';
+import Carousel from 'react-bootstrap/Carousel';
 
 const CreatePost = () => {
   const [title, setTitle] = useState('');
@@ -21,7 +21,7 @@ const CreatePost = () => {
   const router = useRouter();
   const [photos, setPhotos] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
-  const carouselRef = useRef(null);
+  const carouselRef = useRef();
 
   const [previewTitle, setPreviewTitle] = useState('');
   const [previewDescription, setPreviewDescription] = useState('');
@@ -84,7 +84,7 @@ const CreatePost = () => {
     };
 
     if (carouselRef.current) {
-      const carouselInstance = new Carousel(carouselRef.current);
+
       carouselRef.current.addEventListener('slid.bs.carousel', handleSlid);
     }
 
