@@ -25,7 +25,6 @@ exports.getAllPosts = async (req, res, next) => {
   try {
     const posts = await Post.find().populate('createdBy', 'firstName lastName photo');
     res.status(200).json(posts);
-    console.log(createdBy);
   } catch (err) {
     next(err);
   }

@@ -75,15 +75,33 @@ const CreateOffer = () => {
 
   const handleFileChange = (e) => {
     const newPhotos = Array.from(e.target.files);
+  
+    const isFileSizeValid = newPhotos.every((photo) => photo.size <= 50000000);
+  
+    if (!isFileSizeValid) {
+      alert("The file size exceeds the maximum allowed limit of 50MB.");
+      return;
+    }
+  
+    const isFileTypeValid = newPhotos.every((photo) => {
+      const extension = photo.name.split(".").pop();
+      return ["jpg", "jpeg", "png"].includes(extension.toLowerCase());
+    });
+  
+    if (!isFileTypeValid) {
+      alert("Only JPEG, JPG, and PNG files are allowed.");
+      return;
+    }
+  
     setPhotos([...photos, ...newPhotos]);
-  };
+  };  
 
   const handleDeletePhoto = (e) => {
     const activeIndex = getActivePhotoIndex();
     if (activeIndex !== -1) {
       removePhoto(activeIndex);
     }
-  };  
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -198,7 +216,7 @@ const CreateOffer = () => {
                 type="file"
                 className="form-control"
                 id="photo"
-                accept="image/*"
+                accept="image/png, image/jpeg"
                 onChange={handleFileChange}
                 disabled={photos.length >= 4}
                 required
@@ -221,11 +239,11 @@ const CreateOffer = () => {
             {photos.length > 0 && (
               <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
                 <div className="carousel-inner">
-                {photos.map((photo, index) => (
-  <div key={index} data-index={index} className={index === 0 ? "carousel-item active" : "carousel-item"}>
-    <img src={URL.createObjectURL(photo)} className="d-block w-100" alt={`Photo ${index}`} />
-  </div>
-))}
+                  {photos.map((photo, index) => (
+                    <div key={index} data-index={index} className={index === 0 ? "carousel-item active" : "carousel-item"}>
+                      <img src={URL.createObjectURL(photo)} className="d-block w-100" alt={`Photo ${index}`} />
+                    </div>
+                  ))}
                 </div>
                 <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
                   <span className="carousel-control-prev-icon" aria-hidden="true"></span>

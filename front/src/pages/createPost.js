@@ -63,6 +63,24 @@ const CreatePost = () => {
 
   const handleFileChange = (e) => {
     const newPhotos = Array.from(e.target.files);
+
+    const isFileSizeValid = newPhotos.every((photo) => photo.size <= 50000000);
+
+    if (!isFileSizeValid) {
+      alert("The file size exceeds the maximum allowed limit of 50MB.");
+      return;
+    }
+  
+    const isFileTypeValid = newPhotos.every((photo) => {
+      const extension = photo.name.split(".").pop();
+      return ["jpg", "jpeg", "png"].includes(extension.toLowerCase());
+    });
+  
+    if (!isFileTypeValid) {
+      alert("Only JPEG, JPG, and PNG files are allowed.");
+      return;
+    }
+
     setPhotos([...photos, ...newPhotos]);
   };
 
@@ -223,7 +241,7 @@ const CreatePost = () => {
                 type="file"
                 className="form-control"
                 id="photo"
-                accept="image/*"
+                accept="image/png, image/jpeg"
                 onChange={handleFileChange}
                 required
                 disabled={photos.length >= 4}
