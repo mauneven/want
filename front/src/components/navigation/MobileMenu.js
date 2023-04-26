@@ -167,7 +167,9 @@ export default function MegaMenu({
                   <p>{user.firstName}</p>
                 </div>
               </div>
-
+              <Nav.Link onClick={() => { router.push("/createPost"); closeMenu(); }}>
+                I want something
+              </Nav.Link>
               <Nav.Link onClick={() => { router.push("/myPosts"); closeMenu(); }}>
                 Things that i want
               </Nav.Link>

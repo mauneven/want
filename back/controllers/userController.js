@@ -73,10 +73,12 @@ exports.updateCurrentUser = async (req, res, next) => {
       const newFilename = `${uuidv4()}_${Date.now()}${fileExt}`;
       const newFilePath = path.join(__dirname, '..', 'uploads', newFilename);
 
-      // Elimina la foto anterior del servidor
+      // Elimina la foto anterior del servidor si existe
       if (user.photo) {
         const oldFilePath = path.join(__dirname, '..', user.photo);
-        fs.unlinkSync(oldFilePath);
+        if (fs.existsSync(oldFilePath)) {
+          fs.unlinkSync(oldFilePath);
+        }
       }
 
       await sharp(req.file.path)
@@ -97,4 +99,3 @@ exports.updateCurrentUser = async (req, res, next) => {
     next(err);
   }
 };
-

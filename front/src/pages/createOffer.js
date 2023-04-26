@@ -15,6 +15,11 @@ const CreateOffer = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photos, setPhotos] = useState([]);
 
+  const getActivePhotoIndex = () => {
+    const activeItem = document.querySelector(".carousel-item.active");
+    return activeItem ? parseInt(activeItem.dataset.index) : -1;
+  };
+
   const removePhoto = (index) => {
     const newPhotos = [...photos];
     newPhotos.splice(index, 1);
@@ -70,13 +75,32 @@ const CreateOffer = () => {
 
   const handleFileChange = (e) => {
     const newPhotos = Array.from(e.target.files);
+  
+    const isFileSizeValid = newPhotos.every((photo) => photo.size <= 50000000);
+  
+    if (!isFileSizeValid) {
+      alert("The file size exceeds the maximum allowed limit of 50MB.");
+      return;
+    }
+  
+    const isFileTypeValid = newPhotos.every((photo) => {
+      const extension = photo.name.split(".").pop();
+      return ["jpg", "jpeg", "png"].includes(extension.toLowerCase());
+    });
+  
+    if (!isFileTypeValid) {
+      alert("Only JPEG, JPG, and PNG files are allowed.");
+      return;
+    }
+  
     setPhotos([...photos, ...newPhotos]);
-  };
+  };  
 
-  const handleDeletePhoto = (index) => {
-    const newPhotos = [...photos];
-    newPhotos.splice(index, 1);
-    setPhotos(newPhotos);
+  const handleDeletePhoto = (e) => {
+    const activeIndex = getActivePhotoIndex();
+    if (activeIndex !== -1) {
+      removePhoto(activeIndex);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -94,7 +118,7 @@ const CreateOffer = () => {
       setIsSubmitting(false);
       return;
     }
-  
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
@@ -136,12 +160,13 @@ const CreateOffer = () => {
   }
 
   return (
-    <div className="container">
+    <div className="container mt-4 mb-4">
+      <h1 className='mt-3 mb-3'>Create an offer</h1>
       <div className="row row-cols-1 row-cols-md-4 g-4">
         <div className="col-md-6">
           <form onSubmit={handleSubmit} className="container">
             <div className="mb-3">
-              <label htmlFor="title" className="form-label">Título de la oferta</label>
+              <label htmlFor="title" className="form-label">Offert title</label>
               <input
                 type="text"
                 className="form-control"
@@ -152,7 +177,7 @@ const CreateOffer = () => {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="description" className="form-label">Descripción de la oferta</label>
+              <label htmlFor="description" className="form-label">Describe your offer</label>
               <textarea
                 className="form-control"
                 id="description"
@@ -162,7 +187,7 @@ const CreateOffer = () => {
               ></textarea>
             </div>
             <div className="mb-3">
-              <label htmlFor="contact" className="form-label">Describe tu contacto</label>
+              <label htmlFor="contact" className="form-label">How can this person contact you?</label>
               <textarea
                 className="form-control"
                 id="contact"
@@ -172,7 +197,7 @@ const CreateOffer = () => {
               ></textarea>
             </div>
             <div className="mb-3">
-              <label htmlFor="price" className="form-label">Precio que ofreces</label>
+              <label htmlFor="price" className="form-label">Price you offer</label>
               <input
                 type="number"
                 className="form-control"
@@ -182,17 +207,18 @@ const CreateOffer = () => {
                 required
               />
               {price ? (
-                <small className="form-text text-muted">Precio: {Number(price).toLocaleString()}</small>
+                <small className="form-text text-muted">Price: {Number(price).toLocaleString()}</small>
               ) : null}
             </div>
             <div className="mb-3">
-              <label htmlFor="photo" className="form-label">Foto guía de tu oferta</label>
+              <label htmlFor="photo" className="form-label">Upload upto 4 photos</label>
               <input
                 type="file"
                 className="form-control"
                 id="photo"
-                accept="image/*"
+                accept="image/png, image/jpeg"
                 onChange={handleFileChange}
+                disabled={photos.length >= 4}
                 required
               />
             </div>
@@ -209,16 +235,13 @@ const CreateOffer = () => {
           </form>
         </div>
         <div className="col-md-6">
-          <div className="card">
-          {photos.length > 0 && (
+          <div className="post rounded-5 card-preview card">
+            {photos.length > 0 && (
               <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
                 <div className="carousel-inner">
                   {photos.map((photo, index) => (
-                    <div key={index} className={index === 0 ? "carousel-item active" : "carousel-item"}>
+                    <div key={index} data-index={index} className={index === 0 ? "carousel-item active" : "carousel-item"}>
                       <img src={URL.createObjectURL(photo)} className="d-block w-100" alt={`Photo ${index}`} />
-                      <button className="btn btn-danger btn-sm delete-photo" onClick={() => handleDeletePhoto(index)}>
-                        <i className="bi bi-trash"></i>
-                      </button>
                     </div>
                   ))}
                 </div>
@@ -231,6 +254,11 @@ const CreateOffer = () => {
                   <span className="visually-hidden">Next</span>
                 </button>
               </div>
+            )}
+            {photos.length > 0 && (
+              <button className="btn btn-danger btn-sm delete-photo" onClick={handleDeletePhoto}>
+                <i className="bi bi-trash"></i>
+              </button>
             )}
             <div className="card-body">
               <h5 className="card-title">{title || "Título de la oferta"}</h5>

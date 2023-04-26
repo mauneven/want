@@ -23,7 +23,7 @@ exports.uploadPhotoMiddleware = upload;
 
 exports.getAllPosts = async (req, res, next) => {
   try {
-    const posts = await Post.find().populate('createdBy', 'firstName lastName photos');
+    const posts = await Post.find().populate('createdBy', 'firstName lastName photo');
     res.status(200).json(posts);
   } catch (err) {
     next(err);
@@ -32,7 +32,7 @@ exports.getAllPosts = async (req, res, next) => {
 
 exports.getPostById = async (req, res, next) => {
   try {
-    const post = await Post.findById(req.params.id).populate('createdBy', 'firstName lastName photos');
+    const post = await Post.findById(req.params.id).populate('createdBy', 'firstName lastName photo');
     if (!post) {
       return res.status(404).send('Post not found');
     }
@@ -114,7 +114,7 @@ exports.updatePost = async (req, res, next) => {
 
     if (deletedImages) {
       const deletedImagePaths = deletedImages.split(',');
-      post.photos = post.photos.filter(photo => !deletedImagePaths.includes(photo)); // Reemplaza pull con filter
+      post.photos = post.photos.filter(photo => !deletedImagePaths.includes(photo));
 
       await Promise.all(deletedImagePaths.map(async (imagePath) => {
         const parsedUrl = url.parse(imagePath);
@@ -262,7 +262,7 @@ exports.getPostsByCurrentUser = async (req, res, next) => {
 
     const posts = await Post.find({ createdBy: req.session.userId }).populate(
       'createdBy',
-      'firstName lastName photos'
+      'firstName lastName photo'
     );
     res.status(200).json(posts);
   } catch (err) {

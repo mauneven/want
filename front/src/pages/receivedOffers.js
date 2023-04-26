@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import DetailsModal from '@/components/offer/DetailsModal';
+import ReportOfferModal from '@/components/report/ReportOfferModal';
 
 export default function ReceivedOffers() {
   const [offers, setOffers] = useState([]);
@@ -53,6 +54,28 @@ export default function ReceivedOffers() {
 
     checkLoggedInAndBlockedAndVerified();
   }, []);
+
+  const handleReportOffer = async (offerId, description) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/offers/${offerId}/report`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ description }),
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error);
+      }
+
+      alert('Offer reported successfully');
+    } catch (error) {
+      console.error('Error reporting offer:', error.message);
+    }
+  };
 
   function compareOffersByDate(a, b) {
     const dateA = new Date(a.createdAt);
@@ -177,15 +200,15 @@ export default function ReceivedOffers() {
       />
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Eliminar oferta</Modal.Title>
+          <Modal.Title>Delete this offer</Modal.Title>
         </Modal.Header>
-        <Modal.Body>¿Estás seguro de que quieres eliminar esta oferta?</Modal.Body>
+        <Modal.Body>Sure you Want to delete this offer?, that's permanent</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Cancelar
+            Cancel
           </Button>
           <Button variant="danger" onClick={handleDeleteOffer}>
-            Eliminar
+            Delete
           </Button>
         </Modal.Footer>
       </Modal>
@@ -201,7 +224,6 @@ export default function ReceivedOffers() {
                 onClick={() => handlePostSelect(postWithOffers.post._id)}
               >
                 <h4 className=''>{postWithOffers.post.title}</h4>
-
               </button>
             ))}
           </div>
@@ -217,32 +239,41 @@ export default function ReceivedOffers() {
                 .map((offer) => (
                   <div key={offer._id} className="col-12 col-md-6">
                     <div className="card post rounded-5 mb-4">
-                      <div className="card-body d-flex">
-                        {offer.photos && offer.photos.length > 0 && (
-                          <img
-                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${offer.photos[0]}`}
-                            className="d-block"
-                            alt="Offer"
-                            style={{ objectFit: "cover", width: "100px", height: "100px", marginRight: "15px" }}
-                          />
-                        )}
-                        <div>
-                          <h5 className="card-title">{offer.title}</h5>
-                          <p className="card-text">{offer.description}</p>
-                          <p className="card-text">Precio: {offer.price}</p>
-                          <div className="d-flex justify-content-between">
+                      <div>
+                        <div className="card-body d-flex flex-column">
+                          <div className="card-body d-flex flex-row align-items-center">
+                            {offer.photos && offer.photos.length > 0 && (
+                              <img
+                                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${offer.photos[0]}`}
+                                className="d-block me-3"
+                                alt="Offer"
+                                style={{ objectFit: "cover", width: "100px", height: "100px" }}
+                              />
+                            )}
+                            <div className="d-flex flex-column flex-grow-1">
+                              <div>
+                                <h5 className="card-title">{offer.title}</h5>
+                                <p className="card-text">{offer.description}</p>
+                                <p className="card-text">Price: ${offer.price}</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="card-buttons-container d-flex flex-column justify-content-end mt-auto">
                             <button
-                              className="btn btn-danger"
-                              onClick={() => handleShowModal(offer._id)}
-                            >
-                              Eliminar
-                            </button>
-                            <button
-                              className="btn btn-info ms-2"
+                              className="btn btn-success mb-2"
                               onClick={() => handleShowDetailsModal(offer)}
                             >
-                              View Details
+                              View details
+                              <i className="bi bi-eye ms-2"></i>
                             </button>
+                            <button
+                              className="btn btn-secondary mb-2"
+                              onClick={() => handleShowModal(offer._id)}
+                            >
+                              Delete
+                              <i className="bi bi-trash3 ms-2"></i>
+                            </button>
+                            <ReportOfferModal offerId={offer._id} onReport={handleReportOffer} />
                           </div>
                         </div>
                       </div>

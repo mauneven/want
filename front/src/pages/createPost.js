@@ -63,6 +63,24 @@ const CreatePost = () => {
 
   const handleFileChange = (e) => {
     const newPhotos = Array.from(e.target.files);
+
+    const isFileSizeValid = newPhotos.every((photo) => photo.size <= 50000000);
+
+    if (!isFileSizeValid) {
+      alert("The file size exceeds the maximum allowed limit of 50MB.");
+      return;
+    }
+  
+    const isFileTypeValid = newPhotos.every((photo) => {
+      const extension = photo.name.split(".").pop();
+      return ["jpg", "jpeg", "png"].includes(extension.toLowerCase());
+    });
+  
+    if (!isFileTypeValid) {
+      alert("Only JPEG, JPG, and PNG files are allowed.");
+      return;
+    }
+
     setPhotos([...photos, ...newPhotos]);
   };
 
@@ -168,7 +186,7 @@ const CreatePost = () => {
         <div className="col-md-6">
           <form onSubmit={handleSubmit} className="container">
             <div className="mb-3">
-              <label htmlFor="title" className="form-label">Dale un título a lo que quieres</label>
+              <label htmlFor="title" className="form-label">Give a title to what you want</label>
               <input
                 type="text"
                 className="form-control"
@@ -179,7 +197,7 @@ const CreatePost = () => {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="description" className="form-label">Ahora describelo con mas detalle</label>
+              <label htmlFor="description" className="form-label">Now describe it in more detail.</label>
               <textarea
                 className="form-control"
                 id="description"
@@ -189,7 +207,7 @@ const CreatePost = () => {
               ></textarea>
             </div>
             <div className="mb-3">
-              <label htmlFor="price" className="form-label">Cuanto pagarías por lo que quieres</label>
+              <label htmlFor="price" className="form-label">how much would you pay for what you want</label>
               <input
                 type="number"
                 className="form-control"
@@ -199,7 +217,7 @@ const CreatePost = () => {
                 required
               />
               {price ? (
-                <small className="form-text text-muted">Precio: {Number(price).toLocaleString()}</small>
+                <small className="form-text text-muted">Price: {Number(price).toLocaleString()}</small>
               ) : null}
             </div>
             <div className="mb-3">
@@ -223,7 +241,7 @@ const CreatePost = () => {
                 type="file"
                 className="form-control"
                 id="photo"
-                accept="image/*"
+                accept="image/png, image/jpeg"
                 onChange={handleFileChange}
                 required
                 disabled={photos.length >= 4}

@@ -113,23 +113,39 @@ const EditPost = () => {
 
   const handleFileChange = (e) => {
     const newImages = [...e.target.files].map((file) => {
-      return {
-        file,
-        preview: URL.createObjectURL(file),
-      };
-    });
-
+      if (file.size > 50000000) { // 50MB en bytes
+        console.log('Selected file is too large.');
+        const errorMessage = 'The selected file is too large. Please select a file that is 50MB or smaller.';
+        setError(errorMessage);
+        alert(errorMessage); // Agregar esta línea
+        return null;
+      } else if (!/^(image\/jpeg|image\/png|image\/jpg)$/.test(file.type)) {
+        console.log('Selected file is not a JPG, JPEG, or PNG.');
+        const errorMessage = 'The selected file must be in JPG, JPEG or PNG format.';
+        setError(errorMessage);
+        alert(errorMessage); // Agregar esta línea
+        return null;
+      } else {
+        return {
+          file,
+          preview: URL.createObjectURL(file),
+        };
+      }
+    }).filter((image) => image !== null);
+  
     // Contar el número de imágenes existentes en la base de datos
     const existingImagesCount = images.filter((image) => image.file === null).length;
     const totalImages = existingImagesCount + newImages.length;
-
+  
     if (totalImages > 4) {
-      setError('You cannot upload more than 4 images.');
+      const errorMessage = 'You cannot upload more than 4 images.';
+      setError(errorMessage);
+      alert(errorMessage); // Agregar esta línea
     } else {
       setError(null);
       setImages((prevState) => [...prevState, ...newImages]);
     }
-  };
+  };  
 
   const onDelete = (index) => {
     const deletedImage = images[index].preview;
@@ -140,6 +156,13 @@ const EditPost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    const oversizedImages = images.filter((image) => image.file !== null && image.file.size > 50000000); // 50MB en bytes
+    if (oversizedImages.length > 0) {
+      setError('One or more selected files are too large. Please select files that are 50MB or smaller.');
+      setLoading(false);
+      return;
+    }
 
     try {
       const formData = new FormData();
@@ -246,7 +269,7 @@ const EditPost = () => {
                 type="file"
                 className="form-control"
                 id="photo"
-                accept="image/*"
+                accept="image/png, image/jpeg"
                 onChange={handleFileChange}
                 disabled={images.length >= 4}
                 multiple
@@ -255,6 +278,11 @@ const EditPost = () => {
             <button type="submit" className="btn btn-primary">Update my post</button>
             <button type="button" className="btn btn-secondary" onClick={() => router.back()}>Cancel</button>
           </form>
+          {error && (
+            <div className="alert alert-danger mt-3" role="alert">
+              {error}
+            </div>
+          )}
         </div>
         <div className="col-md-3">
           <div className="card post rounded-5 card-preview">

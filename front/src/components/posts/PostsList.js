@@ -315,12 +315,12 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                   <div className="card-footer text-center">
                     <img
                       src={
-                        post.createdBy.photos
-                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photos}`
+                        post.createdBy.photo
+                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
                           : "icons/person-circle.svg"
                       }
-                      alt="Profile"
-                      className="createdBy-photos"
+                      alt=""
+                      className="createdBy-photo"
                     />
                     <small className="text-muted text-center">
                       {console.log(`creador por : ${post.createdBy.role}`)}

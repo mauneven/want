@@ -71,9 +71,30 @@ const EditProfile = () => {
         }
       });
   }, []);
+
+  const validateImageFile = (file) => {
+    const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+    const maxSize = 50 * 1024 * 1024; // 50 MB
   
-  const handlePhotoChange = async (e) => {
-    const file = e.target.files[0];
+    if (!allowedExtensions.exec(file.name)) {
+      alert('El archivo debe ser de tipo jpg, jpeg o png.');
+      return false;
+    }
+  
+    if (file.size > maxSize) {
+      alert('El tamaño del archivo no puede superar los 50 MB.');
+      return false;
+    }
+  
+    return true;
+  };  
+  
+const handlePhotoChange = async (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    if (!validateImageFile(file)) {
+      return; // Termina la ejecución si el archivo no pasa la validación
+    }
     if (file) {
       const fileName = user._id + '_' + file.name; // Renombrar el archivo con el id del usuario
       const renamedFile = new File([file], fileName, {type: file.type}); // Crear un nuevo objeto File con el archivo renombrado
@@ -92,6 +113,7 @@ const EditProfile = () => {
         console.error('Error updating user photo');
       }
     }
+  }
   };  
 
   const handleCancel = () => {
@@ -176,7 +198,7 @@ const EditProfile = () => {
               type="file"
               id="photo"
               name="photo"
-              accept="image/*"
+              accept="image/png, image/jpeg"
               onChange={handlePhotoChange}
               style={{ display: 'none' }}
             />

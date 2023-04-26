@@ -126,13 +126,13 @@ const DetailsModal = ({ show, onHide, offer }) => {
                             )}
                             <h5>{offer.title}</h5>
                             <p>{offer.description}</p>
-                            <p>Precio: {offer.price}</p>
-                            <p>Post relacionado: {offer.post && offer.post.title}</p>
+                            <p>Price: {offer.price}</p>
+                            <p>Offer for: {offer.post && offer.post.title}</p>
                             <p>
-                                Creado por: {offer.createdBy.firstName}{" "}
+                                Offer by: {offer.createdBy.firstName}{" "}
                                 {offer.createdBy.lastName}
                             </p>
-                            <p>Contacto: {offer.contact}</p>
+                            <p>Contact: {offer.contact}</p>
                         </div>
                     </div>
                 </Modal.Body>
