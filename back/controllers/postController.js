@@ -13,7 +13,8 @@ const storage = multer.diskStorage({
     cb(null, 'uploads/');
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
   }
 });
 
@@ -45,17 +46,20 @@ exports.getPostById = async (req, res, next) => {
 exports.createPost = async (req, res, next) => {
   try {
     const { title, description, country, state, city, mainCategory, subCategory, price } = req.body;
-    const photos = req.files.map(file => file.path);
-    let compressedImagePaths = []; // Add this line
+    const photos = req.files.map(file => ({
+      path: file.path,
+      originalname: file.originalname
+    }));
+    let compressedImagePaths = [];
 
     if (photos.length > 0) {
-      compressedImagePaths = await Promise.all(photos.map(async (photos) => {
+      compressedImagePaths = await Promise.all(photos.map(async (photo) => {
         const compressedImagePath = `uploads/${uuidv4()}.jpg`;
-        await sharp(photos).resize({ width: 500 }).toFile(compressedImagePath);
+        await sharp(photo.path).resize({ width: 500 }).toFile(compressedImagePath);
         try {
-          await fs.promises.unlink(photos);
+          await fs.promises.unlink(photo.path); // Reemplaza 'photos' con 'photo.path'
         } catch (err) {
-          console.error(`Error deleting file ${photos}: ${err.message}`);
+          console.error(`Error deleting file ${photo.path}: ${err.message}`); // Reemplaza 'photos' con 'photo.path'
         }
         return compressedImagePath;
       }));
@@ -115,18 +119,18 @@ exports.updatePost = async (req, res, next) => {
     if (deletedImages) {
       const deletedImagePaths = deletedImages.split(',');
       post.photos = post.photos.filter(photo => !deletedImagePaths.includes(photo));
-
+    
       await Promise.all(deletedImagePaths.map(async (imagePath) => {
         const parsedUrl = url.parse(imagePath);
         const localPath = parsedUrl.pathname;
         const oldPhotoPath = path.join(__dirname, '..', localPath);
         try {
-          await fs.promises.unlink(oldPhotoPath);
+          await fs.promises.unlink(oldPhotoPath); // Reemplaza 'photo.path' con 'oldPhotoPath'
         } catch (err) {
-          console.error(`Error deleting file ${oldPhotoPath}: ${err.message}`);
-        }
+          console.error(`Error deleting file ${oldPhotoPath}: ${err.message}`); // Reemplaza 'photo.path' con 'oldPhotoPath'
+        }        
       }));
-    }
+    }    
 
     if (req.files.length > 0) {
       const photos = req.files.map(file => file.path);
