@@ -54,15 +54,16 @@ export default function sentOffers() {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/my-offers`, {
         credentials: 'include',
       });
-
+  
       if (response.ok) {
         const offersData = await response.json();
-        setOffers(offersData);
+        const sortedOffersData = offersData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setOffers(sortedOffersData);
       }
     };
-
+  
     fetchMyOffers();
-  }, []);
+  }, []);  
 
   const handleDeleteOffer = async () => {
     try {
@@ -112,7 +113,7 @@ export default function sentOffers() {
       <div className="container">
         <h1>Ofertas que he hecho</h1>
         <div className="row">
-          {offers.reverse().map((offer) => (
+          {offers.map((offer) => (
             <div key={offer._id} className="col-12 col-md-6">
               <div className="card post rounded-5 mb-4">
                 <div>
