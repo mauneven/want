@@ -12,7 +12,8 @@ const storage = multer.diskStorage({
     cb(null, 'uploads/');
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
   }
 });
 
@@ -23,18 +24,35 @@ exports.uploadPhotoMiddleware = upload;
 exports.createOffer = async (req, res, next) => {
   try {
     const { title, description, price, contact, postId } = req.body;
-    const photos = req.files.map(file => file.path);
     const post = await Post.findById(postId);
 
     if (!post) {
       return res.status(404).send('Post not found');
     }
 
+    const photos = req.files.map(file => file.path);
+    let compressedImagePaths = [];
+
+    if (photos.length > 0) {
+      compressedImagePaths = await Promise.all(photos.map(async (photo) => {
+        const compressedImagePath = `uploads/${uuidv4()}.jpg`;
+        await sharp(photo).resize({ width: 500 }).toFile(compressedImagePath);
+        try {
+          await fs.promises.unlink(photo);
+        } catch (err) {
+          console.error(`Error deleting file ${photo}: ${err.message}`);
+        }
+        return compressedImagePath;
+      }));
+
+      req.files = compressedImagePaths.map(path => ({ path }));
+    }
+
     const offer = new Offer({
       title,
       description,
       price,
-      photos,
+      photos: compressedImagePaths || [],
       contact,
       createdBy: req.session.userId,
       receivedBy: post.createdBy,
@@ -46,30 +64,7 @@ exports.createOffer = async (req, res, next) => {
     // Define notificationContent after initializing offer
     const notificationContent = `Offer ${offer._id}: "${post.title}"`;
 
-    if (req.files.length > 0) {
-      const compressedImagePaths = await Promise.all(
-        req.files.map(async (file) => {
-          const fileExt = path.extname(file.originalname);
-          const newFilename = `${uuidv4()}${fileExt}`;
-          const newFilePath = path.join(__dirname, '..', 'uploads', newFilename);
-          await sharp(file.path)
-            .resize({ width: 500 })
-            .jpeg({ quality: 80 })
-            .toFile(newFilePath);
-
-          // Elimina el archivo original
-          fs.unlinkSync(file.path);
-
-          return `uploads/${newFilename}`;
-        })
-      );
-
-      offer.photos = compressedImagePaths;
-      await offer.save();
-    }
-
     await exports.sendNotification(post.createdBy, notificationContent, postId);
-
     res.status(201).json(offer);
   } catch (err) {
     next(err);
