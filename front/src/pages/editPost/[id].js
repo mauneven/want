@@ -275,7 +275,12 @@ const EditPost = () => {
                 multiple
               />
             </div>
-            <button type="submit" className="btn btn-primary">Update my post</button>
+            <button type="submit" className="btn btn-primary" disabled={loading}>
+              {loading ? (
+                                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              ) : "Update my post"}
+              
+              </button>
             <button type="button" className="btn btn-secondary" onClick={() => router.back()}>Cancel</button>
           </form>
           {error && (
