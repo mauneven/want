@@ -175,8 +175,15 @@ exports.createReport = async (req, res, next) => {
     await offer.save();
 
     if (offer.reports.length === 1) {
-      await Offer.deleteOne({ _id: offerId });
-      // Aquí se debe agregar la lógica para incrementar el contador de reportes del usuario.
+
+      // Encuentra la notificación correspondiente al offerId de la oferta que se está eliminando.
+      const notification = await Notification.findOne({ content: `Offer ${offer._id}: "${offer.title}"` });
+
+      // Elimina la notificación relacionada con la oferta reportada
+      if (notification) {
+        await Notification.deleteOne({ _id: notification._id });
+      }
+
     }
 
     res.status(201).json(report);

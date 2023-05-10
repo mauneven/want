@@ -123,7 +123,7 @@ export default function Login() {
       <div className='card login-form rounded-5 p-3'>
         <div className='card-body'>
           <div className="container">
-            <h1 className="text-center">{isLogin ? 'Iniciar sesión' : 'Registrarse'}</h1>
+            <h1 className="text-center">{isLogin ? 'Login' : 'Sign Up'}</h1>
             {alertMessage && (
               <div className="alert alert-danger alert-dismissible fade show" role="alert">
                 {alertMessage}

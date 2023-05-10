@@ -10,7 +10,7 @@ exports.register = async (req, res, next) => {
   try {
     const User = mongoose.model('User');
 
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName, phone, birthdate } = req.body;
 
     // Check if user already exists
     const userExists = await User.findOne({ email });
@@ -31,6 +31,8 @@ exports.register = async (req, res, next) => {
       password: hashedPassword,
       firstName,
       lastName,
+      phone,
+      birthdate,
       verificationToken: token,
       verificationTokenExpires: Date.now() + 1800000,
     });

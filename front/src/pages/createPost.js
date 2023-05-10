@@ -246,7 +246,6 @@ const CreatePost = () => {
                 id="photo"
                 accept="image/png, image/jpeg"
                 onChange={handleFileChange}
-                required
                 disabled={photos.length >= 4}
               />
             </div>

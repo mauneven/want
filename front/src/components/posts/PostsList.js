@@ -242,10 +242,6 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
             ? posts.map((post) => (
               <div key={post._id} className="col">
                 <div className="card post rounded-5">
-                <ReportPostModal postId={post._id} onReport={handleReportPost} />
-                  <button className="rounded-circle btn-save" title="Save">
-                    <i className="bi bi-heart"></i>
-                  </button>
                   {post.photos && post.photos.length > 0 && (
                     <div
                       id={`carousel-${post._id}`}
@@ -308,9 +304,21 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                         ? post.description.substring(0, 100) + "..."
                         : post.description}
                     </p>
-                    <Link className="d-flex justify-content-center" href={`/post/[id]`} as={`/post/${post._id}`}>
-                      <button className="offer-btn btn rounded-pill">View details</button>
-                    </Link>
+                    <div className="row">
+                      <div className="col-2 p-0">
+                        <ReportPostModal postId={post._id} onReport={handleReportPost} />
+                      </div>
+                      <div className="col-8 p-0">
+                        <Link className="d-flex justify-content-center" href={`/post/[id]`} as={`/post/${post._id}`}>
+                          <button className="offer-btn btn rounded-pill">View details</button>
+                        </Link>
+                      </div>
+                      <div className="col-2 p-0">
+                        <button className="btn ps-2" title="">
+                          <i className="bi bi-heart"></i>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                   <div className="card-footer text-center">
                     <img
