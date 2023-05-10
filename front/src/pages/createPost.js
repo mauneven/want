@@ -56,6 +56,7 @@ const CreatePost = () => {
       if (!verifiedResponse.ok) {
         router.push('/is-not-verified');
       }
+      
     };
 
     checkLoggedInAndBlockedAndVerified();

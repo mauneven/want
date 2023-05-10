@@ -8,6 +8,7 @@ const reportRoutes = require('./routes/reportRoutes');
 const User = require('./models/user');
 const offerRoutes = require('./routes/offerRoutes');
 const docxRoutes = require('./routes/docxRoutes.js');
+const authController = require('./controllers/authController');
 const https = require('https');
 const fs = require('fs');
 
@@ -63,7 +64,6 @@ app.use('/api', postRoutes);
 app.use('/api', offerRoutes);
 app.use("/api", docxRoutes);
 app.use('/api', reportRoutes);
-
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).send('Something broke!');

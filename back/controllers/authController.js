@@ -1,10 +1,13 @@
 const bcrypt = require('bcrypt');
 const { default: mongoose } = require('mongoose');
 const User = require('../models/user');
-
+const postController = require('./postController');
 const db = require('../config/database');
 const nodemailer = require('nodemailer');
 const { promisify } = require('util');
+const Notification = require('../models/notification');
+const Post = require('../models/post');
+const Offer = require('../models/offer');
 
 exports.register = async (req, res, next) => {
   try {
@@ -366,6 +369,109 @@ exports.isUserVerified = async (userId) => {
   } catch (err) {
     console.error(err);
     return false;
+  }
+};
+
+
+exports.deleteAccount = async (req, res, next) => {
+
+  const deleteUserData = async (userId) => {
+    // Eliminar las notificaciones del usuario
+    await Notification.deleteMany({ recipient: userId });
+  
+    // Eliminar los posts y ofertas del usuario
+    const posts = await Post.find({ createdBy: userId });
+    for (const post of posts) {
+      await postController.deletePostById(post._id);
+    }
+  
+    // Eliminar las ofertas creadas por el usuario
+    await Offer.deleteMany({ createdBy: userId });
+  
+    // Finalmente, eliminar al usuario
+    await User.deleteOne({ _id: userId });
+  };
+
+  try {
+    const user = await User.findById(req.session.userId);
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    // Marcar la cuenta como pendiente de eliminación
+    user.isDeleted = true;
+    user.deleteGracePeriodStart = Date.now();
+    // Establecer un periodo de gracia de 30 días
+    user.deleteGracePeriodEnd = Date.now() + 60 * 1000;
+    await user.save();
+
+    // Programar la eliminación del usuario después del periodo de gracia
+    setTimeout(async () => {
+      try {
+        await deleteUserData(user._id);
+      } catch (err) {
+        console.error(`Error deleting user data for user ${user._id}:`, err);
+      }
+    }, 60 * 1000); // Temporizador de 30 días
+
+    // Cerrar sesión del usuario
+    req.session.destroy();
+
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.checkPendingDeletions = async () => {
+  try {
+    const usersToDelete = await User.find({ isDeleted: true, deleteGracePeriodEnd: { $lte: Date.now() } });
+
+    for (const user of usersToDelete) {
+      // Eliminar las notificaciones del usuario
+      await Notification.deleteMany({ recipient: user._id });
+
+      // Eliminar los posts y ofertas del usuario
+      const posts = await Post.find({ createdBy: user._id });
+      for (const post of posts) {
+        await postController.deletePostById(post._id); // Fix aquí
+      }
+
+      // Eliminar las ofertas creadas por el usuario
+      await Offer.deleteMany({ createdBy: user._id });
+
+      // Finalmente, eliminar al usuario
+      await User.deleteOne({ _id: user._id });
+    }
+  } catch (err) {
+    console.error('Error checking pending deletions:', err);
+  }
+};
+
+// Llama al método checkPendingDeletions al iniciar el servidor
+exports.checkPendingDeletions();
+
+// Configura setInterval para ejecutar checkPendingDeletions cada minuto
+setInterval(exports.checkPendingDeletions, 60 * 1000);
+
+
+exports.cancelDeletionProcess = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.session.userId);
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    user.isDeleted = false;
+    user.deleteGracePeriodStart = undefined;
+    user.deleteGracePeriodEnd = undefined;
+    await user.save();
+
+    res.status(200).send('Deletion process cancelled');
+  } catch (err) {
+    next(err);
   }
 };
 

@@ -88,6 +88,25 @@ const EditProfile = () => {
   
     return true;
   };  
+
+  const handleDeleteAccount = async () => {
+    if (window.confirm('Are you sure you want to delete your account? This action is irreversible.')) {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/delete-account`, {
+          method: 'DELETE',
+          credentials: 'include',
+        });
+  
+        if (response.ok) {
+          router.push('/logout');
+        } else {
+          console.error('Error deleting account');
+        }
+      } catch (error) {
+        console.error('Error deleting account', error);
+      }
+    }
+  };  
   
 const handlePhotoChange = async (e) => {
   const file = e.target.files[0];
@@ -269,6 +288,7 @@ const handlePhotoChange = async (e) => {
           <Link href="/changePassword">
             <button className="btn btn-success">Change Password</button>
           </Link>
+          <button className="btn btn-danger" onClick={handleDeleteAccount}>Delete Account</button>
         </div>
       </div>
     </div>
