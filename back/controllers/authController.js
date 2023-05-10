@@ -3,6 +3,8 @@ const { default: mongoose } = require('mongoose');
 const User = require('../models/user');
 const postController = require('./postController');
 const db = require('../config/database');
+const fs = require('fs');
+const path = require('path');
 const nodemailer = require('nodemailer');
 const { promisify } = require('util');
 const Notification = require('../models/notification');
@@ -372,26 +374,70 @@ exports.isUserVerified = async (userId) => {
   }
 };
 
+const deleteUserData = async (userId) => {
+
+    // Buscar al usuario por el ID
+    const user = await User.findById(userId);
+    if (!user) {
+      console.error(`Error: User not found with ID ${userId}`);
+      return;
+    }
+
+// Eliminar las fotos de los posts del usuario
+const posts = await Post.find({ createdBy: userId });
+for (const post of posts) {
+  if (post.photos) {
+    for (const photo of post.photos) {
+      if (typeof photo === 'string') {
+        try {
+          const imagePath = path.join(__dirname, '..', photo);
+          fs.unlinkSync(imagePath);
+        } catch (err) {
+          console.error(`Error deleting image for post ${post._id}: ${err.message}`);
+        }
+      }
+    }
+  }
+}
+
+  // Eliminar las fotos de las ofertas creadas por el usuario
+  const offers = await Offer.find({ createdBy: userId });
+  for (const offer of offers) {
+    if (offer.photos) {
+      for (const photo of offer.photos) {
+        try {
+          const imagePath = path.join(__dirname, '..', photo);
+          fs.unlinkSync(imagePath);
+        } catch (err) {
+          console.error(`Error deleting image for offer ${offer._id}: ${err.message}`);
+        }
+      }
+    }
+  }
+
+  // Eliminar la foto del perfil del usuario
+  if (user.photo) {
+    try {
+      const imagePath = path.join(__dirname, '..', user.photo);
+      fs.unlinkSync(imagePath);
+    } catch (err) {
+      console.error(`Error deleting profile image for user ${user._id}: ${err.message}`);
+    }
+  }
+
+  // Eliminar las notificaciones del usuario
+  await Notification.deleteMany({ recipient: userId });
+
+  // Eliminar los posts y ofertas del usuario
+  await Post.deleteMany({ createdBy: userId });
+  await Offer.deleteMany({ createdBy: userId });
+
+  // Finalmente, eliminar al usuario
+  await User.deleteOne({ _id: userId });
+};
 
 exports.deleteAccount = async (req, res, next) => {
-
-  const deleteUserData = async (userId) => {
-    // Eliminar las notificaciones del usuario
-    await Notification.deleteMany({ recipient: userId });
   
-    // Eliminar los posts y ofertas del usuario
-    const posts = await Post.find({ createdBy: userId });
-    for (const post of posts) {
-      await postController.deletePostById(post._id);
-    }
-  
-    // Eliminar las ofertas creadas por el usuario
-    await Offer.deleteMany({ createdBy: userId });
-  
-    // Finalmente, eliminar al usuario
-    await User.deleteOne({ _id: userId });
-  };
-
   try {
     const user = await User.findById(req.session.userId);
 
