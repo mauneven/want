@@ -449,7 +449,7 @@ exports.deleteAccount = async (req, res, next) => {
     user.isDeleted = true;
     user.deleteGracePeriodStart = Date.now();
     // Establecer un periodo de gracia de 30 días
-    user.deleteGracePeriodEnd = Date.now() + 60 * 1000;
+    user.deleteGracePeriodEnd = Date.now() + 1000 * 60 * 60 * 24 * 24;
     await user.save();
 
     // Programar la eliminación del usuario después del periodo de gracia
@@ -459,7 +459,7 @@ exports.deleteAccount = async (req, res, next) => {
       } catch (err) {
         console.error(`Error deleting user data for user ${user._id}:`, err);
       }
-    }, 60 * 1000); // Temporizador de 30 días
+    }, 1000 * 60 * 60 * 24 * 24); // Temporizador de 30 días
 
     // Cerrar sesión del usuario
     req.session.destroy();
@@ -467,6 +467,27 @@ exports.deleteAccount = async (req, res, next) => {
     res.sendStatus(204);
   } catch (err) {
     next(err);
+  }
+};
+
+exports.checkPendingDeletion = async (req, res) => {
+  try {
+    if (req.session.userId) {
+      const user = await User.findById(req.session.userId);
+      if (user) {
+        if (user.isDeleted) {
+          res.status(200).json({ pendingDeletion: true, gracePeriodEnd: user.deleteGracePeriodEnd });
+        } else {
+          res.status(200).json({ pendingDeletion: false });
+        }
+      } else {
+        res.status(404).json({ error: 'User not found' });
+      }
+    } else {
+      res.status(401).json({ error: 'Unauthorized' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Modal, Button } from 'react-bootstrap';
 import DetailsModal from '@/components/offer/DetailsModal';
+import { validations } from '@/utils/validations';
 
 export default function sentOffers() {
   const [offers, setOffers] = useState([]);
@@ -18,35 +19,7 @@ export default function sentOffers() {
   };
 
   useEffect(() => {
-    const checkLoggedInAndBlockedAndVerified = async () => {
-      const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
-        credentials: 'include',
-      });
-
-      if (!loggedInResponse.ok) {
-        router.push('/login');
-        return;
-      }
-
-      const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
-        credentials: 'include',
-      });
-
-      if (!blockedResponse.ok) {
-        router.push('/blocked');
-        return;
-      }
-
-      const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
-        credentials: 'include',
-      });
-
-      if (!verifiedResponse.ok) {
-        router.push('/is-not-verified');
-      }
-    };
-
-    checkLoggedInAndBlockedAndVerified();
+    validations(router); 
   }, []);
 
   useEffect(() => {

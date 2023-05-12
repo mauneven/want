@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { validations } from '@/utils/validations';
 
 const EditProfile = () => {
   const router = useRouter();
@@ -15,35 +15,7 @@ const EditProfile = () => {
   const [fileSizeError, setFileSizeError] = useState(false);
 
   useEffect(() => {
-    const checkLoggedInAndBlockedAndVerified = async () => {
-      const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
-        credentials: 'include',
-      });
-  
-      if (!loggedInResponse.ok) {
-        router.push('/login');
-        return;
-      }
-  
-      const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
-        credentials: 'include',
-      });
-  
-      if (!blockedResponse.ok) {
-        router.push('/blocked');
-        return;
-      }
-  
-      const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
-        credentials: 'include',
-      });
-  
-      if (!verifiedResponse.ok) {
-        router.push('/is-not-verified');
-      }
-    };
-  
-    checkLoggedInAndBlockedAndVerified();
+    validations(router); 
   }, []);
 
   useEffect(() => {

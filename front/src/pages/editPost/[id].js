@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Location from '@/components/locations/Location';
 import PostCategory from '@/components/categories/Categories';
 import { Carousel } from 'react-bootstrap';
+import { validations } from '@/utils/validations';
 
 const EditPost = () => {
   const router = useRouter();
@@ -34,6 +35,10 @@ const EditPost = () => {
   const [previewPrice, setPreviewPrice] = useState('');
   const [previewImage, setPreviewImage] = useState(null);
   const [photoUrl, setPhotoUrl] = useState(null);
+
+  useEffect(() => {
+    validations(router); 
+  }, []);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
