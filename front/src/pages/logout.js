@@ -10,11 +10,6 @@ const Logout = () => {
         });
 
         if (response.ok) {
-          // Eliminamos el estado del usuario tanto en el servidor como en el cliente
-          await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/logout`, {
-            method: 'POST',
-            credentials: 'include',
-          });
           localStorage.removeItem('user');
         } else {
           console.error('Error log out:', response.status, response.statusText);
@@ -31,7 +26,7 @@ const Logout = () => {
 
   return (
     <div className="container">
-      <h1>See you soon...</h1>
+      <h1>See you soon...</h1>  
     </div>
   );
 };
