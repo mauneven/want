@@ -69,22 +69,19 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
-// Definir el puerto según el entorno
-const port = process.env.NODE_ENV === 'production' ? process.env.PORT : 4000;
+// para la main
+/*
+const options = {
+  key: fs.readFileSync('/etc/letsencrypt/live/want.com.co/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/want.com.co/fullchain.pem')
+};
 
-if (process.env.NODE_ENV === 'production') {
-  // para la main
-  const options = {
-    key: fs.readFileSync('/etc/letsencrypt/live/want.com.co/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/want.com.co/fullchain.pem')
-  };
+https.createServer(options, app).listen(4000, () => {
+  console.log('Server started on port 4000');
+});*/
 
-  https.createServer(options, app).listen(port, () => {
-    console.log(`Server started on port ${port}`);
-  });
-} else {
-  // para development
-  app.listen(port, () => {
-    console.log(`Server started on port ${port}`);
-  });
-}
+// para development
+
+app.listen(4000, () => {
+  console.log('Server started on port 4000');
+});
