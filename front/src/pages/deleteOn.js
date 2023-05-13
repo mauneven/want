@@ -1,13 +1,17 @@
-import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
+import { validations } from '@/utils/validations';
+import { useEffect } from 'react';
 
 const DeleteOn = () => {
   const router = useRouter();
 
   const handleContinueDeletion = () => {
-    router.push('/logout');
+    window.location.href = '/logout'; // Redireccionar directamente a la página de Logout
   };
+
+  useEffect(() => {
+    validations(router); 
+  }, []);
 
   const handleCancelDeletion = async () => {
     try {

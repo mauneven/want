@@ -28,12 +28,13 @@ export const validations = async (router) => {
     }
   
     const deletionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-pending-deletion`, {
-      credentials: 'include',
-    });
-  
-    if (deletionResponse.ok) {
-      router.push('/deleteOn');
-      return;
-    }
+        credentials: 'include',
+      });
+    
+      const deletionData = await deletionResponse.json();
+      if (deletionData.pendingDeletion) {
+        router.push('/deleteOn');
+        return;
+      }
   };
   

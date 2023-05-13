@@ -164,8 +164,10 @@ exports.isLoggedIn = (req, res, next) => {
 
 exports.logout = async (req, res, next) => {
   try {
-    await req.session.destroy();
-    res.clearCookie('connect.sid');
+    if (req.session) {
+      await req.session.destroy();
+      res.clearCookie('connect.sid');
+    }
     res.sendStatus(200);
   } catch (err) {
     next(err);
@@ -474,14 +476,10 @@ exports.checkPendingDeletion = async (req, res) => {
   try {
     if (req.session.userId) {
       const user = await User.findById(req.session.userId);
-      if (user) {
-        if (user.isDeleted) {
-          res.status(200).json({ pendingDeletion: true, gracePeriodEnd: user.deleteGracePeriodEnd });
-        } else {
-          res.status(200).json({ pendingDeletion: false });
-        }
+      if (user && user.isDeleted) {
+        res.status(200).json({ pendingDeletion: true });
       } else {
-        res.status(404).json({ error: 'User not found' });
+        res.status(200).json({ pendingDeletion: false });
       }
     } else {
       res.status(401).json({ error: 'Unauthorized' });
