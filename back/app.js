@@ -51,7 +51,6 @@ app.use(async (req, res, next) => {
     const user = await User.findById(userId);
     if (user) {
       req.user = user;
-      req.session.user = user; // Añade esta línea para actualizar la sesión
     } else {
       delete req.session.userId;
     }
@@ -66,7 +65,9 @@ app.use("/api", docxRoutes);
 app.use('/api', reportRoutes);
 app.use((err, req, res, next) => {
   console.error(err);
-  res.status(500).send('Something broke!');
+  if (!res.headersSent) { // Verifica si los encabezados de respuesta ya han sido enviados
+    res.status(500).send('Something broke!'); // Envía la respuesta solo si los encabezados aún no se han enviado
+  }
 });
 
 // para la main
