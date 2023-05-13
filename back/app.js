@@ -37,7 +37,15 @@ app.use(session({
   saveUninitialized: false,
   store: MongoStore.create({
     mongoUrl: 'mongodb+srv://mauneven:admin123@want.oik7qz6.mongodb.net/want?retryWrites=true&w=majority',
-    ttl: 14 * 24 * 60 * 60 // = 14 days. Default
+    autoRemove: 'native', // default
+    touchAfter: 24 * 3600, // time period in seconds, here it's 24 hours
+    ttl: 14 * 24 * 60 * 60, // = 14 days. Default
+    autoRemoveInterval: 10, // Value in minutes. Default
+    crypto: {
+      secret: 'squirrel',
+      algorithm: 'aes256',
+      encoding: 'hex'
+    },
   }),
   cookie: {
     secure: process.env.NODE_ENV === 'production',
