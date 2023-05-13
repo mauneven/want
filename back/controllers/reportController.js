@@ -4,6 +4,7 @@ const User = require('../models/user');
 const Offer = require('../models/offer');
 const path = require('path');
 const fs = require('fs');
+const Notification = require('../models/notification');
 const { isUserVerified } = require('./authController')
 
 // controllers/reportController.js
@@ -181,6 +182,15 @@ exports.createOfferReport = async (req, res, next) => {
         });
       }
       await Offer.deleteOne({ _id: offerId });
+    
+      // Encuentra la notificación correspondiente al offerId de la oferta que se está eliminando.
+      const offerRegex = new RegExp(`Offer ${offer._id}`);
+      const notification = await Notification.findOne({ content: { $regex: offerRegex } });
+    
+      // Elimina la notificación relacionada con la oferta reportada
+      if (notification) {
+        await Notification.deleteOne({ _id: notification._id });
+      }
     }
 
     res.status(201).json(report);

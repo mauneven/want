@@ -5,6 +5,7 @@ import Location from '@/components/locations/Location';
 import WordsFilter from '@/badWordsFilter/WordsFilter.js';
 import { useRef } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
+import { validations } from '@/utils/validations';
 
 const CreatePost = () => {
   const [title, setTitle] = useState('');
@@ -30,35 +31,7 @@ const CreatePost = () => {
   const [previewPrice, setPreviewPrice] = useState('');
 
   useEffect(() => {
-    const checkLoggedInAndBlockedAndVerified = async () => {
-      const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
-        credentials: 'include',
-      });
-
-      if (!loggedInResponse.ok) {
-        router.push('/login');
-        return;
-      }
-
-      const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
-        credentials: 'include',
-      });
-
-      if (!blockedResponse.ok) {
-        router.push('/blocked');
-        return;
-      }
-
-      const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
-        credentials: 'include',
-      });
-
-      if (!verifiedResponse.ok) {
-        router.push('/is-not-verified');
-      }
-    };
-
-    checkLoggedInAndBlockedAndVerified();
+    validations(router); 
   }, []);
 
   const handleFileChange = (e) => {
@@ -246,7 +219,6 @@ const CreatePost = () => {
                 id="photo"
                 accept="image/png, image/jpeg"
                 onChange={handleFileChange}
-                required
                 disabled={photos.length >= 4}
               />
             </div>

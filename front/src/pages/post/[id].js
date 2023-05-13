@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import RelatedPosts from '@/components/posts/RelatedPosts';
+import ReportPostModal from '@/components/report/ReportPostModal';
 
 const PostDetails = () => {
   const router = useRouter();
@@ -25,6 +26,28 @@ const PostDetails = () => {
   };
 
   const [mobileDevice, setMobileDevice] = useState(false);
+
+  const handleReportPost = async (postId, description) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/report/post/${postId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ description }),
+        credentials: 'include', // Añade esta línea
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Reporte de post exitoso:', data);
+      } else {
+        console.error('Error al reportar el post:', response);
+      }
+    } catch (error) {
+      console.error('Error al reportar el post:', error);
+    }
+  };
 
   const handleImageClick = () => {
     setShowModal(true);
@@ -158,6 +181,7 @@ const PostDetails = () => {
             <Link href={`/createOffer?postId=${id}`}>
               <button className="btn btn-offer">Make an offer</button>
             </Link>
+            <ReportPostModal postId={post._id} onReport={handleReportPost} />
           </div>
         </div>
       </div>

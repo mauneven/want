@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { validations } from '@/utils/validations';
 
 const EditProfile = () => {
   const router = useRouter();
@@ -15,35 +15,7 @@ const EditProfile = () => {
   const [fileSizeError, setFileSizeError] = useState(false);
 
   useEffect(() => {
-    const checkLoggedInAndBlockedAndVerified = async () => {
-      const loggedInResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-logged-in`, {
-        credentials: 'include',
-      });
-  
-      if (!loggedInResponse.ok) {
-        router.push('/login');
-        return;
-      }
-  
-      const blockedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/is-blocked`, {
-        credentials: 'include',
-      });
-  
-      if (!blockedResponse.ok) {
-        router.push('/blocked');
-        return;
-      }
-  
-      const verifiedResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-verified`, {
-        credentials: 'include',
-      });
-  
-      if (!verifiedResponse.ok) {
-        router.push('/is-not-verified');
-      }
-    };
-  
-    checkLoggedInAndBlockedAndVerified();
+    validations(router); 
   }, []);
 
   useEffect(() => {
@@ -87,6 +59,25 @@ const EditProfile = () => {
     }
   
     return true;
+  };  
+
+  const handleDeleteAccount = async () => {
+    if (window.confirm('Are you sure you want to delete your account? This action is irreversible.')) {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/delete-account`, {
+          method: 'DELETE',
+          credentials: 'include',
+        });
+  
+        if (response.ok) {
+          router.push('/logout');
+        } else {
+          console.error('Error deleting account');
+        }
+      } catch (error) {
+        console.error('Error deleting account', error);
+      }
+    }
   };  
   
 const handlePhotoChange = async (e) => {
@@ -157,7 +148,7 @@ const handlePhotoChange = async (e) => {
 
   const inputFields = [{ name: 'firstName', label: 'First Name', type: 'text', value: firstName, onChange: (e) => setFirstName(e.target.value), required: true, }, { name: 'lastName', label: 'Last Name', type: 'text', value: lastName, onChange: (e) => setLastName(e.target.value), required: true, }, { name: 'phone', label: 'Phone', type: 'text', value: phone, onChange: (e) => setPhone(e.target.value), required: true, }, {
     name: 'birthdate',
-    label: 'Fecha de nacimiento',
+    label: 'Birthdate',
     type: 'date',
     value: birthdate,
     onChange: (e) => setBirthdate(e.target.value),
@@ -191,7 +182,7 @@ const handlePhotoChange = async (e) => {
                   alignItems: 'center',
                 }}
               >
-                <i className="bi bi-pencil text-primary"></i> Cambiar foto de perfil
+                <i className="bi bi-pencil text-primary"></i> Change profile photo
               </div>
             </label>
             <input
@@ -236,14 +227,14 @@ const handlePhotoChange = async (e) => {
                   className="btn btn-secondary me-3"
                   onClick={handleCancel}
                 >
-                  Cancelar y dejar como estaba
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   className="btn btn-primary"
                   disabled={!photo}
                 >
-                  Guardar los nuevos cambios
+                  Update
                 </button>
               </>
             )}
@@ -254,21 +245,22 @@ const handlePhotoChange = async (e) => {
                   className="btn btn-secondary me-3"
                   onClick={handleCancel}
                 >
-                  Cancelar y dejar como estaba
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   className="btn btn-primary"
                   disabled={!editingField}
                 >
-                  Guardar los nuevos cambios
+                  Update
                 </button>
               </>
             )}
           </form>
           <Link href="/changePassword">
-            <button className="btn btn-success">Cambiar contraseña</button>
+            <button className="btn btn-success">Change Password</button>
           </Link>
+          <button className="btn btn-danger" onClick={handleDeleteAccount}>Delete Account</button>
         </div>
       </div>
     </div>

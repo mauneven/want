@@ -19,5 +19,8 @@ router.get('/is-blocked', authController.checkBlocked);
 router.post('/verify/:token', authController.verifyUser);
 router.post('/resend-verification', authController.resendVerification);
 router.get('/check-verified', authController.checkVerified);
+router.delete('/delete-account', authController.deleteAccount);
+router.get('/check-pending-deletion', authController.checkPendingDeletion);
+router.put('/cancel-deletion-process', authController.cancelDeletionProcess);
 
 module.exports = router;

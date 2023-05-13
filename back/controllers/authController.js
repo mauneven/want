@@ -1,16 +1,21 @@
 const bcrypt = require('bcrypt');
 const { default: mongoose } = require('mongoose');
 const User = require('../models/user');
-
+const postController = require('./postController');
 const db = require('../config/database');
+const fs = require('fs');
+const path = require('path');
 const nodemailer = require('nodemailer');
 const { promisify } = require('util');
+const Notification = require('../models/notification');
+const Post = require('../models/post');
+const Offer = require('../models/offer');
 
 exports.register = async (req, res, next) => {
   try {
     const User = mongoose.model('User');
 
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName, phone, birthdate } = req.body;
 
     // Check if user already exists
     const userExists = await User.findOne({ email });
@@ -31,6 +36,8 @@ exports.register = async (req, res, next) => {
       password: hashedPassword,
       firstName,
       lastName,
+      phone,
+      birthdate,
       verificationToken: token,
       verificationTokenExpires: Date.now() + 1800000,
     });
@@ -157,8 +164,10 @@ exports.isLoggedIn = (req, res, next) => {
 
 exports.logout = async (req, res, next) => {
   try {
-    await req.session.destroy();
-    res.clearCookie('connect.sid');
+    if (req.session) {
+      await req.session.destroy();
+      res.clearCookie('connect.sid');
+    }
     res.sendStatus(200);
   } catch (err) {
     next(err);
@@ -364,6 +373,170 @@ exports.isUserVerified = async (userId) => {
   } catch (err) {
     console.error(err);
     return false;
+  }
+};
+
+const deleteUserData = async (userId) => {
+
+    // Buscar al usuario por el ID
+    const user = await User.findById(userId);
+    if (!user) {
+      console.error(`Error: User not found with ID ${userId}`);
+      return;
+    }
+
+// Eliminar las fotos de los posts del usuario
+const posts = await Post.find({ createdBy: userId });
+for (const post of posts) {
+  if (post.photos) {
+    for (const photo of post.photos) {
+      if (typeof photo === 'string') {
+        try {
+          const imagePath = path.join(__dirname, '..', photo);
+          fs.unlinkSync(imagePath);
+        } catch (err) {
+          console.error(`Error deleting image for post ${post._id}: ${err.message}`);
+        }
+      }
+    }
+  }
+}
+
+  // Eliminar las fotos de las ofertas creadas por el usuario
+  const offers = await Offer.find({ createdBy: userId });
+  for (const offer of offers) {
+    if (offer.photos) {
+      for (const photo of offer.photos) {
+        try {
+          const imagePath = path.join(__dirname, '..', photo);
+          fs.unlinkSync(imagePath);
+        } catch (err) {
+          console.error(`Error deleting image for offer ${offer._id}: ${err.message}`);
+        }
+      }
+    }
+  }
+
+  // Eliminar la foto del perfil del usuario
+  if (user.photo) {
+    try {
+      const imagePath = path.join(__dirname, '..', user.photo);
+      fs.unlinkSync(imagePath);
+    } catch (err) {
+      console.error(`Error deleting profile image for user ${user._id}: ${err.message}`);
+    }
+  }
+
+  // Eliminar las notificaciones del usuario
+  await Notification.deleteMany({ recipient: userId });
+
+  // Eliminar los posts y ofertas del usuario
+  await Post.deleteMany({ createdBy: userId });
+  await Offer.deleteMany({ createdBy: userId });
+
+  // Finalmente, eliminar al usuario
+  await User.deleteOne({ _id: userId });
+};
+
+exports.deleteAccount = async (req, res, next) => {
+  
+  try {
+    const user = await User.findById(req.session.userId);
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    // Marcar la cuenta como pendiente de eliminación
+    user.isDeleted = true;
+    user.deleteGracePeriodStart = Date.now();
+    // Establecer un periodo de gracia de 30 días
+    user.deleteGracePeriodEnd = Date.now() + 1000 * 60 * 60 * 24 * 24;
+    await user.save();
+
+    // Programar la eliminación del usuario después del periodo de gracia
+    setTimeout(async () => {
+      try {
+        await deleteUserData(user._id);
+      } catch (err) {
+        console.error(`Error deleting user data for user ${user._id}:`, err);
+      }
+    }, 1000 * 60 * 60 * 24 * 24); // Temporizador de 30 días
+
+    // Cerrar sesión del usuario
+    req.session.destroy();
+
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.checkPendingDeletion = async (req, res) => {
+  try {
+    if (req.session.userId) {
+      const user = await User.findById(req.session.userId);
+      if (user && user.isDeleted) {
+        res.status(200).json({ pendingDeletion: true });
+      } else {
+        res.status(200).json({ pendingDeletion: false });
+      }
+    } else {
+      res.status(401).json({ error: 'Unauthorized' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.checkPendingDeletions = async () => {
+  try {
+    const usersToDelete = await User.find({ isDeleted: true, deleteGracePeriodEnd: { $lte: Date.now() } });
+
+    for (const user of usersToDelete) {
+      // Eliminar las notificaciones del usuario
+      await Notification.deleteMany({ recipient: user._id });
+
+      // Eliminar los posts y ofertas del usuario
+      const posts = await Post.find({ createdBy: user._id });
+      for (const post of posts) {
+        await postController.deletePostById(post._id); // Fix aquí
+      }
+
+      // Eliminar las ofertas creadas por el usuario
+      await Offer.deleteMany({ createdBy: user._id });
+
+      // Finalmente, eliminar al usuario
+      await User.deleteOne({ _id: user._id });
+    }
+  } catch (err) {
+    console.error('Error checking pending deletions:', err);
+  }
+};
+
+// Llama al método checkPendingDeletions al iniciar el servidor
+exports.checkPendingDeletions();
+
+// Configura setInterval para ejecutar checkPendingDeletions cada minuto
+setInterval(exports.checkPendingDeletions, 60 * 1000);
+
+
+exports.cancelDeletionProcess = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.session.userId);
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    user.isDeleted = false;
+    user.deleteGracePeriodStart = undefined;
+    user.deleteGracePeriodEnd = undefined;
+    await user.save();
+
+    res.status(200).send('Deletion process cancelled');
+  } catch (err) {
+    next(err);
   }
 };
 

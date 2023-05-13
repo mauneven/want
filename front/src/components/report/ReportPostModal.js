@@ -19,7 +19,7 @@ const ReportPostModal = ({ postId, onReport }) => {
 
   return (
     <>
-      <Button type='none' variant="danger rounded-circle btn-report" onClick={handleShow}>
+      <Button type='none' variant="rounded-circle" onClick={handleShow}>
       <i className="bi bi-flag"></i>
       </Button>
 

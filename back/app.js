@@ -8,6 +8,7 @@ const reportRoutes = require('./routes/reportRoutes');
 const User = require('./models/user');
 const offerRoutes = require('./routes/offerRoutes');
 const docxRoutes = require('./routes/docxRoutes.js');
+const authController = require('./controllers/authController');
 const https = require('https');
 const fs = require('fs');
 
@@ -63,27 +64,27 @@ app.use('/api', postRoutes);
 app.use('/api', offerRoutes);
 app.use("/api", docxRoutes);
 app.use('/api', reportRoutes);
-
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).send('Something broke!');
 });
 
-// para la main
+// Definir el puerto según el entorno
+const port = process.env.NODE_ENV === 'production' ? process.env.PORT : 4000;
 
-const options = {
-  key: fs.readFileSync('/etc/letsencrypt/live/want.com.co/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/want.com.co/fullchain.pem')
-};
+if (process.env.NODE_ENV === 'production') {
+  // para la main
+  const options = {
+    key: fs.readFileSync('/etc/letsencrypt/live/want.com.co/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/want.com.co/fullchain.pem')
+  };
 
-https.createServer(options, app).listen(4000, () => {
-  console.log('Server started on port 4000');
-});
-
-
-// para development
-/*
-app.listen(4000, () => {
-  console.log('Server started on port 4000');
-});
-*/
+  https.createServer(options, app).listen(port, () => {
+    console.log(`Server started on port ${port}`);
+  });
+} else {
+  // para development
+  app.listen(port, () => {
+    console.log(`Server started on port ${port}`);
+  });
+}
