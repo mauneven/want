@@ -185,15 +185,15 @@ exports.sendResetPasswordEmail = async ({ email, token }) => {
   });
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: 'Want | Seguridad <wanttests@gmail.com>', // sender address
+    from: 'Want | Security <wanttests@gmail.com>', // sender address
     to: email, // list of receivers
-    subject: 'Restablece tu contraseña', // Subject line
+    subject: 'Reset Your Password', // Subject line
     html: `
-    <p>Haz pedido restablecer tu contraseña en Want, puedes hacerlo en el siguiente link:</p>
-    <a href="want.com.co/recoveryPassword/${token}">Reset Password</a>
-    <p>Si tu no pediste restablecer tu contraseña, pasa este mail por alto y tu contraseña no va a cambiarse</p>
+    <p>You have requested to reset your password on Want. You can do so by following the link below:</p>
+    <a href="www.want.com.co/recoveryPassword/${token}">Reset Password</a>
+    <p>If you did not request a password reset, please ignore this email and your password will not be changed.</p>
   `
-  });
+  });  
 
   //console.log('Message sent: %s', info.messageId);
 };
@@ -323,14 +323,14 @@ const sendVerificationEmail = async (email, verificationToken) => {
   });
 
   const mailOptions = {
-    from: 'Want | Verificacion <wanttests@gmail.com>',
+    from: 'Want | Verification <wanttests@gmail.com>',
     to: email,
-    subject: 'Verifica tu cuenta',
+    subject: 'Verify Your Account',
     html: `
-    <p>Estas a un paso de verificar tu cuenta en Want, si quieres hacer da click al siguiente link:</p>
-    <a href="want.com.co/verify-email/${verificationToken}">Verify Email Address</a>
+    <p>You are one step away from verifying your account on Want. If you want to proceed, click on the following link:</p>
+    <a href="www.want.com.co/verify-email/${verificationToken}">Verify Email Address</a>
   `,
-  };
+  };  
 
   try {
     await transporter.sendMail(mailOptions);
