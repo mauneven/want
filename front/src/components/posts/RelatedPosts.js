@@ -185,14 +185,13 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
                     <img
                       src={
                         post.createdBy.photos
-                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photos}`
+                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
                           : "icons/person-circle.svg"
                       }
-                      alt="Profile"
+                      alt=""
                       className="createdBy-photos"
                     />
                     <small className="text-muted text-center">
-                      {console.log(`creador por : ${post.createdBy.role}`)}
                       {post.createdBy.firstName}
                     </small>
                   </div>

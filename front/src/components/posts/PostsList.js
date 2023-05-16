@@ -331,7 +331,6 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                       className="createdBy-photo"
                     />
                     <small className="text-muted text-center">
-                      {console.log(`creador por : ${post.createdBy.role}`)}
                       {post.createdBy.firstName}
                     </small>
                   </div>
