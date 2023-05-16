@@ -2,15 +2,15 @@ import Head from 'next/head';
 import { Container, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const vision = "Nuestra visión es crear una plataforma que permita a los usuarios publicar sus necesidades y encontrar ofertas de otros usuarios en un entorno seguro y confiable. Queremos facilitar las negociaciones entre los usuarios y crear una comunidad de confianza en la que todos puedan beneficiarse del intercambio de bienes y servicios."
-const mission = "Nuestra misión es construir una plataforma fácil de usar que conecte a personas que necesitan algo con personas que pueden ofrecer algo. Queremos hacer que sea fácil para los usuarios publicar sus necesidades y encontrar ofertas de otros, al mismo tiempo que proporcionamos un entorno seguro y confiable para las negociaciones. Buscamos crear una plataforma que beneficie a todos los involucrados y fomente la colaboración y el apoyo mutuo."
+const vision = "Our vision is to create a platform that allows users to post their needs and find offers from other users in a safe and reliable environment. We want to facilitate negotiations between users and create a trusted community where everyone can benefit from the exchange of goods and services."
+const mission = "Our mission is to build a user-friendly platform that connects people who need something with people who can offer something. We want to make it easy for users to post their needs and find offers from others while providing a secure and reliable environment for negotiations. We aim to create a platform that benefits all involved and fosters collaboration and mutual support."
 const values = [
-    "Colaboración: Creemos que trabajando juntos podemos lograr grandes cosas.",
-    "Confianza: Valoramos la confianza y nos esforzamos por crear un entorno seguro y confiable para todos los usuarios.",
-    "Comunidad: Nuestro objetivo es construir una comunidad de individuos con ideas afines que se apoyen y ayuden mutuamente.",
-    "Innovación: Abrazamos la innovación y buscamos constantemente nuevas formas de mejorar nuestra plataforma.",
-    "Accesibilidad: Creemos que todos deberían tener acceso a nuestra plataforma y sus beneficios."
-  ];
+"Collaboration: We believe that by working together, we can achieve great things.",
+"Trust: We value trust and strive to create a safe and reliable environment for all users.",
+"Community: Our goal is to build a community of like-minded individuals who support and help each other.",
+"Innovation: We embrace innovation and constantly seek new ways to improve our platform.",
+"Accessibility: We believe that everyone should have access to our platform and its benefits."
+];
   
 const AboutPage = () => {
     return (

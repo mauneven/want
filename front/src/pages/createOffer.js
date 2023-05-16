@@ -199,10 +199,10 @@ const CreateOffer = () => {
               {isSubmitting ? (
                 <>
                   <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                  Creando oferta...
+                  Creating offer...
                 </>
               ) : (
-                "Crear oferta"
+                "Create offer"
               )}
             </button>
           </form>
@@ -234,10 +234,10 @@ const CreateOffer = () => {
               </button>
             )}
             <div className="card-body">
-              <h5 className="card-title">{title || "Título de la oferta"}</h5>
+              <h5 className="card-title">{title || "Offer title"}</h5>
               <h5 className="text-success">{Number(price).toLocaleString()}</h5>
-              <p className="card-text">{description || "Descripción de la oferta"}</p>
-              <p className="card-text">{contact || "Contacto"}</p>
+              <p className="card-text">{description || "Offer description"}</p>
+              <p className="card-text">{contact || "Contact"}</p>
             </div>
           </div>
         </div>
