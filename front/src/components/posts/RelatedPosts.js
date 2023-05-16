@@ -182,14 +182,14 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
                     </Link>
                   </div>
                   <div className="card-footer text-center">
-                    <img
+                  <img
                       src={
-                        post.createdBy.photos
+                        post.createdBy.photo
                           ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
                           : "icons/person-circle.svg"
                       }
                       alt=""
-                      className="createdBy-photos"
+                      className="createdBy-photo"
                     />
                     <small className="text-muted text-center">
                       {post.createdBy.firstName}
