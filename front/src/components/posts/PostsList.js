@@ -261,7 +261,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                                 src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`}
                                 className="d-block w-100"
                                 alt={`Slide ${index}`}
-                                style={{ objectFit: "cover", height: "100%" }}
+                                style={{ objectFit: "cover", height: "200px" }}
                                 loading="lazy"
                               />
                             </div>
