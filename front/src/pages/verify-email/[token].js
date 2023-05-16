@@ -12,18 +12,18 @@ const VerifyEmail = () => {
       fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/verify/${token}`, { method: 'POST' })
         .then(async (response) => {
           if (response.status === 200) {
-            setVerificationMessage('Acabas de verificarte, ya puedes postear.');
+            setVerificationMessage('You have been successfully verified. You can now post.');
           } else if (response.status === 409) {
-            setVerificationMessage('Tu correo ya fue confirmado.');
+            setVerificationMessage('Your email has already been confirmed.');
           } else if (response.status === 410) {
-            setVerificationMessage('Tu link de validación ha expirado, por favor, pide otro.');
+            setVerificationMessage('Your validation link has expired. Please request another one.');
           } else {
-            setVerificationMessage('Ha ocurrido un error al verificar tu correo electrónico.');
+            setVerificationMessage('An error occurred while verifying your email.');
           }
         })
         .catch((error) => {
-          console.error('Error al verificar el correo electrónico:', error);
-          setVerificationMessage('Ha ocurrido un error al verificar tu correo electrónico.');
+          console.error('Error verifying email:', error);
+          setVerificationMessage('An error occurred while verifying your email.');
         });
     }
   }, [token]);
@@ -31,7 +31,7 @@ const VerifyEmail = () => {
   const handleResendVerification = async (e) => {
     e.preventDefault();
 
-    // Reemplazar esta URL con la URL de tu API que maneja el reenvío de verificación
+    // Replace this URL with the URL of your API that handles resend verification
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/resend-verification`, {
       method: 'POST',
       headers: {
@@ -41,34 +41,33 @@ const VerifyEmail = () => {
     });
 
     if (response.ok) {
-      setVerificationMessage('Se ha enviado un nuevo correo de verificación. Por favor, revisa tu bandeja de entrada.');
+      setVerificationMessage('A new verification email has been sent. Please check your inbox.');
     } else {
-      setVerificationMessage('Ha ocurrido un error al reenviar el correo de verificación.');
+      setVerificationMessage('An error occurred while resending the verification email.');
     }
   };
 
   return (
     <div>
-      <h1>Verificación de correo electrónico</h1>
+      <h1>Email Verification</h1>
       {verificationMessage && <p>{verificationMessage}</p>}
       {(verificationMessage ===
-        'Tu link de validación ha expirado, por favor, pide otro.' ||
+        'Your validation link has expired. Please request another one.' ||
         verificationMessage ===
-        'Ha ocurrido un error al verificar tu correo electrónico.') && (
+        'An error occurred while verifying your email.') && (
           <form onSubmit={handleResendVerification}>
             <input
               type="email"
-              placeholder="Correo electrónico"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <button type="submit">Solicitar nuevo enlace de verificación</button>
+            <button type="submit">Request new verification link</button>
           </form>
         )}
     </div>
   );
-
 };
 
 export default VerifyEmail;
