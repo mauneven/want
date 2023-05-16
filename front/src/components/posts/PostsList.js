@@ -328,7 +328,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                           : "icons/person-circle.svg"
                       }
                       alt=""
-                      className="createdBy-photo"
+                      className="createdBy-photo p-1"
                     />
                     <small className="text-muted text-center">
                       {post.createdBy.firstName}
