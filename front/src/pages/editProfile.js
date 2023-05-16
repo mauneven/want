@@ -49,12 +49,12 @@ const EditProfile = () => {
     const maxSize = 50 * 1024 * 1024; // 50 MB
   
     if (!allowedExtensions.exec(file.name)) {
-      alert('El archivo debe ser de tipo jpg, jpeg o png.');
+      alert('The file have to be an jpg, jpeg o png.');
       return false;
     }
   
     if (file.size > maxSize) {
-      alert('El tamaño del archivo no puede superar los 50 MB.');
+      alert('Limit of 50 MB.');
       return false;
     }
   
@@ -62,7 +62,7 @@ const EditProfile = () => {
   };  
 
   const handleDeleteAccount = async () => {
-    if (window.confirm('Are you sure you want to delete your account? This action is irreversible.')) {
+    if (window.confirm('Are you sure you want to put your account on the delete queue?, Your account will be deleted on 24 days from now.')) {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/delete-account`, {
           method: 'DELETE',

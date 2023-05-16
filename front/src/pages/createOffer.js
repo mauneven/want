@@ -81,13 +81,13 @@ const CreateOffer = () => {
     setIsSubmitting(true);
 
     if (bwf.containsBadWord(title)) {
-      alert(`Escribiste una mala palabra en el titulo: ${bwf.devolverPalabra(title)}`);
+      alert(`you wrote a bad word in the title: ${bwf.devolverPalabra(title)}`);
       setIsSubmitting(false);
       return;
     }
 
     if (bwf.containsBadWord(description)) {
-      alert(`Escribiste una mala palabra en la descripción: ${bwf.devolverPalabra(description)}`);
+      alert(`you wrote a bad word in the description: ${bwf.devolverPalabra(description)}`);
       setIsSubmitting(false);
       return;
     }
@@ -116,10 +116,10 @@ const CreateOffer = () => {
       });
 
       if (response.ok) {
-        alert('Oferta creada exitosamente');
+        alert('Offer created');
         router.push(`/post/${postId}`);
       } else {
-        alert('Ocurrió un error al crear la oferta');
+        alert('There was an error, try again later or change the photos');
       }
     } catch (error) {
       console.error(error);
@@ -129,7 +129,7 @@ const CreateOffer = () => {
   };
 
   if (!post) {
-    return <p className="container mt-5">Cargando...</p>;
+    return <p className="container mt-5">Loading...</p>;
   }
 
   return (

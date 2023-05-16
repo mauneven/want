@@ -40,7 +40,7 @@ const PostDetails = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Reporte de post exitoso:', data);
+        console.log('Report success:', data);
       } else {
         console.error('Error al reportar el post:', response);
       }

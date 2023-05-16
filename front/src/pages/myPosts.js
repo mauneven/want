@@ -56,20 +56,20 @@ export default function MyPosts() {
     <>
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Eliminar Post</Modal.Title>
+          <Modal.Title>Delete this post</Modal.Title>
         </Modal.Header>
-        <Modal.Body>¿Estás seguro de que quieres eliminar este post?</Modal.Body>
+        <Modal.Body>You sure?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Cancelar
+            Cancel
           </Button>
           <Button variant="danger" onClick={handleDeletePost}>
-            Eliminar
+            Delete
           </Button>
         </Modal.Footer>
       </Modal>
       <div className="container">
-        <h1>Mis posts</h1>
+        <h1>Your posts</h1>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
           {posts.map((post) => (
             <div key={post._id} className="col">
@@ -145,11 +145,11 @@ export default function MyPosts() {
                       setShowModal(true);
                     }}
                   >
-                    <i className="bi bi-trash-fill">Eliminar post</i>
+                    <i className="bi bi-trash-fill">Delete</i>
                   </button>
                   <Link href={`/editPost/${post._id}`}>
                     <button className="ms-2 text-decoration-none btn btn-outline-success btn-sm">
-                      <i className="bi bi-pencil-fill">Editar Post</i>
+                      <i className="bi bi-pencil-fill">Edit</i>
                     </button>
                   </Link>
                 </div>

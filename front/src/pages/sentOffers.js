@@ -71,20 +71,20 @@ export default function sentOffers() {
       />
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Eliminar oferta</Modal.Title>
+          <Modal.Title>Delete offer</Modal.Title>
         </Modal.Header>
-        <Modal.Body>¿Estás seguro de que quieres eliminar esta oferta?</Modal.Body>
+        <Modal.Body>You're sure?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Cancelar
+            Cancel
           </Button>
           <Button variant="danger" onClick={handleDeleteOffer}>
-            Eliminar
+            Delete
           </Button>
         </Modal.Footer>
       </Modal>
       <div className="container">
-        <h1>Ofertas que he hecho</h1>
+        <h1>Offers you have done</h1>
         <div className="row">
           {offers.map((offer) => (
             <div key={offer._id} className="col-12 col-md-6">

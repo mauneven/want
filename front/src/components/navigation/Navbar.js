@@ -164,7 +164,7 @@ export default function MegaMenu({
             />
             <Nav.Link className="nav-item" onClick={() => router.push('/createPost')}>
               <Button className="btn-post rounded-pill p-2">
-                Want somehting?
+                Want Something?
               </Button>
             </Nav.Link>
             {user ? <Nav.Link className="nav-item"><Notifications /></Nav.Link> : null}

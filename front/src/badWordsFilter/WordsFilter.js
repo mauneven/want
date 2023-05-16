@@ -18,7 +18,7 @@ class WordsFilter {
       if (match) {
         return match[0];
       } else {
-        return "No hay nada";
+        return "Nothing";
       }
     }
   }
