@@ -190,7 +190,7 @@ exports.sendResetPasswordEmail = async ({ email, token }) => {
     subject: 'Reset Your Password', // Subject line
     html: `
     <p>You have requested to reset your password on Want. You can do so by following the link below:</p>
-    <a href="www.want.com.co/recoveryPassword/${token}">Reset Password</a>
+    <a href="https://want.com.co/recoveryPassword/${token}">Reset Password</a>
     <p>If you did not request a password reset, please ignore this email and your password will not be changed.</p>
   `
   });  
@@ -328,7 +328,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
     subject: 'Verify Your Account',
     html: `
     <p>You are one step away from verifying your account on Want. If you want to proceed, click on the following link:</p>
-    <a href="www.want.com.co/verify-email/${verificationToken}">Verify Email Address</a>
+    <a href="https://want.com.co/verify-email/${verificationToken}">Verify Email Address</a>
   `,
   };  
 
