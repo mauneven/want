@@ -2,15 +2,15 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 
 const categories = [
-  { id: 1, name: 'Tecnología', subcategories: ['Portátiles', 'PC de escritorio', 'Celulares', 'Tablets', 'Smartwatches', 'Accesorios para Dispositivos', 'Cámaras y Fotografía', 'Audio y Sonido', 'Consolas de Videojuegos'] },
-  { id: 2, name: 'Ropa', subcategories: ['Camisas', 'Camisetas', 'Chaquetas', 'Abrigos', 'Pantalones', 'Faldas', 'Vestidos', 'Zapatos', 'Tenis', 'Botas', 'Sandalias', 'Zapatillas', 'Sombreros'] },
-  { id: 3, name: 'Electrodomésticos', subcategories: ['Refrigeradores', 'Lavadoras', 'Secadoras', 'Cafeteras', 'Microondas', 'Licuadoras', 'Aspiradoras', 'Planchas'] },
-  { id: 4, name: 'Salud y Belleza', subcategories: ['Maquillaje', 'Cuidado de la Piel', 'Cuidado del Cabello', 'Fragancias y Perfumes', 'Suplementos y Vitaminas', 'Masajeadores y Relajación'] },
-  { id: 5, name: 'Vehículos', subcategories: ['Automóviles', 'Motocicletas', 'Camionetas', 'Bicicletas', 'Botes'] },
-  { id: 6, name: 'Del Hogar', subcategories: ['Muebles', 'Decoración', 'Iluminación', 'Baño', 'Cocina y Comedor', 'Exterior y Jardín', 'Suministros de Limpieza'] },
-  { id: 7, name: 'Vivienda y Hospedaje', subcategories: ['Casas en Arriendo', 'Casas en Venta', 'Apartamentos en Arriendo', 'Apartamentos en Venta', 'Apartaestudios', 'Casa Quinta en Arriendo', 'Habitaciones', 'Terrenos'] },
-  { id: 8, name: 'Suscripciones', subcategories: ['Netflix', 'Spotify', 'Apple Music', 'HBO Max', 'Crunchyroll', 'Tidal', 'Amazon Prime Video', 'Disney+', 'Xbox Game Pass', 'Play Station Plus', 'Discord Nitro'] },
-  { id: 9, name: 'Maquinaria Pesada', subcategories: ['Volquetas', 'Excavadoras', 'Motoniveladoras', 'Retroexcavadoras', 'Montacargas', 'Grúas', 'Bulldozers', 'Cargadores Frontales'] },
+  { id: 1, name: 'Technology', subcategories: ['Laptops', 'Desktop PCs', 'Mobile Phones', 'Tablets', 'Smartwatches', 'Device Accessories', 'Cameras and Photography', 'Audio and Sound', 'Video Game Consoles'] },
+  { id: 2, name: 'Clothing', subcategories: ['Shirts', 'T-Shirts', 'Jackets', 'Coats', 'Pants', 'Skirts', 'Dresses', 'Shoes', 'Sneakers', 'Boots', 'Sandals', 'Slippers', 'Hats'] },
+  { id: 3, name: 'Appliances', subcategories: ['Refrigerators', 'Washing Machines', 'Dryers', 'Coffee Makers', 'Microwaves', 'Blenders', 'Vacuum Cleaners', 'Irons'] },
+  { id: 4, name: 'Health and Beauty', subcategories: ['Makeup', 'Skin Care', 'Hair Care', 'Fragrances and Perfumes', 'Supplements and Vitamins', 'Massagers and Relaxation'] },
+  { id: 5, name: 'Vehicles', subcategories: ['Cars', 'Motorcycles', 'Trucks', 'Bicycles', 'Boats'] },
+  { id: 6, name: 'Home', subcategories: ['Furniture', 'Decoration', 'Lighting', 'Bathroom', 'Kitchen and Dining', 'Outdoor and Garden', 'Cleaning Supplies'] },
+  { id: 7, name: 'Housing and Accommodation', subcategories: ['Houses for Rent', 'Houses for Sale', 'Apartments for Rent', 'Apartments for Sale', 'Studio Apartments', 'Country Houses for Rent', 'Rooms', 'Land'] },
+  { id: 8, name: 'Subscriptions', subcategories: ['Netflix', 'Spotify', 'Apple Music', 'HBO Max', 'Crunchyroll', 'Tidal', 'Amazon Prime Video', 'Disney+', 'Xbox Game Pass', 'PlayStation Plus', 'Discord Nitro'] },
+  { id: 9, name: 'Heavy Machinery', subcategories: ['Dump Trucks', 'Excavators', 'Motor Graders', 'Backhoe Loaders', 'Forklifts', 'Cranes', 'Bulldozers', 'Front Loaders'] },
 ];
 
 export default function PostCategory({ 
@@ -71,22 +71,22 @@ export default function PostCategory({
       </option>
     ))
   ) : (
-    <option value="">Elije la subcategoría</option>
+    <option value="">Select subcategory</option>
   );
 
   return (
     <div className="d-flex flex-wrap align-items-center">
-      <label htmlFor="category-select" className="me-2 mb-0">Categoría</label>
+      <label htmlFor="category-select" className="me-2 mb-0">Category</label>
       <select id="category-select" className="form-select me-4" value={selectedCategory?.id} onChange={handleCategoryChange} required={isRequired}>
-        <option value="">Elije una categoría</option>
+        <option value="">Selected a category</option>
         {categoryOptions}
       </select>
 
       {selectedCategory && (
         <>
-          <label htmlFor="subcategory-select" className="me-2 mb-0">Sub categoría</label>
+          <label htmlFor="subcategory-select" className="me-2 mb-0">Sub category</label>
           <select id="subcategory-select" className="form-select" value={selectedSubcategory} onChange={handleSubcategoryChange} required={isRequired}>
-          <option value="">Elije la sub categoría</option>
+          <option value="">Select subcategory</option>
             {subcategoryOptions}
           </select>
         </>

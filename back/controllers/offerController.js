@@ -62,7 +62,7 @@ exports.createOffer = async (req, res, next) => {
     await offer.save();
 
     // Define notificationContent after initializing offer
-    const notificationContent = `Offer ${offer._id}: "${post.title}"`;
+    const notificationContent = `New offer ${offer.title}: on your post "${post.title}"`;
 
     await exports.sendNotification(post.createdBy, notificationContent, postId);
     res.status(201).json(offer);
