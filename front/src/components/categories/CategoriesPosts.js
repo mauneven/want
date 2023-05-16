@@ -26,7 +26,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
     } else if (mainCategory) {
       setDisplayCategory(mainCategory);
     } else {
-      setDisplayCategory('Todas las categorías');
+      setDisplayCategory('All categories');
     }
   
     handleClose();
@@ -35,7 +35,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
   const handleSeeAllCategories = () => {
     setMainCategory('');
     setSubcategory('');
-    setDisplayCategory('Todas las categorías');
+    setDisplayCategory('All categories');
     if (onCategorySelected) {
       onCategorySelected('', '');
     }
@@ -50,7 +50,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
 
       <Modal show={show || isShown} onHide={handleClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Elije una categoría</Modal.Title>
+          <Modal.Title>Select a category</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <PostCategory
@@ -60,9 +60,9 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleSeeAllCategories}>Ver todas las categorías</Button>
-          <Button variant="primary" onClick={handleClose}>Cancelar</Button>
-          <Button variant="success" onClick={handleAccept}>Aceptar</Button>
+          <Button variant="secondary" onClick={handleSeeAllCategories}>See all categories</Button>
+          <Button variant="primary" onClick={handleClose}>Cancel</Button>
+          <Button variant="success" onClick={handleAccept}>Accept</Button>
         </Modal.Footer>
       </Modal>
     </>
