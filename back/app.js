@@ -79,7 +79,7 @@ app.use((err, req, res, next) => {
 });
 
 // para la main
-/*
+
 
 const options = {
   key: fs.readFileSync('/etc/letsencrypt/live/want.com.co/privkey.pem'),
@@ -88,10 +88,10 @@ const options = {
 
 https.createServer(options, app).listen(4000, () => {
   console.log('Server started on port 4000');
-});*/
+});
 
 // para development
-
+/*
 app.listen(4000, () => {
   console.log('Server started on port 4000');
-});
+});*/
