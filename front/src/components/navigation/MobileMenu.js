@@ -119,7 +119,7 @@ export default function MegaMenu({
   }, []);
 
   return (
-    <Navbar className="mobile-navbar navbar-blur" expand="lg">
+    <Navbar className="mobile-navbar navbar-blur p-3" expand="lg">
       <Nav className="d-flex justify-content-start align-items-center">
         <Navbar.Brand onClick={handleLogoClick} className="divhover">
           <Image
@@ -140,7 +140,7 @@ export default function MegaMenu({
       </Nav>
       <Navbar.Collapse
         id="mobile-navbar-nav"
-        className="justify-content-end"
+        className="justify-content-end px-3"
       >
         <Nav>
           {user ? (

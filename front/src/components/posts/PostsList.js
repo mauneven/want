@@ -173,8 +173,8 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   };
 
   const Placeholder = () => (
-    <div className="col-md-3">
-      <ContentLoader speed={2} width={260} height={450} viewBox="0 0 260 450" backgroundColor="#f3f3f3" foregroundColor="#ecebeb">
+    <div className="col mx-auto">
+      <ContentLoader speed={2} width="100%" height={450} viewBox="0 0 260 450" backgroundColor="#f3f3f3" foregroundColor="#ecebeb">
         <rect x="0" y="0" rx="10" ry="10" width="260" height="310" />
         <rect x="0" y="330" rx="3" ry="3" width="260" height="20" />
         <rect x="0" y="360" rx="3" ry="3" width="260" height="20" />
@@ -194,7 +194,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
     return (
       <nav aria-label="Page navigation example pt-2 pb-2">
         <ul className="pagination justify-content-center">
-          <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+          <li className={`page-item m-1 ${currentPage === 1 ? "disabled" : ""}`}>
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               className="btn btn-success"
@@ -204,7 +204,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
             </button>
           </li>
           {pageNumbers.map((number) => (
-            <li key={number} className="page-item">
+            <li key={number} className="page-item m-1">
               <button
                 onClick={() => handlePageChange(number)}
                 className={`btn btn-success ${number === currentPage ? "active" : ""}`}
@@ -213,7 +213,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
               </button>
             </li>
           ))}
-          <li className={`page-item ${currentPage === Math.ceil(totalPosts / pageSize) ? "disabled" : ""}`}>
+          <li className={`page-item m-1 ${currentPage === Math.ceil(totalPosts / pageSize) ? "disabled" : ""}`}>
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               className="btn btn-success"
@@ -328,7 +328,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                           : "icons/person-circle.svg"
                       }
                       alt=""
-                      className="createdBy-photo"
+                      className="createdBy-photo p-1"
                     />
                     <small className="text-muted text-center">
                       {post.createdBy.firstName}
