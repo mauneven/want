@@ -71,7 +71,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
     return (
       <nav aria-label="Page navigation example pt-2 pb-2">
         <ul className="pagination justify-content-center">
-          <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+          <li className={`page-item m-1 ${currentPage === 1 ? "disabled" : ""}`}>
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               className="btn btn-success"
@@ -81,7 +81,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
             </button>
           </li>
           {pageNumbers.map((number) => (
-            <li key={number} className="page-item">
+            <li key={number} className="page-item m-1">
               <button
                 onClick={() => handlePageChange(number)}
                 className={`btn btn-success ${number === currentPage ? "active" : ""}`}
@@ -90,7 +90,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
               </button>
             </li>
           ))}
-          <li className={`page-item ${currentPage === Math.ceil(totalPosts / pageSize) ? "disabled" : ""}`}>
+          <li className={`page-item m-1 ${currentPage === Math.ceil(totalPosts / pageSize) ? "disabled" : ""}`}>
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               className="btn btn-success"
@@ -135,7 +135,6 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
                                 src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`}
                                 className="d-block w-100"
                                 alt={`Slide ${index}`}
-                                style={{ objectFit: "cover", height: "100%" }}
                               />
                             </div>
                           );
@@ -189,7 +188,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
                           : "icons/person-circle.svg"
                       }
                       alt=""
-                      className="createdBy-photo"
+                      className="createdBy-photo p-1"
                     />
                     <small className="text-muted text-center">
                       {post.createdBy.firstName}
