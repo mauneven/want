@@ -93,7 +93,6 @@ export default function MyPosts() {
                               src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`}
                               className="d-block w-100"
                               alt={`Slide ${index}`}
-                              style={{ objectFit: "cover", height: "100%" }}
                             />
                           </div>
                         );
