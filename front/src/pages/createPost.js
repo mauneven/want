@@ -264,7 +264,7 @@ const CreatePost = () => {
             )}
             {photos.length > 0 && (
                 <button
-                  className="btn btn-danger delete-image-btn"
+                  className="btn btn-danger delete-image-btn m-1"
                   onClick={() => handleDeletePhoto(activeIndex)}
                 >
                   <i className="bi bi-trash"></i>

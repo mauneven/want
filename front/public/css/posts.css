@@ -95,3 +95,8 @@
   right: 20px;
   z-index: 9999;
 }
+
+.carousel-item img{
+  object-fit: cover;
+  height: 200px;
+}
