@@ -44,8 +44,8 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
   };
 
   const Placeholder = () => (
-    <div className="col-md-3">
-      <ContentLoader speed={2} width={260} height={450} viewBox="0 0 260 450" backgroundColor="#f3f3f3" foregroundColor="#ecebeb">
+    <div className="col mx-auto">
+      <ContentLoader speed={2} width="100%" height={450} viewBox="0 0 260 450" backgroundColor="#f3f3f3" foregroundColor="#ecebeb">
         <rect x="0" y="0" rx="10" ry="10" width="260" height="310" />
         <rect x="0" y="330" rx="3" ry="3" width="260" height="20" />
         <rect x="0" y="360" rx="3" ry="3" width="260" height="20" />
