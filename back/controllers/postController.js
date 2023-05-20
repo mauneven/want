@@ -57,9 +57,9 @@ exports.createPost = async (req, res, next) => {
         const compressedImagePath = `uploads/${uuidv4()}.jpg`;
         await sharp(photo.path).resize({ width: 500 }).toFile(compressedImagePath);
         try {
-          await fs.promises.unlink(photo.path); // Reemplaza 'photos' con 'photo.path'
+          await fs.promises.unlink(photo.path); 
         } catch (err) {
-          console.error(`Error deleting file ${photo.path}: ${err.message}`); // Reemplaza 'photos' con 'photo.path'
+          console.error(`Error deleting file ${photo.path}: ${err.message}`); 
         }
         return compressedImagePath;
       }));

@@ -201,7 +201,7 @@ export default function MegaMenu({
       >
         <FormControl
           type="search"
-          placeholder="La gente quiere..."
+          placeholder="People want..."
           className="mr-2 form-control-sm p-1 px-3 search-bar-input border-top-0 border-bottom-0 border-start-0 border-end"
           aria-label="Search"
           name="search"
