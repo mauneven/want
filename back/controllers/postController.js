@@ -24,7 +24,36 @@ exports.uploadPhotoMiddleware = upload;
 
 exports.getAllPosts = async (req, res, next) => {
   try {
-    const posts = await Post.find().populate('createdBy', 'firstName lastName photo');
+    const filters = {};
+
+    // Filtrar por ubicación
+    if (req.query.country) {
+      filters['country'] = req.query.country;
+    }
+    if (req.query.state) {
+      filters['state'] = req.query.state;
+    }
+    if (req.query.city) {
+      filters['city'] = req.query.city;
+    }
+
+    // Filtrar por categoría
+    if (req.query.mainCategory) {
+      filters['mainCategory'] = req.query.mainCategory;
+    }
+    if (req.query.subCategory) {
+      filters['subCategory'] = req.query.subCategory;
+    }
+
+    // Filtrar por término de búsqueda
+    if (req.query.searchTerm) {
+      filters['$or'] = [
+        { title: { $regex: req.query.searchTerm, $options: 'i' } },
+        { description: { $regex: req.query.searchTerm, $options: 'i' } }
+      ];
+    }
+
+    const posts = await Post.find(filters).populate('createdBy', 'firstName lastName photo');
     res.status(200).json(posts);
   } catch (err) {
     next(err);
