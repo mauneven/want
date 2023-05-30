@@ -15,28 +15,28 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
 
   useEffect(() => {
     const fetchRelatedPosts = async () => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`);
-      let postsData = await response.json();
+      const url = new URL(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`);
+      const params = {
+        country: locationFilter.country,
+        mainCategory: categoryFilter.mainCategory,
+        subCategory: categoryFilter.subCategory,
+      };
+      Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
   
-      // Filtrar los posts por país, categoría principal y subcategoría
-      if (post) {
-        postsData = postsData.filter((p) => {
-          return (
-            p._id !== post._id &&
-            p.country === locationFilter.country &&
-            p.mainCategory === categoryFilter.mainCategory &&
-            p.subCategory === categoryFilter.subCategory
-          );
-        });
-      }
+      const response = await fetch(url);
+      const data = await response.json();
+
+      const filteredPosts = data.posts.filter(p => p._id !== post._id);
   
-      setRelatedPosts(postsData);
-      setTotalPosts(postsData.length);
+      setRelatedPosts(filteredPosts);
+      setTotalPosts(data.totalPosts - 1);
       setIsLoading(false);
     };
-
-    fetchRelatedPosts();
-  }, [post]);
+    
+    if (post) {
+      fetchRelatedPosts();
+    }
+  }, [post, currentPage, pageSize]);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
