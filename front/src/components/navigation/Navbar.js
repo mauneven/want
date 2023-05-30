@@ -78,7 +78,8 @@ export default function MegaMenu({
     const newSearchTerm = e.target.search.value;
     setSearchTerm(newSearchTerm);
     onSearchTermChange(newSearchTerm);
-    router.push(`/?page=${currentPage}`);
+    const pageParam = currentPage ? `?page=${currentPage}` : '';
+    router.push('/' + pageParam);
   };  
 
   const handleClose = () => setShowLocationModal(false);

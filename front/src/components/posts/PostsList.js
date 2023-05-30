@@ -26,7 +26,6 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
       mainCategory: categoryFilter?.mainCategory || '',
       subCategory: categoryFilter?.subCategory || '',
       searchTerm: searchTerm || '',
-      page: currentPage,
       pageSize
     });
   
@@ -42,10 +41,6 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   useEffect(() => {
     fetchPosts();
   }, [userIdFilter, searchTerm, categoryFilter, currentPage, pageSize, locationFilter]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm]);  
 
   useEffect(() => {
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
