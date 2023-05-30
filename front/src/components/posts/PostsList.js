@@ -18,31 +18,34 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
 
   const fetchPosts = async () => {
     setIsLoading(true);
-
+  
     const filterParams = new URLSearchParams({
       country: locationFilter?.country || '',
       state: locationFilter?.state || '',
       city: locationFilter?.city || '',
       mainCategory: categoryFilter?.mainCategory || '',
       subCategory: categoryFilter?.subCategory || '',
-      searchTerm: searchTerm || ''
+      searchTerm: searchTerm || '',
+      page: currentPage,
+      pageSize
     });
-
+  
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?${filterParams}`);
-    const postsData = await response.json();
-
-    setTotalPosts(postsData.length);
-
-    const start = (currentPage - 1) * pageSize;
-    const end = start + pageSize;
-    setPosts(postsData.slice(start, end));
-
+    const { posts: postsData, totalPosts } = await response.json();
+  
+    setTotalPosts(totalPosts);
+    setPosts(postsData);
+  
     setIsLoading(false);
   };
 
   useEffect(() => {
     fetchPosts();
   }, [userIdFilter, searchTerm, categoryFilter, currentPage, pageSize, locationFilter]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);  
 
   useEffect(() => {
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
