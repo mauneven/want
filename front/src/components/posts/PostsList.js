@@ -16,121 +16,30 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   const [isMobile, setIsMobile] = useState(false);
   const [storedLocationFilter, setStoredLocationFilter] = useState(null);
 
-  const fetchPostsByLocation = async () => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`);
-    let postsData = await response.json();
-
-    // Leer la ubicación filtrada desde el localStorage
-    const storedLocationFilter = localStorage.getItem("selectedLocation");
-    const parsedLocationFilter = storedLocationFilter ? JSON.parse(storedLocationFilter) : null;
-
-    if (parsedLocationFilter) {
-      postsData = postsData.filter((post) => {
-        let countryMatch = parsedLocationFilter.country ? post.country === parsedLocationFilter.country : true;
-        let stateMatch = parsedLocationFilter.state ? post.state === parsedLocationFilter.state : true;
-        let cityMatch = parsedLocationFilter.city ? post.city === parsedLocationFilter.city : true;
-
-        return countryMatch && stateMatch && cityMatch;
-      });
-    }
-
-    return postsData;
-  };
-
-  const fetchPostsByCategory = (postsData) => {
-    console.log("Filtering by category:", categoryFilter);
-
-    if (categoryFilter && categoryFilter.mainCategory) {
-      postsData = postsData.filter((post) => {
-        const mainCategoryMatch =
-          post.mainCategory === categoryFilter.mainCategory;
-
-        const subCategoryMatch =
-          categoryFilter.subCategory
-            ? post.subCategory === categoryFilter.subCategory
-            : true;
-
-        const isMatch = mainCategoryMatch && subCategoryMatch;
-
-        if (!isMatch) {
-          console.log(
-            "Filtered out post:",
-            post.title,
-            "mainCategory:",
-            post.mainCategory,
-            "subCategory:",
-            post.subCategory
-          );
-        }
-
-        return isMatch;
-      });
-    }
-
-    return postsData;
-  };
-
-  const fetchPostsBySearch = (postsData) => {
-
-    if (searchTerm) {
-      // Reinicia la página actual a 1 cuando se realiza una nueva búsqueda
-      if (currentPage !== 1) setCurrentPage(1);
-      const lowerCaseSearchTerm = searchTerm.toLowerCase();
-      postsData = postsData.filter(
-        (post) =>
-          post.title.toLowerCase().includes(lowerCaseSearchTerm) ||
-          post.description.toLowerCase().includes(lowerCaseSearchTerm)
-      );
-    }
-
-    postsData.sort((a, b) => {
-      const titleA = a.title.toLowerCase();
-      const titleB = b.title.toLowerCase();
-      const searchTermIndexA = titleA.indexOf(searchTerm.toLowerCase());
-      const searchTermIndexB = titleB.indexOf(searchTerm.toLowerCase());
-
-      if (searchTermIndexA === -1 && searchTermIndexB !== -1) {
-        return 1;
-      }
-      if (searchTermIndexA !== -1 && searchTermIndexB === -1) {
-        return -1;
-      }
-
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    });
-
-    setPosts(postsData);
-    setIsLoading(false);
-    return postsData;
-  };
-
   const fetchPosts = async () => {
     setIsLoading(true);
-    let postsData = await fetchPostsByLocation();
-    postsData = fetchPostsByCategory(postsData);
-    postsData = fetchPostsBySearch(postsData);
-
-    // Establece el total de posts antes del paginado
-    setTotalPosts(postsData.length);
-
-    // Lee el valor de la página actual desde el localStorage
-    const storedCurrentPage = parseInt(localStorage.getItem("currentPage")) || 1;
-    setCurrentPage(storedCurrentPage);
-
-    // Realiza la paginación aquí
-    const start = (currentPage - 1) * pageSize;
-    const end = start + pageSize;
-    setPosts(postsData.slice(start, end));
-
+  
+    const filterParams = new URLSearchParams({
+      country: locationFilter?.country || '',
+      state: locationFilter?.state || '',
+      city: locationFilter?.city || '',
+      mainCategory: categoryFilter?.mainCategory || '',
+      subCategory: categoryFilter?.subCategory || '',
+      searchTerm: searchTerm || '',
+      pageSize
+    });
+  
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?${filterParams}`);
+    const { posts: postsData, totalPosts } = await response.json();
+  
+    setTotalPosts(totalPosts);
+    setPosts(postsData);
+  
     setIsLoading(false);
   };
 
   useEffect(() => {
-    const fetchAndSetPosts = async () => {
-      await fetchPosts();
-    };
-
-    fetchAndSetPosts();
+    fetchPosts();
   }, [userIdFilter, searchTerm, categoryFilter, currentPage, pageSize, locationFilter]);
 
   useEffect(() => {
@@ -153,7 +62,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ description }),
-        credentials: 'include', // Añade esta línea
+        credentials: 'include',
       });
 
       if (response.ok) {
@@ -237,9 +146,9 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
         </div>
       )}
       <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 pb-5">
-        {!isLoading
-          ? posts.length > 0
-            ? posts.map((post) => (
+        {!isLoading ? (
+          posts.length > 0 ? (
+            posts.map((post) => (
               <div key={post._id} className="col">
                 <div className="card post rounded-5">
                   {post.photos && post.photos.length > 0 && (
@@ -336,24 +245,22 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
                 </div>
               </div>
             ))
-            : (
-              <div className="col-md-12">
-                <p>The people doesn't want what your're looking for yet.</p>
-              </div>
-            )
-          : (
-            <>
-              <Placeholder />
-              <Placeholder />
-              <Placeholder />
-              <Placeholder />
-            </>
+          ) : (
+            <div className="col-md-12">
+              <p>The people doesn't want what you're looking for yet.</p>
+            </div>
           )
-        }
+        ) : (
+          <>
+            <Placeholder />
+            <Placeholder />
+            <Placeholder />
+            <Placeholder />
+          </>
+        )}
       </div>
       {posts.length > 0 && renderPageNumbers()}
     </div>
-
   );
 };
 

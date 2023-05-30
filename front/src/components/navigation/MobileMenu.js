@@ -30,16 +30,16 @@ export default function MegaMenu({
 
   const router = useRouter();
 
-  const closeMenu = () => {
-    document.querySelector(".navbar-toggler").click();
-  };
-
   const handleLogoClick = () => {
     onSearchTermChange("");
     onCategoryFilterChange({ mainCategory: "", subCategory: "" });
     setCategoriesButtonText("All categories");
     router.push("/");
     localStorage.setItem("currentPage", 1);
+  };
+
+  const closeMenu = () => {
+    document.querySelector(".navbar-toggler").click();
   };
 
   const handleCloseCategories = () => setShowCategoriesModal(false);
@@ -201,7 +201,7 @@ export default function MegaMenu({
       >
         <FormControl
           type="search"
-          placeholder="La gente quiere..."
+          placeholder="The people Want..."
           className="mr-2 form-control-sm p-1 px-3 search-bar-input border-top-0 border-bottom-0 border-start-0 border-end"
           aria-label="Search"
           name="search"

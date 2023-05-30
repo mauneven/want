@@ -24,8 +24,47 @@ exports.uploadPhotoMiddleware = upload;
 
 exports.getAllPosts = async (req, res, next) => {
   try {
-    const posts = await Post.find().populate('createdBy', 'firstName lastName photo');
-    res.status(200).json(posts);
+    const filters = {};
+
+    // Filtrar por ubicación
+    if (req.query.country) {
+      filters['country'] = req.query.country;
+    }
+    if (req.query.state) {
+      filters['state'] = req.query.state;
+    }
+    if (req.query.city) {
+      filters['city'] = req.query.city;
+    }
+
+    // Filtrar por categoría
+    if (req.query.mainCategory) {
+      filters['mainCategory'] = req.query.mainCategory;
+    }
+    if (req.query.subCategory) {
+      filters['subCategory'] = req.query.subCategory;
+    }
+
+    // Filtrar por término de búsqueda
+    if (req.query.searchTerm) {
+      filters['$or'] = [
+        { title: { $regex: req.query.searchTerm, $options: 'i' } },
+        { description: { $regex: req.query.searchTerm, $options: 'i' } }
+      ];
+    }
+
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 10;
+
+    const posts = await Post.find(filters)
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
+      .sort({ createdAt: -1 }) // Ordenar por fecha de creación en orden descendente
+      .populate('createdBy', 'firstName lastName photo');
+
+    const totalPosts = await Post.countDocuments(filters);
+
+    res.status(200).json({ posts, totalPosts });
   } catch (err) {
     next(err);
   }
@@ -57,9 +96,9 @@ exports.createPost = async (req, res, next) => {
         const compressedImagePath = `uploads/${uuidv4()}.jpg`;
         await sharp(photo.path).resize({ width: 500 }).toFile(compressedImagePath);
         try {
-          await fs.promises.unlink(photo.path); // Reemplaza 'photos' con 'photo.path'
+          await fs.promises.unlink(photo.path);
         } catch (err) {
-          console.error(`Error deleting file ${photo.path}: ${err.message}`); // Reemplaza 'photos' con 'photo.path'
+          console.error(`Error deleting file ${photo.path}: ${err.message}`);
         }
         return compressedImagePath;
       }));
@@ -119,7 +158,7 @@ exports.updatePost = async (req, res, next) => {
     if (deletedImages) {
       const deletedImagePaths = deletedImages.split(',');
       post.photos = post.photos.filter(photo => !deletedImagePaths.includes(photo));
-    
+
       await Promise.all(deletedImagePaths.map(async (imagePath) => {
         const parsedUrl = url.parse(imagePath);
         const localPath = parsedUrl.pathname;
@@ -128,9 +167,9 @@ exports.updatePost = async (req, res, next) => {
           await fs.promises.unlink(oldPhotoPath); // Reemplaza 'photo.path' con 'oldPhotoPath'
         } catch (err) {
           console.error(`Error deleting file ${oldPhotoPath}: ${err.message}`); // Reemplaza 'photo.path' con 'oldPhotoPath'
-        }        
+        }
       }));
-    }    
+    }
 
     if (req.files.length > 0) {
       const photos = req.files.map(file => file.path);
