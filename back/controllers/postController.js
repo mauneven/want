@@ -60,7 +60,14 @@ exports.getAllPosts = async (req, res, next) => {
       .skip((page - 1) * pageSize)
       .limit(pageSize)
       .sort({ createdAt: -1 }) // Ordenar por fecha de creación en orden descendente
-      .populate('createdBy', 'firstName lastName photo');
+      .populate({
+        path: 'createdBy',
+        select: 'firstName lastName photo',
+        populate: {
+          path: 'reports',
+          select: '_id'
+        }
+      });
 
     const totalPosts = await Post.countDocuments(filters);
 

@@ -11,6 +11,8 @@ const docxRoutes = require('./routes/docxRoutes.js');
 const authController = require('./controllers/authController');
 const https = require('https');
 const fs = require('fs');
+const cron = require('node-cron');
+const Report = require('./models/report');
 
 const app = express();
 
@@ -73,8 +75,25 @@ app.use("/api", docxRoutes);
 app.use('/api', reportRoutes);
 app.use((err, req, res, next) => {
   console.error(err);
-  if (!res.headersSent) { // Verifica si los encabezados de respuesta ya han sido enviados
-    res.status(500).send('Something broke!'); // Envía la respuesta solo si los encabezados aún no se han enviado
+  if (!res.headersSent) {
+    res.status(500).send('Something broke!');
+  }
+});
+
+// Tarea cron para eliminar los reportes después de 6 meses
+cron.schedule('0 0 * * *', async () => {
+  try {
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+    const oldReports = await Report.find({ createdAt: { $lt: sixMonthsAgo } });
+
+    // Elimina los reportes encontrados
+    for (const report of oldReports) {
+      await Report.deleteOne({ _id: report._id });
+    }
+  } catch (err) {
+    console.error('Error al eliminar los reportes antiguos:', err);
   }
 });
 
