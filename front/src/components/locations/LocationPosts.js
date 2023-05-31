@@ -96,7 +96,6 @@ const LocationModal = ({
             onCountryChange={handleCountryChange}
             onStateChange={handleStateChange}
             onCityChange={setCity}
-            onLocationSelected={onLocationSelected}
             initialCountry={selectedCountry}
             initialState={selectedState}
             initialCity={selectedCity}
