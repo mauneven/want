@@ -16,16 +16,17 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   const [isMobile, setIsMobile] = useState(false);
   const [storedLocationFilter, setStoredLocationFilter] = useState(null);
 
-  const fetchPosts = async () => {
+  const fetchPosts = async (filter) => {
     setIsLoading(true);
   
     const filterParams = new URLSearchParams({
-      country: locationFilter?.country || '',
-      state: locationFilter?.state || '',
-      city: locationFilter?.city || '',
+      country: filter?.country || '',
+      state: filter?.state || '',
+      city: filter?.city || '',
       mainCategory: categoryFilter?.mainCategory || '',
       subCategory: categoryFilter?.subCategory || '',
       searchTerm: searchTerm || '',
+      page: currentPage,
       pageSize
     });
   
@@ -36,11 +37,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
     setPosts(postsData);
   
     setIsLoading(false);
-  };
-
-  useEffect(() => {
-    fetchPosts();
-  }, [userIdFilter, searchTerm, categoryFilter, currentPage, pageSize, locationFilter]);
+  };  
 
   useEffect(() => {
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
@@ -48,11 +45,15 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   }, []);
 
   useEffect(() => {
-    const storedFilter = localStorage.getItem("selectedLocation");
+    const storedFilter = localStorage.getItem("locationFilter");
     if (storedFilter) {
-      setStoredLocationFilter(JSON.parse(storedFilter));
+      const parsedFilter = JSON.parse(storedFilter);
+      setStoredLocationFilter(parsedFilter);
+      fetchPosts(parsedFilter);
+    } else {
+      fetchPosts(locationFilter);
     }
-  }, []);
+  }, [userIdFilter, searchTerm, categoryFilter, currentPage, pageSize, locationFilter]);  
 
   const handleReportPost = async (postId, description) => {
     try {
