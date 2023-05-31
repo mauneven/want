@@ -263,11 +263,13 @@ exports.deletePostById = async (postId) => {
   // Eliminar las fotos de las ofertas asociadas con este post
   for (const offer of offers) {
     if (offer.photos) {
-      try {
-        const imagePath = path.join(__dirname, '..', offer.photos);
-        fs.unlinkSync(imagePath);
-      } catch (err) {
-        console.error(`Error deleting image for offer ${offer._id}: ${err.message}`);
+      for (const photo of offer.photos) {
+        try {
+          const imagePath = path.join(__dirname, '..', photo);
+          await fs.promises.unlink(imagePath);
+        } catch (err) {
+          console.error(`Error deleting image for offer ${offer._id}: ${err.message}`);
+        }
       }
     }
   }

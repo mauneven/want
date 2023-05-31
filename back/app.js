@@ -15,7 +15,6 @@ const schedule = require('node-schedule');
 const Report = require('./models/report');
 const Post = require('./models/post');
 const postController = require('./controllers/postController');
-
 const app = express();
 
 app.use(express.json());
@@ -115,6 +114,25 @@ schedule.scheduleJob('*/1 * * * *', async () => {
     }
   } catch (err) {
     console.error('Error al eliminar los posts antiguos:', err);
+  }
+});
+
+// Tarea para eliminar las cuentas de usuario después de 30 días
+schedule.scheduleJob('*/1 * * * *', async () => {
+  try {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const usersToDelete = await User.find({
+      isDeleted: true,
+      deleteGracePeriodEnd: { $lt: thirtyDaysAgo },
+    });
+
+    for (const user of usersToDelete) {
+      await authController.deleteAccountById(user._id);
+    }
+  } catch (err) {
+    console.error('Error al eliminar las cuentas de usuario:', err);
   }
 });
 
