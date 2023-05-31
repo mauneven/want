@@ -11,8 +11,10 @@ const docxRoutes = require('./routes/docxRoutes.js');
 const authController = require('./controllers/authController');
 const https = require('https');
 const fs = require('fs');
-const cron = require('node-cron');
+const schedule = require('node-schedule');
 const Report = require('./models/report');
+const Post = require('./models/post');
+const postController = require('./controllers/postController');
 
 const app = express();
 
@@ -80,11 +82,13 @@ app.use((err, req, res, next) => {
   }
 });
 
-// Tarea cron para eliminar los reportes después de 6 meses
-cron.schedule('0 0 * * *', async () => {
+schedule.scheduleJob('*/1 * * * *', async () => {
   try {
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+    // Establecer el día al 1 para evitar problemas con diferentes días del mes
+    sixMonthsAgo.setDate(1);
 
     const oldReports = await Report.find({ createdAt: { $lt: sixMonthsAgo } });
 
@@ -94,6 +98,23 @@ cron.schedule('0 0 * * *', async () => {
     }
   } catch (err) {
     console.error('Error al eliminar los reportes antiguos:', err);
+  }
+});
+
+// Tarea para eliminar los posts después de 1 minuto
+schedule.scheduleJob('*/1 * * * *', async () => {
+  try {
+    const oneMinuteAgo = new Date();
+    oneMinuteAgo.setMinutes(oneMinuteAgo.getMinutes() - 1);
+
+    const oldPosts = await Post.find({ createdAt: { $lt: oneMinuteAgo } });
+
+    // Elimina los posts encontrados
+    for (const post of oldPosts) {
+      await postController.deletePostById(post._id);
+    }
+  } catch (err) {
+    console.error('Error al eliminar los posts antiguos:', err);
   }
 });
 

@@ -18,7 +18,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
 
   const fetchPosts = async (filter) => {
     setIsLoading(true);
-  
+
     const filterParams = new URLSearchParams({
       country: filter?.country || '',
       state: filter?.state || '',
@@ -29,15 +29,15 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
       page: currentPage,
       pageSize
     });
-  
+
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?${filterParams}`);
     const { posts: postsData, totalPosts } = await response.json();
-  
+
     setTotalPosts(totalPosts);
     setPosts(postsData);
-  
+
     setIsLoading(false);
-  };  
+  };
 
   useEffect(() => {
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
@@ -53,7 +53,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
     } else {
       fetchPosts(locationFilter);
     }
-  }, [userIdFilter, searchTerm, categoryFilter, currentPage, pageSize, locationFilter]);  
+  }, [userIdFilter, searchTerm, categoryFilter, currentPage, pageSize, locationFilter]);
 
   const handleReportPost = async (postId, description) => {
     try {
@@ -80,6 +80,71 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
     localStorage.setItem("currentPage", pageNumber);
+    fetchPosts(locationFilter);
+  };
+
+  const totalPages = Math.ceil(totalPosts / pageSize);
+  const showEllipsis = totalPages > maxPagesToShow;
+
+  const renderPagination = () => {
+    const pages = [];
+
+    // Rango de páginas a mostrar
+    const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+
+    // Botón "..."
+    if (showEllipsis && endPage < totalPages) {
+      pages.push(
+        <button key={0} className="btn btn-link" disabled>
+          ...
+        </button>
+      );
+    }
+
+    // Páginas
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(
+        <button
+          key={i}
+          className={`btn btn-link${i === currentPage ? " active" : ""}`}
+          onClick={() => handlePageChange(i)}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    return pages;
+  };
+
+  const renderPrevButton = () => {
+    if (currentPage > 1) {
+      return (
+        <button
+          className="btn btn-link"
+          onClick={() => handlePageChange(currentPage - 1)}
+        >
+          Prev
+        </button>
+      );
+    }
+
+    return null;
+  };
+
+  const renderNextButton = () => {
+    if (currentPage < totalPages) {
+      return (
+        <button
+          className="btn btn-link"
+          onClick={() => handlePageChange(currentPage + 1)}
+        >
+          Next
+        </button>
+      );
+    }
+
+    return null;
   };
 
   const Placeholder = () => (
@@ -229,6 +294,12 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
             <Placeholder />
           </>
         )}
+      </div>
+
+      <div className="pagination justify-content-center">
+        {renderPrevButton()}
+        {renderPagination()}
+        {renderNextButton()}
       </div>
     </div>
   );

@@ -128,8 +128,6 @@ exports.createPost = async (req, res, next) => {
     });
     await post.save();
 
-    exports.schedulePostDeletion(post._id, 60 * 60 * 24 * 7 * 1000); // 7 Days
-
     res.status(201).json(post);
   } catch (err) {
     next(err);
@@ -280,9 +278,9 @@ exports.deletePostById = async (postId) => {
 
   // Eliminar las imágenes del post
   if (post.photos) {
-    for (const photos of post.photos) {
+    for (const photo of post.photos) {
       try {
-        const imagePath = path.join(__dirname, '..', photos);
+        const imagePath = path.join(__dirname, '..', photo);
         await fs.promises.unlink(imagePath);
       } catch (err) {
         console.error(`Error deleting image for post ${postId}: ${err.message}`);
@@ -302,7 +300,6 @@ exports.schedulePostDeletion = async (postId, delay) => {
     }
   }, delay);
 };
-
 
 exports.getPostsByCurrentUser = async (req, res, next) => {
   try {
@@ -327,5 +324,3 @@ exports.isPostCreatedByUser = async (userId, postId) => {
   }
   return post.createdBy.toString() === userId;
 };
-
-
