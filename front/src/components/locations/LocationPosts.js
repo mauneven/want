@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Button } from 'react-bootstrap';
-import Location from './Location';
+import React, { useState, useEffect } from "react";
+import { Modal, Button } from "react-bootstrap";
+import Location from "./Location";
 
-const LocationModal = ({ onHide, onLocationSelected, onLocationFilterChange, selectedLocation }) => {
-  const { country, state, city } = selectedLocation;
+const LocationModal = ({
+  onHide,
+  onLocationSelected,
+  onLocationFilterChange,
+  selectedLocation,
+}) => {
   const [show, setShow] = useState(false);
-  const [locationType, setLocationType] = useState('Location');
-  const [confirmedLocationType, setConfirmedLocationType] = useState('Location');
+  const [confirmedLocationType, setConfirmedLocationType] = useState(
+    "Location"
+  );
 
-  const [selectedCountry, setCountry] = useState('');
-  const [selectedState, setState] = useState('');
-  const [selectedCity, setCity] = useState('');
+  const [selectedCountry, setCountry] = useState("");
+  const [selectedState, setState] = useState("");
+  const [selectedCity, setCity] = useState("");
 
   const handleShow = () => setShow(true);
   const handleClose = () => {
@@ -20,18 +25,22 @@ const LocationModal = ({ onHide, onLocationSelected, onLocationFilterChange, sel
 
   const handleCountryChange = (selectedCountry) => {
     setCountry(selectedCountry);
-    setState('');
-    setCity('');
+    setState("");
+    setCity("");
   };
 
   const handleStateChange = (selectedState) => {
     setState(selectedState);
-    setCity('');
+    setCity("");
   };
 
   const handleAccept = () => {
     onLocationSelected(selectedCountry, selectedState, selectedCity);
-    onLocationFilterChange({ country: selectedCountry, state: selectedState, city: selectedCity });
+    onLocationFilterChange({
+      country: selectedCountry,
+      state: selectedState,
+      city: selectedCity,
+    });
 
     // Update confirmedLocationType
     if (selectedCity) {
@@ -41,51 +50,64 @@ const LocationModal = ({ onHide, onLocationSelected, onLocationFilterChange, sel
     } else if (selectedCountry) {
       setConfirmedLocationType(selectedCountry);
     } else {
-      setConfirmedLocationType('Location');
+      setConfirmedLocationType("Location");
     }
 
     // Save the selection to localStorage
-    localStorage.setItem("selectedLocation", JSON.stringify({ country: selectedCountry, state: selectedState, city: selectedCity }));
+    localStorage.setItem(
+      "selectedLocation",
+      JSON.stringify({
+        country: selectedCountry,
+        state: selectedState,
+        city: selectedCity,
+      })
+    );
 
     handleClose();
   };
 
-  // Load the selection from localStorage on component mount
   useEffect(() => {
-    const storedSelection = localStorage.getItem("selectedLocation");
-    if (storedSelection) {
-      const parsedSelection = JSON.parse(storedSelection);
-      setCountry(parsedSelection.country);
-      setState(parsedSelection.state);
-      setCity(parsedSelection.city);
-      setConfirmedLocationType(parsedSelection.city || parsedSelection.state || parsedSelection.country || 'Location');
+    const locationString = localStorage.getItem("selectedLocation");
+    if (locationString) {
+      const location = JSON.parse(locationString);
+      setCountry(location.country);
+      setState(location.state);
+      setCity(location.city);
     }
   }, []);
 
+  useEffect(() => {
+    if (selectedCountry || selectedState || selectedCity) {
+      setConfirmedLocationType(selectedCity || selectedState || selectedCountry);
+    } else {
+      setConfirmedLocationType("Location");
+    }
+  }, [selectedCountry, selectedState, selectedCity]);
+
   return (
     <>
-      <Button variant="" onClick={handleShow} className=' mundi-btn'>
-        <div className="selected-location">{confirmedLocationType}</div>
-      </Button>
-
-      <Modal show={show} onHide={handleClose} centered>
+      <span onClick={handleShow}>{confirmedLocationType}</span>
+      <Modal show={show} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>Choose the location to where you want</Modal.Title>
+          <Modal.Title>Choose your location</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Location
             onCountryChange={handleCountryChange}
             onStateChange={handleStateChange}
-            onCityChange={(selectedCity) => setCity(selectedCity)}
-            onLocationSelected={(country, state, city) => onLocationSelected(country, state, city)}
+            onCityChange={setCity}
             initialCountry={selectedCountry}
             initialState={selectedState}
             initialCity={selectedCity}
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>Cancel</Button>
-          <Button variant="primary" onClick={handleAccept}>Accept</Button>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleAccept}>
+            Accept
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

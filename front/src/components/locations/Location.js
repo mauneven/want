@@ -1,9 +1,7 @@
 import cities from '../../data/cities.json';
 import states from '../../data/states.json';
 import countries from '../../data/countries.json';
-import React from 'react';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const modifiedCountries = countries.countries.map((country) => {
   return {
@@ -27,69 +25,51 @@ const Location = ({
   onCountryChange, 
   onStateChange, 
   onCityChange, 
-  onLocationSelected, 
   isRequired = false, 
   initialCountry = "", 
   initialState = "", 
   initialCity = "" 
 }) => {
-  
-  const [selectedCountry, setSelectedCountry] = useState(modifiedCountries.find(country => country.name === initialCountry) || "");
-  const [selectedState, setSelectedState] = useState(selectedCountry && selectedCountry.states.find(state => state.name === initialState) || "");
-  const [selectedCity, setSelectedCity] = useState(initialCity);  
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);  
 
   useEffect(() => {
-    handleLocationSelected();
-  }, [selectedCity]);
+    const foundCountry = modifiedCountries.find(country => country.name === initialCountry);
+    setSelectedCountry(foundCountry || null);
+  }, [initialCountry]);
 
-  const clearLocation = () => {
-    setSelectedState("");
-    setSelectedCity("");
-    onLocationSelected && onLocationSelected(selectedCountry?.name, "", "");
-  };
+  useEffect(() => {
+    const foundState = selectedCountry && selectedCountry.states.find(state => state.name === initialState);
+    setSelectedState(foundState || null);
+  }, [selectedCountry, initialState]);
 
-  const resetCity = () => {
-    setSelectedCity("");
-    onCityChange && onCityChange(null);
-    handleLocationSelected();
-  };
+  useEffect(() => {
+    setSelectedCity(initialCity || null);
+  }, [initialCity]);
 
   const handleCountryChange = (event) => {
     const countryId = parseInt(event.target.value);
-    const foundCountry = modifiedCountries.find((country) => country.id === countryId);
+    const foundCountry = modifiedCountries.find(country => country.id === countryId);
     setSelectedCountry(foundCountry);
-    clearLocation();
-    console.log("Selected Country:", foundCountry);
+    setSelectedState(null);
+    setSelectedCity(null);
     onCountryChange && onCountryChange(foundCountry?.name);
-    clearLocation();
-  };  
+  };
 
   const handleStateChange = (event) => {
     const stateId = event.target.value;
-    const foundState = selectedCountry.states.find((state) => state.id === stateId);
+    const foundState = selectedCountry && selectedCountry.states.find(state => state.id === stateId);
     setSelectedState(foundState);
-    console.log("Selected State:", foundState);
+    setSelectedCity(null);
     onStateChange && onStateChange(foundState?.name !== 'Select an state' ? foundState?.name : null);
-    resetCity();
   };
   
   const handleCityChange = (event) => {
     const city = event.target.value;
     setSelectedCity(city);
-    console.log("Selected City:", city);
     onCityChange && onCityChange(city !== 'Select a city' ? city : null);
-    handleLocationSelected();
-  };  
-
-  const handleLocationSelected = () => {
-    if (selectedCountry && !selectedState && !selectedCity) {
-      onLocationSelected && onLocationSelected(selectedCountry.name, null, null);
-    } else if (selectedCountry && selectedState && !selectedCity) {
-      onLocationSelected && onLocationSelected(selectedCountry.name, selectedState.name, null);
-    } else if (selectedCountry && selectedState && selectedCity) {
-      onLocationSelected && onLocationSelected(selectedCountry.name, selectedState.name, selectedCity);
-    }
-  };  
+  };
 
   return (
     <div className="d-flex flex-wrap align-items-center">
@@ -138,7 +118,6 @@ const Location = ({
       )}
     </div>
   );
-
-}
+};
 
 export default Location;

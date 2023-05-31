@@ -22,7 +22,8 @@ export default function MyApp({ Component, pageProps }) {
 
   const handleLocationFilterChange = (filter) => {
     setLocationFilter(filter);
-  };
+    localStorage.setItem("locationFilter", JSON.stringify(filter));
+  };  
 
   // Agrega una función para manejar el cambio en searchTerm desde el componente Megamenu
   const handleSearchTermChange = (newSearchTerm) => {

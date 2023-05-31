@@ -61,8 +61,12 @@ export default function MegaMenu({
   };
 
   const handleLocationSelected = (country, state, city) => {
-    setSelectedLocation({ country, state, city });
-  };
+    const newLocation = { country, state, city };
+    setSelectedLocation(newLocation);
+    setLocationFilter(newLocation);
+    onLocationFilterChange(newLocation);
+    localStorage.setItem("locationFilter", JSON.stringify(newLocation));
+  };  
 
   useEffect(() => {
     const locationFilterString = localStorage.getItem("locationFilter");
