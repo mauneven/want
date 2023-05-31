@@ -1,9 +1,7 @@
 import cities from '../../data/cities.json';
 import states from '../../data/states.json';
 import countries from '../../data/countries.json';
-import React from 'react';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const modifiedCountries = countries.countries.map((country) => {
   return {
@@ -33,7 +31,6 @@ const Location = ({
   initialState = "", 
   initialCity = "" 
 }) => {
-  
   const [selectedCountry, setSelectedCountry] = useState(modifiedCountries.find(country => country.name === initialCountry) || "");
   const [selectedState, setSelectedState] = useState(selectedCountry && selectedCountry.states.find(state => state.name === initialState) || "");
   const [selectedCity, setSelectedCity] = useState(initialCity);  
@@ -41,6 +38,14 @@ const Location = ({
   useEffect(() => {
     handleLocationSelected();
   }, [selectedCity]);
+
+  useEffect(() => {
+    setSelectedCountry(modifiedCountries.find(country => country.name === initialCountry) || "");
+  }, [initialCountry]);
+
+  useEffect(() => {
+    setSelectedState(selectedCountry && selectedCountry.states.find(state => state.name === initialState) || "");
+  }, [selectedCountry, initialState]);
 
   const clearLocation = () => {
     setSelectedState("");
@@ -138,7 +143,6 @@ const Location = ({
       )}
     </div>
   );
-
 }
 
 export default Location;
