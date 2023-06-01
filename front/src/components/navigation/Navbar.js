@@ -27,7 +27,7 @@ export default function MegaMenu({
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
   const [categoriesButtonText, setCategoriesButtonText] = useState("All categories");
   const [selectedLocation, setSelectedLocation] = useState({ country: "", state: "", city: "" });
-  const [currentPage, setCurrentPage] = useState (null);
+  const [currentPage, setCurrentPage] = useState(null);
 
   const router = useRouter();
 
@@ -66,7 +66,7 @@ export default function MegaMenu({
     setLocationFilter(newLocation);
     onLocationFilterChange(newLocation);
     localStorage.setItem("locationFilter", JSON.stringify(newLocation));
-  };  
+  };
 
   useEffect(() => {
     const locationFilterString = localStorage.getItem("locationFilter");
@@ -84,7 +84,7 @@ export default function MegaMenu({
     onSearchTermChange(newSearchTerm);
     const pageParam = currentPage ? `?page=${currentPage}` : '';
     router.push('/' + pageParam);
-  };  
+  };
 
   const handleClose = () => setShowLocationModal(false);
   const handleShow = () => setShowLocationModal(true);

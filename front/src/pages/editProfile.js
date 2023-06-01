@@ -62,7 +62,7 @@ const EditProfile = () => {
   };  
 
   const handleDeleteAccount = async () => {
-    if (window.confirm('Are you sure you want to put your account on the delete queue?, Your account will be deleted on 24 days from now.')) {
+    if (window.confirm('Are you sure you want to put your account on the delete queue?, Your account will be deleted on 30 days from now.')) {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/delete-account`, {
           method: 'DELETE',

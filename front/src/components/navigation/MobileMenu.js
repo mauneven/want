@@ -27,6 +27,7 @@ export default function MegaMenu({
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
   const [categoriesButtonText, setCategoriesButtonText] = useState("All categories");
   const [selectedLocation, setSelectedLocation] = useState({ country: "", state: "", city: "" });
+  const [currentPage, setCurrentPage] = useState(null);
 
   const router = useRouter();
 
@@ -35,17 +36,11 @@ export default function MegaMenu({
     onCategoryFilterChange({ mainCategory: "", subCategory: "" });
     setCategoriesButtonText("All categories");
     router.push("/");
-    localStorage.setItem("currentPage", 1);
-  };
-
-  const closeMenu = () => {
-    document.querySelector(".navbar-toggler").click();
   };
 
   const handleCloseCategories = () => setShowCategoriesModal(false);
 
   const handleCategorySelected = (mainCategory, subCategory) => {
-    localStorage.setItem("currentPage", 1);
     console.log("Selected Category: ", mainCategory);
     console.log("Selected Subcategory: ", subCategory);
     const selectedCategory = {
@@ -66,7 +61,11 @@ export default function MegaMenu({
   };
 
   const handleLocationSelected = (country, state, city) => {
-    setSelectedLocation({ country, state, city });
+    const newLocation = { country, state, city };
+    setSelectedLocation(newLocation);
+    setLocationFilter(newLocation);
+    onLocationFilterChange(newLocation);
+    localStorage.setItem("locationFilter", JSON.stringify(newLocation));
   };
 
   useEffect(() => {
@@ -79,12 +78,12 @@ export default function MegaMenu({
   }, []); // Elimina la dependencia de locationFilter
 
   const handleSearchSubmit = (e) => {
-    localStorage.setItem("currentPage", 1);
     e.preventDefault();
     const newSearchTerm = e.target.search.value;
     setSearchTerm(newSearchTerm);
     onSearchTermChange(newSearchTerm);
-    router.push("/");
+    const pageParam = currentPage ? `?page=${currentPage}` : '';
+    router.push('/' + pageParam);
   };
 
   const handleClose = () => setShowLocationModal(false);

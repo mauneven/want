@@ -21,3 +21,5 @@ const reportSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('Report', reportSchema);
+
+reportSchema.index({ createdAt: 1 }, { expireAfterSeconds: 180 * 24 * 60 * 60 });

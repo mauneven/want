@@ -55,12 +55,20 @@ exports.getAllPosts = async (req, res, next) => {
 
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 10;
+    const skip = (page - 1) * pageSize;
 
     const posts = await Post.find(filters)
-      .skip((page - 1) * pageSize)
+      .skip(skip)
       .limit(pageSize)
       .sort({ createdAt: -1 }) // Ordenar por fecha de creación en orden descendente
-      .populate('createdBy', 'firstName lastName photo');
+      .populate({
+        path: 'createdBy',
+        select: 'firstName lastName photo',
+        populate: {
+          path: 'reports',
+          select: '_id'
+        }
+      });
 
     const totalPosts = await Post.countDocuments(filters);
 
@@ -120,8 +128,6 @@ exports.createPost = async (req, res, next) => {
 
     });
     await post.save();
-
-    exports.schedulePostDeletion(post._id, 60 * 60 * 24 * 7 * 1000); // 7 Days
 
     res.status(201).json(post);
   } catch (err) {
@@ -258,11 +264,13 @@ exports.deletePostById = async (postId) => {
   // Eliminar las fotos de las ofertas asociadas con este post
   for (const offer of offers) {
     if (offer.photos) {
-      try {
-        const imagePath = path.join(__dirname, '..', offer.photos);
-        fs.unlinkSync(imagePath);
-      } catch (err) {
-        console.error(`Error deleting image for offer ${offer._id}: ${err.message}`);
+      for (const photo of offer.photos) {
+        try {
+          const imagePath = path.join(__dirname, '..', photo);
+          await fs.promises.unlink(imagePath);
+        } catch (err) {
+          console.error(`Error deleting image for offer ${offer._id}: ${err.message}`);
+        }
       }
     }
   }
@@ -273,9 +281,9 @@ exports.deletePostById = async (postId) => {
 
   // Eliminar las imágenes del post
   if (post.photos) {
-    for (const photos of post.photos) {
+    for (const photo of post.photos) {
       try {
-        const imagePath = path.join(__dirname, '..', photos);
+        const imagePath = path.join(__dirname, '..', photo);
         await fs.promises.unlink(imagePath);
       } catch (err) {
         console.error(`Error deleting image for post ${postId}: ${err.message}`);
@@ -295,7 +303,6 @@ exports.schedulePostDeletion = async (postId, delay) => {
     }
   }, delay);
 };
-
 
 exports.getPostsByCurrentUser = async (req, res, next) => {
   try {
@@ -320,5 +327,3 @@ exports.isPostCreatedByUser = async (userId, postId) => {
   }
   return post.createdBy.toString() === userId;
 };
-
-

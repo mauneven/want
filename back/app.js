@@ -11,7 +11,10 @@ const docxRoutes = require('./routes/docxRoutes.js');
 const authController = require('./controllers/authController');
 const https = require('https');
 const fs = require('fs');
-
+const schedule = require('node-schedule');
+const Report = require('./models/report');
+const Post = require('./models/post');
+const postController = require('./controllers/postController');
 const app = express();
 
 app.use(express.json());
@@ -73,8 +76,62 @@ app.use("/api", docxRoutes);
 app.use('/api', reportRoutes);
 app.use((err, req, res, next) => {
   console.error(err);
-  if (!res.headersSent) { // Verifica si los encabezados de respuesta ya han sido enviados
-    res.status(500).send('Something broke!'); // Envía la respuesta solo si los encabezados aún no se han enviado
+  if (!res.headersSent) {
+    res.status(500).send('Something broke!');
+  }
+});
+
+schedule.scheduleJob('*/1 * * * *', async () => {
+  try {
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+    // Establecer el día al 1 para evitar problemas con diferentes días del mes
+    sixMonthsAgo.setDate(1);
+
+    const oldReports = await Report.find({ createdAt: { $lt: sixMonthsAgo } });
+
+    // Elimina los reportes encontrados
+    for (const report of oldReports) {
+      await Report.deleteOne({ _id: report._id });
+    }
+  } catch (err) {
+    console.error('Error al eliminar los reportes antiguos:', err);
+  }
+});
+
+// Tarea para eliminar los posts después de 30 días
+schedule.scheduleJob('0 0 * * *', async () => {
+  try {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const oldPosts = await Post.find({ createdAt: { $lt: thirtyDaysAgo } });
+
+    // Elimina los posts encontrados
+    for (const post of oldPosts) {
+      await postController.deletePostById(post._id);
+    }
+  } catch (err) {
+    console.error('Error al eliminar los posts antiguos:', err);
+  }
+});
+
+schedule.scheduleJob('*/10 * * * * *', async () => {
+  try {
+    const tenSecondsAgo = new Date();
+    tenSecondsAgo.setSeconds(tenSecondsAgo.getSeconds() - 10);
+
+    const usersToDelete = await User.find({
+      isDeleted: true,
+      putUpForElimination: { $lt: tenSecondsAgo },
+    });
+
+    for (const user of usersToDelete) {
+      await authController.deletionPass(user._id);
+    }
+  } catch (err) {
+    console.error('Error deleting user accounts:', err);
   }
 });
 
