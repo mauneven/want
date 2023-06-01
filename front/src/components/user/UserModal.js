@@ -30,7 +30,7 @@ const UserModal = ({ selectedUser, showModal, closeModal }) => {
               <p className="h4 mt-4">Principal aspects</p>
               <p>On Want since {selectedUser.createdAt}</p>
               <p>has done {selectedUser.totalPosts} posts</p>
-              <p>has done {selectedUser.totalPosts} offers</p>
+              <p>has done {selectedUser.totalOffers} offers</p>
               <p>Reputation: <i class="bi bi-star-fill"></i> {selectedUser.reports ? 5 - (0.3 * selectedUser.reports.length) : ""}</p>
             </div>
           </>
