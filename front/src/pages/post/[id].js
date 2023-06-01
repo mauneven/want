@@ -188,7 +188,8 @@ const PostDetails = () => {
       <RelatedPosts
         locationFilter={{ country: post.country }}
         categoryFilter={{ mainCategory: post.mainCategory, subCategory: post.subCategory }}
-        post={post} // Añade esta línea
+        post={post}
+        currentPage={Number(router.query.page) || 1}
       />
     </>
   );

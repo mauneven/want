@@ -78,7 +78,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
       pages.push(
         <button
           key={i}
-          className={`btn btn-link${i === currentPage ? " active" : ""}`}
+          className={`btn btn-success m-1${i === currentPage ? " active" : ""}`}
           onClick={() => handlePageChange(i)}
         >
           {i}
@@ -93,10 +93,10 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
     if (currentPage > 1) {
       return (
         <button
-          className="btn btn-link"
+          className="btn btn-success m-1"
           onClick={() => handlePageChange(currentPage - 1)}
         >
-          Prev
+          {"<"}
         </button>
       );
     }
@@ -108,10 +108,10 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
     if (currentPage < totalPages) {
       return (
         <button
-          className="btn btn-link"
+          className="btn btn-success m-1"
           onClick={() => handlePageChange(currentPage + 1)}
         >
-          Next
+          {">"}
         </button>
       );
     }
