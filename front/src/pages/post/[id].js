@@ -194,8 +194,8 @@ const PostDetails = () => {
                   className="createdBy-photo-id"
                 />
               </div>
-              <div className='col-11'>
-                <p className='mx-5 p-0 blockquote'>
+              <div className='col-9'>
+                <p className='ms-5  mb-0 p-0'>
                   {post.createdBy.firstName} {post.createdBy.lastName} | {post.createdBy.reports ? 5 - (0.3 * post.createdBy.reports.length) : ""}
                 </p>
               </div>

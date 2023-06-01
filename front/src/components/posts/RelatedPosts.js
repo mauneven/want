@@ -208,7 +208,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
                         </div>
                         <div className="col-8 p-0">
                           <Link className="d-flex justify-content-center" href={`/post/[id]`} as={`/post/${post._id}`}>
-                            <button className="offer-btn btn rounded-pill">View details</button>
+                            <button className="offer-btn btn rounded-5">View details</button>
                           </Link>
                         </div>
                         <div className="col-2 p-0">

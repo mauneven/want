@@ -156,7 +156,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
     <div className="container">
       {isMobile && (
         <div className="floating-btn-container">
-          <button className="btn-post rounded-pill p-2" onClick={() => router.push("/createPost")}>
+          <button className="btn-post rounded-5 p-2" onClick={() => router.push("/createPost")}>
             Create Post
           </button>
         </div>
@@ -238,7 +238,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
                         </div>
                         <div className="col-8 p-0">
                           <Link className="d-flex justify-content-center" href={`/post/[id]`} as={`/post/${post._id}`}>
-                            <button className="offer-btn btn rounded-pill">View details</button>
+                            <button className="offer-btn btn rounded-5">View details</button>
                           </Link>
                         </div>
                         <div className="col-2 p-0">

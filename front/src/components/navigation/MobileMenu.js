@@ -120,7 +120,7 @@ export default function MegaMenu({
   }, []);
 
   return (
-    <Navbar className="mobile-navbar navbar-blur p-3" expand="lg">
+    <Navbar className="mobile-navbar p-3" expand="lg">
       <Nav className="d-flex justify-content-start align-items-center">
         <Navbar.Brand onClick={handleLogoClick} className="divhover">
           <Image
@@ -157,8 +157,8 @@ export default function MegaMenu({
                     alt="Profile"
                     style={{
                       borderRadius: "50%",
-                      width: "30px",
-                      height: "30px",
+                      width: "40px",
+                      height: "40px",
                     }}
                     onClick={() => router.push("/editProfile")}
                     className="d-flex"
@@ -203,11 +203,11 @@ export default function MegaMenu({
         <FormControl
           type="search"
           placeholder="The people Want..."
-          className="mr-2 form-control-sm p-1 px-3 search-bar-input border-top-0 border-bottom-0 border-start-0 border-end"
+          className="mr-2 form-control-sm p-1 px-3 search-bar-input"
           aria-label="Search"
           name="search"
         />
-        <Button type="submit" variant="ml-2 search-btn">
+        <Button type="submit" variant="ml-2 search-btn btn">
           <i className="bi bi-search"></i>
         </Button>
       </Form>
