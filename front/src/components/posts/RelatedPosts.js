@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import ContentLoader from "react-content-loader";
 import { useRouter } from "next/router";
+import ReportPostModal from "../report/ReportPostModal";
 
 const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
   const [relatedPosts, setRelatedPosts] = useState([]);
@@ -54,6 +55,28 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
       </ContentLoader>
     </div>
   );
+
+  const handleReportPost = async (postId, description) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/report/post/${postId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ description }),
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Reporte de post exitoso:', data);
+      } else {
+        console.error('Error al reportar el post:', response);
+      }
+    } catch (error) {
+      console.error('Error al reportar el post:', error);
+    }
+  };
   
   const getPaginatedPosts = () => {
     const startIndex = (currentPage - 1) * pageSize;
@@ -106,123 +129,137 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
 
   return (
     <div className="container">
-      <h3 className="text-center mb-4">Related posts</h3>
+      <h3 className="text-center mb-4">Some people Want similar things</h3>
       <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 pb-5">
-        {!isLoading
-          ? getPaginatedPosts().length > 0
-            ? getPaginatedPosts().map((post) => (
-              <div key={post._id} className="col">
-                <div className="card post rounded-5">
-                  <button className="rounded-circle btn-save" title="Save">
-                    <i className="bi bi-heart"></i>
-                  </button>
-                  {post.photos && post.photos.length > 0 && (
-                    <div
-                      id={`carousel-${post._id}`}
-                      className="carousel slide"
-                      data-bs-ride="carousel"
-                      style={{ height: "200px", overflow: "hidden" }}
-                    >
-                      <div className="carousel-inner">
-                        {post.photos.map((photos, index) => {
-                          console.log("Image URL:", `${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`);
-                          return (
-                            <div
-                              className={`carousel-item ${index === 0 ? "active" : ""}`}
-                              key={index}
-                            >
-                              <img
-                                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`}
-                                className="d-block w-100"
-                                alt={`Slide ${index}`}
-                              />
-                            </div>
-                          );
-                        })}
+        {!isLoading ? (
+          getPaginatedPosts().length > 0 ? (
+            getPaginatedPosts().map((relatedPost) => {
+              const userReputation = relatedPost.createdBy.reports ? 5 - (0.3 * relatedPost.createdBy.reports.length) : 5;
+
+              return (
+                <div key={relatedPost._id} className="col">
+                  <div className="card post rounded-5">
+                    <button className="rounded-circle btn-save" title="Save">
+                      <i className="bi bi-heart"></i>
+                    </button>
+                    {relatedPost.photos && relatedPost.photos.length > 0 && (
+                      <div
+                        id={`carousel-${relatedPost._id}`}
+                        className="carousel slide"
+                        data-bs-ride="carousel"
+                        style={{ height: "200px", overflow: "hidden" }}
+                      >
+                        <div className="carousel-inner">
+                          {relatedPost.photos.map((photos, index) => {
+                            console.log("Image URL:", `${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`);
+                            return (
+                              <div
+                                className={`carousel-item ${index === 0 ? "active" : ""}`}
+                                key={index}
+                              >
+                                <img
+                                  src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`}
+                                  className="d-block w-100"
+                                  alt={`Slide ${index}`}
+                                />
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <button
+                          className="carousel-control-prev"
+                          type="button"
+                          data-bs-target={`#carousel-${relatedPost._id}`}
+                          data-bs-slide="prev"
+                        >
+                          <span
+                            className="carousel-control-prev-icon"
+                            aria-hidden="true"
+                          ></span>
+                          <span className="visually-hidden">Previous</span>
+                        </button>
+                        <button
+                          className="carousel-control-next"
+                          type="button"
+                          data-bs-target={`#carousel-${relatedPost._id}`}
+                          data-bs-slide="next"
+                        >
+                          <span
+                            className="carousel-control-next-icon"
+                            aria-hidden="true"
+                          ></span>
+                          <span className="visually-hidden">Next</span>
+                        </button>
                       </div>
-                      <button
-                        className="carousel-control-prev"
-                        type="button"
-                        data-bs-target={`#carousel-${post._id}`}
-                        data-bs-slide="prev"
-                      >
-                        <span
-                          className="carousel-control-prev-icon"
-                          aria-hidden="true"
-                        ></span>
-                        <span className="visually-hidden">Previous</span>
-                      </button>
-                      <button
-                        className="carousel-control-next"
-                        type="button"
-                        data-bs-target={`#carousel-${post._id}`}
-                        data-bs-slide="next"
-                      >
-                        <span
-                          className="carousel-control-next-icon"
-                          aria-hidden="true"
-                        ></span>
-                        <span className="visually-hidden">Next</span>
-                      </button>
+                    )}
+                    <div className="card-body">
+                      <h5 className="card-title post-title mb-2">{relatedPost.title}</h5>
+                      <h5 className="text-success">
+                        ${relatedPost.price.toLocaleString()}
+                      </h5>
+                      <p className="card-text post-text mb-2">
+                        {relatedPost.description.length > 100
+                          ? relatedPost.description.substring(0, 100) + "..."
+                          : relatedPost.description}
+                      </p>
+                      <div className="row">
+                        <div className="col-2 p-0">
+                          <ReportPostModal postId={post._id} onReport={handleReportPost} />
+                        </div>
+                        <div className="col-8 p-0">
+                          <Link className="d-flex justify-content-center" href={`/post/[id]`} as={`/post/${post._id}`}>
+                            <button className="offer-btn btn rounded-pill">View details</button>
+                          </Link>
+                        </div>
+                        <div className="col-2 p-0">
+                          <button className="btn ps-2" title="">
+                            <i className="bi bi-heart"></i>
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  )}
-                  <div className="card-body">
-                    <h5 className="card-title post-title mb-2">{post.title}</h5>
-                    <h5 className="text-success">
-                      ${post.price.toLocaleString()}
-                    </h5>
-                    <p className="card-text post-text mb-2">
-                      {post.description.length > 100
-                        ? post.description.substring(0, 100) + "..."
-                        : post.description}
-                    </p>
-                    <Link className="d-flex justify-content-center" href={`/post/[id]`} as={`/post/${post._id}`}>
-                      <button className="offer-btn btn rounded-pill">View details</button>
-                    </Link>
-                  </div>
-                  <div className="card-footer text-center">
-                  <img
-                      src={
-                        post.createdBy.photo
-                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
-                          : "icons/person-circle.svg"
-                      }
-                      alt=""
-                      className="createdBy-photo p-1"
-                    />
-                    <small className="text-muted text-center">
-                      {post.createdBy.firstName}
-                    </small>
+                    <div className="card-footer text-center">
+                      <img
+                        src={
+                          relatedPost.createdBy.photo
+                            ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${relatedPost.createdBy.photo}`
+                            : "icons/person-circle.svg"
+                        }
+                        alt=""
+                        className="createdBy-photo p-1"
+                      />
+                      <small className="text-muted text-center">
+                        {relatedPost.createdBy.firstName} | {userReputation.toFixed(1)}
+                      </small>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-            : (
-              <div className="col-md-12">
-                <p>The people doesn't want what your're looking for yet.</p>
-              </div>
-            )
-          : (
-            <>
-              <Placeholder />
-              <Placeholder />
-              <Placeholder />
-              <Placeholder />
-              <Placeholder />
-              <Placeholder />
-              <Placeholder />
-              <Placeholder />
-              <Placeholder />
-              <Placeholder />
-              <Placeholder />
-              <Placeholder />
-            </>
+              );
+            })
+          ) : (
+            <div className="col-md-12">
+              <p>We apologize, but there are still no people who Want things similar to this in these categories and location</p>
+            </div>
           )
-        }
+        ) : (
+          <>
+            <Placeholder />
+            <Placeholder />
+            <Placeholder />
+            <Placeholder />
+            <Placeholder />
+            <Placeholder />
+            <Placeholder />
+            <Placeholder />
+            <Placeholder />
+            <Placeholder />
+            <Placeholder />
+            <Placeholder />
+          </>
+        )}
       </div>
       {relatedPosts.length > 0 && renderPageNumbers()}
     </div>
-
   );
 };
 

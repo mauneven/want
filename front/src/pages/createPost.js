@@ -158,6 +158,7 @@ const CreatePost = () => {
 
   return (
     <div className="mt-5 mb-5">
+      <h3 className="text-center mb-4">Create a post about what you Want</h3>
       <div className="row row-cols-1 row-cols-md-4 g-4">
         <div className="col-md-6">
           <form onSubmit={handleSubmit} className="container">

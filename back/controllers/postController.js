@@ -80,7 +80,7 @@ exports.getAllPosts = async (req, res, next) => {
 
 exports.getPostById = async (req, res, next) => {
   try {
-    const post = await Post.findById(req.params.id).populate('createdBy', 'firstName lastName photo');
+    const post = await Post.findById(req.params.id).populate('createdBy', 'firstName lastName photo reports');
     if (!post) {
       return res.status(404).send('Post not found');
     }
@@ -312,7 +312,7 @@ exports.getPostsByCurrentUser = async (req, res, next) => {
 
     const posts = await Post.find({ createdBy: req.session.userId }).populate(
       'createdBy',
-      'firstName lastName photo'
+      'firstName lastName photo reports'
     );
     res.status(200).json(posts);
   } catch (err) {
