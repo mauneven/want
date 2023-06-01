@@ -33,9 +33,10 @@ export default function MegaMenu({
   const router = useRouter();
 
   const handleLogoClick = () => {
-    setCurrentPage(1); // Establece currentPage en 1
+    setCurrentPage(1);
     onSearchTermChange("");
     onCategoryFilterChange({ mainCategory: "", subCategory: "" });
+    setCategoriesButtonText("All categories"); // Actualiza el estado categoriesButtonText
     router.push("/");
   };
 
