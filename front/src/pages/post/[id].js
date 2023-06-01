@@ -154,7 +154,7 @@ const PostDetails = () => {
               ))}
             </div>
           </div>
-          <div className="col-lg-6">
+          <div className="col-lg-6" style={{ maxWidth: '100%', overflowWrap: 'break-word' }}>
             {!mobileDevice && isZoomVisible && (
               <div
                 ref={zoomRef}
@@ -175,30 +175,37 @@ const PostDetails = () => {
                 $ {post.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               </span>
             </p>
-            <h5>{post.description}</h5>
-            <p>
+            <p className="description-container-id">{post.description}</p>
+            <p className='pb-0 mb-0 small-text mt-3'>
               Published in {post.city}, {post.state}, {post.country}
             </p>
-            <p>
+            <p className='small'>
               {post.mainCategory}, {post.subCategory}
             </p>
-            <div className="row">
-              <img
-                src={
-                  post.createdBy.photo
-                    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
-                    : "icons/person-circle.svg"
-                }
-                alt=""
-                className="createdBy-photo p-1"
-              />
-              <p>By {post.createdBy.firstName}</p>
-              <> {post.createdBy.reports ? 5 - (0.3 * post.createdBy.reports.length) : ""}</>
+            <div className="row align-items-center">
+              <div className='col-1'>
+                <img
+                  src={
+                    post.createdBy.photo
+                      ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
+                      : "icons/person-circle.svg"
+                  }
+                  alt=""
+                  className="createdBy-photo-id"
+                />
+              </div>
+              <div className='col-11'>
+                <p className='mx-5 p-0 blockquote'>
+                  {post.createdBy.firstName} {post.createdBy.lastName} | {post.createdBy.reports ? 5 - (0.3 * post.createdBy.reports.length) : ""}
+                </p>
+              </div>
             </div>
-            <Link href={`/createOffer?postId=${id}`}>
-              <button className="btn btn-offer">Make an offer</button>
-            </Link>
-            <ReportPostModal postId={post._id} onReport={handleReportPost} />
+            <div className='mt-3'>
+              <Link href={`/createOffer?postId=${id}`}>
+                <button className="btn btn-offer">Make an offer</button>
+              </Link>
+              <ReportPostModal postId={post._id} onReport={handleReportPost} />
+            </div>
           </div>
         </div>
       </div>

@@ -37,7 +37,7 @@ const EditPost = () => {
   const [photoUrl, setPhotoUrl] = useState(null);
 
   useEffect(() => {
-    validations(router); 
+    validations(router);
   }, []);
 
   useEffect(() => {
@@ -137,11 +137,11 @@ const EditPost = () => {
         };
       }
     }).filter((image) => image !== null);
-  
+
     // Contar el número de imágenes existentes en la base de datos
     const existingImagesCount = images.filter((image) => image.file === null).length;
     const totalImages = existingImagesCount + newImages.length;
-  
+
     if (totalImages > 4) {
       const errorMessage = 'You cannot upload more than 4 images.';
       setError(errorMessage);
@@ -150,12 +150,39 @@ const EditPost = () => {
       setError(null);
       setImages((prevState) => [...prevState, ...newImages]);
     }
-  };  
+  };
 
   const onDelete = (index) => {
     const deletedImage = images[index].preview;
     setDeletedImages((prevState) => [...prevState, deletedImage]);
     setImages(images.filter((_, i) => i !== index));
+  };
+
+    const handleTitleChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= 60) {
+      setTitle(value);
+    } else {
+      setTitle(value.slice(0, 60));
+    }
+  };  
+
+  const handleDescriptionChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= 400) {
+      setDescription(value);
+    } else {
+      setDescription(value.slice(0, 400));
+    }
+  };
+
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= 11) {
+      setPrice(value);
+    } else {
+      setPrice(value.slice(0, 11));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -209,40 +236,40 @@ const EditPost = () => {
   };
 
   return (
-    <div className="mt-5 mb-5">
-      <h3 className="text-center mb-4">Edit the post of what you Want</h3>
+    <div className="mt-4 mb-4">
+      <h3 className="text-center mb-3 ">Edit the post of what you Want</h3>
       <div className="row row-cols-1 row-cols-md-4 g-4">
         <div className="col-md-6">
           <form onSubmit={handleSubmit} className="container">
             <div className="mb-3">
-              <label htmlFor="title" className="form-label">Give a title to what you Want</label>
+              <label htmlFor="title" className="form-label">Give a title to what you Want*</label>
               <input
                 type="text"
                 className="form-control"
                 id="title"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={handleTitleChange}
                 required
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="description" className="form-label">Now describe it in more detail</label>
+              <label htmlFor="description" className="form-label">Now describe it in more detail*</label>
               <textarea
                 className="form-control"
                 id="description"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={handleDescriptionChange}
                 required
               ></textarea>
             </div>
             <div className="mb-3">
-              <label htmlFor="price" className="form-label">how much would you pay for what you Want</label>
+              <label htmlFor="price" className="form-label">how much would you pay for what you Want*</label>
               <input
                 type="number"
                 className="form-control"
                 id="price"
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                onChange={handlePriceChange}
                 required
               />
               {price ? (
@@ -250,6 +277,7 @@ const EditPost = () => {
               ) : null}
             </div>
             <div className="mb-3">
+              <label htmlFor="price" className="form-label">Give an approximate location of where you Want this*</label>
               <Location
                 onCountryChange={(selectedCountry) => setCountry(selectedCountry)}
                 onStateChange={(selectedState) => setState(selectedState)}
@@ -261,6 +289,7 @@ const EditPost = () => {
               />
             </div>
             <div className="mb-3">
+              <label htmlFor="price" className="form-label">Select a category according to what you Want*</label>
               <PostCategory
                 onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
                 onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)}
@@ -283,10 +312,10 @@ const EditPost = () => {
             </div>
             <button type="submit" className="btn btn-primary" disabled={loading}>
               {loading ? (
-                                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
               ) : "Update my post"}
-              
-              </button>
+
+            </button>
             <button type="button" className="btn btn-secondary" onClick={() => router.back()}>Cancel</button>
           </form>
           {error && (

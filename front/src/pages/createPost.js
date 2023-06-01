@@ -82,6 +82,33 @@ const CreatePost = () => {
     }
   };
 
+  const handleTitleChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= 60) {
+      setTitle(value);
+    } else {
+      setTitle(value.slice(0, 60));
+    }
+  };  
+
+  const handleDescriptionChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= 600) {
+      setDescription(value);
+    } else {
+      setDescription(value.slice(0, 600));
+    }
+  };
+
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= 11) {
+      setPrice(value);
+    } else {
+      setPrice(value.slice(0, 11));
+    }
+  };
+
   useEffect(() => {
     const handleSlid = (event) => {
       setActiveIndex(event.to);
@@ -167,7 +194,7 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="mt-5 mb-5">
+    <div className="mt-3 mb-3">
       <h3 className="text-center mb-4">Create a post about what you Want</h3>
       <div className="row row-cols-1 row-cols-md-4 g-4">
         <div className="col-md-6">
@@ -197,7 +224,7 @@ const CreatePost = () => {
                 className="form-control"
                 id="title"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={handleTitleChange}
                 required
               />
             </div>
@@ -207,7 +234,7 @@ const CreatePost = () => {
                 className="form-control"
                 id="description"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={handleDescriptionChange}
                 required
               ></textarea>
             </div>
@@ -218,7 +245,7 @@ const CreatePost = () => {
                 className="form-control"
                 id="price"
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                onChange={handlePriceChange}
                 required
               />
               {price ? (

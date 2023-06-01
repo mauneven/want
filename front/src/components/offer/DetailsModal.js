@@ -73,7 +73,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
         <>
             <Modal show={show} onHide={onHide} dialogClassName="modal-xl">
                 <Modal.Header closeButton>
-                    <Modal.Title>Offer Details</Modal.Title>
+                    <Modal.Title>Offer for your post {offer.post.title}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div className="row">
@@ -109,7 +109,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
                                 ))}
                             </div>
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-lg-6" style={{ maxWidth: '100%', overflowWrap: 'break-word' }}>
                             {!isMobileDevice && isZoomVisible && (
                                 <div
                                     ref={zoomRef}
@@ -125,14 +125,16 @@ const DetailsModal = ({ show, onHide, offer }) => {
                                 ></div>
                             )}
                             <h5>{offer.title}</h5>
-                            <p>{offer.description}</p>
-                            <p>Price: {offer.price}</p>
-                            <p>Offer for: {offer.post && offer.post.title}</p>
                             <p>
-                                Offer by: {offer.createdBy.firstName}{" "}
-                                {offer.createdBy.lastName}
+                                <span className="text-success h2">
+                                    $ {offer.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                </span>
                             </p>
-                            <p>Contact: {offer.contact}</p>
+                            <p>{offer.description}</p>
+                            <p>
+                                Offer by {offer.createdBy.firstName} {offer.createdBy.lastName}
+                            </p>
+                            <p>Contact of {offer.createdBy.firstName}: {offer.contact}</p>
                         </div>
                     </div>
                 </Modal.Body>

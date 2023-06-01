@@ -129,7 +129,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
 
   return (
     <div className="container">
-      <h3 className="text-center mb-4">Some people Want similar things</h3>
+      <h3 className="text-center mb-4">Some people may Want similar things</h3>
       <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 pb-5">
         {!isLoading ? (
           getPaginatedPosts().length > 0 ? (

@@ -8,7 +8,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
   const [show, setShow] = useState(false);
   const [mainCategory, setMainCategory] = useState('');
   const [subCategory, setSubcategory] = useState('');
-  const [displayCategory, setDisplayCategory] = useState('Todas las categorías');
+  const [displayCategory, setDisplayCategory] = useState('Select a category');
 
   const handleShow = () => setShow(true);
   const handleClose = () => {
@@ -26,7 +26,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
     } else if (mainCategory) {
       setDisplayCategory(mainCategory);
     } else {
-      setDisplayCategory('All categories');
+      setDisplayCategory('Select a category');
     }
   
     handleClose();
@@ -35,7 +35,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
   const handleSeeAllCategories = () => {
     setMainCategory('');
     setSubcategory('');
-    setDisplayCategory('All categories');
+    setDisplayCategory('Select a category');
     if (onCategorySelected) {
       onCategorySelected('', '');
     }
@@ -44,13 +44,13 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
 
   return (
     <>
-      <Button variant="" onClick={handleShow}>
+      <Button variant="" onClick={handleShow} className='btn-categories-navbar'>
         {buttonText}
       </Button>
 
       <Modal show={show || isShown} onHide={handleClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Select a category</Modal.Title>
+          <Modal.Title>Filter by categories</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <PostCategory
