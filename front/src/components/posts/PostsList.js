@@ -14,29 +14,32 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
-  const [storedLocationFilter, setStoredLocationFilter] = useState(null);
 
-  const fetchPosts = async (filter) => {
-    setIsLoading(true);
+  const fetchPosts = async () => {
+    try {
+      setIsLoading(true);
 
-    const filterParams = new URLSearchParams({
-      country: filter?.country || '',
-      state: filter?.state || '',
-      city: filter?.city || '',
-      mainCategory: categoryFilter?.mainCategory || '',
-      subCategory: categoryFilter?.subCategory || '',
-      searchTerm: searchTerm || '',
-      page: currentPage,
-      pageSize
-    });
+      const filterParams = new URLSearchParams({
+        country: locationFilter?.country || '',
+        state: locationFilter?.state || '',
+        city: locationFilter?.city || '',
+        mainCategory: categoryFilter?.mainCategory || '',
+        subCategory: categoryFilter?.subCategory || '',
+        searchTerm: searchTerm || '',
+        page: currentPage,
+        pageSize
+      });
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?${filterParams}`);
-    const { posts: postsData, totalPosts } = await response.json();
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?${filterParams}`);
+      const { posts: postsData, totalPosts } = await response.json();
 
-    setTotalPosts(totalPosts);
-    setPosts(postsData);
-
-    setIsLoading(false);
+      setTotalPosts(totalPosts);
+      setPosts(postsData);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -45,42 +48,11 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
   }, []);
 
   useEffect(() => {
-    const storedFilter = localStorage.getItem("locationFilter");
-    if (storedFilter) {
-      const parsedFilter = JSON.parse(storedFilter);
-      setStoredLocationFilter(parsedFilter);
-      fetchPosts(parsedFilter);
-    } else {
-      fetchPosts(locationFilter);
-    }
-  }, [userIdFilter, searchTerm, categoryFilter, currentPage, pageSize, locationFilter]);
-
-  const handleReportPost = async (postId, description) => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/report/post/${postId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ description }),
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Reporte de post exitoso:', data);
-      } else {
-        console.error('Error al reportar el post:', response);
-      }
-    } catch (error) {
-      console.error('Error al reportar el post:', error);
-    }
-  };
+    fetchPosts();
+  }, [locationFilter, userIdFilter, searchTerm, categoryFilter, currentPage, pageSize]);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    localStorage.setItem("currentPage", pageNumber);
-    fetchPosts(locationFilter);
   };
 
   const totalPages = Math.ceil(totalPosts / pageSize);
@@ -145,6 +117,28 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
     }
 
     return null;
+  };
+
+  const handleReportPost = async (postId, description) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/report/post/${postId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ description }),
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Reporte de post exitoso:', data);
+      } else {
+        console.error('Error al reportar el post:', response);
+      }
+    } catch (error) {
+      console.error('Error al reportar el post:', error);
+    }
   };
 
   const Placeholder = () => (
@@ -275,7 +269,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
             })
           ) : (
             <div className="col-md-12">
-              <p>The people doesn't want what you're looking for yet.</p>
+              <p>There are no posts with those filters. Please try something else.</p>
             </div>
           )
         ) : (
