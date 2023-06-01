@@ -76,16 +76,14 @@ export default function PostCategory({
 
   return (
     <div className="d-flex flex-wrap align-items-center">
-      <label htmlFor="category-select" className="me-2 mb-0">Category</label>
       <select id="category-select" className="form-select me-4" value={selectedCategory?.id} onChange={handleCategoryChange} required={isRequired}>
-        <option value="">Selected a category</option>
+        <option value="">Select a category</option>
         {categoryOptions}
       </select>
 
       {selectedCategory && (
         <>
-          <label htmlFor="subcategory-select" className="me-2 mb-0">Sub category</label>
-          <select id="subcategory-select" className="form-select" value={selectedSubcategory} onChange={handleSubcategoryChange} required={isRequired}>
+          <select id="subcategory-select" className="form-select mt-2" value={selectedSubcategory} onChange={handleSubcategoryChange} required={isRequired}>
           <option value="">Select subcategory</option>
             {subcategoryOptions}
           </select>

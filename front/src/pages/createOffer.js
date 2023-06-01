@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import WordsFilter from '@/badWordsFilter/WordsFilter';
 import { Carousel } from 'react-bootstrap';
 import { validations } from '@/utils/validations';
+import { Modal } from 'react-bootstrap';
 
 const CreateOffer = () => {
   const router = useRouter();
@@ -15,16 +16,61 @@ const CreateOffer = () => {
   const [contact, setContact] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photos, setPhotos] = useState([]);
+  const [showModal, setShowModal] = useState(false);
 
   const getActivePhotoIndex = () => {
     const activeItem = document.querySelector(".carousel-item.active");
     return activeItem ? parseInt(activeItem.dataset.index) : -1;
   };
 
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   const removePhoto = (index) => {
     const newPhotos = [...photos];
     newPhotos.splice(index, 1);
     setPhotos(newPhotos);
+  };
+
+  const handleTitleChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= 60) {
+      setTitle(value);
+    } else {
+      setTitle(value.slice(0, 60));
+    }
+  };  
+
+  const handleDescriptionChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= 600) {
+      setDescription(value);
+    } else {
+      setDescription(value.slice(0, 600));
+    }
+  };
+
+  const handleContactChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= 200) {
+      setContact(value);
+    } else {
+      setContact(value.slice(0, 200));
+    }
+  };
+
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= 11) {
+      setPrice(value);
+    } else {
+      setPrice(value.slice(0, 11));
+    }
   };
 
   useEffect(() => {
@@ -134,49 +180,69 @@ const CreateOffer = () => {
 
   return (
     <div className="container mt-4 mb-4">
-      <h1 className='mt-3 mb-3'>Create an offer</h1>
-      <div className="row row-cols-1 row-cols-md-4 g-4">
-        <div className="col-md-6">
+      <h1 className='mt-3'>Creating an offer for "{post.title}"</h1>
+      <h2 className='mt-3 '>Maximium payment of $ {Number(post.price).toLocaleString()}</h2>
+      <h4 className='mt-3'>Do your best offer</h4>
+      <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Info about when you create an offer</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className='p-0'>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">1. Your offer will be sent inmediatly, but will be available only on the lifetime of the post (30 days max).</li>
+                <li class="list-group-item">2. If the post you are offering on is removed then your offer will be removed as well.</li>
+                <li class="list-group-item">3. You are free to delete the offer, but not to edit it</li>
+                <li class="list-group-item">4. If you decide to delete the offer manually then it will be deleted also for the person you send it to</li>
+              </ul>
+            </Modal.Body>
+            <Modal.Footer>
+              <button className="btn btn-secondary" onClick={handleCloseModal}>
+                Ok
+              </button>
+            </Modal.Footer>
+          </Modal>
+      <div className="row row-cols-1 mt-2 row-cols-md-4 g-4">
+        <div className="col-md-6 p-0">
           <form onSubmit={handleSubmit} className="container">
             <div className="mb-3">
-              <label htmlFor="title" className="form-label">Offert title</label>
+              <label htmlFor="title" className="form-label">Offert title*</label>
               <input
                 type="text"
                 className="form-control"
                 id="title"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={handleTitleChange}
                 required
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="description" className="form-label">Describe your offer</label>
+              <label htmlFor="description" className="form-label">Describe your offer*</label>
               <textarea
                 className="form-control"
                 id="description"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={handleDescriptionChange}
                 required
               ></textarea>
             </div>
             <div className="mb-3">
-              <label htmlFor="contact" className="form-label">How can this person contact you?</label>
+              <label htmlFor="contact" className="form-label">How can this person contact you?*</label>
               <textarea
                 className="form-control"
                 id="contact"
                 value={contact}
-                onChange={(e) => setContact(e.target.value)}
+                onChange={handleContactChange}
                 required
               ></textarea>
             </div>
             <div className="mb-3">
-              <label htmlFor="price" className="form-label">Price you offer</label>
+              <label htmlFor="price" className="form-label">Price you offer*</label>
               <input
                 type="number"
                 className="form-control"
                 id="price"
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                onChange={handlePriceChange}
                 required
               />
               {price ? (
@@ -184,7 +250,7 @@ const CreateOffer = () => {
               ) : null}
             </div>
             <div className="mb-3">
-              <label htmlFor="photo" className="form-label">Upload upto 4 photos</label>
+              <label htmlFor="photo" className="form-label">Upload photos*</label>
               <input
                 type="file"
                 className="form-control"
@@ -204,6 +270,9 @@ const CreateOffer = () => {
               ) : (
                 "Create offer"
               )}
+            </button>
+            <button type="button" className="btn" onClick={handleShowModal}>
+            <i class="bi bi-info-circle-fill"></i>
             </button>
           </form>
         </div>

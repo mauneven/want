@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import Footer from '@/components/footer/Footer';
 import MobileMenu from '@/components/navigation/MobileMenu';
-import bootstrap from 'bootstrap'; // Agrega esta línea para importar Bootstrap
 
 export default function MyApp({ Component, pageProps }) {
   const [locationFilter, setLocationFilter] = useState(null);
@@ -36,11 +35,6 @@ export default function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     setIsMobile(isMobileDevice());
-  }, []);
-
-  useEffect(() => {
-    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
-    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
   }, []);
 
   return (
