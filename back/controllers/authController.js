@@ -193,7 +193,7 @@ exports.sendResetPasswordEmail = async ({ email, token }) => {
     <a href="https://want.com.co/recoveryPassword/${token}">Reset Password</a>
     <p>If you did not request a password reset, please ignore this email and your password will not be changed.</p>
   `
-  });  
+  });
 
   //console.log('Message sent: %s', info.messageId);
 };
@@ -330,7 +330,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
     <p>You are one step away from verifying your account on Want. If you want to proceed, click on the following link:</p>
     <a href="https://want.com.co/verify-email/${verificationToken}">Verify Email Address</a>
   `,
-  };  
+  };
 
   try {
     await transporter.sendMail(mailOptions);
@@ -378,29 +378,29 @@ exports.isUserVerified = async (userId) => {
 
 const deleteUserData = async (userId) => {
 
-    // Buscar al usuario por el ID
-    const user = await User.findById(userId);
-    if (!user) {
-      console.error(`Error: User not found with ID ${userId}`);
-      return;
-    }
+  // Buscar al usuario por el ID
+  const user = await User.findById(userId);
+  if (!user) {
+    console.error(`Error: User not found with ID ${userId}`);
+    return;
+  }
 
-// Eliminar las fotos de los posts del usuario
-const posts = await Post.find({ createdBy: userId });
-for (const post of posts) {
-  if (post.photos) {
-    for (const photo of post.photos) {
-      if (typeof photo === 'string') {
-        try {
-          const imagePath = path.join(__dirname, '..', photo);
-          fs.unlinkSync(imagePath);
-        } catch (err) {
-          console.error(`Error deleting image for post ${post._id}: ${err.message}`);
+  // Eliminar las fotos de los posts del usuario
+  const posts = await Post.find({ createdBy: userId });
+  for (const post of posts) {
+    if (post.photos) {
+      for (const photo of post.photos) {
+        if (typeof photo === 'string') {
+          try {
+            const imagePath = path.join(__dirname, '..', photo);
+            fs.unlinkSync(imagePath);
+          } catch (err) {
+            console.error(`Error deleting image for post ${post._id}: ${err.message}`);
+          }
         }
       }
     }
   }
-}
 
   // Eliminar las fotos de las ofertas creadas por el usuario
   const offers = await Offer.find({ createdBy: userId });
@@ -438,8 +438,31 @@ for (const post of posts) {
   await User.deleteOne({ _id: userId });
 };
 
+const deleteProfilePhoto = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      console.error(`Error: User not found with ID ${userId}`);
+      return;
+    }
+
+    // Eliminar la foto del perfil del usuario
+    if (user.photo) {
+      try {
+        const imagePath = path.join(__dirname, '..', user.photo);
+        fs.unlinkSync(imagePath);
+      } catch (err) {
+        console.error(`Error deleting profile image for user ${user._id}: ${err.message}`);
+      }
+    }
+  } catch (err) {
+    console.error(`Error deleting profile photo for user ${userId}:`, err);
+  }
+};
+
 exports.deleteAccount = async (req, res, next) => {
-  
+
   try {
     const user = await User.findById(req.session.userId);
 
@@ -451,7 +474,7 @@ exports.deleteAccount = async (req, res, next) => {
     user.isDeleted = true;
     user.deleteGracePeriodStart = Date.now();
     // Establecer un periodo de gracia de 30 días
-    user.deleteGracePeriodEnd = Date.now() + 1000 * 60 * 60 * 24 * 24;
+    user.deleteGracePeriodEnd = Date.now() + 1000 * 60; // 1 minute
     await user.save();
 
     // Programar la eliminación del usuario después del periodo de gracia
@@ -462,6 +485,15 @@ exports.deleteAccount = async (req, res, next) => {
         console.error(`Error deleting user data for user ${user._id}:`, err);
       }
     }, 1000 * 60 * 60 * 24 * 24); // Temporizador de 30 días
+
+    // Programar la eliminación de la foto después del periodo de gracia
+    setTimeout(async () => {
+      try {
+        await deleteProfilePhoto(user._id);
+      } catch (err) {
+        console.error(`Error deleting profile photo for user ${user._id}:`, err);
+      }
+    }, user.deleteGracePeriodEnd - Date.now());
 
     // Cerrar sesión del usuario
     req.session.destroy();
@@ -539,4 +571,3 @@ exports.cancelDeletionProcess = async (req, res, next) => {
     next(err);
   }
 };
-

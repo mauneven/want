@@ -55,9 +55,10 @@ exports.getAllPosts = async (req, res, next) => {
 
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 10;
+    const skip = (page - 1) * pageSize;
 
     const posts = await Post.find(filters)
-      .skip((page - 1) * pageSize)
+      .skip(skip)
       .limit(pageSize)
       .sort({ createdAt: -1 }) // Ordenar por fecha de creación en orden descendente
       .populate({

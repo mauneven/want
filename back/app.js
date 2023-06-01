@@ -100,13 +100,13 @@ schedule.scheduleJob('*/1 * * * *', async () => {
   }
 });
 
-// Tarea para eliminar los posts después de 1 minuto
-schedule.scheduleJob('*/1 * * * *', async () => {
+// Tarea para eliminar los posts después de 30 días
+schedule.scheduleJob('0 0 * * *', async () => {
   try {
-    const oneMinuteAgo = new Date();
-    oneMinuteAgo.setMinutes(oneMinuteAgo.getMinutes() - 1);
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const oldPosts = await Post.find({ createdAt: { $lt: oneMinuteAgo } });
+    const oldPosts = await Post.find({ createdAt: { $lt: thirtyDaysAgo } });
 
     // Elimina los posts encontrados
     for (const post of oldPosts) {
@@ -118,7 +118,7 @@ schedule.scheduleJob('*/1 * * * *', async () => {
 });
 
 // Tarea para eliminar las cuentas de usuario después de 30 días
-schedule.scheduleJob('*/1 * * * *', async () => {
+schedule.scheduleJob('*/1 * * * * *', async () => {
   try {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
