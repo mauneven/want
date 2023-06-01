@@ -259,7 +259,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
                         className="createdBy-photo p-1"
                       />
                       <small className="text-muted text-center">
-                        {post.createdBy.firstName} | {userReputation.toFixed(1)}
+                        {post.createdBy.firstName} | <i class="bi bi-star-fill"></i> {userReputation.toFixed(1)}
                       </small>
                     </div>
                   </div>
