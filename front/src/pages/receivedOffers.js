@@ -226,8 +226,10 @@ export default function ReceivedOffers() {
                             <div className="d-flex flex-column flex-grow-1">
                               <div>
                                 <h5 className="card-title">{offer.title}</h5>
+                                <span className="text-success h5">
+                                    $ {offer.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                </span>
                                 <p className="card-text">{offer.description}</p>
-                                <p className="card-text">Price: ${offer.price}</p>
                               </div>
                             </div>
                           </div>

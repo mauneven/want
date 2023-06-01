@@ -81,7 +81,8 @@ app.use((err, req, res, next) => {
   }
 });
 
-schedule.scheduleJob('*/1 * * * *', async () => {
+// Tarea para eliminar los reportes antiguos
+schedule.scheduleJob('0 */12 * * *', async () => {
   try {
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
@@ -101,7 +102,7 @@ schedule.scheduleJob('*/1 * * * *', async () => {
 });
 
 // Tarea para eliminar los posts después de 30 días
-schedule.scheduleJob('0 0 * * *', async () => {
+schedule.scheduleJob('0 */12 * * *', async () => {
   try {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -117,21 +118,22 @@ schedule.scheduleJob('0 0 * * *', async () => {
   }
 });
 
-schedule.scheduleJob('*/10 * * * * *', async () => {
+// Tarea para eliminar las cuentas después de 30 días
+schedule.scheduleJob('0 */12 * * *', async () => {
   try {
-    const tenSecondsAgo = new Date();
-    tenSecondsAgo.setSeconds(tenSecondsAgo.getSeconds() - 10);
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
     const usersToDelete = await User.find({
       isDeleted: true,
-      putUpForElimination: { $lt: tenSecondsAgo },
+      putUpForElimination: { $lt: thirtyDaysAgo },
     });
 
     for (const user of usersToDelete) {
       await authController.deletionPass(user._id);
     }
   } catch (err) {
-    console.error('Error deleting user accounts:', err);
+    console.error('Error al eliminar las cuentas de usuario:', err);
   }
 });
 

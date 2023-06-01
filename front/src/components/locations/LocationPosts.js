@@ -87,11 +87,12 @@ const LocationModal = ({
   return (
     <>
       <span onClick={handleShow} className="p-2">{confirmedLocationType}</span>
-      <Modal show={show} onHide={handleClose} size="lg">
+      <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Choose your location</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <p className="p-2">Choose a location from where you Want to see what do people Want</p>
           <Location
             onCountryChange={handleCountryChange}
             onStateChange={handleStateChange}

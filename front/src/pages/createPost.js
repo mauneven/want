@@ -6,10 +6,12 @@ import WordsFilter from '@/badWordsFilter/WordsFilter.js';
 import { useRef } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import { validations } from '@/utils/validations';
+import { Modal } from 'react-bootstrap';
 
 const CreatePost = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [showModal, setShowModal] = useState(false);
   const [country, setCountry] = useState('');
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
@@ -30,35 +32,43 @@ const CreatePost = () => {
   const [previewCategory, setPreviewCategory] = useState('');
   const [previewPrice, setPreviewPrice] = useState('');
 
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   useEffect(() => {
-    validations(router); 
+    validations(router);
   }, []);
 
   const handleFileChange = (e) => {
     const newPhotos = Array.from(e.target.files);
-  
+
     const isFileSizeValid = newPhotos.every((photo) => photo.size <= 50000000);
-  
+
     if (!isFileSizeValid) {
       alert("The file size exceeds the maximum allowed limit of 50MB.");
       return;
     }
-  
+
     const isFileTypeValid = newPhotos.every((photo) => {
       const extension = photo.name.split(".").pop();
       return ["jpg", "jpeg", "png"].includes(extension.toLowerCase());
     });
-  
+
     if (!isFileTypeValid) {
       alert("Only JPEG, JPG, and PNG files are allowed.");
       return;
     }
-  
+
     const maxAllowedPhotos = 4;
     const availableSlots = maxAllowedPhotos - photos.length;
     const photosToAdd = newPhotos.slice(0, availableSlots);
     setPhotos([...photos, ...photosToAdd]);
-  };  
+  };
 
   const handleDeletePhoto = (indexToDelete) => {
     const newPhotos = photos.filter((photo, index) => index !== indexToDelete);
@@ -69,6 +79,33 @@ const CreatePost = () => {
       setActiveIndex(0);
     } else if (indexToDelete < activeIndex) {
       setActiveIndex(activeIndex - 1);
+    }
+  };
+
+  const handleTitleChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= 60) {
+      setTitle(value);
+    } else {
+      setTitle(value.slice(0, 60));
+    }
+  };  
+
+  const handleDescriptionChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= 600) {
+      setDescription(value);
+    } else {
+      setDescription(value.slice(0, 600));
+    }
+  };
+
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= 11) {
+      setPrice(value);
+    } else {
+      setPrice(value.slice(0, 11));
     }
   };
 
@@ -157,39 +194,58 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="mt-5 mb-5">
+    <div className="mt-3 mb-3">
+      <h3 className="text-center mb-4">Create a post about what you Want</h3>
       <div className="row row-cols-1 row-cols-md-4 g-4">
         <div className="col-md-6">
+          <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Info about when you create a post</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className='p-0'>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">1. Your post will be available 30 days, after this time it will be deleted incluiding his related offers</li>
+                <li class="list-group-item">2. Your post will be public, and will be visible to anyone who uses a search among the locations and categories you have selected.</li>
+                <li class="list-group-item">3. You are free to delete or edit the post at any time or delete the offers you receive from the post</li>
+                <li class="list-group-item">4. If you decide to delete the post manually this will delete the offers from the post too</li>
+              </ul>
+            </Modal.Body>
+            <Modal.Footer>
+              <button className="btn btn-secondary" onClick={handleCloseModal}>
+                Ok
+              </button>
+            </Modal.Footer>
+          </Modal>
           <form onSubmit={handleSubmit} className="container">
             <div className="mb-3">
-              <label htmlFor="title" className="form-label">Give a title to what you want</label>
+              <label htmlFor="title" className="form-label">Give a title to what you want*</label>
               <input
                 type="text"
                 className="form-control"
                 id="title"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={handleTitleChange}
                 required
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="description" className="form-label">Now describe it in more detail.</label>
+              <label htmlFor="description" className="form-label">Now describe it in more detail*</label>
               <textarea
                 className="form-control"
                 id="description"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={handleDescriptionChange}
                 required
               ></textarea>
             </div>
             <div className="mb-3">
-              <label htmlFor="price" className="form-label">how much would you pay for what you want</label>
+              <label htmlFor="price" className="form-label">how much would you pay for what you Want*</label>
               <input
                 type="number"
                 className="form-control"
                 id="price"
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                onChange={handlePriceChange}
                 required
               />
               {price ? (
@@ -197,6 +253,7 @@ const CreatePost = () => {
               ) : null}
             </div>
             <div className="mb-3">
+            <label htmlFor="price" className="form-label">Give an approximate location of where you Want this*</label>
               <Location
                 onCountryChange={(selectedCountry) => setCountry(selectedCountry)}
                 onStateChange={(selectedState) => setState(selectedState)}
@@ -205,6 +262,7 @@ const CreatePost = () => {
               />
             </div>
             <div className="mb-3">
+            <label htmlFor="price" className="form-label">Select a category according to what you Want*</label>
               <PostCategory
                 onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
                 onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)} // Cambia "onSubCategoryChange" a "onSubcategoryChange"
@@ -228,6 +286,9 @@ const CreatePost = () => {
               ) : (
                 "Create Post"
               )}
+            </button>
+            <button type="button" className="btn" onClick={handleShowModal}>
+            <i class="bi bi-info-circle-fill"></i>
             </button>
           </form>
         </div>
@@ -263,13 +324,13 @@ const CreatePost = () => {
               </div>
             )}
             {photos.length > 0 && (
-                <button
-                  className="btn btn-danger delete-image-btn m-1"
-                  onClick={() => handleDeletePhoto(activeIndex)}
-                >
-                  <i className="bi bi-trash"></i>
-                  Delete this photo
-                </button>
+              <button
+                className="btn btn-danger delete-image-btn m-1"
+                onClick={() => handleDeletePhoto(activeIndex)}
+              >
+                <i className="bi bi-trash"></i>
+                Delete this photo
+              </button>
             )}
             <div className="card-body">
               <h5 className="card-title post-title mb-2">{previewTitle || "Title"}</h5>

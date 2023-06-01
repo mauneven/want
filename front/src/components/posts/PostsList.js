@@ -4,10 +4,9 @@ import ContentLoader from "react-content-loader";
 import ReportPostModal from "../report/ReportPostModal";
 import { useRouter } from "next/router";
 
-const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter }) => {
+const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, currentPage, setCurrentPage }) => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [totalPosts, setTotalPosts] = useState(0);
   const maxPagesToShow = 6;
@@ -78,7 +77,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
       pages.push(
         <button
           key={i}
-          className={`btn btn-link${i === currentPage ? " active" : ""}`}
+          className={`btn btn-success m-1${i === currentPage ? " active" : ""}`}
           onClick={() => handlePageChange(i)}
         >
           {i}
@@ -93,10 +92,10 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
     if (currentPage > 1) {
       return (
         <button
-          className="btn btn-link"
+          className="btn btn-success m-1"
           onClick={() => handlePageChange(currentPage - 1)}
         >
-          Prev
+          {"<"}
         </button>
       );
     }
@@ -108,10 +107,10 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter })
     if (currentPage < totalPages) {
       return (
         <button
-          className="btn btn-link"
+          className="btn btn-success m-1"
           onClick={() => handlePageChange(currentPage + 1)}
         >
-          Next
+          {">"}
         </button>
       );
     }

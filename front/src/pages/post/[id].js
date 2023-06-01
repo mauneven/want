@@ -35,7 +35,7 @@ const PostDetails = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ description }),
-        credentials: 'include', // Añade esta línea
+        credentials: 'include',
       });
 
       if (response.ok) {
@@ -141,7 +141,7 @@ const PostDetails = () => {
             >
               {!mobileDevice && <div style={overlayStyle}></div>}
             </div>
-            <div className="mt-3">
+            <div className="mt-3 d-flex">
               {post.photos.map((photo, index) => (
                 <img
                   key={index}
@@ -149,12 +149,12 @@ const PostDetails = () => {
                   className="img-thumbnail mr-2"
                   onMouseOver={() => handleThumbnailMouseOver(photo)}
                   alt={post.title}
-                  style={{ width: "80px", height: "80px", objectFit: "cover", cursor: "pointer" }}
+                  style={{ width: '80px', height: '80px', objectFit: 'cover', cursor: 'pointer' }}
                 />
               ))}
             </div>
           </div>
-          <div className="col-lg-6">
+          <div className="col-lg-6" style={{ maxWidth: '100%', overflowWrap: 'break-word' }}>
             {!mobileDevice && isZoomVisible && (
               <div
                 ref={zoomRef}
@@ -169,26 +169,51 @@ const PostDetails = () => {
                 }}
               ></div>
             )}
-            <h1 className="mb-4">{post.title}</h1>
-            <h5>{post.description}</h5>
-            <p><strong>Price: </strong>{post.price}</p>
-            <p><strong>Country: </strong>{post.country}</p>
-            <p><strong>State: </strong>{post.state}</p>
-            <p><strong>City: </strong>{post.city}</p>
-            <p><strong>Main category: </strong>{post.mainCategory}</p>
-            <p><strong>Sub category: </strong>{post.subCategory}</p>
-            {/* Agrega aquí más campos si es necesario */}
-            <Link href={`/createOffer?postId=${id}`}>
-              <button className="btn btn-offer">Make an offer</button>
-            </Link>
-            <ReportPostModal postId={post._id} onReport={handleReportPost} />
+            <h1>{post.title}</h1>
+            <p>
+              <span className="text-success h2">
+                $ {post.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              </span>
+            </p>
+            <p className="description-container-id">{post.description}</p>
+            <p className='pb-0 mb-0 small-text mt-3'>
+              Published in {post.city}, {post.state}, {post.country}
+            </p>
+            <p className='small'>
+              {post.mainCategory}, {post.subCategory}
+            </p>
+            <div className="row align-items-center">
+              <div className='col-1'>
+                <img
+                  src={
+                    post.createdBy.photo
+                      ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
+                      : "icons/person-circle.svg"
+                  }
+                  alt=""
+                  className="createdBy-photo-id"
+                />
+              </div>
+              <div className='col-11'>
+                <p className='mx-5 p-0 blockquote'>
+                  {post.createdBy.firstName} {post.createdBy.lastName} | {post.createdBy.reports ? 5 - (0.3 * post.createdBy.reports.length) : ""}
+                </p>
+              </div>
+            </div>
+            <div className='mt-3'>
+              <Link href={`/createOffer?postId=${id}`}>
+                <button className="btn btn-offer">Make an offer</button>
+              </Link>
+              <ReportPostModal postId={post._id} onReport={handleReportPost} />
+            </div>
           </div>
         </div>
       </div>
       <RelatedPosts
-        locationFilter={{ country: post.country }}
+        locationFilter={{ country: post.country, state: post.state, city: post.city }}
         categoryFilter={{ mainCategory: post.mainCategory, subCategory: post.subCategory }}
-        post={post} // Añade esta línea
+        post={post}
+        currentPage={Number(router.query.page) || 1}
       />
     </>
   );

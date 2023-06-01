@@ -18,6 +18,8 @@ export default function MegaMenu({
   onLocationFilterChange,
   onSearchTermChange,
   onCategoryFilterChange,
+  currentPage,
+  setCurrentPage,
 }) {
   const [user, setUser] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
@@ -25,16 +27,16 @@ export default function MegaMenu({
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
-  const [categoriesButtonText, setCategoriesButtonText] = useState("All categories");
+  const [categoriesButtonText, setCategoriesButtonText] = useState("Select a category");
   const [selectedLocation, setSelectedLocation] = useState({ country: "", state: "", city: "" });
-  const [currentPage, setCurrentPage] = useState(null);
 
   const router = useRouter();
 
   const handleLogoClick = () => {
+    setCurrentPage(1);
     onSearchTermChange("");
     onCategoryFilterChange({ mainCategory: "", subCategory: "" });
-    setCategoriesButtonText("All categories");
+    setCategoriesButtonText("Select a category");
     router.push("/");
   };
 
@@ -56,7 +58,7 @@ export default function MegaMenu({
     } else if (mainCategory) {
       setCategoriesButtonText(mainCategory);
     } else {
-      setCategoriesButtonText("All categories");
+      setCategoriesButtonText("Select a category");
     }
   };
 
@@ -75,7 +77,7 @@ export default function MegaMenu({
       setLocationFilter(parsedLocationFilter);
       onLocationFilterChange(parsedLocationFilter);
     }
-  }, []); // Elimina la dependencia de locationFilter
+  }, []);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();

@@ -20,7 +20,6 @@ body {
   border-radius: 0 0 0 0;
 }
 
-
 .search-btn:hover{
   background: #4FC68D!important;
   color: white!important;
@@ -78,15 +77,6 @@ body {
 .want-logo {
   border-radius: 50px;
   width: 150px;
-}
-
-header{
-  background-color: transparent!important;
-}
-
-.navbar-blur{
-  background-color: rgba(240, 248, 255, 0.877)!important;
-  backdrop-filter: blur(9px);
 }
 
 .createdBy-photo {
