@@ -34,8 +34,7 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  deleteGracePeriodStart: Date,
-  deleteGracePeriodEnd: Date,
+  putUpForElimination: Date,
   isVerified: {
     type: Boolean,
     default: false

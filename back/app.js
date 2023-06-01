@@ -117,22 +117,21 @@ schedule.scheduleJob('0 0 * * *', async () => {
   }
 });
 
-// Tarea para eliminar las cuentas de usuario después de 30 días
-schedule.scheduleJob('*/1 * * * * *', async () => {
+schedule.scheduleJob('*/10 * * * * *', async () => {
   try {
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const tenSecondsAgo = new Date();
+    tenSecondsAgo.setSeconds(tenSecondsAgo.getSeconds() - 10);
 
     const usersToDelete = await User.find({
       isDeleted: true,
-      deleteGracePeriodEnd: { $lt: thirtyDaysAgo },
+      putUpForElimination: { $lt: tenSecondsAgo },
     });
 
     for (const user of usersToDelete) {
-      await authController.deleteAccountById(user._id);
+      await authController.deletionPass(user._id);
     }
   } catch (err) {
-    console.error('Error al eliminar las cuentas de usuario:', err);
+    console.error('Error deleting user accounts:', err);
   }
 });
 
