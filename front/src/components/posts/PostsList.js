@@ -4,10 +4,9 @@ import ContentLoader from "react-content-loader";
 import ReportPostModal from "../report/ReportPostModal";
 import { useRouter } from "next/router";
 
-const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter }) => {
+const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, currentPage, setCurrentPage }) => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [totalPosts, setTotalPosts] = useState(0);
   const maxPagesToShow = 6;

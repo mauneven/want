@@ -18,6 +18,8 @@ export default function MegaMenu({
   onLocationFilterChange,
   onSearchTermChange,
   onCategoryFilterChange,
+  currentPage,
+  setCurrentPage, // Agrega la prop setCurrentPage
 }) {
   const [user, setUser] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
@@ -27,14 +29,13 @@ export default function MegaMenu({
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
   const [categoriesButtonText, setCategoriesButtonText] = useState("All categories");
   const [selectedLocation, setSelectedLocation] = useState({ country: "", state: "", city: "" });
-  const [currentPage, setCurrentPage] = useState(null);
 
   const router = useRouter();
 
   const handleLogoClick = () => {
+    setCurrentPage(1); // Establece currentPage en 1
     onSearchTermChange("");
     onCategoryFilterChange({ mainCategory: "", subCategory: "" });
-    setCategoriesButtonText("All categories");
     router.push("/");
   };
 
