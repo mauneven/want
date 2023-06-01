@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import ContentLoader from "react-content-loader";
-import ReportPostModal from "../report/ReportPostModal";
 import { useRouter } from "next/router";
+import UserModal from "../user/userModal";
 
 const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, currentPage, setCurrentPage }) => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [pageSize, setPageSize] = useState(12);
   const [totalPosts, setTotalPosts] = useState(0);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const maxPagesToShow = 6;
   const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
   const router = useRouter();
@@ -152,6 +153,16 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
     </div>
   );
 
+  const openModal = (user) => {
+    setSelectedUser(user);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setSelectedUser(null);
+    setShowModal(false);
+  };
+
   return (
     <div className="container">
       {isMobile && (
@@ -170,7 +181,9 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
 
               return (
                 <div key={post._id} className="col">
-                  <div className="card post rounded-5">
+                  <div
+                    className="card post rounded-5"
+                  >
                     {post.photos && post.photos.length > 0 && (
                       <div
                         id={`carousel-${post._id}`}
@@ -179,33 +192,28 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
                         style={{ height: "200px", overflow: "hidden" }}
                       >
                         <div className="carousel-inner">
-                          {post.photos.map((photos, index) => {
-                            console.log("Image URL:", `${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`);
-                            return (
-                              <div
-                                className={`carousel-item ${index === 0 ? "active" : ""}`}
-                                key={index}
-                              >
-                                <img
-                                  src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`}
-                                  className="d-block w-100"
-                                  alt={`Slide ${index}`}
-                                  loading="lazy"
-                                />
-                              </div>
-                            );
-                          })}
+                          {post.photos.map((photos, index) => (
+                            <div
+                              className={`carousel-item ${index === 0 ? "active" : ""}`}
+                              key={index}
+                            >
+                              <img
+                                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`}
+                                className="d-block w-100"
+                                alt={`Slide ${index}`}
+                                loading="lazy"
+                              />
+                            </div>
+                          ))}
                         </div>
                         <button
                           className="carousel-control-prev"
                           type="button"
                           data-bs-target={`#carousel-${post._id}`}
                           data-bs-slide="prev"
+                          style={{ bottom: "40px" }} // Posición inferior del botón prev
                         >
-                          <span
-                            className="carousel-control-prev-icon"
-                            aria-hidden="true"
-                          ></span>
+                          <span className="carousel-control-prev-icon" aria-hidden="true"></span>
                           <span className="visually-hidden">Previous</span>
                         </button>
                         <button
@@ -213,42 +221,42 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
                           type="button"
                           data-bs-target={`#carousel-${post._id}`}
                           data-bs-slide="next"
+                          style={{ bottom: "40px" }} // Posición inferior del botón next
                         >
-                          <span
-                            className="carousel-control-next-icon"
-                            aria-hidden="true"
-                          ></span>
+                          <span className="carousel-control-next-icon" aria-hidden="true"></span>
                           <span className="visually-hidden">Next</span>
                         </button>
                       </div>
                     )}
                     <div className="card-body">
-                      <h5 className="card-title post-title mb-2">{post.title}</h5>
-                      <h5 className="text-success">
+                      <h5
+                        className="card-title post-title mb-2"
+                        onClick={() => router.push(`/post/${post._id}`)}
+                      >
+                        <a style={{ color: "inherit", textDecoration: "none" }}>
+                          {post.title}
+                        </a>
+                      </h5>
+                      <h5
+                        className="text-success"
+                        onClick={() => router.push(`/post/${post._id}`)}
+                      >
                         ${post.price.toLocaleString()}
                       </h5>
-                      <p className="card-text post-text mb-2">
+                      <p
+                        className="card-text post-text mb-2"
+                        onClick={() => router.push(`/post/${post._id}`)}
+                      >
                         {post.description.length > 100
                           ? post.description.substring(0, 100) + "..."
                           : post.description}
                       </p>
-                      <div className="row">
-                        <div className="col-2 p-0">
-                          <ReportPostModal postId={post._id} onReport={handleReportPost} />
-                        </div>
-                        <div className="col-8 p-0">
-                          <Link className="d-flex justify-content-center" href={`/post/[id]`} as={`/post/${post._id}`}>
-                            <button className="offer-btn btn rounded-5">View details</button>
-                          </Link>
-                        </div>
-                        <div className="col-2 p-0">
-                          <button className="btn ps-2" title="">
-                            <i className="bi bi-heart"></i>
-                          </button>
-                        </div>
-                      </div>
                     </div>
-                    <div className="card-footer text-center">
+                    <div
+                      className="card-footer text-center"
+                      onClick={() => openModal(post.createdBy)}
+                      style={{ cursor: "pointer" }}
+                    >
                       <img
                         src={
                           post.createdBy.photo
@@ -259,7 +267,8 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
                         className="createdBy-photo p-1"
                       />
                       <small className="text-muted text-center">
-                        {post.createdBy.firstName} | <i class="bi bi-star-fill"></i> {userReputation.toFixed(1)}
+                        {post.createdBy.firstName} | <i className="bi bi-star-fill"></i>{" "}
+                        {userReputation.toFixed(1)}
                       </small>
                     </div>
                   </div>
@@ -294,6 +303,12 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
         {renderPagination()}
         {renderNextButton()}
       </div>
+
+      <UserModal
+        selectedUser={selectedUser}
+        showModal={showModal}
+        closeModal={closeModal}
+      />
     </div>
   );
 };

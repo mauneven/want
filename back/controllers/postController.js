@@ -7,6 +7,7 @@ const fs = require('fs');
 const sharp = require('sharp');
 const { v4: uuidv4 } = require('uuid');
 const url = require('url');
+const User = require('../models/user');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -63,7 +64,7 @@ exports.getAllPosts = async (req, res, next) => {
       .sort({ createdAt: -1 }) // Ordenar por fecha de creación en orden descendente
       .populate({
         path: 'createdBy',
-        select: 'firstName lastName photo',
+        select: 'firstName totalPosts totalOffers lastName photo createdAt ',
         populate: {
           path: 'reports',
           select: '_id'
@@ -80,7 +81,7 @@ exports.getAllPosts = async (req, res, next) => {
 
 exports.getPostById = async (req, res, next) => {
   try {
-    const post = await Post.findById(req.params.id).populate('createdBy', 'firstName lastName photo reports');
+    const post = await Post.findById(req.params.id).populate('createdBy', 'firstName totalPosts totalOffers lastName photo reports createdAt');
     if (!post) {
       return res.status(404).send('Post not found');
     }
@@ -125,9 +126,11 @@ exports.createPost = async (req, res, next) => {
       subCategory,
       price,
       photos: compressedImagePaths || [],
-
     });
     await post.save();
+
+    // Incrementar contador de totalPosts del usuario
+    await User.findByIdAndUpdate(req.session.userId, { $inc: { totalPosts: 1 } });
 
     res.status(201).json(post);
   } catch (err) {
@@ -312,7 +315,7 @@ exports.getPostsByCurrentUser = async (req, res, next) => {
 
     const posts = await Post.find({ createdBy: req.session.userId }).populate(
       'createdBy',
-      'firstName lastName photo reports'
+      'firstName totalPosts totalOffers lastName photo reports createdAt'
     );
     res.status(200).json(posts);
   } catch (err) {

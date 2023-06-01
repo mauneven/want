@@ -6,6 +6,7 @@ const Notification = require('../models/notification');
 const fs = require('fs');
 const sharp = require('sharp');
 const { v4: uuidv4 } = require('uuid');
+const User = require('../models/user');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -60,6 +61,9 @@ exports.createOffer = async (req, res, next) => {
     });
 
     await offer.save();
+
+    // Incrementar contador de totalOffers del usuario
+    await User.findByIdAndUpdate(req.session.userId, { $inc: { totalOffers: 1 } });
 
     // Define notificationContent after initializing offer
     const notificationContent = `New offer ${offer.title}: on your post "${post.title}"`;
