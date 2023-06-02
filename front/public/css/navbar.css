@@ -49,6 +49,9 @@ body {
 .want-logo {
   border-radius: 30px;
   width: 150px;
+  text-align: center;
+  align-items: center;
+  margin-right: 10px;
 }
 
 .createdBy-photo {
@@ -57,3 +60,47 @@ body {
   object-fit: cover;
   border-radius: 50%;
 }
+
+@media (max-width: 576px) {
+  .search-bar-input {
+    font-size: 8px;
+    padding: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .location-posts {
+    font-size: 8px;
+    padding: 0.25rem 0.5rem;
+    align-items: center;
+    text-align: center;
+    display: flex;
+  }
+  .nav-item{
+    text-align: center;
+    align-items: center;
+    color: black;
+  }
+
+}
+
+@media (max-width: 1000px) {
+  .want-logo {
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    align-items: center;
+    text-align: center;
+  }
+
+  .nav-item {
+    text-align: center;
+    align-items: center;
+  }
+}
+
+
+
+
+
+

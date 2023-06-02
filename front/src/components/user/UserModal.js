@@ -34,7 +34,7 @@ const UserModal = ({ selectedUser, showModal, closeModal }) => {
                 <h5><i class="bi bi-star-fill"></i> {selectedUser.reports ? 5 - (0.3 * selectedUser.reports.length) : ""}</h5>
                 <div className="user-profile__stats">
                   <p className="user-profile__stat">
-                    Want user for {getFormattedDate(selectedUser.createdAt)}
+                    Want user {getFormattedDate(selectedUser.createdAt)}
                   </p>
                   <p className="user-profile__stat">
                     Has made {selectedUser.totalPosts} posts
