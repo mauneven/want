@@ -194,8 +194,8 @@ const PostDetails = () => {
             <p className='small'>
               {post.mainCategory}, {post.subCategory}
             </p>
-            <div className="row align-items-center" onClick={() => openUserModal(post.createdBy)}>
-              <div className='col-1'>
+            <div className="row align-items-center text-start" onClick={() => openUserModal(post.createdBy)}>
+              <div className='col-2 p-0'>
                 <img
                   src={
                     post.createdBy.photo
@@ -206,9 +206,9 @@ const PostDetails = () => {
                   className="createdBy-photo-id"
                 />
               </div>
-              <div className='col-9'>
+              <div className='col-10'>
                 <p
-                  className='ms-5  mb-0 p-0'
+                  className='mb-0 p-0'
                   style={{ cursor: 'pointer' }}
                 >
                   {post.createdBy.firstName} {post.createdBy.lastName} | <i class="bi bi-star-fill"></i> {post.createdBy.reports ? 5 - (0.3 * post.createdBy.reports.length) : ""}

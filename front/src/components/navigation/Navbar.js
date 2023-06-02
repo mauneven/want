@@ -252,9 +252,12 @@ export default function MegaMenu({
 
       <Offcanvas show={showOffcanvas} onHide={() => setShowOffcanvas(false)} placement="end">
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Want | Menu</Offcanvas.Title>
+          <Offcanvas.Title className="text-success">Want | Menu</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
+        <Nav.Link className="nav-item" onClick={() => { router.push('/'); setShowOffcanvas(false) }}>
+                Home
+              </Nav.Link>
           <Nav className="flex-column">
             <CategoriesModal
               isShown={showCategoriesModal}
@@ -299,7 +302,7 @@ export default function MegaMenu({
               </>
             ) : (
               <Nav.Link onClick={() => { router.push('/login'); setShowOffcanvas(false) }} className="nav-item">
-                <span className="nav-link">Login</span>
+                <span className="nav-item">Login</span>
               </Nav.Link>
             )}
           </Nav>
