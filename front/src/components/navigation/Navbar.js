@@ -7,6 +7,7 @@ import {
   Form,
   FormControl,
   Button,
+  Offcanvas,
 } from "react-bootstrap";
 import LocationModal from "../locations/LocationPosts";
 import { useRouter } from "next/router";
@@ -29,6 +30,8 @@ export default function MegaMenu({
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
   const [categoriesButtonText, setCategoriesButtonText] = useState("Select a category");
   const [selectedLocation, setSelectedLocation] = useState({ country: "", state: "", city: "" });
+  const [isMobile, setIsMobile] = useState(false);
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
 
   const router = useRouter();
 
@@ -40,7 +43,10 @@ export default function MegaMenu({
     router.push("/");
   };
 
-  const handleCloseCategories = () => setShowCategoriesModal(false);
+  const handleCloseCategories = () => {
+    setShowCategoriesModal(false);
+    setShowOffcanvas(false);
+  };
 
   const handleCategorySelected = (mainCategory, subCategory) => {
     console.log("Selected Category: ", mainCategory);
@@ -119,108 +125,186 @@ export default function MegaMenu({
     }
   }, []);
 
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 1000);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1000);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
-    <Navbar
-      style={{ top: 0, zIndex: 1000 }}
-      className="sticky-top sticky-nav"
-      bg="light"
-      expand="lg"
-    >
-      <Container className="sticky-top">
-        <Navbar.Brand onClick={handleLogoClick} className="divhover">
-          <Image
-            className="want-logo"
-            src="/icons/want-logo.svg"
-            alt="Want"
-            width={90}
-            height={50}
-          />
-        </Navbar.Brand>
-        <Form
-          className="d-flex flex-grow-1 w-auto search-bar border rounded-5"
-          onSubmit={handleSearchSubmit}
-        >
-          <LocationModal
-            show={showLocationModal}
-            onHide={() => setShowLocationModal(false)}
-            onLocationSelected={handleLocationSelected}
-            onLocationFilterChange={onLocationFilterChange} // Agrega esta línea
-            selectedLocation={selectedLocation}
-          />
-          <FormControl
-            type="search"
-            placeholder="The people want..."
-            className="mr-2 form-control-sm p-1 px-3 search-bar-input"
-            aria-label="Search"
-            name="search"
-          />
-          <Button type="submit" variant="ml-2 search-btn btn">
-            <i className="bi bi-search"></i>
-          </Button>
-        </Form>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="ms-auto">
+    <>
+      <Navbar
+        style={{ top: 0, zIndex: 1000 }}
+        className="sticky-top sticky-nav"
+        bg="light"
+        expand="lg"
+      >
+        <Container className="sticky-top">
+          <Navbar.Brand onClick={handleLogoClick} className="divhover text-center align-center m-0">
+            <Image
+              className="want-logo"
+              src={isMobile ? "/icons/want-logo-mini.png" : "/icons/want-logo.svg"}
+              alt="Want"
+              width={isMobile ? 30 : 90}
+              height={isMobile ? 30 : 50}
+            />
+          </Navbar.Brand>
+          <Form
+            className="d-flex flex-grow-1 w-auto search-bar border rounded-5 search-bar-navbar"
+            onSubmit={handleSearchSubmit}
+          >
+            <LocationModal
+              show={showLocationModal}
+              onHide={() => setShowLocationModal(false)}
+              onLocationSelected={handleLocationSelected}
+              onLocationFilterChange={onLocationFilterChange}
+              selectedLocation={selectedLocation}
+            />
+            <FormControl
+              type="search"
+              placeholder="The people want..."
+              className="mr-2 form-control p-1 px-3 search-bar-input"
+              aria-label="Search"
+              name="search"
+            />
+            <Button type="submit" variant="ml-2 search-btn btn">
+              <i className="bi bi-search"></i>
+            </Button>
+          </Form>
+          {isMobile && user && (
+            <Nav.Link className="nav-item ms-2">
+              <Notifications />
+            </Nav.Link>
+          )}
+          {!isMobile && (
+            <Nav className="ms-auto">
+              <CategoriesModal
+                isShown={showCategoriesModal}
+                onHide={handleCloseCategories}
+                onCategorySelected={handleCategorySelected}
+                buttonText={categoriesButtonText}
+              />
+              <Nav.Link className="nav-item" onClick={() => router.push('/createPost')}>
+                <Button className="btn btn-post rounded-5 align-items-center nav-item">
+                  Want Something?
+                </Button>
+              </Nav.Link>
+              {user ? (
+                <Nav.Link className="nav-item">
+                  <Notifications />
+                </Nav.Link>
+              ) : null}
+              {user ? (
+                <NavDropdown
+                  className="nav-item"
+                  title={
+                    <>
+                      <img
+                        src={
+                          user.photo
+                            ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}`
+                            : "icons/person-circle.svg"
+                        }
+                        alt="Profile"
+                        className="createdBy-photo"
+                      />{" "}
+                      {`${user.firstName}`}
+                    </>
+                  }
+                  id="user-dropdown"
+                >
+                  <NavDropdown.Item onClick={() => router.push('/myPosts')}>
+                    <i className="bi bi-stickies-fill me-3"></i>Things that i Want
+                  </NavDropdown.Item>
+                  <NavDropdown.Item onClick={() => router.push('/sentOffers')}>
+                    <i className="bi bi-send-check-fill me-3"></i>Sent offers
+                  </NavDropdown.Item>
+                  <NavDropdown.Item onClick={() => router.push('/receivedOffers')}>
+                    <i className="bi bi-receipt me-3"></i>Received offers
+                  </NavDropdown.Item>
+                  <NavDropdown.Item onClick={() => router.push('/editProfile')}>
+                    <i className="bi bi-person-lines-fill me-3"></i>My profile
+                  </NavDropdown.Item>
+                  <hr />
+                  <NavDropdown.Item onClick={() => router.push('/logout')}>
+                    <i className="bi bi-box-arrow-right me-3"></i>Log out
+                  </NavDropdown.Item>
+                </NavDropdown>
+              ) : (
+                <Nav.Link onClick={() => router.push('/login')} className="nav-item">
+                  <span className="nav-link">Login</span>
+                </Nav.Link>
+              )}
+            </Nav>
+          )}
+          {isMobile && (
+            <Button variant="outline-success" className="ms-2" onClick={() => setShowOffcanvas(true)}>
+              <i className="bi bi-list"></i>
+            </Button>
+          )}
+        </Container>
+      </Navbar>
+
+      <Offcanvas show={showOffcanvas} onHide={() => setShowOffcanvas(false)} placement="end">
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>Want | Menu</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          <Nav className="flex-column">
             <CategoriesModal
               isShown={showCategoriesModal}
-              onHide={() => setShowCategoriesModal(false)}
+              onHide={handleCloseCategories}
               onCategorySelected={handleCategorySelected}
               buttonText={categoriesButtonText}
             />
-            <Nav.Link className="nav-item" onClick={() => router.push('/createPost')}>
+            <Nav.Link className="nav-item" onClick={() => { router.push('/createPost'); setShowOffcanvas(false) }}>
               <Button className="btn btn-post rounded-5 align-items-center">
                 Want Something?
               </Button>
             </Nav.Link>
             {user ? (
-              <Nav.Link className="nav-item">
-                <Notifications />
-              </Nav.Link>
-            ) : null}
-            {user ? (
-              <NavDropdown
-                className="nav-item"
-                title={
-                  <>
-                    <img
-                      src={
-                        user.photo
-                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}`
-                          : "icons/person-circle.svg"
-                      }
-                      alt="Profile"
-                      className="createdBy-photo"
-                    />{" "}
-                    {`${user.firstName}`}
-                  </>
-                }
-                id="user-dropdown"
-              >
-                <NavDropdown.Item onClick={() => router.push('/myPosts')}>
+              <>
+                <Nav.Link className="nav-item">
+                  <img
+                    src={
+                      user.photo
+                        ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}`
+                        : "icons/person-circle.svg"
+                    }
+                    alt="Profile"
+                    className="createdBy-photo"
+                  /> {user.firstName}
+                </Nav.Link>
+                <Nav.Link className="nav-item" onClick={() => { router.push('/myPosts'); setShowOffcanvas(false) }}>
                   <i className="bi bi-stickies-fill me-3"></i>Things that i Want
-                </NavDropdown.Item>
-                <NavDropdown.Item onClick={() => router.push('/sentOffers')}>
+                </Nav.Link>
+                <Nav.Link className="nav-item" onClick={() => { router.push('/sentOffers'); setShowOffcanvas(false) }}>
                   <i className="bi bi-send-check-fill me-3"></i>Sent offers
-                </NavDropdown.Item>
-                <NavDropdown.Item onClick={() => router.push('/receivedOffers')}>
+                </Nav.Link>
+                <Nav.Link className="nav-item" onClick={() => { router.push('/receivedOffers'); setShowOffcanvas(false) }}>
                   <i className="bi bi-receipt me-3"></i>Received offers
-                </NavDropdown.Item>
-                <NavDropdown.Item onClick={() => router.push('/editProfile')}>
+                </Nav.Link>
+                <Nav.Link className="nav-item" onClick={() => { router.push('/editProfile'); setShowOffcanvas(false) }}>
                   <i className="bi bi-person-lines-fill me-3"></i>My profile
-                </NavDropdown.Item>
+                </Nav.Link>
                 <hr />
-                <NavDropdown.Item onClick={() => router.push('/logout')}>
+                <Nav.Link className="nav-item" onClick={() => { router.push('/logout'); setShowOffcanvas(false) }}>
                   <i className="bi bi-box-arrow-right me-3"></i>Log out
-                </NavDropdown.Item>
-              </NavDropdown>
+                </Nav.Link>
+              </>
             ) : (
-              <Nav.Link onClick={() => router.push('/login')} className="nav-item">
+              <Nav.Link onClick={() => { router.push('/login'); setShowOffcanvas(false) }} className="nav-item">
                 <span className="nav-link">Login</span>
               </Nav.Link>
             )}
           </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+        </Offcanvas.Body>
+      </Offcanvas>
+    </>
   );
 }
