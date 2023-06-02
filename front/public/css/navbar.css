@@ -84,6 +84,9 @@ body {
     text-align: center;
     align-items: center;
   }
+  .search-bar-navbar{
+    max-width: 230px;
+  }
 
 }
 
