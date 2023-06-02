@@ -40,15 +40,6 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <div>
       <header className="sticky-top">
-        {isMobile ? (
-          <MobileMenu
-            onLocationFilterChange={handleLocationFilterChange}
-            onSearchTermChange={handleSearchTermChange}
-            onCategoryFilterChange={handleCategoryFilterChange}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
-        ) : (
           <MegaMenu
             onLocationFilterChange={handleLocationFilterChange}
             onSearchTermChange={handleSearchTermChange}
@@ -56,7 +47,6 @@ export default function MyApp({ Component, pageProps }) {
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
           />
-        )}
         <link rel="stylesheet" href="/css/navbar.css" />
       </header>
       <Container className='containerboy'>
