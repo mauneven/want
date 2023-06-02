@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import UserModal from '../user/userModal';
+import UserModal from "../user/UserModal";
 
 const DetailsModal = ({ show, onHide, offer }) => {
   if (!offer) return null;

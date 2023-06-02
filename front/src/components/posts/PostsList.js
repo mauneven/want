@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ContentLoader from "react-content-loader";
 import { useRouter } from "next/router";
-import UserModal from "../user/userModal";
+import UserModal from "../user/UserModal";
 
 const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, currentPage, setCurrentPage }) => {
   const [posts, setPosts] = useState([]);
