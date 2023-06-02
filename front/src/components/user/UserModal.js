@@ -21,7 +21,7 @@ const UserModal = ({ selectedUser, showModal, closeModal }) => {
                   src={
                     selectedUser.photo
                       ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${selectedUser.photo}`
-                      : "icons/person-circle.svg"
+                      : "/icons/person-circle.svg"
                   }
                   alt=""
                   className="user-profile__photo"

@@ -155,7 +155,7 @@ const handlePhotoChange = async (e) => {
     required: true,
   },
   ];
-  const photoUrl = typeof File !== 'undefined' && photo instanceof File ? URL.createObjectURL(photo) : (user?.photo ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}` : "icons/person-circle.svg");
+  const photoUrl = typeof File !== 'undefined' && photo instanceof File ? URL.createObjectURL(photo) : (user?.photo ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}` : "/icons/person-circle.svg");
 
   return (
     <div className="container">
