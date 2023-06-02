@@ -248,7 +248,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
                         src={
                           post.createdBy.photo
                             ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
-                            : "icons/person-circle.svg"
+                            : "/icons/person-circle.svg"
                         }
                         alt=""
                         className="createdBy-photo p-1"

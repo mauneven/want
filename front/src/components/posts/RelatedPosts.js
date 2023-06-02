@@ -223,7 +223,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
                         src={
                           relatedPost.createdBy.photo
                             ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${relatedPost.createdBy.photo}`
-                            : "icons/person-circle.svg"
+                            : "/icons/person-circle.png"
                         }
                         alt=""
                         className="createdBy-photo p-1"

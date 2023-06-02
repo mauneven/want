@@ -181,7 +181,7 @@ const CreateOffer = () => {
   return (
     <div className="container mt-4 mb-4">
       <h1 className='mt-3'>Creating an offer for "{post.title}"</h1>
-      <h2 className='mt-3 '>Maximium payment of $ {Number(post.price).toLocaleString()}</h2>
+      <h2 className='mt-3 '>Payment of $ {Number(post.price).toLocaleString()}</h2>
       <h4 className='mt-3'>Do your best offer</h4>
       <Modal show={showModal} onHide={handleCloseModal}>
             <Modal.Header closeButton>

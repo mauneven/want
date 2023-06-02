@@ -208,7 +208,7 @@ export default function MegaMenu({
                         src={
                           user.photo
                             ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}`
-                            : "icons/person-circle.svg"
+                            : "/icons/person-circle.svg"
                         }
                         alt="Profile"
                         className="createdBy-photo"
@@ -277,7 +277,7 @@ export default function MegaMenu({
                     src={
                       user.photo
                         ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}`
-                        : "icons/person-circle.svg"
+                        : "/icons/person-circle.svg"
                     }
                     alt="Profile"
                     className="createdBy-photo"
