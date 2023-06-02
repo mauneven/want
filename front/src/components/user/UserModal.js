@@ -1,7 +1,12 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
+import { formatDistanceToNow } from "date-fns";
 
 const UserModal = ({ selectedUser, showModal, closeModal }) => {
+  const getFormattedDate = (date) => {
+    return formatDistanceToNow(new Date(date), { addSuffix: true });
+  };
+
   return (
     <Modal show={showModal} onHide={closeModal} centered>
       <Modal.Header closeButton>
@@ -10,8 +15,8 @@ const UserModal = ({ selectedUser, showModal, closeModal }) => {
       <Modal.Body>
         {selectedUser && (
           <>
-            <div className="row align-items-center">
-              <div className="col-1">
+            <div className="user-profile">
+              <div className="user-profile__image">
                 <img
                   src={
                     selectedUser.photo
@@ -19,19 +24,28 @@ const UserModal = ({ selectedUser, showModal, closeModal }) => {
                       : "icons/person-circle.svg"
                   }
                   alt=""
-                  className="createdBy-photo-id"
+                  className="user-profile__photo"
                 />
               </div>
-              <div className="col-9 ms-4">
-                <h5>{selectedUser.firstName} {selectedUser.lastName}</h5>
+              <div className="user-profile__info">
+                <h5 className="user-profile__name">
+                  {selectedUser.firstName} {selectedUser.lastName}
+                </h5>
+                <div className="user-profile__stats">
+                  <p className="user-profile__stat">
+                    <span className="user-profile__stat-label">Want user for:</span>{" "}
+                    {getFormattedDate(selectedUser.createdAt)}
+                  </p>
+                  <p className="user-profile__stat">
+                    <span className="user-profile__stat-label">Total posts:</span>{" "}
+                    {selectedUser.totalPosts}
+                  </p>
+                  <p className="user-profile__stat">
+                    <span className="user-profile__stat-label">Total offers:</span>{" "}
+                    {selectedUser.totalOffers}
+                  </p>
+                </div>
               </div>
-            </div>
-            <div>
-              <p className="h4 mt-4">Principal aspects</p>
-              <p>On Want since {selectedUser.createdAt}</p>
-              <p>has done {selectedUser.totalPosts} posts</p>
-              <p>has done {selectedUser.totalOffers} offers</p>
-              <p>Reputation: <i class="bi bi-star-fill"></i> {selectedUser.reports ? 5 - (0.3 * selectedUser.reports.length) : ""}</p>
             </div>
           </>
         )}
