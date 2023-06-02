@@ -1,10 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container } from 'react-bootstrap';
 import MegaMenu from '@/components/navigation/Navbar';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Footer from '@/components/footer/Footer';
-import MobileMenu from '@/components/navigation/MobileMenu';
 
 export default function MyApp({ Component, pageProps }) {
   const [locationFilter, setLocationFilter] = useState(null);
@@ -37,16 +35,33 @@ export default function MyApp({ Component, pageProps }) {
     setIsMobile(isMobileDevice());
   }, []);
 
+  useEffect(() => {
+    const isFirstLoad = localStorage.getItem("isFirstLoad");
+
+    if (!isFirstLoad) {
+      localStorage.setItem("isFirstLoad", "true");
+      // Borra la caché y recarga la página
+      if ('caches' in window) {
+        caches.keys().then((cacheNames) => {
+          cacheNames.forEach((cacheName) => {
+            caches.delete(cacheName);
+          });
+        });
+      }
+      window.location.reload(true);
+    }
+  }, []);
+
   return (
     <div>
       <header className="sticky-top">
-          <MegaMenu
-            onLocationFilterChange={handleLocationFilterChange}
-            onSearchTermChange={handleSearchTermChange}
-            onCategoryFilterChange={handleCategoryFilterChange}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
+        <MegaMenu
+          onLocationFilterChange={handleLocationFilterChange}
+          onSearchTermChange={handleSearchTermChange}
+          onCategoryFilterChange={handleCategoryFilterChange}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
         <link rel="stylesheet" href="/css/navbar.css" />
       </header>
       <Container className='containerboy'>

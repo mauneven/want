@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import RelatedPosts from '@/components/posts/RelatedPosts';
 import ReportPostModal from '@/components/report/ReportPostModal';
-
+import UserModal from '@/components/user/UserModal';
 const PostDetails = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -15,6 +15,8 @@ const PostDetails = () => {
   const zoomRef = useRef(null);
   const [isZoomVisible, setIsZoomVisible] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showUserModal, setShowUserModal] = useState(false);
 
   const isMobile = () => {
     return (
@@ -55,6 +57,16 @@ const PostDetails = () => {
 
   const handleCloseClick = () => {
     setShowModal(false);
+  };
+
+  const openUserModal = (user) => {
+    setSelectedUser(user);
+    setShowUserModal(true);
+  };
+
+  const closeUserModal = () => {
+    setSelectedUser(null);
+    setShowUserModal(false);
   };
 
   useEffect(() => {
@@ -182,7 +194,7 @@ const PostDetails = () => {
             <p className='small'>
               {post.mainCategory}, {post.subCategory}
             </p>
-            <div className="row align-items-center">
+            <div className="row align-items-center" onClick={() => openUserModal(post.createdBy)}>
               <div className='col-1'>
                 <img
                   src={
@@ -195,7 +207,10 @@ const PostDetails = () => {
                 />
               </div>
               <div className='col-9'>
-                <p className='ms-5  mb-0 p-0'>
+                <p
+                  className='ms-5  mb-0 p-0'
+                  style={{ cursor: 'pointer' }}
+                >
                   {post.createdBy.firstName} {post.createdBy.lastName} | <i class="bi bi-star-fill"></i> {post.createdBy.reports ? 5 - (0.3 * post.createdBy.reports.length) : ""}
                 </p>
               </div>
@@ -215,6 +230,9 @@ const PostDetails = () => {
         post={post}
         currentPage={Number(router.query.page) || 1}
       />
+      {showUserModal && (
+        <UserModal selectedUser={selectedUser} showModal={showUserModal} closeModal={closeUserModal} />
+      )}
     </>
   );
 };
