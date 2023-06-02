@@ -38,7 +38,7 @@
   
   /* Estilos adicionales para hacer el modal más llamativo */
   .modal-header {
-    background-color: #f0ffeb;
+    background-color: #f0f0f0;
     border-bottom: none;
   }
   
@@ -52,5 +52,5 @@
   }
   
   .modal-footer {
-    display: none;
+    background-color: #f0f0f0;
   }  

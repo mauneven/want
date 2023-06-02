@@ -31,18 +31,16 @@ const UserModal = ({ selectedUser, showModal, closeModal }) => {
                 <h5 className="user-profile__name">
                   {selectedUser.firstName} {selectedUser.lastName}
                 </h5>
+                <h5><i class="bi bi-star-fill"></i> {selectedUser.reports ? 5 - (0.3 * selectedUser.reports.length) : ""}</h5>
                 <div className="user-profile__stats">
                   <p className="user-profile__stat">
-                    <span className="user-profile__stat-label">Want user for:</span>{" "}
-                    {getFormattedDate(selectedUser.createdAt)}
+                    Want user for {getFormattedDate(selectedUser.createdAt)}
                   </p>
                   <p className="user-profile__stat">
-                    <span className="user-profile__stat-label">Total posts:</span>{" "}
-                    {selectedUser.totalPosts}
+                    Has made {selectedUser.totalPosts} posts
                   </p>
                   <p className="user-profile__stat">
-                    <span className="user-profile__stat-label">Total offers:</span>{" "}
-                    {selectedUser.totalOffers}
+                    Has made {selectedUser.totalOffers} offers
                   </p>
                 </div>
               </div>

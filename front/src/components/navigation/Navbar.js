@@ -168,18 +168,18 @@ export default function MegaMenu({
               buttonText={categoriesButtonText}
             />
             <Nav.Link className="nav-item" onClick={() => router.push('/createPost')}>
-              <Button className="btn btn-post rounded-5 mt-2 align-items-center">
+              <Button className="btn btn-post rounded-5 align-items-center">
                 Want Something?
               </Button>
             </Nav.Link>
             {user ? (
-              <Nav.Link className="nav-item mt-2">
+              <Nav.Link className="nav-item">
                 <Notifications />
               </Nav.Link>
             ) : null}
             {user ? (
               <NavDropdown
-                className="nav-link"
+                className="nav-item"
                 title={
                   <>
                     <img

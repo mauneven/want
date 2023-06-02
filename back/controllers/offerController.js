@@ -79,7 +79,7 @@ exports.getOffersByCurrentUser = async (req, res, next) => {
   try {
     const offers = await Offer.find({ createdBy: req.session.userId })
       .populate('post', 'title')
-      .populate('createdBy', 'firstName lastName photo');
+      .populate('createdBy', 'firstName lastName totalPosts totalOffers photo reports createdAt');
     res.status(200).json(offers);
   } catch (err) {
     next(err);
@@ -90,7 +90,7 @@ exports.getOffersReceivedByCurrentUser = async (req, res, next) => {
   try {
     const offers = await Offer.find({ receivedBy: req.session.userId })
       .populate('post', 'title')
-      .populate('createdBy', 'firstName lastName photo');
+      .populate('createdBy', 'firstName lastName totalPosts totalOffers photo reports createdAt');
     res.status(200).json(offers);
   } catch (err) {
     next(err);
