@@ -19,8 +19,11 @@
 .createdBy-photo-id {
   width: 60px;
   height: 60px;
+  padding: 0;
   object-fit: cover;
   border-radius: 50%;
+  align-items: center;
+  text-align: center;
 }
 
 .description-container-id {
