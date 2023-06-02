@@ -129,14 +129,6 @@ body {
   }
 }
 
-@media (max-width: 275px) {
-  .search-bar-navbar{
-    max-width: 200px;
-    padding: 0;
-    margin: 0;
-  }
-}
-
 
 
 
