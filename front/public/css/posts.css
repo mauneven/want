@@ -1,6 +1,6 @@
 .offer-btn{
   border: solid 1px  rgba(0, 0, 0, 0.26);
-  border-radius: 50px;
+  border-radius: 30%;
   color: rgba(0, 0, 0, 0.418);
 }
   
@@ -47,7 +47,6 @@
 }
 
 .btn-report{
-  background-color: #00000067;
   color: #fff;
   position: absolute;
   top: 15px;
@@ -67,7 +66,6 @@
 }
 
 .btn-save{
-  background-color: #00000067;
   color: #fff;
   position: absolute;
   top: 15px;
@@ -94,6 +92,7 @@
   bottom: 20px;
   right: 20px;
   z-index: 9999;
+  color: white;
 }
 
 .carousel-item img{

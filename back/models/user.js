@@ -30,6 +30,14 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  totalPosts: {
+    type: Number,
+    default: 0
+  },
+  totalOffers: {
+    type: Number,
+    default: 0
+  },
   isDeleted: {
     type: Boolean,
     default: false

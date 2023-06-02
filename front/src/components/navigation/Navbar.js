@@ -122,7 +122,7 @@ export default function MegaMenu({
   return (
     <Navbar
       style={{ top: 0, zIndex: 1000 }}
-      className="sticky-top sticky-nav navbar-blur"
+      className="sticky-top sticky-nav"
       bg="light"
       expand="lg"
     >
@@ -150,11 +150,11 @@ export default function MegaMenu({
           <FormControl
             type="search"
             placeholder="The people want..."
-            className="mr-2 form-control-sm p-1 px-3 search-bar-input border-top-0 border-bottom-0 border-start-0 border-end"
+            className="mr-2 form-control-sm p-1 px-3 search-bar-input"
             aria-label="Search"
             name="search"
           />
-          <Button type="submit" variant="ml-2 search-btn">
+          <Button type="submit" variant="ml-2 search-btn btn">
             <i className="bi bi-search"></i>
           </Button>
         </Form>
@@ -168,14 +168,18 @@ export default function MegaMenu({
               buttonText={categoriesButtonText}
             />
             <Nav.Link className="nav-item" onClick={() => router.push('/createPost')}>
-              <Button className="btn-post rounded-pill p-2">
+              <Button className="btn btn-post rounded-5 align-items-center">
                 Want Something?
               </Button>
             </Nav.Link>
-            {user ? <Nav.Link className="nav-item"><Notifications /></Nav.Link> : null}
+            {user ? (
+              <Nav.Link className="nav-item">
+                <Notifications />
+              </Nav.Link>
+            ) : null}
             {user ? (
               <NavDropdown
-                className="nav-link"
+                className="nav-item"
                 title={
                   <>
                     <img

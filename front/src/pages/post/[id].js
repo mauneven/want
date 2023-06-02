@@ -194,15 +194,15 @@ const PostDetails = () => {
                   className="createdBy-photo-id"
                 />
               </div>
-              <div className='col-11'>
-                <p className='mx-5 p-0 blockquote'>
-                  {post.createdBy.firstName} {post.createdBy.lastName} | {post.createdBy.reports ? 5 - (0.3 * post.createdBy.reports.length) : ""}
+              <div className='col-9'>
+                <p className='ms-5  mb-0 p-0'>
+                  {post.createdBy.firstName} {post.createdBy.lastName} | <i class="bi bi-star-fill"></i> {post.createdBy.reports ? 5 - (0.3 * post.createdBy.reports.length) : ""}
                 </p>
               </div>
             </div>
             <div className='mt-3'>
               <Link href={`/createOffer?postId=${id}`}>
-                <button className="btn btn-offer">Make an offer</button>
+                <button className="btn rounded-5 btn-offer">Make an offer</button>
               </Link>
               <ReportPostModal postId={post._id} onReport={handleReportPost} />
             </div>

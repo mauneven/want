@@ -133,39 +133,39 @@ export default function Login() {
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label htmlFor="email" className="form-label">E-mail:</label>
-                <input type="email" className="form-control rounded-pill" id="email" name="email" placeholder="you@example.com" required />
+                <input type="email" className="form-control rounded-5" id="email" name="email" placeholder="you@example.com" required />
               </div>
               <div className="mb-3">
                 <label htmlFor="password" className="form-label">Password:</label>
-                <input type="password" className="form-control rounded-pill" id="password" name="password" placeholder="your password" required />
+                <input type="password" className="form-control rounded-5" id="password" name="password" placeholder="your password" required />
               </div>
               {!isLogin && (
                 <>
                   <div className="mb-3">
                     <label htmlFor="confirmPassword" className="form-label">Confirmar password:</label>
-                    <input type="password" className="form-control rounded-pill" id="confirmPassword" name="confirmPassword" placeholder="confirm your password" required />
+                    <input type="password" className="form-control rounded-5" id="confirmPassword" name="confirmPassword" placeholder="confirm your password" required />
                   </div>
 
                   <div className="mb-3">
                     <label htmlFor="firstName" className="form-label">First name:</label>
-                    <input type="text" className="form-control rounded-pill" id="firstName" name="firstName" required />
+                    <input type="text" className="form-control rounded-5" id="firstName" name="firstName" required />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="lastName" className="form-label">Last name:</label>
-                    <input type="text" className="form-control rounded-pill" id="lastName" name="lastName" required />
+                    <input type="text" className="form-control rounded-5" id="lastName" name="lastName" required />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="phone" className="form-label">Phone number:</label>
-                    <input type="tel" className="form-control rounded-pill" id="phone" name="phone" required />
+                    <input type="tel" className="form-control rounded-5" id="phone" name="phone" required />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="birthdate" className="form-label">birthdate:</label>
-                    <input type="date" className="form-control rounded-pill" id="birthdate" name="birthdate" required />
+                    <input type="date" className="form-control rounded-5" id="birthdate" name="birthdate" required />
                   </div>
                 </>
               )}
               <div className="mb-3">
-                <button type="submit" className="btn btn-success rounded-pill btn-login">{isLogin ? 'Login' : 'Sign up'}</button>
+                <button type="submit" className="btn btn-success rounded-5 btn-login">{isLogin ? 'Login' : 'Sign up'}</button>
               </div>
             </form>
             <div>

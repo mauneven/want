@@ -100,7 +100,7 @@ export default function Notifications() {
 
   return (
     <>
-      <div className='notification-icon' onClick={handleModalOpen}>
+      <div className='notification-icon align-items-center' onClick={handleModalOpen}>
         <i className="bi bi-bell fs-24"></i>
         {unreadNotifications.length > 0 && (
           <Badge pill bg="danger" className="position-absolute" style={{ top: -5, right: -10 }}>
@@ -109,7 +109,7 @@ export default function Notifications() {
         )}
       </div>
 
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showModal} onHide={() => setShowModal(false)} className='modal-lg'>
         <Modal.Header closeButton>
           <Modal.Title>Notifications</Modal.Title>
         </Modal.Header>

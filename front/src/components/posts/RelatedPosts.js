@@ -207,8 +207,8 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
                           <ReportPostModal postId={post._id} onReport={handleReportPost} />
                         </div>
                         <div className="col-8 p-0">
-                          <Link className="d-flex justify-content-center" href={`/post/[id]`} as={`/post/${post._id}`}>
-                            <button className="offer-btn btn rounded-pill">View details</button>
+                          <Link className="d-flex justify-content-center" href={`/post/[id]`} as={`/post/${relatedPost._id}`}>
+                            <button className="offer-btn btn rounded-5">View details</button>
                           </Link>
                         </div>
                         <div className="col-2 p-0">
@@ -229,7 +229,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
                         className="createdBy-photo p-1"
                       />
                       <small className="text-muted text-center">
-                        {relatedPost.createdBy.firstName} | {userReputation.toFixed(1)}
+                        {relatedPost.createdBy.firstName} | <i class="bi bi-star-fill"></i> {userReputation.toFixed(1)}
                       </small>
                     </div>
                   </div>
