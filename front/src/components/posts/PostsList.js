@@ -13,7 +13,6 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
   const maxPagesToShow = 6;
   const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
   const router = useRouter();
-  const [isMobile, setIsMobile] = useState(false);
 
   const fetchPosts = async () => {
     try {
@@ -41,11 +40,6 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    setIsMobile(isMobile);
-  }, []);
 
   useEffect(() => {
     fetchPosts();
@@ -165,13 +159,6 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
 
   return (
     <div className="container">
-      {isMobile && (
-        <div className="floating-btn-container">
-          <button className="btn-post rounded-5 p-2" onClick={() => router.push("/createPost")}>
-            Create Post
-          </button>
-        </div>
-      )}
       <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 pb-5">
         {!isLoading ? (
           posts.length > 0 ? (
