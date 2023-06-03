@@ -63,7 +63,7 @@ body {
 
 @media (max-width: 576px) {
   .search-bar-input {
-    font-size: 8px;
+    font-size: 12px;
     padding: 0;
     margin: 0;
   }
@@ -73,13 +73,6 @@ body {
 }
 
 @media (max-width: 576px) {
-  .location-posts {
-    font-size: 8px;
-    padding: 0.25rem 0.5rem;
-    align-items: center;
-    text-align: center;
-    display: flex;
-  }
   .nav-item{
     text-align: center;
     align-items: center;
@@ -100,7 +93,7 @@ body {
   }
 
   .nav-item {
-    text-align: center;
+    text-align: left;
     align-items: center;
     color: black;
   }
@@ -121,14 +114,6 @@ body {
   .want-logo{
     margin: 0;
     padding: 0;
-  }
-  .search-btn{
-    padding: 1px;
-    margin: 0;
-  }
-  .location-posts{
-    padding: 1px;
-    margin: 0;
   }
 }
 
