@@ -1,7 +1,7 @@
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container } from 'react-bootstrap';
 import MegaMenu from '@/components/navigation/Navbar';
-import { useState, useEffect } from 'react';
 import Footer from '@/components/footer/Footer';
 
 export default function MyApp({ Component, pageProps }) {
@@ -13,14 +13,14 @@ export default function MyApp({ Component, pageProps }) {
 
   const isMobileDevice = () => {
     return (
-      typeof window.orientation !== "undefined" ||
-      navigator.userAgent.indexOf("IEMobile") !== -1
+      typeof window.orientation !== 'undefined' ||
+      navigator.userAgent.indexOf('IEMobile') !== -1
     );
   };
 
   const handleLocationFilterChange = (filter) => {
     setLocationFilter(filter);
-    localStorage.setItem("locationFilter", JSON.stringify(filter));
+    localStorage.setItem('locationFilter', JSON.stringify(filter));
   };
 
   const handleSearchTermChange = (newSearchTerm) => {
@@ -35,23 +35,6 @@ export default function MyApp({ Component, pageProps }) {
     setIsMobile(isMobileDevice());
   }, []);
 
-  useEffect(() => {
-    const isFirstLoad = localStorage.getItem("isFirstLoad");
-
-    if (!isFirstLoad) {
-      localStorage.setItem("isFirstLoad", "true");
-      // Borra la caché y recarga la página
-      if ('caches' in window) {
-        caches.keys().then((cacheNames) => {
-          cacheNames.forEach((cacheName) => {
-            caches.delete(cacheName);
-          });
-        });
-      }
-      window.location.reload(true);
-    }
-  }, []);
-
   return (
     <div>
       <header className="sticky-top">
@@ -64,7 +47,8 @@ export default function MyApp({ Component, pageProps }) {
         />
         <link rel="stylesheet" href="/css/navbar.css" />
       </header>
-      <Container className='containerboy'>
+
+      <Container className="containerboy">
         <Component
           {...pageProps}
           locationFilter={locationFilter}
@@ -80,6 +64,7 @@ export default function MyApp({ Component, pageProps }) {
         <link rel="stylesheet" href="/css/postById.css" />
         <link rel="stylesheet" href="/css/receivedOffers.css" />
       </Container>
+
       <footer>
         <Footer />
         <link rel="stylesheet" href="/css/footer.css" />
