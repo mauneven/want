@@ -13,6 +13,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
   const maxPagesToShow = 6;
   const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
   const router = useRouter();
+  const [fetchTimeout, setFetchTimeout] = useState(null); // Nuevo estado para el timeout
 
   const fetchPosts = async () => {
     try {
@@ -40,6 +41,23 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    // Iniciar el timeout cuando se inicia la carga del componente
+    const timeout = setTimeout(() => {
+      if (isLoading) {
+        // Si la carga todavía está en curso después de 5 segundos, recargar la página
+        window.location.reload();
+      }
+    }, 5000);
+
+    setFetchTimeout(timeout); // Guardar la referencia del timeout en el estado
+
+    return () => {
+      // Limpiar el timeout cuando el componente se desmonte o se actualice
+      clearTimeout(fetchTimeout);
+    };
+  }, [fetchTimeout, isLoading]);
 
   useEffect(() => {
     fetchPosts();
