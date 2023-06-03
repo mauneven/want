@@ -158,13 +158,17 @@ export default function MegaMenu({
             className="d-flex flex-grow-1 w-auto search-bar border rounded-5 search-bar-navbar"
             onSubmit={handleSearchSubmit}
           >
-            <LocationModal
-              show={showLocationModal}
-              onHide={() => setShowLocationModal(false)}
-              onLocationSelected={handleLocationSelected}
-              onLocationFilterChange={onLocationFilterChange}
-              selectedLocation={selectedLocation}
-            />
+            {isMobile ? (
+              null
+            ) : (
+              <LocationModal
+                show={showLocationModal}
+                onHide={() => setShowLocationModal(false)}
+                onLocationSelected={handleLocationSelected}
+                onLocationFilterChange={onLocationFilterChange}
+                selectedLocation={selectedLocation}
+              />
+            )}
             <FormControl
               type="search"
               placeholder="The people want..."
@@ -183,12 +187,14 @@ export default function MegaMenu({
           )}
           {!isMobile && (
             <Nav className="ms-auto">
+              <Nav.Link className="nav-item">
               <CategoriesModal
                 isShown={showCategoriesModal}
                 onHide={handleCloseCategories}
                 onCategorySelected={handleCategorySelected}
                 buttonText={categoriesButtonText}
               />
+              </Nav.Link>
               <Nav.Link className="nav-item" onClick={() => router.push('/createPost')}>
                 <Button className="btn btn-post rounded-5 align-items-center nav-item">
                   Want Something?
@@ -255,16 +261,29 @@ export default function MegaMenu({
           <Offcanvas.Title className="text-success">Want | Menu</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-        <Nav.Link className="nav-item" onClick={() => { router.push('/'); setShowOffcanvas(false) }}>
-                Home
-              </Nav.Link>
+          <Nav.Link className="nav-item p-3" onClick={() => { router.push('/'); setShowOffcanvas(false) }}>
+          <i class="bi bi-house me-2"></i>Home
+          </Nav.Link>
           <Nav className="flex-column">
+            <Nav.Link className="nav-item">
+            <i class="bi bi-globe-americas"></i>
+            <LocationModal
+              show={showLocationModal}
+              onHide={() => setShowLocationModal(false)}
+              onLocationSelected={handleLocationSelected}
+              onLocationFilterChange={onLocationFilterChange}
+              selectedLocation={selectedLocation}
+            />
+            </Nav.Link>
+            <Nav.Link className="nav-item">
+            <i class="bi bi-tags"></i>
             <CategoriesModal
               isShown={showCategoriesModal}
               onHide={handleCloseCategories}
               onCategorySelected={handleCategorySelected}
               buttonText={categoriesButtonText}
             />
+            </Nav.Link>
             <Nav.Link className="nav-item" onClick={() => { router.push('/createPost'); setShowOffcanvas(false) }}>
               <Button className="btn btn-post rounded-5 align-items-center">
                 Want Something?
@@ -301,8 +320,8 @@ export default function MegaMenu({
                 </Nav.Link>
               </>
             ) : (
-              <Nav.Link onClick={() => { router.push('/login'); setShowOffcanvas(false) }} className="nav-item">
-                <span className="nav-item">Login</span>
+              <Nav.Link onClick={() => { router.push('/login'); setShowOffcanvas(false) }} className="nav-item pt-3">
+                <i class="bi bi-door-open"></i> Login/Register
               </Nav.Link>
             )}
           </Nav>

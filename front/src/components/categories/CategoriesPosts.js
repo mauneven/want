@@ -44,7 +44,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
 
   return (
     <>
-      <Button variant="" onClick={handleShow} className='btn-categories-navbar'>
+      <Button variant="" onClick={handleShow} className='nav-item'>
         {buttonText}
       </Button>
 
