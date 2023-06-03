@@ -17,9 +17,14 @@ const offerSchema = new mongoose.Schema({
     type: String,
     required: true
   }],
+  countryCode: {
+    type: String,
+  },
+  phoneNumber: {
+    type: String,
+  },
   contact: {
     type: String,
-    required: true
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
