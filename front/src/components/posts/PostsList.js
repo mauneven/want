@@ -113,28 +113,6 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
     return null;
   };
 
-  const handleReportPost = async (postId, description) => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/report/post/${postId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ description }),
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Reporte de post exitoso:', data);
-      } else {
-        console.error('Error al reportar el post:', response);
-      }
-    } catch (error) {
-      console.error('Error al reportar el post:', error);
-    }
-  };
-
   const Placeholder = () => (
     <div className="col mx-auto">
       <ContentLoader speed={2} width="100%" height={450} viewBox="0 0 260 450" backgroundColor="#f3f3f3" foregroundColor="#ecebeb">
