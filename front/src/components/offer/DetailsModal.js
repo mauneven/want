@@ -81,6 +81,8 @@ const DetailsModal = ({ show, onHide, offer }) => {
     setShowUserModal(false);
   };
 
+  const isContactAvailable = offer.countryCode && offer.phoneNumber && offer.contact;
+
   return (
     <>
       <Modal show={show} onHide={onHide} dialogClassName="modal-xl">
@@ -121,7 +123,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
                 ))}
               </div>
             </div>
-            <div className="col-lg-6" style={{ maxWidth: '100%', overflowWrap: 'break-word' }}>
+            <div className="col-lg-6 p-0" style={{ maxWidth: '100%', overflowWrap: 'break-word' }}>
               {!isMobileDevice && isZoomVisible && (
                 <div
                   ref={zoomRef}
@@ -136,9 +138,9 @@ const DetailsModal = ({ show, onHide, offer }) => {
                   }}
                 ></div>
               )}
-              <h5>{offer.title}</h5>
+              <h2>{offer.title}</h2>
               <p>
-                <span className="text-success h2">
+                <span className="text-success h3">
                   $ {offer.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 </span>
               </p>
@@ -149,7 +151,25 @@ const DetailsModal = ({ show, onHide, offer }) => {
                   {offer.createdBy.firstName} {offer.createdBy.lastName}
                 </span>
               </p>
-              <p>Contact of {offer.createdBy.firstName}: {offer.contact}</p>
+              {isContactAvailable && (
+                <>
+                  <button
+                    className="btn rounded-5 btn-success mt-2 mb-4"
+                    onClick={() => window.open(`https://wa.me/${offer.countryCode}${offer.phoneNumber}`, '_blank')}
+                  >
+                    <i className="bi bi-whatsapp mt-2"></i>{`+${offer.countryCode} ${offer.phoneNumber}`}
+                  </button>
+                  <button
+                    className="btn-primary btn rounded-5 mt-2 mb-4 ms-2"
+                    onClick={() => window.open(`tel:+${offer.countryCode}${offer.phoneNumber}`, '_blank')}
+                  >
+                    <i className="bi bi-telephone-forward"></i> {`+${offer.countryCode} ${offer.phoneNumber}`}
+                  </button>
+                  <p>
+                    Other ways to contact {offer.createdBy.firstName}: {offer.contact}
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </Modal.Body>
@@ -160,11 +180,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
         </Modal.Footer>
       </Modal>
 
-      <UserModal
-        selectedUser={selectedUser}
-        showModal={showUserModal}
-        closeModal={closeUserModal}
-      />
+      <UserModal selectedUser={selectedUser} showModal={showUserModal} closeModal={closeUserModal} />
     </>
   );
 };

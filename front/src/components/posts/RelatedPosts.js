@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import ContentLoader from "react-content-loader";
 import { useRouter } from "next/router";
-import ReportPostModal from "../report/ReportPostModal";
+import UserModal from "../user/UserModal";
 
 const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
   const [relatedPosts, setRelatedPosts] = useState([]);
@@ -10,6 +10,8 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(4);
   const [totalPosts, setTotalPosts] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
   const maxPagesToShow = 6;
   const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
   const router = useRouter();
@@ -23,17 +25,17 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
         subCategory: categoryFilter.subCategory,
       };
       Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-  
+
       const response = await fetch(url);
       const data = await response.json();
 
       const filteredPosts = data.posts.filter(p => p._id !== post._id);
-  
+
       setRelatedPosts(filteredPosts);
       setTotalPosts(data.totalPosts - 1);
       setIsLoading(false);
     };
-    
+
     if (post) {
       fetchRelatedPosts();
     }
@@ -56,28 +58,16 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
     </div>
   );
 
-  const handleReportPost = async (postId, description) => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/report/post/${postId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ description }),
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Reporte de post exitoso:', data);
-      } else {
-        console.error('Error al reportar el post:', response);
-      }
-    } catch (error) {
-      console.error('Error al reportar el post:', error);
-    }
+  const openModal = (user) => {
+    setSelectedUser(user);
+    setShowModal(true);
   };
-  
+
+  const closeModal = () => {
+    setSelectedUser(null);
+    setShowModal(false);
+  };
+
   const getPaginatedPosts = () => {
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
@@ -193,32 +183,21 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
                       </div>
                     )}
                     <div className="card-body">
-                      <h5 className="card-title post-title mb-2">{relatedPost.title}</h5>
-                      <h5 className="text-success">
+                      <h5 className="card-title post-title mb-2" onClick={() => router.push(`/post/${relatedPost._id}`)}>{relatedPost.title}</h5>
+                      <h5 className="text-success" onClick={() => router.push(`/post/${relatedPost._id}`)}>
                         ${relatedPost.price.toLocaleString()}
                       </h5>
-                      <p className="card-text post-text mb-2">
+                      <p className="card-text post-text mb-2" onClick={() => router.push(`/post/${relatedPost._id}`)}>
                         {relatedPost.description.length > 100
                           ? relatedPost.description.substring(0, 100) + "..."
                           : relatedPost.description}
                       </p>
-                      <div className="row">
-                        <div className="col-2 p-0">
-                          <ReportPostModal postId={post._id} onReport={handleReportPost} />
-                        </div>
-                        <div className="col-8 p-0">
-                          <Link className="d-flex justify-content-center" href={`/post/[id]`} as={`/post/${relatedPost._id}`}>
-                            <button className="offer-btn btn rounded-5">View details</button>
-                          </Link>
-                        </div>
-                        <div className="col-2 p-0">
-                          <button className="btn ps-2" title="">
-                            <i className="bi bi-heart"></i>
-                          </button>
-                        </div>
-                      </div>
                     </div>
-                    <div className="card-footer text-center">
+                    <div
+                      className="card-footer text-center"
+                      onClick={() => openModal(relatedPost.createdBy)}
+                      style={{ cursor: "pointer" }}
+                    >
                       <img
                         src={
                           relatedPost.createdBy.photo
@@ -259,6 +238,12 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
         )}
       </div>
       {relatedPosts.length > 0 && renderPageNumbers()}
+
+      <UserModal
+        selectedUser={selectedUser}
+        showModal={showModal}
+        closeModal={closeModal}
+      />
     </div>
   );
 };

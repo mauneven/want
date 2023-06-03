@@ -24,7 +24,7 @@ exports.uploadPhotoMiddleware = upload;
 
 exports.createOffer = async (req, res, next) => {
   try {
-    const { title, description, price, contact, postId } = req.body;
+    const { title, description, price, countryCode, phoneNumber, contact, postId } = req.body;
     const post = await Post.findById(postId);
 
     if (!post) {
@@ -54,6 +54,8 @@ exports.createOffer = async (req, res, next) => {
       description,
       price,
       photos: compressedImagePaths || [],
+      countryCode,
+      phoneNumber,
       contact,
       createdBy: req.session.userId,
       receivedBy: post.createdBy,
@@ -79,7 +81,7 @@ exports.getOffersByCurrentUser = async (req, res, next) => {
   try {
     const offers = await Offer.find({ createdBy: req.session.userId })
       .populate('post', 'title')
-      .populate('createdBy', 'firstName lastName totalPosts totalOffers photo reports createdAt');
+      .populate('createdBy', 'firstName lastName totalPosts totalOffers photo contact reports createdAt countryCode phoneNumber');
     res.status(200).json(offers);
   } catch (err) {
     next(err);
@@ -90,7 +92,7 @@ exports.getOffersReceivedByCurrentUser = async (req, res, next) => {
   try {
     const offers = await Offer.find({ receivedBy: req.session.userId })
       .populate('post', 'title')
-      .populate('createdBy', 'firstName lastName totalPosts totalOffers photo reports createdAt');
+      .populate('createdBy', 'firstName lastName totalPosts totalOffers photo contact reports createdAt countryCode phoneNumber');
     res.status(200).json(offers);
   } catch (err) {
     next(err);
