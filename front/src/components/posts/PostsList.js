@@ -146,9 +146,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
 
               return (
                 <div key={post._id} className="col">
-                  <div
-                    className="card post rounded-5"
-                  >
+                  <div className="card post rounded-5">
                     {post.photos && post.photos.length > 0 && (
                       <div
                         id={`carousel-${post._id}`}
@@ -194,47 +192,39 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
                       </div>
                     )}
                     <div className="card-body">
-                      <h5
-                        className="card-title post-title mb-2"
-                        onClick={() => router.push(`/post/${post._id}`)}
-                      >
+                      <h5 className="card-title post-title mb-2" onClick={() => router.push(`/post/${post._id}`)}>
                         <a style={{ color: "inherit", textDecoration: "none" }}>
                           {post.title}
                         </a>
                       </h5>
-                      <h5
-                        className="text-success"
-                        onClick={() => router.push(`/post/${post._id}`)}
-                      >
+                      <h5 className="text-success" onClick={() => router.push(`/post/${post._id}`)}>
                         ${post.price.toLocaleString()}
                       </h5>
-                      <p
-                        className="card-text post-text mb-2"
-                        onClick={() => router.push(`/post/${post._id}`)}
-                      >
-                        {post.description.length > 100
-                          ? post.description.substring(0, 100) + "..."
-                          : post.description}
+                      <p className="card-text post-text mb-2" onClick={() => router.push(`/post/${post._id}`)}>
+                        {post.description.length > 100 ? post.description.substring(0, 100) + "..." : post.description}
                       </p>
                     </div>
-                    <div
-                      className="card-footer text-center"
-                      onClick={() => openModal(post.createdBy)}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <img
-                        src={
-                          post.createdBy.photo
-                            ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
-                            : "/icons/person-circle.svg"
-                        }
-                        alt=""
-                        className="createdBy-photo p-1"
-                      />
-                      <small className="text-muted text-center">
-                        {post.createdBy.firstName} | <i className="bi bi-star-fill"></i>{" "}
-                        {userReputation.toFixed(1)}
-                      </small>
+                    <div className="card-footer text-center" onClick={() => openModal(post.createdBy)} style={{ cursor: "pointer" }}>
+                      <div className="d-flex align-items-center justify-content-center">
+                        <img
+                          src={
+                            post.createdBy.photo
+                              ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
+                              : "/icons/person-circle.svg"
+                          }
+                          alt=""
+                          className="createdBy-photo p-1"
+                        />
+                        <div className="ms-2">
+                          <small className="text-muted text-center">
+                            {post.createdBy.firstName}
+                          </small>
+                          <div className="d-flex align-items-center">
+                            <i className="bi bi-star-fill me-1"></i>
+                            <small className="text-muted">{userReputation.toFixed(1)}</small>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
