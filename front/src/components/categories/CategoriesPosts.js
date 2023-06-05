@@ -55,10 +55,12 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
     if (onCategorySelected) {
       onCategorySelected('', '', '');
     }
+    handleClose()
+
   };
 
   const resetCategories = () => {
-    setSelectedCategory(buttonText);
+    setSelectedCategory('');
     setSelectedSubcategory('');
     setSelectedThirdCategory('');
     setDisplayCategory(buttonText);

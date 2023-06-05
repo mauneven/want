@@ -1,124 +1,876 @@
 {
     "categories": [
-      {
-        "id": 1,
-        "name": "Technology",
-        "subcategories": [
-          {
+        {
             "id": 1,
-            "name": "Computer Components",
-            "thirdCategories": [
-              {
-                "id": 1,
-                "name": "Graphics Cards"
-              },
-              {
-                "id": 2,
-                "name": "RAM"
-              },
-              {
-                "id": 3,
-                "name": "Motherboards"
-              },
-              {
-                "id": 4,
-                "name": "SSD"
-              },
-              {
-                "id": 5,
-                "name": "Hard Drives"
-              },
-              {
-                "id": 6,
-                "name": "Power Supplies"
-              },
-              {
-                "id": 7,
-                "name": "Computer Cases"
-              }
+            "name": "Technology",
+            "subcategories": [
+                {
+                    "id": 1,
+                    "name": "Computer Components",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Graphics Cards"
+                        },
+                        {
+                            "id": 2,
+                            "name": "RAM"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Motherboards"
+                        },
+                        {
+                            "id": 4,
+                            "name": "SSD"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Hard Drives"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Power Supplies"
+                        },
+                        {
+                            "id": 7,
+                            "name": "Computer Cases"
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "name": "Smartphones",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Apple / iPhone"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Samsung"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Google"
+                        },
+                        {
+                            "id": 4,
+                            "name": "OnePlus"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Xiaomi"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Huawei"
+                        }
+                    ]
+                },
+                {
+                    "id": 3,
+                    "name": "Electronics",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "TVs"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Laptops"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Cameras"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Headphones"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Speakers"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Smart Watches"
+                        }
+                    ]
+                },
+                {
+                    "id": 4,
+                    "name": "Home Appliances",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Refrigerators"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Washing Machines"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Ovens"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Vacuum Cleaners"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Air Conditioners"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Microwaves"
+                        }
+                    ]
+                }
             ]
-          },
-          {
+        },
+        {
             "id": 2,
-            "name": "Smartphones",
-            "thirdCategories": [
-              {
-                "id": 1,
-                "name": "Apple"
-              },
-              {
-                "id": 2,
-                "name": "Samsung"
-              },
-              {
-                "id": 3,
-                "name": "Google"
-              },
-              {
-                "id": 4,
-                "name": "OnePlus"
-              },
-              {
-                "id": 5,
-                "name": "Xiaomi"
-              },
-              {
-                "id": 6,
-                "name": "Huawei"
-              }
+            "name": "Vehicles",
+            "subcategories": [
+                {
+                    "id": 1,
+                    "name": "Cars",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Sedans"
+                        },
+                        {
+                            "id": 2,
+                            "name": "SUVs"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Hatchbacks"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Pickup Trucks"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Sports Cars"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Electric Cars"
+                        },
+                        {
+                            "id": 7,
+                            "name": "Convertibles"
+                        },
+                        {
+                            "id": 8,
+                            "name": "Coupés"
+                        },
+                        {
+                            "id": 9,
+                            "name": "Minivans"
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "name": "Motorcycles",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Sport Bikes"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Cruisers"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Off-road Bikes"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Scooters"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Touring Bikes"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Mopeds"
+                        }
+                    ]
+                },
+                {
+                    "id": 3,
+                    "name": "Boats",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Sailboats"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Speedboats"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Yachts"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Fishing Boats"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Jet Skis"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Canoe/Kayak"
+                        }
+                    ]
+                }
             ]
-          }
-        ]
-      },
-      {
-        "id": 2,
-        "name": "Clothing",
-        "subcategories": [
-          {
-            "id": 1,
-            "name": "Shirts",
-            "thirdCategories": [
-              {
-                "id": 1,
-                "name": "Button-up Shirts"
-              },
-              {
-                "id": 2,
-                "name": "T-shirts"
-              },
-              {
-                "id": 3,
-                "name": "Polo Shirts"
-              },
-              {
-                "id": 4,
-                "name": "Long-sleeve Shirts"
-              }
+        },
+        {
+            "id": 3,
+            "name": "Clothing",
+            "subcategories": [
+                {
+                    "id": 1,
+                    "name": "Shirts",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Button-up Shirts"
+                        },
+                        {
+                            "id": 2,
+                            "name": "T-shirts"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Polo Shirts"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Long-sleeve Shirts"
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "name": "Pants",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Jeans"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Chinos"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Cargo Pants"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Shorts"
+                        }
+                    ]
+                },
+                {
+                    "id": 3,
+                    "name": "Dresses",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Cocktail Dresses"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Maxi Dresses"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Summer Dresses"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Evening Dresses"
+                        }
+                    ]
+                },
+                {
+                    "id": 4,
+                    "name": "Shoes",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Sneakers"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Boots"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Flats"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Heels"
+                        }
+                    ]
+                }
             ]
-          },
-          {
-            "id": 2,
-            "name": "Pants",
-            "thirdCategories": [
-              {
-                "id": 1,
-                "name": "Jeans"
-              },
-              {
-                "id": 2,
-                "name": "Chinos"
-              },
-              {
-                "id": 3,
-                "name": "Cargo Pants"
-              },
-              {
-                "id": 4,
-                "name": "Shorts"
-              }
+        },
+        {
+            "id": 4,
+            "name": "Home",
+            "subcategories": [
+                {
+                    "id": 1,
+                    "name": "Furniture",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Sofas"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Tables"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Chairs"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Beds"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Cabinets"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Desks"
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "name": "Kitchen Appliances",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Refrigerators"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Stoves"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Microwaves"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Dishwashers"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Coffee Makers"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Blenders"
+                        }
+                    ]
+                },
+                {
+                    "id": 3,
+                    "name": "Home Decor",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Wall Art"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Curtains"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Rugs"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Decorative Pillows"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Candles"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Vases"
+                        }
+                    ]
+                },
+                {
+                    "id": 4,
+                    "name": "Home Improvement",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Tools"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Paint"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Lighting"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Plumbing"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Electrical"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Flooring"
+                        }
+                    ]
+                }
             ]
-          }
-        ]
-      }
+        },
+        {
+            "id": 5,
+            "name": "Tools",
+            "subcategories": [
+                {
+                    "id": 1,
+                    "name": "Power Tools",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Drills"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Saws"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Sanders"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Grinders"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Welding Machines"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Air Compressors"
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "name": "Hand Tools",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Hammers"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Screwdrivers"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Pliers"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Wrenches"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Sockets"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Knives"
+                        }
+                    ]
+                },
+                {
+                    "id": 3,
+                    "name": "Garden Tools",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Lawn Mowers"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Hedge Trimmers"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Pruning Shears"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Leaf Blowers"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Garden Hoses"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Sprayers"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "name": "Services",
+            "subcategories": [
+                {
+                    "id": 1,
+                    "name": "Home Services",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Cleaning Services"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Plumbing Services"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Electrical Services"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Landscaping Services"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Moving Services"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Painting Services"
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "name": "Personal Services",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Beauty Services"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Fitness Services"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Tutoring Services"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Photography Services"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Event Planning Services"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Massage Services"
+                        }
+                    ]
+                },
+                {
+                    "id": 3,
+                    "name": "Professional Services",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Legal Services"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Accounting Services"
+                        },
+                        {
+                            "id": 3,
+                            "name": "IT Services"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Marketing Services"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Consulting Services"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Financial Services"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "name": "Education",
+            "subcategories": [
+                {
+                    "id": 1,
+                    "name": "Tutoring",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Math Tutoring"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Language Tutoring"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Science Tutoring"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Music Tutoring"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Test Prep Tutoring"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Art Tutoring"
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "name": "Online Courses",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Programming Courses"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Business Courses"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Marketing Courses"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Language Courses"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Photography Courses"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Cooking Courses"
+                        }
+                    ]
+                },
+                {
+                    "id": 3,
+                    "name": "Educational Toys",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Puzzles"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Building Blocks"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Science Kits"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Art Supplies"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Musical Instruments"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Educational Games"
+                        }
+                    ]
+                },
+                {
+                    "id": 4,
+                    "name": "Textbooks",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Math Textbooks"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Science Textbooks"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Literature Textbooks"
+                        },
+                        {
+                            "id": 4,
+                            "name": "History Textbooks"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Art Textbooks"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Business Textbooks"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 8,
+            "name": "Heavy Machinery",
+            "subcategories": [
+                {
+                    "id": 1,
+                    "name": "Construction Machinery",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Excavators"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Bulldozers"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Cranes"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Loaders"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Dump Trucks"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Concrete Mixers"
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "name": "Agricultural Machinery",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Tractors"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Combine Harvesters"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Planters"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Sprayers"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Balers"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Mowers"
+                        }
+                    ]
+                },
+                {
+                    "id": 4,
+                    "name": "Forestry Machinery",
+                    "thirdCategories": [
+                        {
+                            "id": 1,
+                            "name": "Harvesters"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Forwarders"
+                        },
+                        {
+                            "id": 3,
+                            "name": "Chippers"
+                        },
+                        {
+                            "id": 4,
+                            "name": "Grinders"
+                        },
+                        {
+                            "id": 5,
+                            "name": "Skidders"
+                        },
+                        {
+                            "id": 6,
+                            "name": "Mulchers"
+                        }
+                    ]
+                }
+            ]
+        }
     ]
-  }  
+}
