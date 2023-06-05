@@ -138,14 +138,14 @@ const DetailsModal = ({ show, onHide, offer }) => {
                   }}
                 ></div>
               )}
-              <h2>{offer.title}</h2>
+              <h2 className='mt-2'>{offer.title}</h2>
               <p>
                 <span className="text-success h3">
                   $ {offer.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 </span>
               </p>
               <p>{offer.description}</p>
-              <p>
+              <p className='mb-2'>
                 Offer by{' '}
                 <span className="text-success" style={{ cursor: 'pointer' }} onClick={() => openUserModal(offer.createdBy)}>
                   {offer.createdBy.firstName} {offer.createdBy.lastName}
@@ -153,18 +153,22 @@ const DetailsModal = ({ show, onHide, offer }) => {
               </p>
               {isContactAvailable && (
                 <>
+                <div>
                   <button
-                    className="btn rounded-5 btn-success mt-2 mb-4"
+                    className="btn rounded-5 btn-success mt-2 mb-2"
                     onClick={() => window.open(`https://wa.me/${offer.countryCode}${offer.phoneNumber}`, '_blank')}
                   >
                     <i className="bi bi-whatsapp mt-2"></i>{`+${offer.countryCode} ${offer.phoneNumber}`}
                   </button>
+                  </div>
+                  <div>
                   <button
-                    className="btn-primary btn rounded-5 mt-2 mb-4 ms-2"
+                    className="btn-primary btn rounded-5 mt-2 mb-2"
                     onClick={() => window.open(`tel:+${offer.countryCode}${offer.phoneNumber}`, '_blank')}
                   >
                     <i className="bi bi-telephone-forward"></i> {`+${offer.countryCode} ${offer.phoneNumber}`}
                   </button>
+                  </div>
                   <p>
                     Other ways to contact {offer.createdBy.firstName}: {offer.contact}
                   </p>

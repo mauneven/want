@@ -1,16 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import PostCategory from './Categories';
-import { useEffect } from 'react';
 
 export default function CategoriesModal({ isShown, onHide, onCategorySelected, buttonText }) {
-
   const [show, setShow] = useState(false);
-  const [mainCategory, setMainCategory] = useState('');
-  const [subCategory, setSubcategory] = useState('');
-  const [displayCategory, setDisplayCategory] = useState('Select a category');
+  const [selectedCategory, setSelectedCategory] = useState(buttonText);
+  const [selectedSubcategory, setSelectedSubcategory] = useState('');
+  const [selectedThirdCategory, setSelectedThirdCategory] = useState('');
+  const [displayCategory, setDisplayCategory] = useState(buttonText);
+  const prevIsShownRef = useRef(isShown);
 
-  const handleShow = () => setShow(true);
+  useEffect(() => {
+    setDisplayCategory(buttonText);
+  }, [buttonText]);
+
+  useEffect(() => {
+    if (!isShown && prevIsShownRef.current) {
+      resetCategories();
+    }
+    prevIsShownRef.current = isShown;
+  }, [isShown]);
+
+  const handleShow = () => {
+    resetCategories();
+    setShow(true);
+  };
+
   const handleClose = () => {
     setShow(false);
     onHide();
@@ -18,34 +33,41 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
 
   const handleAccept = () => {
     if (onCategorySelected) {
-      onCategorySelected(mainCategory, subCategory);
+      onCategorySelected(selectedCategory, selectedSubcategory, selectedThirdCategory);
     }
-  
-    if (subCategory) {
-      setDisplayCategory(subCategory);
-    } else if (mainCategory) {
-      setDisplayCategory(mainCategory);
+
+    if (selectedThirdCategory) {
+      setDisplayCategory(selectedThirdCategory);
+    } else if (selectedSubcategory) {
+      setDisplayCategory(selectedSubcategory);
+    } else if (selectedCategory) {
+      setDisplayCategory(selectedCategory);
     } else {
       setDisplayCategory('Select a category');
     }
-  
+
     handleClose();
   };
 
   const handleSeeAllCategories = () => {
-    setMainCategory('');
-    setSubcategory('');
-    setDisplayCategory('Select a category');
+    resetCategories();
+
     if (onCategorySelected) {
-      onCategorySelected('', '');
+      onCategorySelected('', '', '');
     }
-    handleClose();
-  };  
+  };
+
+  const resetCategories = () => {
+    setSelectedCategory(buttonText);
+    setSelectedSubcategory('');
+    setSelectedThirdCategory('');
+    setDisplayCategory(buttonText);
+  };
 
   return (
     <>
-      <Button variant="" onClick={handleShow} className='nav-item'>
-        {buttonText}
+      <Button variant="" onClick={handleShow} className="nav-item">
+        {displayCategory}
       </Button>
 
       <Modal show={show || isShown} onHide={handleClose} centered>
@@ -54,17 +76,26 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
         </Modal.Header>
         <Modal.Body>
           <PostCategory
-            onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
-            onSubcategoryChange={(selectedSubcategory) => setSubcategory(selectedSubcategory)}
-            selectedSubcategory={subCategory}
+            onMainCategoryChange={setSelectedCategory}
+            onSubcategoryChange={setSelectedSubcategory}
+            onThirdCategoryChange={setSelectedThirdCategory}
+            initialMainCategory={selectedCategory}
+            initialSubcategory={selectedSubcategory}
+            initialThirdCategory={selectedThirdCategory}
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleSeeAllCategories}>See all categories</Button>
-          <Button variant="primary" onClick={handleClose}>Cancel</Button>
-          <Button variant="success" onClick={handleAccept}>Accept</Button>
+          <Button variant="secondary" onClick={handleSeeAllCategories}>
+            See all categories
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button variant="success" onClick={handleAccept}>
+            Accept
+          </Button>
         </Modal.Footer>
       </Modal>
     </>
   );
-};
+}

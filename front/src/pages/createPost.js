@@ -1,10 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import PostCategory from '@/components/categories/Categories';
 import Location from '@/components/locations/Location';
 import WordsFilter from '@/badWordsFilter/WordsFilter.js';
-import { useRef } from 'react';
-import Carousel from 'react-bootstrap/Carousel';
 import { validations } from '@/utils/validations';
 import { Modal } from 'react-bootstrap';
 
@@ -17,6 +15,7 @@ const CreatePost = () => {
   const [city, setCity] = useState('');
   const [mainCategory, setMainCategory] = useState('');
   const [subCategory, setSubCategory] = useState('');
+  const [thirdCategory, setThirdCategory] = useState('');
   const [price, setPrice] = useState('');
   const [photo, setPhoto] = useState(null);
   const [error, setError] = useState(null);
@@ -89,7 +88,7 @@ const CreatePost = () => {
     } else {
       setTitle(value.slice(0, 60));
     }
-  };  
+  };
 
   const handleDescriptionChange = (e) => {
     const value = e.target.value;
@@ -115,7 +114,6 @@ const CreatePost = () => {
     };
 
     if (carouselRef.current) {
-
       carouselRef.current.addEventListener('slid.bs.carousel', handleSlid);
     }
 
@@ -130,9 +128,9 @@ const CreatePost = () => {
     setPreviewTitle(title);
     setPreviewDescription(description);
     setPreviewLocation(`${city}, ${state}, ${country}`);
-    setPreviewCategory(`${mainCategory} > ${subCategory}`);
+    setPreviewCategory(`${mainCategory} > ${subCategory} > ${thirdCategory}`);
     setPreviewPrice(Number(price).toLocaleString());
-  }, [title, description, country, state, city, mainCategory, subCategory, price]);
+  }, [title, description, country, state, city, mainCategory, subCategory, thirdCategory, price]);
 
   const bwf = new WordsFilter();
 
@@ -153,7 +151,7 @@ const CreatePost = () => {
       return;
     }
 
-    console.log('Submitting post with values:', { title, description, country, state, city, mainCategory, subCategory, price, photo });
+    console.log('Submitting post with values:', { title, description, country, state, city, mainCategory, subCategory, thirdCategory, price, photo });
 
     const formData = new FormData();
     formData.append('title', title);
@@ -163,6 +161,7 @@ const CreatePost = () => {
     formData.append('city', city);
     formData.append('mainCategory', mainCategory);
     formData.append('subCategory', subCategory);
+    formData.append('thirdCategory', thirdCategory);
     formData.append('price', price);
     if (true) {
       for (let i = 0; i < photos.length; i++) {
@@ -203,11 +202,11 @@ const CreatePost = () => {
               <Modal.Title>Info about when you create a post</Modal.Title>
             </Modal.Header>
             <Modal.Body className='p-0'>
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item">1. Your post will be available 30 days, after this time it will be deleted incluiding his related offers</li>
-                <li class="list-group-item">2. Your post will be public, and will be visible to anyone who uses a search among the locations and categories you have selected.</li>
-                <li class="list-group-item">3. You are free to delete or edit the post at any time or delete the offers you receive from the post</li>
-                <li class="list-group-item">4. If you decide to delete the post manually this will delete the offers from the post too</li>
+              <ul className="list-group list-group-flush">
+                <li className="list-group-item">1. Your post will be available 30 days, after this time it will be deleted including its related offers</li>
+                <li className="list-group-item">2. Your post will be public and visible to anyone who searches among the selected locations and categories.</li>
+                <li className="list-group-item">3. You are free to delete or edit the post at any time or delete the offers you receive from the post.</li>
+                <li className="list-group-item">4. If you decide to manually delete the post, the offers related to the post will also be deleted.</li>
               </ul>
             </Modal.Body>
             <Modal.Footer>
@@ -239,7 +238,7 @@ const CreatePost = () => {
               ></textarea>
             </div>
             <div className="mb-3">
-              <label htmlFor="price" className="form-label">how much would you pay for what you Want*</label>
+              <label htmlFor="price" className="form-label">How much would you pay for what you want*</label>
               <input
                 type="number"
                 className="form-control"
@@ -253,7 +252,7 @@ const CreatePost = () => {
               ) : null}
             </div>
             <div className="mb-3">
-            <label htmlFor="price" className="form-label">Give an approximate location of where you Want this*</label>
+              <label htmlFor="price" className="form-label">Give an approximate location of where you want this*</label>
               <Location
                 onCountryChange={(selectedCountry) => setCountry(selectedCountry)}
                 onStateChange={(selectedState) => setState(selectedState)}
@@ -262,15 +261,19 @@ const CreatePost = () => {
               />
             </div>
             <div className="mb-3">
-            <label htmlFor="price" className="form-label">Select a category according to what you Want*</label>
+              <label htmlFor="price" className="form-label">Select a category according to what you want*</label>
               <PostCategory
                 onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
-                onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)} // Cambia "onSubCategoryChange" a "onSubcategoryChange"
+                onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)}
+                onThirdCategoryChange={(selectedThirdCategory) => setThirdCategory(selectedThirdCategory)}
+                initialMainCategory={mainCategory}
+                initialSubcategory={subCategory}
+                initialThirdCategory={thirdCategory}
                 isRequired={true}
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="photo" className="form-label">Upload upto 4 photos if you Want</label>
+              <label htmlFor="photo" className="form-label">Upload up to 4 photos if you want</label>
               <input
                 type="file"
                 className="form-control"
@@ -288,7 +291,7 @@ const CreatePost = () => {
               )}
             </button>
             <button type="button" className="btn" onClick={handleShowModal}>
-            <i class="bi bi-info-circle-fill"></i>
+              <i className="bi bi-info-circle-fill"></i>
             </button>
           </form>
         </div>
@@ -342,8 +345,6 @@ const CreatePost = () => {
       </div>
     </div>
   );
-
-
 };
 
 export default CreatePost;

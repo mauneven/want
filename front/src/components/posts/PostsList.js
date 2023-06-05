@@ -24,10 +24,11 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
         city: locationFilter?.city || '',
         mainCategory: categoryFilter?.mainCategory || '',
         subCategory: categoryFilter?.subCategory || '',
+        thirdCategory: categoryFilter?.thirdCategory || '', // Incluir tercer categoría
         searchTerm: searchTerm || '',
         page: currentPage,
         pageSize
-      });
+      });      
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?${filterParams}`);
       const { posts: postsData, totalPosts } = await response.json();

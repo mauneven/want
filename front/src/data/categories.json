@@ -1,0 +1,124 @@
+{
+    "categories": [
+      {
+        "id": 1,
+        "name": "Technology",
+        "subcategories": [
+          {
+            "id": 1,
+            "name": "Computer Components",
+            "thirdCategories": [
+              {
+                "id": 1,
+                "name": "Graphics Cards"
+              },
+              {
+                "id": 2,
+                "name": "RAM"
+              },
+              {
+                "id": 3,
+                "name": "Motherboards"
+              },
+              {
+                "id": 4,
+                "name": "SSD"
+              },
+              {
+                "id": 5,
+                "name": "Hard Drives"
+              },
+              {
+                "id": 6,
+                "name": "Power Supplies"
+              },
+              {
+                "id": 7,
+                "name": "Computer Cases"
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "name": "Smartphones",
+            "thirdCategories": [
+              {
+                "id": 1,
+                "name": "Apple"
+              },
+              {
+                "id": 2,
+                "name": "Samsung"
+              },
+              {
+                "id": 3,
+                "name": "Google"
+              },
+              {
+                "id": 4,
+                "name": "OnePlus"
+              },
+              {
+                "id": 5,
+                "name": "Xiaomi"
+              },
+              {
+                "id": 6,
+                "name": "Huawei"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Clothing",
+        "subcategories": [
+          {
+            "id": 1,
+            "name": "Shirts",
+            "thirdCategories": [
+              {
+                "id": 1,
+                "name": "Button-up Shirts"
+              },
+              {
+                "id": 2,
+                "name": "T-shirts"
+              },
+              {
+                "id": 3,
+                "name": "Polo Shirts"
+              },
+              {
+                "id": 4,
+                "name": "Long-sleeve Shirts"
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "name": "Pants",
+            "thirdCategories": [
+              {
+                "id": 1,
+                "name": "Jeans"
+              },
+              {
+                "id": 2,
+                "name": "Chinos"
+              },
+              {
+                "id": 3,
+                "name": "Cargo Pants"
+              },
+              {
+                "id": 4,
+                "name": "Shorts"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }  

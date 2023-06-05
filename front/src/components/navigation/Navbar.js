@@ -1,14 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Container,
-  Navbar,
-  Nav,
-  NavDropdown,
-  Form,
-  FormControl,
-  Button,
-  Offcanvas,
-} from "react-bootstrap";
+import { Container, Navbar, Nav, NavDropdown, Form, FormControl, Button, Offcanvas } from "react-bootstrap";
 import LocationModal from "../locations/LocationPosts";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -30,17 +21,23 @@ export default function MegaMenu({
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
   const [categoriesButtonText, setCategoriesButtonText] = useState("Select a category");
   const [selectedLocation, setSelectedLocation] = useState({ country: "", state: "", city: "" });
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedSubcategory, setSelectedSubcategory] = useState('');
+  const [selectedThirdCategory, setSelectedThirdCategory] = useState('');
   const [isMobile, setIsMobile] = useState(false);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
 
   const router = useRouter();
 
   const handleLogoClick = () => {
+    setSelectedCategory('');
+    setSelectedSubcategory('');
+    setSelectedThirdCategory('');
     setCurrentPage(1);
-    onSearchTermChange("");
-    onCategoryFilterChange({ mainCategory: "", subCategory: "" });
-    setCategoriesButtonText("Select a category");
-    router.push("/");
+    onSearchTermChange('');
+    onCategoryFilterChange({ mainCategory: '', subCategory: '', thirdCategory: '' });
+    setCategoriesButtonText('Select a category');
+    router.push('/');
   };
 
   const handleCloseCategories = () => {
@@ -48,18 +45,19 @@ export default function MegaMenu({
     setShowOffcanvas(false);
   };
 
-  const handleCategorySelected = (mainCategory, subCategory) => {
-    console.log("Selected Category: ", mainCategory);
-    console.log("Selected Subcategory: ", subCategory);
+  const handleCategorySelected = (mainCategory, subCategory, thirdCategory) => {
     const selectedCategory = {
-      mainCategory: mainCategory,
-      subCategory: subCategory !== "" ? subCategory : null,
+      mainCategory: mainCategory || '',
+      subCategory: subCategory || '',
+      thirdCategory: thirdCategory || '',
     };
     onCategoryFilterChange(selectedCategory);
     handleCloseCategories();
 
-    // Actualiza el texto del botón
-    if (subCategory) {
+    // Update the button text
+    if (thirdCategory) {
+      setCategoriesButtonText(thirdCategory);
+    } else if (subCategory) {
       setCategoriesButtonText(subCategory);
     } else if (mainCategory) {
       setCategoriesButtonText(mainCategory);
@@ -117,15 +115,6 @@ export default function MegaMenu({
   }, [router.pathname]);
 
   useEffect(() => {
-    const locationFilterString = localStorage.getItem("locationFilter");
-    if (locationFilterString) {
-      const parsedLocationFilter = JSON.parse(locationFilterString);
-      setLocationFilter(parsedLocationFilter);
-      onLocationFilterChange(parsedLocationFilter);
-    }
-  }, []);
-
-  useEffect(() => {
     setIsMobile(window.innerWidth < 1000);
     const handleResize = () => {
       setIsMobile(window.innerWidth < 1000);
@@ -135,6 +124,20 @@ export default function MegaMenu({
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setShowLocationModal(false);
+      setShowCategoriesModal(false);
+      setShowOffcanvas(false);
+    };
+
+    router.events.on("routeChangeComplete", handleRouteChange);
+
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router]);
 
   return (
     <>
@@ -158,9 +161,7 @@ export default function MegaMenu({
             className="d-flex flex-grow-1 w-auto search-bar border rounded-5 search-bar-navbar"
             onSubmit={handleSearchSubmit}
           >
-            {isMobile ? (
-              null
-            ) : (
+            {isMobile ? null : (
               <LocationModal
                 show={showLocationModal}
                 onHide={() => setShowLocationModal(false)}
@@ -188,23 +189,23 @@ export default function MegaMenu({
           {!isMobile && (
             <Nav className="ms-auto">
               <Nav.Link className="nav-item">
-              <CategoriesModal
-                isShown={showCategoriesModal}
-                onHide={handleCloseCategories}
-                onCategorySelected={handleCategorySelected}
-                buttonText={categoriesButtonText}
-              />
+                <CategoriesModal
+                  isShown={showCategoriesModal}
+                  onHide={handleCloseCategories}
+                  onCategorySelected={handleCategorySelected}
+                  buttonText={categoriesButtonText}
+                />
               </Nav.Link>
               <Nav.Link className="nav-item" onClick={() => router.push('/createPost')}>
                 <Button className="btn btn-post rounded-5 align-items-center nav-item">
                   Want Something?
                 </Button>
               </Nav.Link>
-              {user ? (
+              {user && (
                 <Nav.Link className="nav-item">
                   <Notifications />
                 </Nav.Link>
-              ) : null}
+              )}
               {user ? (
                 <NavDropdown
                   className="nav-item"
@@ -225,7 +226,7 @@ export default function MegaMenu({
                   id="user-dropdown"
                 >
                   <NavDropdown.Item onClick={() => router.push('/myPosts')}>
-                    <i className="bi bi-stickies-fill me-3"></i>Things that i Want
+                    <i className="bi bi-stickies-fill me-3"></i>Things that I Want
                   </NavDropdown.Item>
                   <NavDropdown.Item onClick={() => router.push('/sentOffers')}>
                     <i className="bi bi-send-check-fill me-3"></i>Sent offers
@@ -262,27 +263,27 @@ export default function MegaMenu({
         </Offcanvas.Header>
         <Offcanvas.Body>
           <Nav.Link className="nav-item p-3" onClick={() => { router.push('/'); setShowOffcanvas(false) }}>
-          <i class="bi bi-house me-2"></i>Home
+            <i className="bi bi-house me-2"></i>Home
           </Nav.Link>
           <Nav className="flex-column">
             <Nav.Link className="nav-item">
-            <i class="bi bi-globe-americas"></i>
-            <LocationModal
-              show={showLocationModal}
-              onHide={() => setShowLocationModal(false)}
-              onLocationSelected={handleLocationSelected}
-              onLocationFilterChange={onLocationFilterChange}
-              selectedLocation={selectedLocation}
-            />
+              <i className="bi bi-globe-americas"></i>
+              <LocationModal
+                show={showLocationModal}
+                onHide={() => setShowLocationModal(false)}
+                onLocationSelected={handleLocationSelected}
+                onLocationFilterChange={onLocationFilterChange}
+                selectedLocation={selectedLocation}
+              />
             </Nav.Link>
             <Nav.Link className="nav-item">
-            <i class="bi bi-tags"></i>
-            <CategoriesModal
-              isShown={showCategoriesModal}
-              onHide={handleCloseCategories}
-              onCategorySelected={handleCategorySelected}
-              buttonText={categoriesButtonText}
-            />
+              <i className="bi bi-tags"></i>
+              <CategoriesModal
+                isShown={showCategoriesModal}
+                onHide={handleCloseCategories}
+                onCategorySelected={handleCategorySelected}
+                buttonText={categoriesButtonText}
+              />
             </Nav.Link>
             <Nav.Link className="nav-item" onClick={() => { router.push('/createPost'); setShowOffcanvas(false) }}>
               <Button className="btn btn-post rounded-5 align-items-center">
@@ -303,7 +304,7 @@ export default function MegaMenu({
                   /> {user.firstName}
                 </Nav.Link>
                 <Nav.Link className="nav-item" onClick={() => { router.push('/myPosts'); setShowOffcanvas(false) }}>
-                  <i className="bi bi-stickies-fill me-3"></i>Things that i Want
+                  <i className="bi bi-stickies-fill me-3"></i>Things that I Want
                 </Nav.Link>
                 <Nav.Link className="nav-item" onClick={() => { router.push('/sentOffers'); setShowOffcanvas(false) }}>
                   <i className="bi bi-send-check-fill me-3"></i>Sent offers
@@ -321,7 +322,7 @@ export default function MegaMenu({
               </>
             ) : (
               <Nav.Link onClick={() => { router.push('/login'); setShowOffcanvas(false) }} className="nav-item pt-3">
-                <i class="bi bi-door-open"></i> Login/Register
+                <i className="bi bi-door-open"></i> Login/Register
               </Nav.Link>
             )}
           </Nav>

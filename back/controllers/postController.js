@@ -45,6 +45,9 @@ exports.getAllPosts = async (req, res, next) => {
     if (req.query.subCategory) {
       filters['subCategory'] = req.query.subCategory;
     }
+    if (req.query.thirdCategory) {
+      filters['thirdCategory'] = req.query.thirdCategory;
+    }
 
     // Filtrar por término de búsqueda
     if (req.query.searchTerm) {
@@ -93,7 +96,7 @@ exports.getPostById = async (req, res, next) => {
 
 exports.createPost = async (req, res, next) => {
   try {
-    const { title, description, country, state, city, mainCategory, subCategory, price } = req.body;
+    const { title, description, country, state, city, mainCategory, subCategory, thirdCategory, price } = req.body;
     const photos = req.files.map(file => ({
       path: file.path,
       originalname: file.originalname
@@ -124,6 +127,7 @@ exports.createPost = async (req, res, next) => {
       city,
       mainCategory,
       subCategory,
+      thirdCategory,
       price,
       photos: compressedImagePaths || [],
     });
@@ -144,7 +148,7 @@ exports.updatePost = async (req, res, next) => {
       return res.status(401).send('You must be logged in to edit a post');
     }
 
-    const { title, description, country, state, city, mainCategory, subCategory, price, deletedImages } = req.body;
+    const { title, description, country, state, city, mainCategory, subCategory, thirdCategory, price, deletedImages } = req.body;
 
     const post = await Post.findById(req.params.id);
     if (!post) {
@@ -162,6 +166,7 @@ exports.updatePost = async (req, res, next) => {
     post.city = city;
     post.mainCategory = mainCategory;
     post.subCategory = subCategory;
+    post.thirdCategory = thirdCategory;
     post.price = price;
 
     if (deletedImages) {

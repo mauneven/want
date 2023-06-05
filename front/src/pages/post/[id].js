@@ -192,7 +192,7 @@ const PostDetails = () => {
               Published in {post.city}, {post.state}, {post.country}
             </p>
             <p className='small'>
-              {post.mainCategory}, {post.subCategory}
+              {post.mainCategory}, {post.subCategory}, {post.thirdCategory}
             </p>
             <div className="row align-items-center text-start" onClick={() => openUserModal(post.createdBy)}>
               <div className='col-2 p-0'>

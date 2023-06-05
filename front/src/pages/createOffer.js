@@ -374,14 +374,18 @@ const CreateOffer = () => {
               <h5 className="text-success mt-2 ">{Number(price).toLocaleString()}</h5>
               <p className="card-text mt-2 mb-2">{description || 'Offer description'}</p>
               {phoneNumber && selectedCountryCode && (
+                <>
                 <div>
                   <button className="btn rounded-5 btn-success mb-2" onClick={() => window.open(`https://wa.me/${selectedCountryCode}${phoneNumber}`, '_blank')}>
                     <i className="bi bi-whatsapp mt-2"></i>{`+${selectedCountryCode} ${phoneNumber}`}
                   </button>
-                  <button className="btn-primary btn rounded-5 mb-2 ms-2" onClick={() => window.open(`tel:+${selectedCountryCode}${phoneNumber}`, '_blank')}>
+                  </div>
+                  <div>
+                  <button className="btn-primary btn rounded-5 mb-2" onClick={() => window.open(`tel:+${selectedCountryCode}${phoneNumber}`, '_blank')}>
                     <i className="bi bi-telephone-forward"></i> {`+${selectedCountryCode} ${phoneNumber}`}
                   </button>
                 </div>
+                </>
               )}
               <p className="card-text mt-2 ">{contact || 'Other way to contact you'}</p>
             </div>
