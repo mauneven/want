@@ -22,6 +22,7 @@ const EditPost = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [imageFile, setImageFile] = useState(null);
   const [subCategory, setSubCategory] = useState('');
+  const [thirdCategory, setThirdCategory] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -88,6 +89,7 @@ const EditPost = () => {
         setPrice(postData.price);
         setMainCategory(postData.mainCategory);
         setSubCategory(postData.subCategory);
+        setThirdCategory(postData.thirdCategory);
         setImages(
           postData.photos.map((photo) => ({
             file: null,
@@ -107,9 +109,9 @@ const EditPost = () => {
     setPreviewTitle(title);
     setPreviewDescription(description);
     setPreviewLocation(`${city}, ${state}, ${country}`);
-    setPreviewCategory(`${mainCategory} > ${subCategory}`);
+    setPreviewCategory(`${mainCategory} > ${subCategory} > ${thirdCategory}`);
     setPreviewPrice(Number(price).toLocaleString());
-  }, [title, description, country, state, city, mainCategory, subCategory, price]);
+  }, [title, description, country, state, city, mainCategory, subCategory, thirdCategory, price]);
 
   // Verificar si el objeto 'post' está definido antes de renderizar el contenido del componente
   if (!post) {
@@ -206,6 +208,7 @@ const EditPost = () => {
       formData.append('price', price);
       formData.append('mainCategory', mainCategory);
       formData.append('subCategory', subCategory);
+      formData.append('thirdCategory', thirdCategory);
       for (let i = 0; i < images.length; i++) {
         if (images[i].file) {
           formData.append("photos[]", images[i].file);
@@ -293,8 +296,10 @@ const EditPost = () => {
               <PostCategory
                 onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
                 onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)}
+                onThirdCategoryChange={(selectedThirdCategory) => setThirdCategory(selectedThirdCategory)}
                 initialMainCategory={mainCategory}
                 initialSubcategory={subCategory}
+                initialThirdCategory={thirdCategory}
                 isRequired={true}
               />
             </div>
@@ -310,13 +315,13 @@ const EditPost = () => {
                 multiple
               />
             </div>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
+            <button type="submit" className="btn btn-success rounded-5" disabled={loading}>
               {loading ? (
                 <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
               ) : "Update my post"}
 
             </button>
-            <button type="button" className="btn btn-secondary" onClick={() => router.back()}>Cancel</button>
+            <button type="button" className="btn rounded-5 btn-secondary" onClick={() => router.back()}>Cancel</button>
           </form>
           {error && (
             <div className="alert alert-danger mt-3" role="alert">
@@ -351,7 +356,7 @@ const EditPost = () => {
             {images.length > 0 && (
               <button
                 type="button"
-                className="btn btn-danger delete-image-btn"
+                className="btn btn-danger rounded-5 m-2 delete-image-btn"
                 onClick={() => onDelete(activeIndex)}
               >
                 Delete this photo

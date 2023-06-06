@@ -25,7 +25,7 @@ export default function ReceivedOffers() {
   };
 
   useEffect(() => {
-    validations(router); 
+    validations(router);
   }, []);
 
   const handleReportOffer = async (offerId, description) => {
@@ -185,19 +185,19 @@ export default function ReceivedOffers() {
           </Button>
         </Modal.Footer>
       </Modal>
-      <div className="container mt-5">
-        <h1 className='mt-5 mb-5'>Received offers</h1>
+      <div className="container">
+        <h1 className='my-4'>Received offers</h1>
         <div className="row">
           <div className="col-md-3">
             <h3 className='mb-4'>Your posts</h3>
             {Object.values(offers).map((postWithOffers) => (
               <button
-  key={postWithOffers.post._id}
-  className={`list-group-item-action mt-3 mb-3 btn ${selectedPost === postWithOffers.post._id ? "post-received-selected" : "post-received"}`}
-  onClick={() => handlePostSelect(postWithOffers.post._id)}
->
-  <h5 className=''>{postWithOffers.post.title.substring(0, 30)}</h5>
-</button>
+                key={postWithOffers.post._id}
+                className={`list-group-item-action mt-3 mb-3 btn ${selectedPost === postWithOffers.post._id ? "post-received-selected" : "post-received"}`}
+                onClick={() => handlePostSelect(postWithOffers.post._id)}
+              >
+                <h5 className=''>{postWithOffers.post.title.substring(0, 30)}</h5>
+              </button>
             ))}
           </div>
           <div className="col-md-1 d-none d-md-block">
@@ -227,7 +227,7 @@ export default function ReceivedOffers() {
                               <div>
                                 <h4 className="card-title">{offer.title}</h4>
                                 <span className="text-success h5">
-                                    $ {offer.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                  $ {offer.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                 </span>
                                 <p className="card-text">{offer.description}</p>
                               </div>

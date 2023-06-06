@@ -87,7 +87,7 @@ const LocationModal = ({
   return (
     <>
       <span onClick={handleShow} className="p-2 center text-center align-items-center location-posts">{confirmedLocationType}</span>
-      <Modal show={show} onHide={handleClose}>
+      <Modal centered show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Choose your location</Modal.Title>
         </Modal.Header>
@@ -103,7 +103,7 @@ const LocationModal = ({
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleAccept}>
+          <Button variant="success rounded-5" onClick={handleAccept}>
             Accept
           </Button>
         </Modal.Footer>

@@ -84,7 +84,7 @@ export default function sentOffers() {
         </Modal.Footer>
       </Modal>
       <div className="container">
-        <h1>Offers you have done</h1>
+        <h1 className='my-4'>Offers you have done</h1>
         <div className="row">
           {offers.map((offer) => (
             <div key={offer._id} className="col-12 col-md-6">

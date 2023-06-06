@@ -192,28 +192,24 @@ const PostDetails = () => {
               Published in {post.city}, {post.state}, {post.country}
             </p>
             <p className='small'>
-              {post.mainCategory}, {post.subCategory}
+              {post.mainCategory}, {post.subCategory}, {post.thirdCategory}
             </p>
-            <div className="row align-items-center text-start" onClick={() => openUserModal(post.createdBy)}>
-              <div className='col-2 p-0'>
-                <img
-                  src={
-                    post.createdBy.photo
-                      ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
-                      : "/icons/person-circle.svg"
-                  }
-                  alt=""
-                  className="createdBy-photo-id"
-                />
-              </div>
-              <div className='col-10'>
-                <p
-                  className='mb-0 p-0'
-                  style={{ cursor: 'pointer' }}
-                >
-                  {post.createdBy.firstName} {post.createdBy.lastName} | <i class="bi bi-star-fill"></i> {post.createdBy.reports ? 5 - (0.3 * post.createdBy.reports.length) : ""}
-                </p>
-              </div>
+            <div className="d-flex align-items-center text-start" onClick={() => openUserModal(post.createdBy)}>
+              <img
+                src={
+                  post.createdBy.photo
+                    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
+                    : "/icons/person-circle.svg"
+                }
+                alt=""
+                className="createdBy-photo-id"
+              />
+              <p
+                className='mb-0 p-0'
+                style={{ cursor: 'pointer' }}
+              >
+                {post.createdBy.firstName} {post.createdBy.lastName} | <i class="bi bi-star-fill"></i> {post.createdBy.reports ? 5 - (0.3 * post.createdBy.reports.length) : ""}
+              </p>
             </div>
             <div className='mt-3'>
               <Link href={`/createOffer?postId=${id}`}>
