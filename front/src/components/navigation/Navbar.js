@@ -29,7 +29,15 @@ export default function MegaMenu({
 
   const router = useRouter();
 
+  const clearSearchBar = () => {
+    const searchBar = document.querySelector(".search-bar-input");
+    if (searchBar) {
+      searchBar.value = "";
+    }
+  };  
+
   const handleLogoClick = () => {
+    clearSearchBar();
     setSelectedCategory('');
     setSelectedSubcategory('');
     setSelectedThirdCategory('');
@@ -46,6 +54,9 @@ export default function MegaMenu({
   };
 
   const handleCategorySelected = (mainCategory, subCategory, thirdCategory) => {
+    clearSearchBar();
+    setCurrentPage(1);
+    onSearchTermChange('');
     const selectedCategory = {
       mainCategory: mainCategory || '',
       subCategory: subCategory || '',
@@ -85,12 +96,17 @@ export default function MegaMenu({
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    handleLogoClick();
+    setSelectedCategory('');
+    setSelectedSubcategory('');
+    setSelectedThirdCategory('');
+    setCurrentPage(1);
+    onSearchTermChange('');
+    onCategoryFilterChange({ mainCategory: '', subCategory: '', thirdCategory: '' });
+    setCategoriesButtonText('Select a category');
     const newSearchTerm = e.target.search.value;
     setSearchTerm(newSearchTerm);
     onSearchTermChange(newSearchTerm);
-    const pageParam = currentPage ? `?page=${currentPage}` : '';
-    router.push('/' + pageParam);
+    router.push('/');
   };
 
   const handleClose = () => setShowLocationModal(false);
