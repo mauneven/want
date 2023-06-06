@@ -81,7 +81,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
           <Modal.Title>Filter by categories</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p className='m-2'>Filter your posts by categories, you can click on accept at any time with the categories you seleted</p>
+          <p className='m-2'>filter what people want by categories, remember that you can click accept at any time with the chosen categories</p>
           <PostCategory
             onMainCategoryChange={setSelectedCategory}
             onSubcategoryChange={setSelectedSubcategory}
