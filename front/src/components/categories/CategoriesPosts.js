@@ -72,11 +72,16 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
         {displayCategory}
       </Button>
 
-      <Modal show={show || isShown} onHide={handleClose} centered>
+      <Modal
+        show={show || isShown}
+        onHide={handleClose}
+        centered
+      >
         <Modal.Header closeButton>
           <Modal.Title>Filter by categories</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <p className='m-2'>Filter your posts by categories, you can click on accept at any time with the categories you seleted</p>
           <PostCategory
             onMainCategoryChange={setSelectedCategory}
             onSubcategoryChange={setSelectedSubcategory}
@@ -87,13 +92,13 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleSeeAllCategories}>
+          <Button variant="dark rounded-5" onClick={handleSeeAllCategories}>
             See all categories
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="secondary rounded-5" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="success" onClick={handleAccept}>
+          <Button variant="success rounded-5" onClick={handleAccept}>
             Accept
           </Button>
         </Modal.Footer>

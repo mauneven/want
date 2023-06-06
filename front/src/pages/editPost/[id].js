@@ -315,13 +315,13 @@ const EditPost = () => {
                 multiple
               />
             </div>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
+            <button type="submit" className="btn btn-success rounded-5" disabled={loading}>
               {loading ? (
                 <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
               ) : "Update my post"}
 
             </button>
-            <button type="button" className="btn btn-secondary" onClick={() => router.back()}>Cancel</button>
+            <button type="button" className="btn rounded-5 btn-secondary" onClick={() => router.back()}>Cancel</button>
           </form>
           {error && (
             <div className="alert alert-danger mt-3" role="alert">
@@ -356,7 +356,7 @@ const EditPost = () => {
             {images.length > 0 && (
               <button
                 type="button"
-                className="btn btn-danger delete-image-btn"
+                className="btn btn-danger rounded-5 m-2 delete-image-btn"
                 onClick={() => onDelete(activeIndex)}
               >
                 Delete this photo

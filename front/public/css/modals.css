@@ -52,4 +52,8 @@
   
   .modal-footer {
     background-color: #f0f0f0;
+  }
+
+  .modal-rounded {
+    border-radius: 0.5rem !important;
   }  

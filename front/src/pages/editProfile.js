@@ -10,6 +10,7 @@ const EditProfile = () => {
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
   const [birthdate, setBirthdate] = useState('');
+  const [initialBirthdate, setInitialBirthdate] = useState(''); // Nuevo estado para almacenar el valor inicial del campo de fecha
   const [photo, setPhoto] = useState(null);
   const [editingField, setEditingField] = useState(null);
   const [fileSizeError, setFileSizeError] = useState(false);
@@ -39,6 +40,11 @@ const EditProfile = () => {
               ? new Date(data.user.birthdate).toISOString().split('T')[0]
               : ''
           );
+          setInitialBirthdate(
+            data.user.birthdate
+              ? new Date(data.user.birthdate).toISOString().split('T')[0]
+              : ''
+          );
           setPhoto(data.user.photo);
         }
       });
@@ -49,12 +55,12 @@ const EditProfile = () => {
     const maxSize = 50 * 1024 * 1024; // 50 MB
   
     if (!allowedExtensions.exec(file.name)) {
-      alert('The file have to be an jpg, jpeg o png.');
+      alert('The file must be a JPG, JPEG, or PNG image.');
       return false;
     }
   
     if (file.size > maxSize) {
-      alert('Limit of 50 MB.');
+      alert('The file size must be under 50 MB.');
       return false;
     }
   
@@ -62,7 +68,7 @@ const EditProfile = () => {
   };  
 
   const handleDeleteAccount = async () => {
-    if (window.confirm('Are you sure you want to put your account on the delete queue?, Your account will be deleted on 30 days from now.')) {
+    if (window.confirm('Are you sure you want to put your account on the delete queue? Your account will be deleted in 30 days.')) {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/delete-account`, {
           method: 'DELETE',
@@ -80,38 +86,38 @@ const EditProfile = () => {
     }
   };  
   
-const handlePhotoChange = async (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    if (!validateImageFile(file)) {
-      return; // Termina la ejecución si el archivo no pasa la validación
-    }
+  const handlePhotoChange = async (e) => {
+    const file = e.target.files[0];
     if (file) {
-      const fileName = user._id + '_' + file.name; // Renombrar el archivo con el id del usuario
-      const renamedFile = new File([file], fileName, {type: file.type}); // Crear un nuevo objeto File con el archivo renombrado
-      setPhoto(renamedFile);
-      setEditingField('photo');
+      if (!validateImageFile(file)) {
+        return; // Termina la ejecución si el archivo no pasa la validación
+      }
+      if (file) {
+        const fileName = user._id + '_' + file.name; // Renombrar el archivo con el id del usuario
+        const renamedFile = new File([file], fileName, {type: file.type}); // Crear un nuevo objeto File con el archivo renombrado
+        setPhoto(renamedFile);
+        setEditingField('photo');
   
-      // Actualizar el estado de la foto del usuario en la base de datos
-      const formData = new FormData();
-      formData.append('photo', renamedFile);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/photo`, {
-        method: 'PUT',
-        credentials: 'include',
-        body: formData
-      });
-      if (!response.ok) {
-        console.error('Error updating user photo');
+        // Actualizar el estado de la foto del usuario en la base de datos
+        const formData = new FormData();
+        formData.append('photo', renamedFile);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/photo`, {
+          method: 'PUT',
+          credentials: 'include',
+          body: formData
+        });
+        if (!response.ok) {
+          console.error('Error updating user photo');
+        }
       }
     }
-  }
   };  
 
   const handleCancel = () => {
     setFirstName(user.firstName);
     setLastName(user.lastName);
     setPhone(user.phone);
-    setBirthdate(user.birthdate);
+    setBirthdate(initialBirthdate); // Restablecer el valor inicial de la fecha de nacimiento
     setPhoto(user.photo);
     setEditingField(null);
   };
@@ -146,43 +152,34 @@ const handlePhotoChange = async (e) => {
     }
   };
 
-  const inputFields = [{ name: 'firstName', label: 'First Name', type: 'text', value: firstName, onChange: (e) => setFirstName(e.target.value), required: true, }, { name: 'lastName', label: 'Last Name', type: 'text', value: lastName, onChange: (e) => setLastName(e.target.value), required: true, }, { name: 'phone', label: 'Phone', type: 'text', value: phone, onChange: (e) => setPhone(e.target.value), required: true, }, {
-    name: 'birthdate',
-    label: 'Birthdate',
-    type: 'date',
-    value: birthdate,
-    onChange: (e) => setBirthdate(e.target.value),
-    required: true,
-  },
+  const inputFields = [
+    { name: 'firstName', label: 'First Name', type: 'text', value: firstName, onChange: (e) => setFirstName(e.target.value), required: true },
+    { name: 'lastName', label: 'Last Name', type: 'text', value: lastName, onChange: (e) => setLastName(e.target.value), required: true },
+    { name: 'phone', label: 'Phone', type: 'text', value: phone, onChange: (e) => setPhone(e.target.value), required: true },
+    { name: 'birthdate', label: 'Birthdate', type: 'date', value: birthdate, onChange: (e) => setBirthdate(e.target.value), required: true }
   ];
+  
   const photoUrl = typeof File !== 'undefined' && photo instanceof File ? URL.createObjectURL(photo) : (user?.photo ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}` : "/icons/person-circle.svg");
 
   return (
     <div className="container">
-      <div className="card my-4">
+      <h1 className='my-4'>Check & edit your profile</h1>
+      <div className="card rounded-5 my-4">
         <div className="card-body">
           <div className="text-center">
             <img
               src={photoUrl}
               alt=""
+              className="rounded-circle"
               style={{
                 width: '150px',
                 height: '150px',
-                borderRadius: '50%',
                 objectFit: 'cover',
               }}
-
             />
-            <label htmlFor="photo" style={{ cursor: 'pointer', marginTop: '1rem' }}>
-              <div
-                className="overlay"
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <i className="bi bi-pencil text-primary"></i> Change profile photo
+            <label htmlFor="photo" className="mt-3">
+              <div className="overlay">
+                <i className="bi bi-pencil text-success ms-4"></i> Change profile photo
               </div>
             </label>
             <input
@@ -220,52 +217,33 @@ const handlePhotoChange = async (e) => {
                 </div>
               </div>
             ))}
-            {editingField === 'photo' && (
-              <>
-                <button
-                  type="button"
-                  className="btn btn-secondary me-3"
-                  onClick={handleCancel}
-                >
+            {editingField && (
+              <div className="text-center">
+                <button type="button" className="btn btn-secondary rounded-5 me-3" onClick={handleCancel}>
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={!photo}
-                >
+                <button type="submit" className="btn btn-success rounded-5" disabled={!editingField || (editingField === 'photo' && !photo)}>
                   Update
                 </button>
-              </>
-            )}
-            {editingField !== 'photo' && editingField !== null && (
-              <>
-                <button
-                  type="button"
-                  className="btn btn-secondary me-3"
-                  onClick={handleCancel}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={!editingField}
-                >
-                  Update
-                </button>
-              </>
+              </div>
             )}
           </form>
-          <Link href="/changePassword">
-            <button className="btn btn-success">Change Password</button>
-          </Link>
-          <button className="btn btn-danger" onClick={handleDeleteAccount}>Delete Account</button>
         </div>
+      </div>
+      <div className="my-5 card p-3 border border-success rounded-5">
+        <h3 className="text-success">Change Password</h3>
+        <Link href="/changePassword">
+          <button className="btn btn-success rounded-5">Change Password</button>
+        </Link>
+      </div>
+      <div className="my-5 border border-danger rounded-5 p-3">
+        <h3 className="text-danger">Delete Account</h3>
+        <button className="btn btn-danger rounded-5" onClick={handleDeleteAccount}>
+          Delete Account
+        </button>
       </div>
     </div>
   );
-  
 };
 
 export default EditProfile;

@@ -69,7 +69,7 @@ export default function MyPosts() {
         </Modal.Footer>
       </Modal>
       <div className="container">
-        <h1>Your posts</h1>
+        <h1 className='my-4'>Your posts</h1>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
           {posts.map((post) => (
             <div key={post._id} className="col">

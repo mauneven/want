@@ -283,7 +283,7 @@ const CreatePost = () => {
                 disabled={photos.length >= 4}
               />
             </div>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
+            <button type="submit" className="btn btn-success rounded-5" disabled={loading}>
               {loading ? (
                 <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
               ) : (
@@ -328,7 +328,7 @@ const CreatePost = () => {
             )}
             {photos.length > 0 && (
               <button
-                className="btn btn-danger delete-image-btn m-1"
+                className="btn btn-danger delete-image-btn m-2 rounded-5"
                 onClick={() => handleDeletePhoto(activeIndex)}
               >
                 <i className="bi bi-trash"></i>

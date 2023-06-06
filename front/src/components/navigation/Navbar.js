@@ -208,7 +208,7 @@ export default function MegaMenu({
               )}
               {user ? (
                 <NavDropdown
-                  className="nav-item"
+                  className="nav-item rounded-5 border-0"
                   title={
                     <>
                       <img
@@ -224,7 +224,19 @@ export default function MegaMenu({
                     </>
                   }
                   id="user-dropdown"
+                  style={{
+                    boxShadow: "none",
+                  }}
+                  menuVariant="light"
+                  renderMenuOnMount={true}
                 >
+                  <style>{`
+                    .dropdown-menu {
+                      border: none;
+                      border-radius: 10px;
+                      box-shadow: 0px 0px 15px -1px #00000042;
+                    }
+                  `}</style>
                   <NavDropdown.Item onClick={() => router.push('/myPosts')}>
                     <i className="bi bi-stickies-fill me-3"></i>Things that I Want
                   </NavDropdown.Item>

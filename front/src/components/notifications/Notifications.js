@@ -109,7 +109,7 @@ export default function Notifications() {
         )}
       </div>
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} className='modal-lg'>
+      <Modal centered show={showModal} onHide={() => setShowModal(false)} className='modal-lg'>
         <Modal.Header closeButton>
           <Modal.Title>Notifications</Modal.Title>
         </Modal.Header>
@@ -133,7 +133,7 @@ export default function Notifications() {
         </Modal.Body>
         <Modal.Footer>
           <button
-            className="btn btn-primary"
+            className="btn btn-success rounded-5"
             onClick={markAllNotificationsAsRead}
             disabled={isLoading}
           >
