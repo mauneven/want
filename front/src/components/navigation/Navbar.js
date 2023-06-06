@@ -85,6 +85,7 @@ export default function MegaMenu({
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
+    handleLogoClick();
     const newSearchTerm = e.target.search.value;
     setSearchTerm(newSearchTerm);
     onSearchTermChange(newSearchTerm);
