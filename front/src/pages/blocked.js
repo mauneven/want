@@ -9,7 +9,7 @@ const Blocked = () => {
       <h1>You have been banned</h1>
       <p>Your account has been blocked due to multiple reports.</p>
       <p>
-      If you think this is a mistake, please contact support.
+      If you think this is a mistake, please contact to wanttest@gmail.com.
       </p>
     </Container>
   );
