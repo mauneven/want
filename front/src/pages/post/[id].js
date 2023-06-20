@@ -1,10 +1,10 @@
-import { useRouter } from 'next/router';
-import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
-import RelatedPosts from '@/components/posts/RelatedPosts';
-import ReportPostModal from '@/components/report/ReportPostModal';
-import UserModal from '@/components/user/UserModal';
-import { useTranslation } from 'react-i18next';
+import { useRouter } from "next/router";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import RelatedPosts from "@/components/posts/RelatedPosts";
+import ReportPostModal from "@/components/report/ReportPostModal";
+import UserModal from "@/components/user/UserModal";
+import { useTranslation } from "react-i18next";
 
 const PostDetails = () => {
   const router = useRouter();
@@ -12,7 +12,7 @@ const PostDetails = () => {
   const { t } = useTranslation();
 
   const [post, setPost] = useState(null);
-  const [mainImage, setMainImage] = useState('');
+  const [mainImage, setMainImage] = useState("");
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const imageRef = useRef(null);
   const zoomRef = useRef(null);
@@ -23,10 +23,12 @@ const PostDetails = () => {
 
   const isMobile = () => {
     return (
-      typeof window !== 'undefined' &&
+      typeof window !== "undefined" &&
       (window.navigator.userAgent.match(/Mobile/) ||
         window.navigator.userAgent.match(/Tablet/) ||
-        window.navigator.userAgent.match(/iPad|iPod|iPhone|Android|BlackBerry|IEMobile/))
+        window.navigator.userAgent.match(
+          /iPad|iPod|iPhone|Android|BlackBerry|IEMobile/
+        ))
     );
   };
 
@@ -34,23 +36,26 @@ const PostDetails = () => {
 
   const handleReportPost = async (postId, description) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/report/post/${postId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ description }),
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/report/post/${postId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ description }),
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Report success:', data);
+        console.log("Report success:", data);
       } else {
-        console.error('Error al reportar el post:', response);
+        console.error("Error al reportar el post:", response);
       }
     } catch (error) {
-      console.error('Error al reportar el post:', error);
+      console.error("Error al reportar el post:", error);
     }
   };
 
@@ -78,7 +83,9 @@ const PostDetails = () => {
 
   useEffect(() => {
     const fetchPost = async () => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`
+      );
       const data = await response.json();
       setPost(data);
       if (data.photos && data.photos.length > 0) {
@@ -98,7 +105,8 @@ const PostDetails = () => {
   const handleMouseMove = (event) => {
     if (!zoomRef.current) return;
 
-    const { left, top, width, height } = imageRef.current.getBoundingClientRect();
+    const { left, top, width, height } =
+      imageRef.current.getBoundingClientRect();
     let x = ((event.clientX - left) / width) * 100;
     let y = ((event.clientY - top) / height) * 100;
 
@@ -119,13 +127,13 @@ const PostDetails = () => {
   };
 
   const overlayStyle = {
-    position: 'absolute',
-    border: '2px solid #000',
-    width: '100px',
-    height: '100px',
+    position: "absolute",
+    border: "2px solid #000",
+    width: "100px",
+    height: "100px",
     left: `calc(${cursorPosition.x}% - 50px)`,
     top: `calc(${cursorPosition.y}% - 50px)`,
-    display: isZoomVisible && !mobileDevice ? 'block' : 'none',
+    display: isZoomVisible && !mobileDevice ? "block" : "none",
   };
 
   if (!post) {
@@ -145,13 +153,13 @@ const PostDetails = () => {
               onMouseLeave={handleMouseLeave}
               onClick={handleImageClick}
               style={{
-                position: 'relative',
+                position: "relative",
                 backgroundImage: `url(${process.env.NEXT_PUBLIC_API_BASE_URL}/${mainImage})`,
-                backgroundSize: 'contain',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-                width: '100%',
-                height: '420px',
+                backgroundSize: "contain",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                width: "100%",
+                height: "420px",
               }}
             >
               {!mobileDevice && <div style={overlayStyle}></div>}
@@ -164,40 +172,59 @@ const PostDetails = () => {
                   className="img-thumbnail mr-2"
                   onMouseOver={() => handleThumbnailMouseOver(photo)}
                   alt={post.title}
-                  style={{ width: '80px', height: '80px', objectFit: 'cover', cursor: 'pointer' }}
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    objectFit: "cover",
+                    cursor: "pointer",
+                  }}
                 />
               ))}
             </div>
           </div>
-          <div className="col-lg-6" style={{ maxWidth: '100%', overflowWrap: 'break-word' }}>
+          <div
+            className="col-lg-6"
+            style={{ maxWidth: "100%", overflowWrap: "break-word" }}
+          >
             {!mobileDevice && isZoomVisible && (
               <div
                 ref={zoomRef}
                 className="zoom"
                 style={{
                   backgroundImage: `url(${process.env.NEXT_PUBLIC_API_BASE_URL}/${mainImage})`,
-                  backgroundSize: '200%',
-                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: "200%",
+                  backgroundRepeat: "no-repeat",
                   backgroundPosition: `${cursorPosition.x}% ${cursorPosition.y}%`,
-                  width: '500px',
-                  height: '500px',
+                  width: "500px",
+                  height: "500px",
                 }}
               ></div>
             )}
             <h1>{post.title}</h1>
             <p>
               <span className="text-success h2">
-                $ {post.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                $ {post.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
               </span>
             </p>
             <p className="description-container-id">{post.description}</p>
-            <p className='pb-0 mb-0 small-text mt-3'>
-              {t('postDetails.publishedIn')} {post.city}, {post.state}, {post.country}
+            <p className="pb-0 mb-0 small-text mt-3">
+              {t("postDetails.publishedIn")} {post.city}, {post.state},{" "}
+              {post.country}
             </p>
-            <p className='small'>
-  {t(`categories.${post.mainCategory}.name`)}, {t(`categories.${post.mainCategory}.subcategories.${post.subCategory}.name`)}, {t(`categories.${post.mainCategory}.subcategories.${post.subCategory}.thirdCategories.${post.thirdCategory}.name`)}
-</p>
-            <div className="d-flex align-items-center text-start" onClick={() => openUserModal(post.createdBy)}>
+            <p className="small">
+              {t(`categories.${post.mainCategory}.name`)},{" "}
+              {t(
+                `categories.${post.mainCategory}.subcategories.${post.subCategory}.name`
+              )}
+              ,{" "}
+              {t(
+                `categories.${post.mainCategory}.subcategories.${post.subCategory}.thirdCategories.${post.thirdCategory}.name`
+              )}
+            </p>
+            <div
+              className="d-flex align-items-center text-start"
+              onClick={() => openUserModal(post.createdBy)}
+            >
               <img
                 src={
                   post.createdBy.photo
@@ -207,16 +234,19 @@ const PostDetails = () => {
                 alt=""
                 className="createdBy-photo-id"
               />
-              <p
-                className='mb-0 p-0'
-                style={{ cursor: 'pointer' }}
-              >
-                {post.createdBy.firstName} {post.createdBy.lastName} | <i className="bi bi-star-fill"></i> {post.createdBy.reports ? 5 - (0.3 * post.createdBy.reports.length) : ""}
+              <p className="mb-0 p-0" style={{ cursor: "pointer" }}>
+                {post.createdBy.firstName} {post.createdBy.lastName} |{" "}
+                <i className="bi bi-star-fill"></i>{" "}
+                {post.createdBy.reports
+                  ? 5 - 0.3 * post.createdBy.reports.length
+                  : ""}
               </p>
             </div>
-            <div className='mt-3'>
+            <div className="mt-3">
               <Link href={`/createOffer?postId=${id}`}>
-                <button className="btn rounded-5 btn-offer">{t('postDetails.makeAnOffer')}</button>
+                <button className="btn rounded-5 btn-offer">
+                  {t("postDetails.makeAnOffer")}
+                </button>
               </Link>
               <ReportPostModal postId={post._id} onReport={handleReportPost} />
             </div>
@@ -224,13 +254,24 @@ const PostDetails = () => {
         </div>
       </div>
       <RelatedPosts
-        locationFilter={{ country: post.country, state: post.state, city: post.city }}
-        categoryFilter={{ mainCategory: post.mainCategory, subCategory: post.subCategory }}
+        locationFilter={{
+          country: post.country,
+          state: post.state,
+          city: post.city,
+        }}
+        categoryFilter={{
+          mainCategory: post.mainCategory,
+          subCategory: post.subCategory,
+        }}
         post={post}
         currentPage={Number(router.query.page) || 1}
       />
       {showUserModal && (
-        <UserModal selectedUser={selectedUser} showModal={showUserModal} closeModal={closeUserModal} />
+        <UserModal
+          selectedUser={selectedUser}
+          showModal={showUserModal}
+          closeModal={closeUserModal}
+        />
       )}
     </>
   );

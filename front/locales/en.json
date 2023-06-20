@@ -1,701 +1,787 @@
 {
-    "navbar": {
-      "home": "Home",
-      "createPost": "Create Post",
-      "selectCategory": "Select a Category",
-      "searchPlaceholder": "What people want...",
-      "myPosts": "My Posts",
-      "sentOffers": "Sent Offers",
-      "receivedOffers": "Received Offers",
-      "myProfile": "My Profile",
-      "logout": "Logout",
-      "login": "Log In",
-      "menu": "Menu"
+  "navbar": {
+    "home": "Home",
+    "createPost": "Create Post",
+    "selectCategory": "Select a Category",
+    "searchPlaceholder": "What people want...",
+    "myPosts": "My Posts",
+    "sentOffers": "Sent Offers",
+    "receivedOffers": "Received Offers",
+    "myProfile": "My Profile",
+    "logout": "Logout",
+    "login": "Log In",
+    "menu": "Menu"
+  },
+  "createOffer": {
+    "title": "Offer Title",
+    "description": "Offer Description"
+  },
+  "createPost": {
+    "title": "Post Title",
+    "description": "Post Description"
+  },
+  "postDetails": {
+    "makeAnOffer": "Make an offer",
+    "publishedIn": "Published in"
+  },
+  "myPosts": {
+    "deletePostTitle": "Delete this post",
+    "deletePostConfirmation": "Are you sure?",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "yourPosts": "Your posts",
+    "edit": "Edit"
+  },
+  "editProfile": {
+    "checkEditProfile": "Check & edit your profile",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phone": "Phone",
+    "birthdate": "Birthdate",
+    "changeProfilePhoto": "Change profile photo",
+    "invalidImageFileType": "The file must be a JPG, JPEG, or PNG image.",
+    "imageFileSizeExceeded": "The file size must be under 50 MB.",
+    "cancel": "Cancel",
+    "update": "Update",
+    "changePassword": "Change Password",
+    "deleteAccount": "Delete Account",
+    "deleteAccountConfirmation": "Are you sure you want to put your account on the delete queue? Your account will be deleted in 30 days.",
+    "deleteAccountError": "Error deleting account",
+    "updateUserError": "Error updating user",
+    "updateUserPhotoError": "Error updating user photo"
+  },
+  "sentOffers": {
+    "deleteOfferTitle": "Delete Offer",
+    "deleteOfferConfirmation": "Are you sure?",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "yourOffers": "Your Sent Offers",
+    "price": "Price",
+    "viewDetails": "View Details"
+  },
+  "receivedOffers": {
+    "deleteOfferTitle": "Delete this offer",
+    "deleteOfferConfirmation": "Are you sure you want to delete this offer? This action is permanent.",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "yourOffers": "Your received offers",
+    "yourPosts": "Your posts",
+    "offers": "Offers",
+    "viewDetails": "View details"
+  },
+  "login": {
+    "loginTitle": "Login",
+    "signupTitle": "Sign Up",
+    "emailLabel": "E-mail:",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password:",
+    "passwordPlaceholder": "your password",
+    "confirmPasswordLabel": "Confirm Password:",
+    "confirmPasswordPlaceholder": "confirm your password",
+    "firstNameLabel": "First name:",
+    "lastNameLabel": "Last name:",
+    "phoneLabel": "Phone number:",
+    "birthdateLabel": "Birthdate:",
+    "noAccountText": "Don't have an account?",
+    "haveAccountText": "Already have an account?",
+    "signupLink": "Sign up",
+    "loginLink": "Login",
+    "loginButton": "Login",
+    "signupButton": "Sign up",
+    "ageValidationMessage": "You must be at least 14 years old to create an account.",
+    "forgotPasswordLink": "I forgot my password, help",
+    "invalidCredentialsErrorMessage": "Invalid email or password."
+  },
+  "footer": {
+    "wantTitle": "Want",
+    "aboutUs": "About us",
+    "data": "Data",
+    "contact": "Contact",
+    "subscriptionsTitle": "Subscriptions",
+    "wantPlus": "Want+",
+    "wantAI": "Want with AI",
+    "limitations": "Limitations",
+    "legalTitle": "Legal",
+    "privacy": "Privacy",
+    "termsAndConditions": "Terms and conditions",
+    "helpTitle": "Help",
+    "howToUseWant": "How to use Want",
+    "support": "Support",
+    "howTo": "How to...",
+    "allRightsReserved": "All rights reserved."
+  },
+  "categories": {
+    "1": {
+      "name": "Technology",
+      "subcategories": {
+        "1.1": {
+          "name": "Computer Components",
+          "thirdCategories": {
+            "1.1.1": {
+              "name": "Graphics Cards"
+            },
+            "1.1.2": {
+              "name": "RAM"
+            },
+            "1.1.3": {
+              "name": "Motherboards"
+            },
+            "1.1.4": {
+              "name": "SSD"
+            },
+            "1.1.5": {
+              "name": "Hard Drives"
+            },
+            "1.1.6": {
+              "name": "Power Supplies"
+            },
+            "1.1.7": {
+              "name": "Computer Cases"
+            }
+          }
+        },
+        "1.2": {
+          "name": "Smartphones",
+          "thirdCategories": {
+            "1.2.1": {
+              "name": "Apple / iPhone"
+            },
+            "1.2.2": {
+              "name": "Samsung"
+            },
+            "1.2.3": {
+              "name": "Google"
+            },
+            "1.2.4": {
+              "name": "OnePlus"
+            },
+            "1.2.5": {
+              "name": "Xiaomi"
+            },
+            "1.2.6": {
+              "name": "Huawei"
+            }
+          }
+        },
+        "1.3": {
+          "name": "Electronics",
+          "thirdCategories": {
+            "1.3.1": {
+              "name": "TVs"
+            },
+            "1.3.2": {
+              "name": "Laptops"
+            },
+            "1.3.3": {
+              "name": "Cameras"
+            },
+            "1.3.4": {
+              "name": "Headphones"
+            },
+            "1.3.5": {
+              "name": "Speakers"
+            },
+            "1.3.6": {
+              "name": "Smartwatches"
+            }
+          }
+        },
+        "1.4": {
+          "name": "Appliances",
+          "thirdCategories": {
+            "1.4.1": {
+              "name": "Refrigerators"
+            },
+            "1.4.2": {
+              "name": "Washing Machines"
+            },
+            "1.4.3": {
+              "name": "Ovens"
+            },
+            "1.4.4": {
+              "name": "Vacuum Cleaners"
+            },
+            "1.4.5": {
+              "name": "Air Conditioners"
+            },
+            "1.4.6": {
+              "name": "Microwaves"
+            }
+          }
+        }
+      }
     },
-    "createOffer": {
-      "title": "Offer Title",
-      "description": "Offer Description"
+    "2": {
+      "name": "Vehicles",
+      "subcategories": {
+        "2.1": {
+          "name": "Cars",
+          "thirdCategories": {
+            "2.1.1": {
+              "name": "Sedans"
+            },
+            "2.1.2": {
+              "name": "SUVs"
+            },
+            "2.1.3": {
+              "name": "Hatchbacks"
+            },
+            "2.1.4": {
+              "name": "Trucks"
+            },
+            "2.1.5": {
+              "name": "Sports Cars"
+            },
+            "2.1.6": {
+              "name": "Electric Cars"
+            },
+            "2.1.7": {
+              "name": "Convertible"
+            },
+            "2.1.8": {
+              "name": "Coupes"
+            },
+            "2.1.9": {
+              "name": "Minivans"
+            }
+          }
+        },
+        "2.2": {
+          "name": "Motorcycles",
+          "thirdCategories": {
+            "2.2.1": {
+              "name": "Sport Bikes"
+            },
+            "2.2.2": {
+              "name": "Cruiser Bikes"
+            },
+            "2.2.3": {
+              "name": "Off-Road Bikes"
+            },
+            "2.2.4": {
+              "name": "Scooters"
+            },
+            "2.2.5": {
+              "name": "Touring Bikes"
+            },
+            "2.2.6": {
+              "name": "Mopeds"
+            }
+          }
+        },
+        "2.3": {
+          "name": "Boats",
+          "thirdCategories": {
+            "2.3.1": {
+              "name": "Sailboats"
+            },
+            "2.3.2": {
+              "name": "Motorboats"
+            },
+            "2.3.3": {
+              "name": "Yachts"
+            },
+            "2.3.4": {
+              "name": "Fishing Boats"
+            },
+            "2.3.5": {
+              "name": "Jet Skis"
+            },
+            "2.3.6": {
+              "name": "Canoes/Kayaks"
+            }
+          }
+        }
+      }
     },
-    "createPost": {
-      "title": "Post Title",
-      "description": "Post Description"
+    "3": {
+      "name": "Clothing",
+      "subcategories": {
+        "3.1": {
+          "name": "Shirts",
+          "thirdCategories": {
+            "3.1.1": {
+              "name": "Button-Up Shirts"
+            },
+            "3.1.2": {
+              "name": "T-Shirts"
+            },
+            "3.1.3": {
+              "name": "Polo Shirts"
+            },
+            "3.1.4": {
+              "name": "Long-Sleeve Shirts"
+            }
+          }
+        },
+        "3.2": {
+          "name": "Pants",
+          "thirdCategories": {
+            "3.2.1": {
+              "name": "Jeans"
+            },
+            "3.2.2": {
+              "name": "Chinos"
+            },
+            "3.2.3": {
+              "name": "Cargo Pants"
+            },
+            "3.2.4": {
+              "name": "Shorts"
+            }
+          }
+        },
+        "3.3": {
+          "name": "Dresses",
+          "thirdCategories": {
+            "3.3.1": {
+              "name": "Cocktail Dresses"
+            },
+            "3.3.2": {
+              "name": "Long Dresses"
+            },
+            "3.3.3": {
+              "name": "Summer Dresses"
+            },
+            "3.3.4": {
+              "name": "Evening Dresses"
+            }
+          }
+        },
+        "3.4": {
+          "name": "Shoes",
+          "thirdCategories": {
+            "3.4.1": {
+              "name": "Sneakers"
+            },
+            "3.4.2": {
+              "name": "Boots"
+            },
+            "3.4.3": {
+              "name": "Flat Shoes"
+            },
+            "3.4.4": {
+              "name": "Heels"
+            }
+          }
+        }
+      }
     },
-    "postDetails": {
-        "makeAnOffer": "Make an offer",
-        "publishedIn": "Published in"
-      },
-    "categories": {
-      "1": {
-        "name": "Technology",
-        "subcategories": {
-          "1.1": {
-            "name": "Computer Components",
-            "thirdCategories": {
-              "1.1.1": {
-                "name": "Graphics Cards"
-              },
-              "1.1.2": {
-                "name": "RAM"
-              },
-              "1.1.3": {
-                "name": "Motherboards"
-              },
-              "1.1.4": {
-                "name": "SSD"
-              },
-              "1.1.5": {
-                "name": "Hard Drives"
-              },
-              "1.1.6": {
-                "name": "Power Supplies"
-              },
-              "1.1.7": {
-                "name": "Computer Cases"
-              }
+    "4": {
+      "name": "Home",
+      "subcategories": {
+        "4.1": {
+          "name": "Furniture",
+          "thirdCategories": {
+            "4.1.1": {
+              "name": "Sofas"
+            },
+            "4.1.2": {
+              "name": "Tables"
+            },
+            "4.1.3": {
+              "name": "Chairs"
+            },
+            "4.1.4": {
+              "name": "Beds"
+            },
+            "4.1.5": {
+              "name": "Cabinets"
+            },
+            "4.1.6": {
+              "name": "Desks"
             }
-          },
-          "1.2": {
-            "name": "Smartphones",
-            "thirdCategories": {
-              "1.2.1": {
-                "name": "Apple / iPhone"
-              },
-              "1.2.2": {
-                "name": "Samsung"
-              },
-              "1.2.3": {
-                "name": "Google"
-              },
-              "1.2.4": {
-                "name": "OnePlus"
-              },
-              "1.2.5": {
-                "name": "Xiaomi"
-              },
-              "1.2.6": {
-                "name": "Huawei"
-              }
+          }
+        },
+        "4.2": {
+          "name": "Kitchen Appliances",
+          "thirdCategories": {
+            "4.2.1": {
+              "name": "Refrigerators"
+            },
+            "4.2.2": {
+              "name": "Stoves"
+            },
+            "4.2.3": {
+              "name": "Microwaves"
+            },
+            "4.2.4": {
+              "name": "Dishwashers"
+            },
+            "4.2.5": {
+              "name": "Coffee Makers"
+            },
+            "4.2.6": {
+              "name": "Blenders"
             }
-          },
-          "1.3": {
-            "name": "Electronics",
-            "thirdCategories": {
-              "1.3.1": {
-                "name": "TVs"
-              },
-              "1.3.2": {
-                "name": "Laptops"
-              },
-              "1.3.3": {
-                "name": "Cameras"
-              },
-              "1.3.4": {
-                "name": "Headphones"
-              },
-              "1.3.5": {
-                "name": "Speakers"
-              },
-              "1.3.6": {
-                "name": "Smartwatches"
-              }
+          }
+        },
+        "4.3": {
+          "name": "Home Decor",
+          "thirdCategories": {
+            "4.3.1": {
+              "name": "Wall Art"
+            },
+            "4.3.2": {
+              "name": "Curtains"
+            },
+            "4.3.3": {
+              "name": "Rugs"
+            },
+            "4.3.4": {
+              "name": "Decorative Pillows"
+            },
+            "4.3.5": {
+              "name": "Candles"
+            },
+            "4.3.6": {
+              "name": "Vases"
             }
-          },
-          "1.4": {
-            "name": "Appliances",
-            "thirdCategories": {
-              "1.4.1": {
-                "name": "Refrigerators"
-              },
-              "1.4.2": {
-                "name": "Washing Machines"
-              },
-              "1.4.3": {
-                "name": "Ovens"
-              },
-              "1.4.4": {
-                "name": "Vacuum Cleaners"
-              },
-              "1.4.5": {
-                "name": "Air Conditioners"
-              },
-              "1.4.6": {
-                "name": "Microwaves"
-              }
+          }
+        },
+        "4.4": {
+          "name": "Home Improvements",
+          "thirdCategories": {
+            "4.4.1": {
+              "name": "Tools"
+            },
+            "4.4.2": {
+              "name": "Paint"
+            },
+            "4.4.3": {
+              "name": "Lighting"
+            },
+            "4.4.4": {
+              "name": "Plumbing"
+            },
+            "4.4.5": {
+              "name": "Electrical"
+            },
+            "4.4.6": {
+              "name": "Flooring"
             }
           }
         }
-      },
-      "2": {
-        "name": "Vehicles",
-        "subcategories": {
-          "2.1": {
-            "name": "Cars",
-            "thirdCategories": {
-              "2.1.1": {
-                "name": "Sedans"
-              },
-              "2.1.2": {
-                "name": "SUVs"
-              },
-              "2.1.3": {
-                "name": "Hatchbacks"
-              },
-              "2.1.4": {
-                "name": "Trucks"
-              },
-              "2.1.5": {
-                "name": "Sports Cars"
-              },
-              "2.1.6": {
-                "name": "Electric Cars"
-              },
-              "2.1.7": {
-                "name": "Convertible"
-              },
-              "2.1.8": {
-                "name": "Coupes"
-              },
-              "2.1.9": {
-                "name": "Minivans"
-              }
+      }
+    },
+    "5": {
+      "name": "Tools",
+      "subcategories": {
+        "5.1": {
+          "name": "Power Tools",
+          "thirdCategories": {
+            "5.1.1": {
+              "name": "Drills"
+            },
+            "5.1.2": {
+              "name": "Saws"
+            },
+            "5.1.3": {
+              "name": "Sanders"
+            },
+            "5.1.4": {
+              "name": "Grinders"
+            },
+            "5.1.5": {
+              "name": "Welding Machines"
+            },
+            "5.1.6": {
+              "name": "Air Compressors"
             }
-          },
-          "2.2": {
-            "name": "Motorcycles",
-            "thirdCategories": {
-              "2.2.1": {
-                "name": "Sport Bikes"
-              },
-              "2.2.2": {
-                "name": "Cruiser Bikes"
-              },
-              "2.2.3": {
-                "name": "Off-Road Bikes"
-              },
-              "2.2.4": {
-                "name": "Scooters"
-              },
-              "2.2.5": {
-                "name": "Touring Bikes"
-              },
-              "2.2.6": {
-                "name": "Mopeds"
-              }
+          }
+        },
+        "5.2": {
+          "name": "Hand Tools",
+          "thirdCategories": {
+            "5.2.1": {
+              "name": "Hammers"
+            },
+            "5.2.2": {
+              "name": "Screwdrivers"
+            },
+            "5.2.3": {
+              "name": "Pliers"
+            },
+            "5.2.4": {
+              "name": "Wrenches"
+            },
+            "5.2.5": {
+              "name": "Socket Sets"
+            },
+            "5.2.6": {
+              "name": "Knives"
             }
-          },
-          "2.3": {
-            "name": "Boats",
-            "thirdCategories": {
-              "2.3.1": {
-                "name": "Sailboats"
-              },
-              "2.3.2": {
-                "name": "Motorboats"
-              },
-              "2.3.3": {
-                "name": "Yachts"
-              },
-              "2.3.4": {
-                "name": "Fishing Boats"
-              },
-              "2.3.5": {
-                "name": "Jet Skis"
-              },
-              "2.3.6": {
-                "name": "Canoes/Kayaks"
-              }
+          }
+        },
+        "5.3": {
+          "name": "Garden Tools",
+          "thirdCategories": {
+            "5.3.1": {
+              "name": "Lawn Mowers"
+            },
+            "5.3.2": {
+              "name": "Hedge Trimmers"
+            },
+            "5.3.3": {
+              "name": "Pruning Shears"
+            },
+            "5.3.4": {
+              "name": "Leaf Blowers"
+            },
+            "5.3.5": {
+              "name": "Garden Hoses"
+            },
+            "5.3.6": {
+              "name": "Sprinklers"
             }
           }
         }
-      },
-      "3": {
-        "name": "Clothing",
-        "subcategories": {
-          "3.1": {
-            "name": "Shirts",
-            "thirdCategories": {
-              "3.1.1": {
-                "name": "Button-Up Shirts"
-              },
-              "3.1.2": {
-                "name": "T-Shirts"
-              },
-              "3.1.3": {
-                "name": "Polo Shirts"
-              },
-              "3.1.4": {
-                "name": "Long-Sleeve Shirts"
-              }
+      }
+    },
+    "6": {
+      "name": "Services",
+      "subcategories": {
+        "6.1": {
+          "name": "Home Services",
+          "thirdCategories": {
+            "6.1.1": {
+              "name": "Cleaning Services"
+            },
+            "6.1.2": {
+              "name": "Plumbing Services"
+            },
+            "6.1.3": {
+              "name": "Electrical Services"
+            },
+            "6.1.4": {
+              "name": "Landscaping Services"
+            },
+            "6.1.5": {
+              "name": "Moving Services"
+            },
+            "6.1.6": {
+              "name": "Painting Services"
             }
-          },
-          "3.2": {
-            "name": "Pants",
-            "thirdCategories": {
-              "3.2.1": {
-                "name": "Jeans"
-              },
-              "3.2.2": {
-                "name": "Chinos"
-              },
-              "3.2.3": {
-                "name": "Cargo Pants"
-              },
-              "3.2.4": {
-                "name": "Shorts"
-              }
+          }
+        },
+        "6.2": {
+          "name": "Personal Services",
+          "thirdCategories": {
+            "6.2.1": {
+              "name": "Beauty Services"
+            },
+            "6.2.2": {
+              "name": "Fitness Services"
+            },
+            "6.2.3": {
+              "name": "Tutoring Services"
+            },
+            "6.2.4": {
+              "name": "Photography Services"
+            },
+            "6.2.5": {
+              "name": "Event Planning Services"
+            },
+            "6.2.6": {
+              "name": "Massage Services"
             }
-          },
-          "3.3": {
-            "name": "Dresses",
-            "thirdCategories": {
-              "3.3.1": {
-                "name": "Cocktail Dresses"
-              },
-              "3.3.2": {
-                "name": "Long Dresses"
-              },
-              "3.3.3": {
-                "name": "Summer Dresses"
-              },
-              "3.3.4": {
-                "name": "Evening Dresses"
-              }
-            }
-          },
-          "3.4": {
-            "name": "Shoes",
-            "thirdCategories": {
-              "3.4.1": {
-                "name": "Sneakers"
-              },
-              "3.4.2": {
-                "name": "Boots"
-              },
-              "3.4.3": {
-                "name": "Flat Shoes"
-              },
-              "3.4.4": {
-                "name": "Heels"
-              }
+          }
+        },
+        "6.3": {
+          "name": "Professional Services",
+          "thirdCategories": {
+            "6.3.1": {
+              "name": "Legal Services"
+            },
+            "6.3.2": {
+              "name": "Accounting Services"
+            },
+            "6.3.3": {
+              "name": "IT Services"
+            },
+            "6.3.4": {
+              "name": "Marketing Services"
+            },
+            "6.3.5": {
+              "name": "Consulting Services"
+            },
+            "6.3.6": {
+              "name": "Financial Services"
             }
           }
         }
-      },
-      "4": {
-        "name": "Home",
-        "subcategories": {
-          "4.1": {
-            "name": "Furniture",
-            "thirdCategories": {
-              "4.1.1": {
-                "name": "Sofas"
-              },
-              "4.1.2": {
-                "name": "Tables"
-              },
-              "4.1.3": {
-                "name": "Chairs"
-              },
-              "4.1.4": {
-                "name": "Beds"
-              },
-              "4.1.5": {
-                "name": "Cabinets"
-              },
-              "4.1.6": {
-                "name": "Desks"
-              }
+      }
+    },
+    "7": {
+      "name": "Education",
+      "subcategories": {
+        "7.1": {
+          "name": "Tutoring",
+          "thirdCategories": {
+            "7.1.1": {
+              "name": "Math Tutoring"
+            },
+            "7.1.2": {
+              "name": "Language Tutoring"
+            },
+            "7.1.3": {
+              "name": "Science Tutoring"
+            },
+            "7.1.4": {
+              "name": "Music Tutoring"
+            },
+            "7.1.5": {
+              "name": "Exam Preparation Tutoring"
+            },
+            "7.1.6": {
+              "name": "Art Tutoring"
             }
-          },
-          "4.2": {
-            "name": "Kitchen Appliances",
-            "thirdCategories": {
-              "4.2.1": {
-                "name": "Refrigerators"
-              },
-              "4.2.2": {
-                "name": "Stoves"
-              },
-              "4.2.3": {
-                "name": "Microwaves"
-              },
-              "4.2.4": {
-                "name": "Dishwashers"
-              },
-              "4.2.5": {
-                "name": "Coffee Makers"
-              },
-              "4.2.6": {
-                "name": "Blenders"
-              }
+          }
+        },
+        "7.2": {
+          "name": "Online Courses",
+          "thirdCategories": {
+            "7.2.1": {
+              "name": "Programming Courses"
+            },
+            "7.2.2": {
+              "name": "Business Courses"
+            },
+            "7.2.3": {
+              "name": "Marketing Courses"
+            },
+            "7.2.4": {
+              "name": "Language Courses"
+            },
+            "7.2.5": {
+              "name": "Photography Courses"
+            },
+            "7.2.6": {
+              "name": "Cooking Courses"
             }
-          },
-          "4.3": {
-            "name": "Home Decor",
-            "thirdCategories": {
-              "4.3.1": {
-                "name": "Wall Art"
-              },
-              "4.3.2": {
-                "name": "Curtains"
-              },
-              "4.3.3": {
-                "name": "Rugs"
-              },
-              "4.3.4": {
-                "name": "Decorative Pillows"
-              },
-              "4.3.5": {
-                "name": "Candles"
-              },
-              "4.3.6": {
-                "name": "Vases"
-              }
+          }
+        },
+        "7.3": {
+          "name": "Educational Toys",
+          "thirdCategories": {
+            "7.3.1": {
+              "name": "Puzzles"
+            },
+            "7.3.2": {
+              "name": "Building Blocks"
+            },
+            "7.3.3": {
+              "name": "Science Kits"
+            },
+            "7.3.4": {
+              "name": "Art Materials"
+            },
+            "7.3.5": {
+              "name": "Musical Instruments"
+            },
+            "7.3.6": {
+              "name": "Educational Games"
             }
-          },
-          "4.4": {
-            "name": "Home Improvements",
-            "thirdCategories": {
-              "4.4.1": {
-                "name": "Tools"
-              },
-              "4.4.2": {
-                "name": "Paint"
-              },
-              "4.4.3": {
-                "name": "Lighting"
-              },
-              "4.4.4": {
-                "name": "Plumbing"
-              },
-              "4.4.5": {
-                "name": "Electrical"
-              },
-              "4.4.6": {
-                "name": "Flooring"
-              }
+          }
+        },
+        "7.4": {
+          "name": "Textbooks",
+          "thirdCategories": {
+            "7.4.1": {
+              "name": "Math Textbooks"
+            },
+            "7.4.2": {
+              "name": "Science Textbooks"
+            },
+            "7.4.3": {
+              "name": "Literature Textbooks"
+            },
+            "7.4.4": {
+              "name": "History Textbooks"
+            },
+            "7.4.5": {
+              "name": "Art Textbooks"
+            },
+            "7.4.6": {
+              "name": "Business Textbooks"
             }
           }
         }
-      },
-      "5": {
-        "name": "Tools",
-        "subcategories": {
-          "5.1": {
-            "name": "Power Tools",
-            "thirdCategories": {
-              "5.1.1": {
-                "name": "Drills"
-              },
-              "5.1.2": {
-                "name": "Saws"
-              },
-              "5.1.3": {
-                "name": "Sanders"
-              },
-              "5.1.4": {
-                "name": "Grinders"
-              },
-              "5.1.5": {
-                "name": "Welding Machines"
-              },
-              "5.1.6": {
-                "name": "Air Compressors"
-              }
-            }
-          },
-          "5.2": {
-            "name": "Hand Tools",
-            "thirdCategories": {
-              "5.2.1": {
-                "name": "Hammers"
-              },
-              "5.2.2": {
-                "name": "Screwdrivers"
-              },
-              "5.2.3": {
-                "name": "Pliers"
-              },
-              "5.2.4": {
-                "name": "Wrenches"
-              },
-              "5.2.5": {
-                "name": "Socket Sets"
-              },
-              "5.2.6": {
-                "name": "Knives"
-              }
-            }
-          },
-          "5.3": {
-            "name": "Garden Tools",
-            "thirdCategories": {
-              "5.3.1": {
-                "name": "Lawn Mowers"
-              },
-              "5.3.2": {
-                "name": "Hedge Trimmers"
-              },
-              "5.3.3": {
-                "name": "Pruning Shears"
-              },
-              "5.3.4": {
-                "name": "Leaf Blowers"
-              },
-              "5.3.5": {
-                "name": "Garden Hoses"
-              },
-              "5.3.6": {
-                "name": "Sprinklers"
-              }
+      }
+    },
+    "8": {
+      "name": "Heavy Machinery",
+      "subcategories": {
+        "8.1": {
+          "name": "Construction Machinery",
+          "thirdCategories": {
+            "8.1.1": {
+              "name": "Excavators"
+            },
+            "8.1.2": {
+              "name": "Bulldozers"
+            },
+            "8.1.3": {
+              "name": "Cranes"
+            },
+            "8.1.4": {
+              "name": "Loaders"
+            },
+            "8.1.5": {
+              "name": "Dump Trucks"
+            },
+            "8.1.6": {
+              "name": "Concrete Mixers"
             }
           }
-        }
-      },
-      "6": {
-        "name": "Services",
-        "subcategories": {
-          "6.1": {
-            "name": "Home Services",
-            "thirdCategories": {
-              "6.1.1": {
-                "name": "Cleaning Services"
-              },
-              "6.1.2": {
-                "name": "Plumbing Services"
-              },
-              "6.1.3": {
-                "name": "Electrical Services"
-              },
-              "6.1.4": {
-                "name": "Landscaping Services"
-              },
-              "6.1.5": {
-                "name": "Moving Services"
-              },
-              "6.1.6": {
-                "name": "Painting Services"
-              }
-            }
-          },
-          "6.2": {
-            "name": "Personal Services",
-            "thirdCategories": {
-              "6.2.1": {
-                "name": "Beauty Services"
-              },
-              "6.2.2": {
-                "name": "Fitness Services"
-              },
-              "6.2.3": {
-                "name": "Tutoring Services"
-              },
-              "6.2.4": {
-                "name": "Photography Services"
-              },
-              "6.2.5": {
-                "name": "Event Planning Services"
-              },
-              "6.2.6": {
-                "name": "Massage Services"
-              }
-            }
-          },
-          "6.3": {
-            "name": "Professional Services",
-            "thirdCategories": {
-              "6.3.1": {
-                "name": "Legal Services"
-              },
-              "6.3.2": {
-                "name": "Accounting Services"
-              },
-              "6.3.3": {
-                "name": "IT Services"
-              },
-              "6.3.4": {
-                "name": "Marketing Services"
-              },
-              "6.3.5": {
-                "name": "Consulting Services"
-              },
-              "6.3.6": {
-                "name": "Financial Services"
-              }
+        },
+        "8.2": {
+          "name": "Agricultural Machinery",
+          "thirdCategories": {
+            "8.2.1": {
+              "name": "Tractors"
+            },
+            "8.2.2": {
+              "name": "Harvesters"
+            },
+            "8.2.3": {
+              "name": "Seeders"
+            },
+            "8.2.4": {
+              "name": "Sprayers"
+            },
+            "8.2.5": {
+              "name": "Balers"
+            },
+            "8.2.6": {
+              "name": "Mowers"
             }
           }
-        }
-      },
-      "7": {
-        "name": "Education",
-        "subcategories": {
-          "7.1": {
-            "name": "Tutoring",
-            "thirdCategories": {
-              "7.1.1": {
-                "name": "Math Tutoring"
-              },
-              "7.1.2": {
-                "name": "Language Tutoring"
-              },
-              "7.1.3": {
-                "name": "Science Tutoring"
-              },
-              "7.1.4": {
-                "name": "Music Tutoring"
-              },
-              "7.1.5": {
-                "name": "Exam Preparation Tutoring"
-              },
-              "7.1.6": {
-                "name": "Art Tutoring"
-              }
-            }
-          },
-          "7.2": {
-            "name": "Online Courses",
-            "thirdCategories": {
-              "7.2.1": {
-                "name": "Programming Courses"
-              },
-              "7.2.2": {
-                "name": "Business Courses"
-              },
-              "7.2.3": {
-                "name": "Marketing Courses"
-              },
-              "7.2.4": {
-                "name": "Language Courses"
-              },
-              "7.2.5": {
-                "name": "Photography Courses"
-              },
-              "7.2.6": {
-                "name": "Cooking Courses"
-              }
-            }
-          },
-          "7.3": {
-            "name": "Educational Toys",
-            "thirdCategories": {
-              "7.3.1": {
-                "name": "Puzzles"
-              },
-              "7.3.2": {
-                "name": "Building Blocks"
-              },
-              "7.3.3": {
-                "name": "Science Kits"
-              },
-              "7.3.4": {
-                "name": "Art Materials"
-              },
-              "7.3.5": {
-                "name": "Musical Instruments"
-              },
-              "7.3.6": {
-                "name": "Educational Games"
-              }
-            }
-          },
-          "7.4": {
-            "name": "Textbooks",
-            "thirdCategories": {
-              "7.4.1": {
-                "name": "Math Textbooks"
-              },
-              "7.4.2": {
-                "name": "Science Textbooks"
-              },
-              "7.4.3": {
-                "name": "Literature Textbooks"
-              },
-              "7.4.4": {
-                "name": "History Textbooks"
-              },
-              "7.4.5": {
-                "name": "Art Textbooks"
-              },
-              "7.4.6": {
-                "name": "Business Textbooks"
-              }
-            }
-          }
-        }
-      },
-      "8": {
-        "name": "Heavy Machinery",
-        "subcategories": {
-          "8.1": {
-            "name": "Construction Machinery",
-            "thirdCategories": {
-              "8.1.1": {
-                "name": "Excavators"
-              },
-              "8.1.2": {
-                "name": "Bulldozers"
-              },
-              "8.1.3": {
-                "name": "Cranes"
-              },
-              "8.1.4": {
-                "name": "Loaders"
-              },
-              "8.1.5": {
-                "name": "Dump Trucks"
-              },
-              "8.1.6": {
-                "name": "Concrete Mixers"
-              }
-            }
-          },
-          "8.2": {
-            "name": "Agricultural Machinery",
-            "thirdCategories": {
-              "8.2.1": {
-                "name": "Tractors"
-              },
-              "8.2.2": {
-                "name": "Harvesters"
-              },
-              "8.2.3": {
-                "name": "Seeders"
-              },
-              "8.2.4": {
-                "name": "Sprayers"
-              },
-              "8.2.5": {
-                "name": "Balers"
-              },
-              "8.2.6": {
-                "name": "Mowers"
-              }
-            }
-          },
-          "8.3": {
-            "name": "Forestry Machinery",
-            "thirdCategories": {
-              "8.3.1": {
-                "name": "Harvesters"
-              },
-              "8.3.2": {
-                "name": "Forwarders"
-              },
-              "8.3.3": {
-                "name": "Chippers"
-              },
-              "8.3.4": {
-                "name": "Grinders"
-              },
-              "8.3.5": {
-                "name": "Skidders"
-              },
-              "8.3.6": {
-                "name": "Mulchers"
-              }
+        },
+        "8.3": {
+          "name": "Forestry Machinery",
+          "thirdCategories": {
+            "8.3.1": {
+              "name": "Harvesters"
+            },
+            "8.3.2": {
+              "name": "Forwarders"
+            },
+            "8.3.3": {
+              "name": "Chippers"
+            },
+            "8.3.4": {
+              "name": "Grinders"
+            },
+            "8.3.5": {
+              "name": "Skidders"
+            },
+            "8.3.6": {
+              "name": "Mulchers"
             }
           }
         }
       }
     }
-  }  
+  }
+}

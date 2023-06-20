@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
   const [alertMessage, setAlertMessage] = useState('');
   const router = useRouter();
+  const { t } = useTranslation();
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
@@ -44,7 +46,7 @@ export default function Login() {
     const age = monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) ? ageDiff - 1 : ageDiff;
 
     if (age < 14) {
-      setAlertMessage('No puedes crear una cuenta. Debes tener al menos 14 años de edad.');
+      setAlertMessage(t('login.ageValidationMessage'));
       return false;
     }
 
@@ -67,12 +69,12 @@ export default function Login() {
       birthdate = event.target.birthdate.value;
 
       if (password !== confirmPassword) {
-        setAlertMessage('Las contraseñas no coinciden.');
+        setAlertMessage(t('login.passwordMatchErrorMessage'));
         return;
       }
   
       if (!passwordRegex.test(password)) {
-        setAlertMessage('La contraseña debe tener al menos una letra y un número.');
+        setAlertMessage(t('login.passwordValidationErrorMessage'));
         return;
         
       }
@@ -106,9 +108,9 @@ export default function Login() {
     } else {
       if (response.headers.get('Content-Type') === 'application/json') {
         const responseData = await response.json();
-        setAlertMessage(responseData.error || 'El correo electrónico o la contraseña están incorrectos.');
+        setAlertMessage(responseData.error || t('login.invalidCredentialsErrorMessage'));
       } else {
-        setAlertMessage('El correo electrónico o la contraseña están incorrectos.');
+        setAlertMessage(t('login.invalidCredentialsErrorMessage'));
       }
 
       setTimeout(() => {
@@ -123,7 +125,7 @@ export default function Login() {
       <div className='card login-form rounded-5 p-3'>
         <div className='card-body'>
           <div className="container">
-            <h1 className="text-center">{isLogin ? 'Login' : 'Sign Up'}</h1>
+            <h1 className="text-center">{isLogin ? t('login.loginTitle') : t('login.signupTitle')}</h1>
             {alertMessage && (
               <div className="alert alert-danger alert-dismissible fade show" role="alert">
                 {alertMessage}
@@ -132,48 +134,48 @@ export default function Login() {
             )}
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label htmlFor="email" className="form-label">E-mail:</label>
-                <input type="email" className="form-control rounded-5" id="email" name="email" placeholder="you@example.com" required />
+                <label htmlFor="email" className="form-label">{t('login.emailLabel')}</label>
+                <input type="email" className="form-control rounded-5" id="email" name="email" placeholder={t('login.emailPlaceholder')} required />
               </div>
               <div className="mb-3">
-                <label htmlFor="password" className="form-label">Password:</label>
-                <input type="password" className="form-control rounded-5" id="password" name="password" placeholder="your password" required />
+                <label htmlFor="password" className="form-label">{t('login.passwordLabel')}</label>
+                <input type="password" className="form-control rounded-5" id="password" name="password" placeholder={t('login.passwordPlaceholder')} required />
               </div>
               {!isLogin && (
                 <>
                   <div className="mb-3">
-                    <label htmlFor="confirmPassword" className="form-label">Confirmar password:</label>
-                    <input type="password" className="form-control rounded-5" id="confirmPassword" name="confirmPassword" placeholder="confirm your password" required />
+                    <label htmlFor="confirmPassword" className="form-label">{t('login.confirmPasswordLabel')}</label>
+                    <input type="password" className="form-control rounded-5" id="confirmPassword" name="confirmPassword" placeholder={t('login.confirmPasswordPlaceholder')} required />
                   </div>
 
                   <div className="mb-3">
-                    <label htmlFor="firstName" className="form-label">First name:</label>
+                    <label htmlFor="firstName" className="form-label">{t('login.firstNameLabel')}</label>
                     <input type="text" className="form-control rounded-5" id="firstName" name="firstName" required />
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="lastName" className="form-label">Last name:</label>
+                    <label htmlFor="lastName" className="form-label">{t('login.lastNameLabel')}</label>
                     <input type="text" className="form-control rounded-5" id="lastName" name="lastName" required />
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="phone" className="form-label">Phone number:</label>
+                    <label htmlFor="phone" className="form-label">{t('login.phoneLabel')}</label>
                     <input type="tel" className="form-control rounded-5" id="phone" name="phone" required />
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="birthdate" className="form-label">birthdate:</label>
+                    <label htmlFor="birthdate" className="form-label">{t('login.birthdateLabel')}</label>
                     <input type="date" className="form-control rounded-5" id="birthdate" name="birthdate" required />
                   </div>
                 </>
               )}
               <div className="mb-3">
-                <button type="submit" className="btn btn-success rounded-5 btn-login">{isLogin ? 'Login' : 'Sign up'}</button>
+                <button type="submit" className="btn btn-success rounded-5 btn-login">{isLogin ? t('login.loginButton') : t('login.signupButton')}</button>
               </div>
             </form>
             <div>
-              {isLogin ? "Don't have an account?" : 'already have an account?'}
-              <button onClick={toggleForm} className="btn btn-link user-link">{isLogin ? 'Sign up' : 'Login'}</button>
+              {isLogin ? t('login.noAccountText') : t('login.haveAccountText')}
+              <button onClick={toggleForm} className="btn btn-link user-link">{isLogin ? t('login.signupLink') : t('login.loginLink')}</button>
             </div>
             <Link href="/recovery">
-              <span className="rsp-pwd">I forgot my password, help</span>
+              <span className="rsp-pwd">{t('login.forgotPasswordLink')}</span>
             </Link>
           </div>
         </div>
@@ -181,5 +183,4 @@ export default function Login() {
     </div>
 
   );
-
 }

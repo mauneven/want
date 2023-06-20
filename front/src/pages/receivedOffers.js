@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import DetailsModal from '@/components/offer/DetailsModal';
 import ReportOfferModal from '@/components/report/ReportOfferModal';
 import { validations } from '@/utils/validations';
+import { useTranslation } from 'react-i18next';
 
 export default function ReceivedOffers() {
   const [offers, setOffers] = useState([]);
@@ -12,6 +13,7 @@ export default function ReceivedOffers() {
   const router = useRouter();
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedOffer, setSelectedOffer] = useState(null);
+  const { t } = useTranslation();
 
   const [selectedPost, setSelectedPost] = useState(null);
 
@@ -94,36 +96,6 @@ export default function ReceivedOffers() {
     fetchReceivedOffers();
   }, []);
 
-  useEffect(() => {
-    const fetchReceivedOffers = async () => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/received`, {
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const offersData = await response.json();
-
-        // Ordenar las ofertas por fecha de creación descendente
-        offersData.sort(compareOffersByDate);
-
-        const postsWithOffers = offersData.reduce((result, offer) => {
-          const postId = offer.post._id;
-          if (!result[postId]) {
-            result[postId] = {
-              post: offer.post,
-              offers: [],
-            };
-          }
-          result[postId].offers.push(offer);
-          return result;
-        }, {});
-        setOffers(postsWithOffers);
-      }
-    };
-
-    fetchReceivedOffers();
-  }, []);
-
   const handleDeleteOffer = async () => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/${selectedOfferId}`, {
@@ -173,23 +145,23 @@ export default function ReceivedOffers() {
       />
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Delete this offer</Modal.Title>
+          <Modal.Title>{t('receivedOffers.deleteOfferTitle')}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Sure you Want to delete this offer?, that's permanent</Modal.Body>
+        <Modal.Body>{t('receivedOffers.deleteOfferConfirmation')}</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Cancel
+            {t('receivedOffers.cancel')}
           </Button>
           <Button variant="danger" onClick={handleDeleteOffer}>
-            Delete
+            {t('receivedOffers.delete')}
           </Button>
         </Modal.Footer>
       </Modal>
       <div className="container">
-        <h1 className='my-4'>Received offers</h1>
+        <h1 className='my-4'>{t('receivedOffers.yourOffers')}</h1>
         <div className="row">
           <div className="col-md-3">
-            <h3 className='mb-4'>Your posts</h3>
+            <h3 className='mb-4'>{t('receivedOffers.yourPosts')}</h3>
             {Object.values(offers).map((postWithOffers) => (
               <button
                 key={postWithOffers.post._id}
@@ -204,7 +176,7 @@ export default function ReceivedOffers() {
             <div className="separator h-100"></div>
           </div>
           <div className="col-md-8 border-secondary">
-            <h3 className='mb-4'>Offers</h3>
+            <h3 className='mb-4'>{t('receivedOffers.offers')}</h3>
             <div className="row">
               {selectedPost && offers[selectedPost].offers
                 .slice()
@@ -238,15 +210,13 @@ export default function ReceivedOffers() {
                               className="btn btn-success mb-2"
                               onClick={() => handleShowDetailsModal(offer)}
                             >
-                              View details
-                              <i className="bi bi-eye ms-2"></i>
+                              {t('receivedOffers.viewDetails')} <i className="bi bi-eye ms-2"></i>
                             </button>
                             <button
                               className="btn btn-secondary mb-2"
                               onClick={() => handleShowModal(offer._id)}
                             >
-                              Delete
-                              <i className="bi bi-trash3 ms-2"></i>
+                              {t('receivedOffers.delete')} <i className="bi bi-trash3 ms-2"></i>
                             </button>
                             <ReportOfferModal offerId={offer._id} onReport={handleReportOffer} />
                           </div>
@@ -262,4 +232,3 @@ export default function ReceivedOffers() {
     </>
   );
 };
-

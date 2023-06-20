@@ -1,16 +1,16 @@
-// pages/myPosts.js
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Modal, Button } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import { validations } from '@/utils/validations';
-
+import { useTranslation } from 'react-i18next';
 
 export default function MyPosts() {
   const [posts, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
   const router = useRouter();
+  const { t } = useTranslation();
 
   useEffect(() => {
     validations(router); 
@@ -56,20 +56,20 @@ export default function MyPosts() {
     <>
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Delete this post</Modal.Title>
+          <Modal.Title>{t('myPosts.deletePostTitle')}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>You sure?</Modal.Body>
+        <Modal.Body>{t('myPosts.deletePostConfirmation')}</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Cancel
+            {t('myPosts.cancel')}
           </Button>
           <Button variant="danger" onClick={handleDeletePost}>
-            Delete
+            {t('myPosts.delete')}
           </Button>
         </Modal.Footer>
       </Modal>
       <div className="container">
-        <h1 className='my-4'>Your posts</h1>
+        <h1 className='my-4'>{t('myPosts.yourPosts')}</h1>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
           {posts.map((post) => (
             <div key={post._id} className="col">
@@ -144,11 +144,11 @@ export default function MyPosts() {
                       setShowModal(true);
                     }}
                   >
-                    <i className="bi bi-trash-fill">Delete</i>
+                    <i className="bi bi-trash-fill">{t('myPosts.delete')}</i>
                   </button>
                   <Link href={`/editPost/${post._id}`}>
                     <button className="ms-2 text-decoration-none btn btn-outline-success btn-sm">
-                      <i className="bi bi-pencil-fill">Edit</i>
+                      <i className="bi bi-pencil-fill">{t('myPosts.edit')}</i>
                     </button>
                   </Link>
                 </div>
