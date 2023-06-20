@@ -1,10 +1,22 @@
 import { useState, useEffect } from "react";
-import { Container, Navbar, Nav, NavDropdown, Form, FormControl, Button, Offcanvas } from "react-bootstrap";
+import {
+  Container,
+  Navbar,
+  Nav,
+  NavDropdown,
+  Form,
+  FormControl,
+  Button,
+  Offcanvas,
+} from "react-bootstrap";
 import LocationModal from "../locations/LocationPosts";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Notifications from "../notifications/Notifications";
 import CategoriesModal from "../categories/CategoriesPosts";
+import { useTranslation, I18nextProvider } from "react-i18next";
+import LanguageSelector from "../language/LanguageSelector";
+import i18n from "../../../i18n";
 
 export default function MegaMenu({
   onLocationFilterChange,
@@ -13,17 +25,25 @@ export default function MegaMenu({
   currentPage,
   setCurrentPage,
 }) {
+  const { t, i18n } = useTranslation();
+
   const [user, setUser] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
   const [locationFilter, setLocationFilter] = useState(null);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
-  const [categoriesButtonText, setCategoriesButtonText] = useState("Select a category");
-  const [selectedLocation, setSelectedLocation] = useState({ country: "", state: "", city: "" });
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedSubcategory, setSelectedSubcategory] = useState('');
-  const [selectedThirdCategory, setSelectedThirdCategory] = useState('');
+  const [categoriesButtonText, setCategoriesButtonText] = useState(
+    t("navbar.selectCategory")
+  );
+  const [selectedLocation, setSelectedLocation] = useState({
+    country: "",
+    state: "",
+    city: "",
+  });
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
+  const [selectedThirdCategory, setSelectedThirdCategory] = useState("");
   const [isMobile, setIsMobile] = useState(false);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
 
@@ -34,18 +54,22 @@ export default function MegaMenu({
     if (searchBar) {
       searchBar.value = "";
     }
-  };  
+  };
 
   const handleLogoClick = () => {
     clearSearchBar();
-    setSelectedCategory('');
-    setSelectedSubcategory('');
-    setSelectedThirdCategory('');
+    setSelectedCategory("");
+    setSelectedSubcategory("");
+    setSelectedThirdCategory("");
     setCurrentPage(1);
-    onSearchTermChange('');
-    onCategoryFilterChange({ mainCategory: '', subCategory: '', thirdCategory: '' });
-    setCategoriesButtonText('Select a category');
-    router.push('/');
+    onSearchTermChange("");
+    onCategoryFilterChange({
+      mainCategory: "",
+      subCategory: "",
+      thirdCategory: "",
+    });
+    setCategoriesButtonText(t("navbar.selectCategory"));
+    router.push("/");
   };
 
   const handleCloseCategories = () => {
@@ -56,11 +80,11 @@ export default function MegaMenu({
   const handleCategorySelected = (mainCategory, subCategory, thirdCategory) => {
     clearSearchBar();
     setCurrentPage(1);
-    onSearchTermChange('');
+    onSearchTermChange("");
     const selectedCategory = {
-      mainCategory: mainCategory || '',
-      subCategory: subCategory || '',
-      thirdCategory: thirdCategory || '',
+      mainCategory: mainCategory || "",
+      subCategory: subCategory || "",
+      thirdCategory: thirdCategory || "",
     };
     onCategoryFilterChange(selectedCategory);
     handleCloseCategories();
@@ -73,7 +97,7 @@ export default function MegaMenu({
     } else if (mainCategory) {
       setCategoriesButtonText(mainCategory);
     } else {
-      setCategoriesButtonText("Select a category");
+      setCategoriesButtonText(t("navbar.selectCategory"));
     }
   };
 
@@ -96,17 +120,21 @@ export default function MegaMenu({
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    setSelectedCategory('');
-    setSelectedSubcategory('');
-    setSelectedThirdCategory('');
+    setSelectedCategory("");
+    setSelectedSubcategory("");
+    setSelectedThirdCategory("");
     setCurrentPage(1);
-    onSearchTermChange('');
-    onCategoryFilterChange({ mainCategory: '', subCategory: '', thirdCategory: '' });
-    setCategoriesButtonText('Select a category');
+    onSearchTermChange("");
+    onCategoryFilterChange({
+      mainCategory: "",
+      subCategory: "",
+      thirdCategory: "",
+    });
+    setCategoriesButtonText(t("navbar.selectCategory"));
     const newSearchTerm = e.target.search.value;
     setSearchTerm(newSearchTerm);
     onSearchTermChange(newSearchTerm);
-    router.push('/');
+    router.push("/");
   };
 
   const handleClose = () => setShowLocationModal(false);
@@ -114,10 +142,13 @@ export default function MegaMenu({
 
   useEffect(() => {
     const checkSession = async () => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`, {
-        method: "GET",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -156,6 +187,10 @@ export default function MegaMenu({
     };
   }, [router]);
 
+  useEffect(() => {
+    setCategoriesButtonText(t("navbar.selectCategory")); // Actualizar el estado con la traducción inicial
+  }, [t]);
+
   return (
     <>
       <Navbar
@@ -165,10 +200,15 @@ export default function MegaMenu({
         expand="lg"
       >
         <Container className="sticky-top">
-          <Navbar.Brand onClick={handleLogoClick} className="divhover text-center align-center m-0">
+          <Navbar.Brand
+            onClick={handleLogoClick}
+            className="divhover text-center align-center m-0"
+          >
             <Image
               className="want-logo"
-              src={isMobile ? "/icons/want-logo-mini.png" : "/icons/want-logo.svg"}
+              src={
+                isMobile ? "/icons/want-logo-mini.png" : "/icons/want-logo.svg"
+              }
               alt="Want"
               width={isMobile ? 30 : 90}
               height={isMobile ? 30 : 50}
@@ -189,7 +229,7 @@ export default function MegaMenu({
             )}
             <FormControl
               type="search"
-              placeholder="The people want..."
+              placeholder={t("navbar.searchPlaceholder")}
               className="mr-2 form-control p-1 px-3 search-bar-input"
               aria-label="Search"
               name="search"
@@ -205,6 +245,7 @@ export default function MegaMenu({
           )}
           {!isMobile && (
             <Nav className="ms-auto">
+              <LanguageSelector />
               <Nav.Link className="nav-item">
                 <CategoriesModal
                   isShown={showCategoriesModal}
@@ -213,9 +254,12 @@ export default function MegaMenu({
                   buttonText={categoriesButtonText}
                 />
               </Nav.Link>
-              <Nav.Link className="nav-item" onClick={() => router.push('/createPost')}>
+              <Nav.Link
+                className="nav-item"
+                onClick={() => router.push("/createPost")}
+              >
                 <Button className="btn btn-post rounded-5 align-items-center nav-item">
-                  Want Something?
+                  {t("navbar.createPost")}
                 </Button>
               </Nav.Link>
               {user && (
@@ -254,45 +298,85 @@ export default function MegaMenu({
                       box-shadow: 0px 0px 15px -1px #00000042;
                     }
                   `}</style>
-                  <NavDropdown.Item onClick={() => router.push('/myPosts')}>
-                    <i className="bi bi-stickies-fill me-3"></i>Things that I Want
+                  <NavDropdown.Item onClick={() => router.push("/myPosts")}>
+                    <i className="bi bi-stickies-fill me-3"></i>
+                    {t("navbar.myPosts")}
                   </NavDropdown.Item>
-                  <NavDropdown.Item onClick={() => router.push('/sentOffers')}>
-                    <i className="bi bi-send-check-fill me-3"></i>Sent offers
+                  <NavDropdown.Item onClick={() => router.push("/sentOffers")}>
+                    <i className="bi bi-send-check-fill me-3"></i>
+                    {t("navbar.sentOffers")}
                   </NavDropdown.Item>
-                  <NavDropdown.Item onClick={() => router.push('/receivedOffers')}>
-                    <i className="bi bi-receipt me-3"></i>Received offers
+                  <NavDropdown.Item
+                    onClick={() => router.push("/receivedOffers")}
+                  >
+                    <i className="bi bi-receipt me-3"></i>
+                    {t("navbar.receivedOffers")}
                   </NavDropdown.Item>
-                  <NavDropdown.Item onClick={() => router.push('/editProfile')}>
-                    <i className="bi bi-person-lines-fill me-3"></i>My profile
+                  <NavDropdown.Item onClick={() => router.push("/editProfile")}>
+                    <i className="bi bi-person-lines-fill me-3"></i>
+                    {t("navbar.myProfile")}
                   </NavDropdown.Item>
                   <hr />
-                  <NavDropdown.Item onClick={() => router.push('/logout')}>
-                    <i className="bi bi-box-arrow-right me-3"></i>Log out
+                  <NavDropdown.Item onClick={() => router.push("/logout")}>
+                    <i className="bi bi-box-arrow-right me-3"></i>
+                    {t("navbar.logout")}
                   </NavDropdown.Item>
                 </NavDropdown>
               ) : (
-                <Nav.Link onClick={() => router.push('/login')} className="nav-item">
-                  <span className="nav-link">Login</span>
+                <Nav.Link
+                  onClick={() => router.push("/login")}
+                  className="nav-item"
+                >
+                  <span className="nav-link">{t("navbar.login")}</span>
                 </Nav.Link>
               )}
             </Nav>
           )}
           {isMobile && (
-            <Button variant="outline-success" className="ms-2" onClick={() => setShowOffcanvas(true)}>
-              <i className="bi bi-list"></i>
-            </Button>
+            <>
+              <LanguageSelector />
+              <Button
+                variant="outline-success"
+                className="ms-2"
+                onClick={() => setShowOffcanvas(true)}
+              >
+                <i className="bi bi-list"></i>
+              </Button>
+            </>
           )}
         </Container>
       </Navbar>
 
-      <Offcanvas show={showOffcanvas} onHide={() => setShowOffcanvas(false)} placement="end">
+      <Offcanvas
+        show={showOffcanvas}
+        onHide={() => setShowOffcanvas(false)}
+        placement="end"
+      >
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title className="text-success">Want | Menu</Offcanvas.Title>
+          <Offcanvas.Title className="text-success">
+            {t("navbar.menu")}
+          </Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          <Nav.Link className="nav-item p-3" onClick={() => { router.push('/'); setShowOffcanvas(false) }}>
-            <i className="bi bi-house me-2"></i>Home
+          <Nav.Link
+            className="nav-item p-3"
+            onClick={() => {
+              router.push("/");
+              setShowOffcanvas(false);
+            }}
+          >
+            <i className="bi bi-house me-2"></i>
+            {t("navbar.home")}
+          </Nav.Link>
+          <Nav.Link
+            className="nav-item p-3"
+            onClick={() => {
+              router.push("/");
+              setShowOffcanvas(false);
+            }}
+          >
+            <i className="bi bi-house me-2"></i>
+            {t("navbar.home")}
           </Nav.Link>
           <Nav className="flex-column">
             <Nav.Link className="nav-item">
@@ -314,9 +398,15 @@ export default function MegaMenu({
                 buttonText={categoriesButtonText}
               />
             </Nav.Link>
-            <Nav.Link className="nav-item" onClick={() => { router.push('/createPost'); setShowOffcanvas(false) }}>
+            <Nav.Link
+              className="nav-item"
+              onClick={() => {
+                router.push("/createPost");
+                setShowOffcanvas(false);
+              }}
+            >
               <Button className="btn btn-post rounded-5 align-items-center">
-                Want Something?
+                {t("navbar.createPost")}
               </Button>
             </Nav.Link>
             {user ? (
@@ -330,28 +420,71 @@ export default function MegaMenu({
                     }
                     alt="Profile"
                     className="createdBy-photo"
-                  /> {user.firstName}
+                  />{" "}
+                  {user.firstName}
                 </Nav.Link>
-                <Nav.Link className="nav-item" onClick={() => { router.push('/myPosts'); setShowOffcanvas(false) }}>
-                  <i className="bi bi-stickies-fill me-3"></i>Things that I Want
+                <Nav.Link
+                  className="nav-item"
+                  onClick={() => {
+                    router.push("/myPosts");
+                    setShowOffcanvas(false);
+                  }}
+                >
+                  <i className="bi bi-stickies-fill me-3"></i>
+                  {t("navbar.myPosts")}
                 </Nav.Link>
-                <Nav.Link className="nav-item" onClick={() => { router.push('/sentOffers'); setShowOffcanvas(false) }}>
-                  <i className="bi bi-send-check-fill me-3"></i>Sent offers
+                <Nav.Link
+                  className="nav-item"
+                  onClick={() => {
+                    router.push("/sentOffers");
+                    setShowOffcanvas(false);
+                  }}
+                >
+                  <i className="bi bi-send-check-fill me-3"></i>
+                  {t("navbar.sentOffers")}
                 </Nav.Link>
-                <Nav.Link className="nav-item" onClick={() => { router.push('/receivedOffers'); setShowOffcanvas(false) }}>
-                  <i className="bi bi-receipt me-3"></i>Received offers
+                <Nav.Link
+                  className="nav-item"
+                  onClick={() => {
+                    router.push("/receivedOffers");
+                    setShowOffcanvas(false);
+                  }}
+                >
+                  <i className="bi bi-receipt me-3"></i>
+                  {t("navbar.receivedOffers")}
                 </Nav.Link>
-                <Nav.Link className="nav-item" onClick={() => { router.push('/editProfile'); setShowOffcanvas(false) }}>
-                  <i className="bi bi-person-lines-fill me-3"></i>My profile
+                <Nav.Link
+                  className="nav-item"
+                  onClick={() => {
+                    router.push("/editProfile");
+                    setShowOffcanvas(false);
+                  }}
+                >
+                  <i className="bi bi-person-lines-fill me-3"></i>
+                  {t("navbar.myProfile")}
                 </Nav.Link>
                 <hr />
-                <Nav.Link className="nav-item" onClick={() => { router.push('/logout'); setShowOffcanvas(false) }}>
-                  <i className="bi bi-box-arrow-right me-3"></i>Log out
+                <Nav.Link
+                  className="nav-item"
+                  onClick={() => {
+                    router.push("/logout");
+                    setShowOffcanvas(false);
+                  }}
+                >
+                  <i className="bi bi-box-arrow-right me-3"></i>
+                  {t("navbar.logout")}
                 </Nav.Link>
               </>
             ) : (
-              <Nav.Link onClick={() => { router.push('/login'); setShowOffcanvas(false) }} className="nav-item pt-3">
-                <i className="bi bi-door-open"></i> Login/Register
+              <Nav.Link
+                onClick={() => {
+                  router.push("/login");
+                  setShowOffcanvas(false);
+                }}
+                className="nav-item pt-3"
+              >
+                <i className="bi bi-door-open"></i>
+                {t("navbar.login")}
               </Nav.Link>
             )}
           </Nav>

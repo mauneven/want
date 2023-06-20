@@ -1,6 +1,6 @@
-// PostCategory.js
 import React, { useState, useEffect } from 'react';
 import categoriesData from '../../data/categories.json';
+import { useTranslation } from 'react-i18next';
 
 export default function PostCategory({
   onMainCategoryChange,
@@ -11,42 +11,26 @@ export default function PostCategory({
   initialThirdCategory = '',
   isRequired = false
 }) {
-  const [selectedCategory, setSelectedCategory] = useState(
-    categoriesData.categories.find((category) => category.name === initialMainCategory) || null
-  );
-  const [selectedSubcategory, setSelectedSubcategory] = useState(initialSubcategory);
-  const [selectedThirdCategory, setSelectedThirdCategory] = useState(initialThirdCategory);
+  const { t } = useTranslation();
+
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedSubcategory, setSelectedSubcategory] = useState('');
+  const [selectedThirdCategory, setSelectedThirdCategory] = useState('');
 
   useEffect(() => {
-    const category = categoriesData.categories.find((cat) => cat.name === initialMainCategory) || null;
-    setSelectedCategory(category);
-
-    const subcategory = category?.subcategories.find((subcat) => subcat.name === initialSubcategory) || null;
-    setSelectedSubcategory(subcategory?.name || '');
+    setSelectedCategory(initialMainCategory);
+    setSelectedSubcategory(initialSubcategory);
     setSelectedThirdCategory(initialThirdCategory);
-
-    if (onMainCategoryChange) {
-      onMainCategoryChange(category?.name || '');
-    }
-
-    if (onSubcategoryChange) {
-      onSubcategoryChange(subcategory?.name || '');
-    }
-
-    if (onThirdCategoryChange) {
-      onThirdCategoryChange(initialThirdCategory);
-    }
-  }, [initialMainCategory, initialSubcategory, initialThirdCategory, onMainCategoryChange, onSubcategoryChange, onThirdCategoryChange]);
+  }, [initialMainCategory, initialSubcategory, initialThirdCategory]);
 
   const handleCategoryChange = (event) => {
-    const categoryId = parseInt(event.target.value);
-    const category = categoriesData.categories.find((cat) => cat.id === categoryId);
+    const category = event.target.value;
     setSelectedCategory(category);
     setSelectedSubcategory('');
     setSelectedThirdCategory('');
 
     if (onMainCategoryChange) {
-      onMainCategoryChange(category?.name || '');
+      onMainCategoryChange(category);
     }
 
     if (onSubcategoryChange) {
@@ -81,73 +65,82 @@ export default function PostCategory({
     }
   };
 
-  const categoryOptions = categoriesData.categories.map((category) => (
-    <option key={category.id} value={category.id}>
-      {category.name}
-    </option>
-  ));
-
-  const subcategoryOptions = selectedCategory ? (
-    selectedCategory.subcategories.map((subcategory) => (
-      <option key={subcategory.id} value={subcategory.name}>
-        {subcategory.name}
+  const getCategoryOptions = () => {
+    return categoriesData.categories.map((category) => (
+      <option key={category.id} value={category.id}>
+        {t(`categories.${category.id}`)}
       </option>
-    ))
-  ) : (
-    <option value="">Select a subcategory</option>
-  );
+    ));
+  };
 
-  const thirdCategoryOptions = selectedSubcategory && selectedCategory ? (
-    selectedCategory.subcategories
-      .find((subcategory) => subcategory.name === selectedSubcategory)
-      ?.thirdCategories.map((thirdCategory, index) => (
-        <option key={index} value={thirdCategory.name}>
-          {thirdCategory.name}
+  const getSubcategoryOptions = () => {
+    const selectedCategoryData = categoriesData.categories.find((category) => category.id === selectedCategory);
+    if (selectedCategoryData && selectedCategoryData.subcategories) {
+      return selectedCategoryData.subcategories.map((subcategory) => (
+        <option key={subcategory.id} value={subcategory.id}>
+          {t(`categories.${subcategory.name}`)}
         </option>
-      ))
-  ) : (
-    <option value="">Select a third category</option>
-  );
+      ));
+    } else {
+      return null;
+    }
+  };
+
+  const getThirdCategoryOptions = () => {
+    const selectedCategoryData = categoriesData.categories.find((category) => category.id === selectedCategory);
+    if (selectedCategoryData && selectedCategoryData.subcategories) {
+      const selectedSubcategoryData = selectedCategoryData.subcategories.find((subcategory) => subcategory.id === selectedSubcategory);
+      if (selectedSubcategoryData && selectedSubcategoryData.thirdCategories) {
+        return selectedSubcategoryData.thirdCategories.map((thirdCategory) => (
+          <option key={thirdCategory.id} value={thirdCategory.id}>
+            {t(`categories.${thirdCategory.name}`)}
+          </option>
+        ));
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  };
 
   return (
     <div className="d-flex flex-wrap align-items-center">
       <select
         id="category-select"
         className="form-select me-4"
-        value={selectedCategory?.id}
+        value={selectedCategory}
         onChange={handleCategoryChange}
         required={isRequired}
       >
-        <option value="">Select a category</option>
-        {categoryOptions}
+        <option value="">{t('navbar.selectCategory')}</option>
+        {getCategoryOptions()}
       </select>
 
       {selectedCategory && (
-        <>
-          <select
-            id="subcategory-select"
-            className="form-select mt-2"
-            value={selectedSubcategory}
-            onChange={handleSubcategoryChange}
-            required={isRequired}
-          >
-            <option value="">Select a subcategory</option>
-            {subcategoryOptions}
-          </select>
+        <select
+          id="subcategory-select"
+          className="form-select mt-2"
+          value={selectedSubcategory}
+          onChange={handleSubcategoryChange}
+          required={isRequired}
+        >
+          <option value="">{t('navbar.selectCategory')}</option>
+          {getSubcategoryOptions()}
+        </select>
+      )}
 
-          {selectedSubcategory && (
-            <select
-              id="thirdcategory-select"
-              className="form-select mt-2"
-              value={selectedThirdCategory}
-              onChange={handleThirdCategoryChange}
-              required={isRequired}
-            >
-              <option value="">Select a third category</option>
-              {thirdCategoryOptions}
-            </select>
-          )}
-        </>
+      {selectedSubcategory && (
+        <select
+          id="thirdcategory-select"
+          className="form-select mt-2"
+          value={selectedThirdCategory}
+          onChange={handleThirdCategoryChange}
+          required={isRequired}
+        >
+          <option value="">{t('navbar.selectCategory')}</option>
+          {getThirdCategoryOptions()}
+        </select>
       )}
     </div>
   );
