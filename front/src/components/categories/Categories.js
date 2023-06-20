@@ -13,15 +13,39 @@ export default function PostCategory({
 }) {
   const { t } = useTranslation();
 
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedSubcategory, setSelectedSubcategory] = useState('');
-  const [selectedThirdCategory, setSelectedThirdCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(initialMainCategory);
+  const [selectedSubcategory, setSelectedSubcategory] = useState(initialSubcategory);
+  const [selectedThirdCategory, setSelectedThirdCategory] = useState(initialThirdCategory);
+  const [subcategoryOptions, setSubcategoryOptions] = useState([]);
+  const [thirdCategoryOptions, setThirdCategoryOptions] = useState([]);
 
   useEffect(() => {
     setSelectedCategory(initialMainCategory);
     setSelectedSubcategory(initialSubcategory);
     setSelectedThirdCategory(initialThirdCategory);
   }, [initialMainCategory, initialSubcategory, initialThirdCategory]);
+
+  useEffect(() => {
+    if (selectedCategory) {
+      const category = categoriesData.find((cat) => cat.id === selectedCategory);
+      setSubcategoryOptions(category.subcategories);
+    } else {
+      setSubcategoryOptions([]);
+    }
+    setSelectedSubcategory('');
+    setSelectedThirdCategory('');
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    if (selectedSubcategory) {
+      const category = categoriesData.find((cat) => cat.id === selectedCategory);
+      const subcategory = category.subcategories.find((subcat) => subcat.id === selectedSubcategory);
+      setThirdCategoryOptions(subcategory.thirdCategories);
+    } else {
+      setThirdCategoryOptions([]);
+    }
+    setSelectedThirdCategory('');
+  }, [selectedSubcategory]);
 
   const handleCategoryChange = (event) => {
     const category = event.target.value;
@@ -65,43 +89,16 @@ export default function PostCategory({
     }
   };
 
-  const getCategoryOptions = () => {
-    return categoriesData.categories.map((category) => (
-      <option key={category.id} value={category.id}>
-        {t(`categories.${category.id}`)}
-      </option>
-    ));
+  const getCategoryTranslation = (categoryId) => {
+    return t(`categories.${categoryId}.name`);
   };
 
-  const getSubcategoryOptions = () => {
-    const selectedCategoryData = categoriesData.categories.find((category) => category.id === selectedCategory);
-    if (selectedCategoryData && selectedCategoryData.subcategories) {
-      return selectedCategoryData.subcategories.map((subcategory) => (
-        <option key={subcategory.id} value={subcategory.id}>
-          {t(`categories.${subcategory.name}`)}
-        </option>
-      ));
-    } else {
-      return null;
-    }
+  const getSubcategoryTranslation = (categoryId, subcategoryId) => {
+    return t(`categories.${categoryId}.subcategories.${subcategoryId}.name`);
   };
 
-  const getThirdCategoryOptions = () => {
-    const selectedCategoryData = categoriesData.categories.find((category) => category.id === selectedCategory);
-    if (selectedCategoryData && selectedCategoryData.subcategories) {
-      const selectedSubcategoryData = selectedCategoryData.subcategories.find((subcategory) => subcategory.id === selectedSubcategory);
-      if (selectedSubcategoryData && selectedSubcategoryData.thirdCategories) {
-        return selectedSubcategoryData.thirdCategories.map((thirdCategory) => (
-          <option key={thirdCategory.id} value={thirdCategory.id}>
-            {t(`categories.${thirdCategory.name}`)}
-          </option>
-        ));
-      } else {
-        return null;
-      }
-    } else {
-      return null;
-    }
+  const getThirdCategoryTranslation = (categoryId, subcategoryId, thirdCategoryId) => {
+    return t(`categories.${categoryId}.subcategories.${subcategoryId}.thirdCategories.${thirdCategoryId}.name`);
   };
 
   return (
@@ -113,20 +110,28 @@ export default function PostCategory({
         onChange={handleCategoryChange}
         required={isRequired}
       >
-        <option value="">{t('navbar.selectCategory')}</option>
-        {getCategoryOptions()}
+        <option value="">{t('selectCategory')}</option>
+        {categoriesData.map((category) => (
+          <option key={category.id} value={category.id}>
+            {getCategoryTranslation(category.id)}
+          </option>
+        ))}
       </select>
 
       {selectedCategory && (
         <select
           id="subcategory-select"
-          className="form-select mt-2"
+          className="form-select me-4"
           value={selectedSubcategory}
           onChange={handleSubcategoryChange}
           required={isRequired}
         >
-          <option value="">{t('navbar.selectCategory')}</option>
-          {getSubcategoryOptions()}
+          <option value="">{t('selectCategory')}</option>
+          {subcategoryOptions.map((subcategory) => (
+            <option key={subcategory.id} value={subcategory.id}>
+              {getSubcategoryTranslation(selectedCategory, subcategory.id)}
+            </option>
+          ))}
         </select>
       )}
 
@@ -138,8 +143,12 @@ export default function PostCategory({
           onChange={handleThirdCategoryChange}
           required={isRequired}
         >
-          <option value="">{t('navbar.selectCategory')}</option>
-          {getThirdCategoryOptions()}
+          <option value="">{t('selectCategory')}</option>
+          {thirdCategoryOptions.map((thirdCategory) => (
+            <option key={thirdCategory.id} value={thirdCategory.id}>
+              {getThirdCategoryTranslation(selectedCategory, selectedSubcategory, thirdCategory.id)}
+            </option>
+          ))}
         </select>
       )}
     </div>

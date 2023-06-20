@@ -20,206 +20,683 @@
       "title": "Título de la publicación",
       "description": "Descripción de la publicación"
     },
+    "postDetails": {
+        "makeAnOffer": "Hacer una oferta",
+        "publishedIn": "Publicado en"
+      },
     "categories": {
-      "1": "Tecnología",
-      "1.1": "Componentes de Computadora",
-      "1.1.1": "Tarjetas Gráficas",
-      "1.1.2": "RAM",
-      "1.1.3": "Placas Madre",
-      "1.1.4": "SSD",
-      "1.1.5": "Discos Duros",
-      "1.1.6": "Fuentes de Poder",
-      "1.1.7": "Cajas de Computadora",
-      "1.2": "Teléfonos Inteligentes",
-      "1.2.1": "Apple / iPhone",
-      "1.2.2": "Samsung",
-      "1.2.3": "Google",
-      "1.2.4": "OnePlus",
-      "1.2.5": "Xiaomi",
-      "1.2.6": "Huawei",
-      "1.3": "Electrónica",
-      "1.3.1": "TVs",
-      "1.3.2": "Laptops",
-      "1.3.3": "Cámaras",
-      "1.3.4": "Audífonos",
-      "1.3.5": "Altavoces",
-      "1.3.6": "Relojes Inteligentes",
-      "1.4": "Electrodomésticos",
-      "1.4.1": "Refrigeradores",
-      "1.4.2": "Lavadoras",
-      "1.4.3": "Hornos",
-      "1.4.4": "Aspiradoras",
-      "1.4.5": "Aires Acondicionados",
-      "1.4.6": "Microondas",
-      "2": "Vehículos",
-      "2.1": "Autos",
-      "2.1.1": "Sedanes",
-      "2.1.2": "SUVs",
-      "2.1.3": "Hatchbacks",
-      "2.1.4": "Camionetas",
-      "2.1.5": "Deportivos",
-      "2.1.6": "Autos Eléctricos",
-      "2.1.7": "Convertible",
-      "2.1.8": "Coupés",
-      "2.1.9": "Minivans",
-      "2.2": "Motocicletas",
-      "2.2.1": "Motocicletas Deportivas",
-      "2.2.2": "Motocicletas de Crucero",
-      "2.2.3": "Motocicletas Todo Terreno",
-      "2.2.4": "Scooters",
-      "2.2.5": "Motocicletas de Turismo",
-      "2.2.6": "Mopeds",
-      "2.3": "Barcos",
-      "2.3.1": "Veleros",
-      "2.3.2": "Lanchas",
-      "2.3.3": "Yates",
-      "2.3.4": "Barcos de Pesca",
-      "2.3.5": "Motos de Agua",
-      "2.3.6": "Canoas/Kayaks",
-      "3": "Ropa",
-      "3.1": "Camisas",
-      "3.1.1": "Camisas de Botones",
-      "3.1.2": "Camisetas",
-      "3.1.3": "Camisas Polo",
-      "3.1.4": "Camisas de Manga Larga",
-      "3.2": "Pantalones",
-      "3.2.1": "Jeans",
-      "3.2.2": "Chinos",
-      "3.2.3": "Pantalones Cargo",
-      "3.2.4": "Shorts",
-      "3.3": "Vestidos",
-      "3.3.1": "Vestidos de Cóctel",
-      "3.3.2": "Vestidos Largos",
-      "3.3.3": "Vestidos de Verano",
-      "3.3.4": "Vestidos de Noche",
-      "3.4": "Zapatos",
-      "3.4.1": "Zapatillas",
-      "3.4.2": "Botas",
-      "3.4.3": "Zapatillas Planas",
-      "3.4.4": "Tacones",
-      "4": "Hogar",
-      "4.1": "Muebles",
-      "4.1.1": "Sofás",
-      "4.1.2": "Mesas",
-      "4.1.3": "Sillas",
-      "4.1.4": "Camas",
-      "4.1.5": "Gabinetes",
-      "4.1.6": "Escritorios",
-      "4.2": "Electrodomésticos de Cocina",
-      "4.2.1": "Refrigeradores",
-      "4.2.2": "Estufas",
-      "4.2.3": "Microondas",
-      "4.2.4": "Lavavajillas",
-      "4.2.5": "Cafeteras",
-      "4.2.6": "Licuadoras",
-      "4.3": "Decoración del Hogar",
-      "4.3.1": "Arte de Pared",
-      "4.3.2": "Cortinas",
-      "4.3.3": "Tapetes",
-      "4.3.4": "Almohadones Decorativos",
-      "4.3.5": "Velas",
-      "4.3.6": "Jarrones",
-      "4.4": "Mejoras para el Hogar",
-      "4.4.1": "Herramientas",
-      "4.4.2": "Pintura",
-      "4.4.3": "Iluminación",
-      "4.4.4": "Fontanería",
-      "4.4.5": "Eléctrico",
-      "4.4.6": "Pisos",
-      "5": "Herramientas",
-      "5.1": "Herramientas Eléctricas",
-      "5.1.1": "Taladros",
-      "5.1.2": "Sierras",
-      "5.1.3": "Lijadoras",
-      "5.1.4": "Amoladoras",
-      "5.1.5": "Máquinas de Soldar",
-      "5.1.6": "Compresores de Aire",
-      "5.2": "Herramientas Manuales",
-      "5.2.1": "Martillos",
-      "5.2.2": "Destornilladores",
-      "5.2.3": "Alicates",
-      "5.2.4": "Llaves",
-      "5.2.5": "Dados",
-      "5.2.6": "Cuchillos",
-      "5.3": "Herramientas de Jardín",
-      "5.3.1": "Cortadoras de Césped",
-      "5.3.2": "Podadoras de Setos",
-      "5.3.3": "Tijeras de Podar",
-      "5.3.4": "Sopladores de Hojas",
-      "5.3.5": "Mangueras de Jardín",
-      "5.3.6": "Rociadores",
-      "6": "Servicios",
-      "6.1": "Servicios para el Hogar",
-      "6.1.1": "Servicios de Limpieza",
-      "6.1.2": "Servicios de Plomería",
-      "6.1.3": "Servicios Eléctricos",
-      "6.1.4": "Servicios de Paisajismo",
-      "6.1.5": "Servicios de Mudanza",
-      "6.1.6": "Servicios de Pintura",
-      "6.2": "Servicios Personales",
-      "6.2.1": "Servicios de Belleza",
-      "6.2.2": "Servicios de Fitness",
-      "6.2.3": "Servicios de Tutoría",
-      "6.2.4": "Servicios de Fotografía",
-      "6.2.5": "Servicios de Planificación de Eventos",
-      "6.2.6": "Servicios de Masajes",
-      "6.3": "Servicios Profesionales",
-      "6.3.1": "Servicios Legales",
-      "6.3.2": "Servicios de Contabilidad",
-      "6.3.3": "Servicios de IT",
-      "6.3.4": "Servicios de Marketing",
-      "6.3.5": "Servicios de Consultoría",
-      "6.3.6": "Servicios Financieros",
-      "7": "Educación",
-      "7.1": "Tutorías",
-      "7.1.1": "Tutorías de Matemáticas",
-      "7.1.2": "Tutorías de Idiomas",
-      "7.1.3": "Tutorías de Ciencias",
-      "7.1.4": "Tutorías de Música",
-      "7.1.5": "Tutorías para Preparación de Exámenes",
-      "7.1.6": "Tutorías de Arte",
-      "7.2": "Cursos en Línea",
-      "7.2.1": "Cursos de Programación",
-      "7.2.2": "Cursos de Negocios",
-      "7.2.3": "Cursos de Marketing",
-      "7.2.4": "Cursos de Idiomas",
-      "7.2.5": "Cursos de Fotografía",
-      "7.2.6": "Cursos de Cocina",
-      "7.3": "Juguetes Educativos",
-      "7.3.1": "Rompecabezas",
-      "7.3.2": "Bloques de Construcción",
-      "7.3.3": "Kits de Ciencia",
-      "7.3.4": "Materiales de Arte",
-      "7.3.5": "Instrumentos Musicales",
-      "7.3.6": "Juegos Educativos",
-      "7.4": "Libros de Texto",
-      "7.4.1": "Libros de Texto de Matemáticas",
-      "7.4.2": "Libros de Texto de Ciencias",
-      "7.4.3": "Libros de Texto de Literatura",
-      "7.4.4": "Libros de Texto de Historia",
-      "7.4.5": "Libros de Texto de Arte",
-      "7.4.6": "Libros de Texto de Negocios",
-      "8": "Maquinaria Pesada",
-      "8.1": "Maquinaria de Construcción",
-      "8.1.1": "Excavadoras",
-      "8.1.2": "Bulldozers",
-      "8.1.3": "Grúas",
-      "8.1.4": "Cargadores",
-      "8.1.5": "Camiones Volquete",
-      "8.1.6": "Mezcladoras de Concreto",
-      "8.2": "Maquinaria Agrícola",
-      "8.2.1": "Tractores",
-      "8.2.2": "Cosechadoras",
-      "8.2.3": "Sembradoras",
-      "8.2.4": "Aspersoras",
-      "8.2.5": "Empacadoras",
-      "8.2.6": "Cortadoras",
-      "8.3": "Maquinaria Forestal",
-      "8.3.1": "Cosechadoras",
-      "8.3.2": "Remolcadores",
-      "8.3.3": "Trituradoras",
-      "8.3.4": "Molinillos",
-      "8.3.5": "Arrastradores",
-      "8.3.6": "Desmenuzadoras"
+      "1": {
+        "name": "Tecnología",
+        "subcategories": {
+          "1.1": {
+            "name": "Componentes de Computadora",
+            "thirdCategories": {
+              "1.1.1": {
+                "name": "Tarjetas Gráficas"
+              },
+              "1.1.2": {
+                "name": "RAM"
+              },
+              "1.1.3": {
+                "name": "Placas Madre"
+              },
+              "1.1.4": {
+                "name": "SSD"
+              },
+              "1.1.5": {
+                "name": "Discos Duros"
+              },
+              "1.1.6": {
+                "name": "Fuentes de Poder"
+              },
+              "1.1.7": {
+                "name": "Cajas de Computadora"
+              }
+            }
+          },
+          "1.2": {
+            "name": "Teléfonos Inteligentes",
+            "thirdCategories": {
+              "1.2.1": {
+                "name": "Apple / iPhone"
+              },
+              "1.2.2": {
+                "name": "Samsung"
+              },
+              "1.2.3": {
+                "name": "Google"
+              },
+              "1.2.4": {
+                "name": "OnePlus"
+              },
+              "1.2.5": {
+                "name": "Xiaomi"
+              },
+              "1.2.6": {
+                "name": "Huawei"
+              }
+            }
+          },
+          "1.3": {
+            "name": "Electrónica",
+            "thirdCategories": {
+              "1.3.1": {
+                "name": "TVs"
+              },
+              "1.3.2": {
+                "name": "Laptops"
+              },
+              "1.3.3": {
+                "name": "Cámaras"
+              },
+              "1.3.4": {
+                "name": "Audífonos"
+              },
+              "1.3.5": {
+                "name": "Altavoces"
+              },
+              "1.3.6": {
+                "name": "Relojes Inteligentes"
+              }
+            }
+          },
+          "1.4": {
+            "name": "Electrodomésticos",
+            "thirdCategories": {
+              "1.4.1": {
+                "name": "Refrigeradores"
+              },
+              "1.4.2": {
+                "name": "Lavadoras"
+              },
+              "1.4.3": {
+                "name": "Hornos"
+              },
+              "1.4.4": {
+                "name": "Aspiradoras"
+              },
+              "1.4.5": {
+                "name": "Aires Acondicionados"
+              },
+              "1.4.6": {
+                "name": "Microondas"
+              }
+            }
+          }
+        }
+      },
+      "2": {
+        "name": "Vehículos",
+        "subcategories": {
+          "2.1": {
+            "name": "Autos",
+            "thirdCategories": {
+              "2.1.1": {
+                "name": "Sedanes"
+              },
+              "2.1.2": {
+                "name": "SUVs"
+              },
+              "2.1.3": {
+                "name": "Hatchbacks"
+              },
+              "2.1.4": {
+                "name": "Camionetas"
+              },
+              "2.1.5": {
+                "name": "Deportivos"
+              },
+              "2.1.6": {
+                "name": "Autos Eléctricos"
+              },
+              "2.1.7": {
+                "name": "Convertible"
+              },
+              "2.1.8": {
+                "name": "Coupés"
+              },
+              "2.1.9": {
+                "name": "Minivans"
+              }
+            }
+          },
+          "2.2": {
+            "name": "Motocicletas",
+            "thirdCategories": {
+              "2.2.1": {
+                "name": "Motocicletas Deportivas"
+              },
+              "2.2.2": {
+                "name": "Motocicletas de Crucero"
+              },
+              "2.2.3": {
+                "name": "Motocicletas Todo Terreno"
+              },
+              "2.2.4": {
+                "name": "Scooters"
+              },
+              "2.2.5": {
+                "name": "Motocicletas de Turismo"
+              },
+              "2.2.6": {
+                "name": "Mopeds"
+              }
+            }
+          },
+          "2.3": {
+            "name": "Barcos",
+            "thirdCategories": {
+              "2.3.1": {
+                "name": "Veleros"
+              },
+              "2.3.2": {
+                "name": "Lanchas"
+              },
+              "2.3.3": {
+                "name": "Yates"
+              },
+              "2.3.4": {
+                "name": "Barcos de Pesca"
+              },
+              "2.3.5": {
+                "name": "Motos de Agua"
+              },
+              "2.3.6": {
+                "name": "Canoas/Kayaks"
+              }
+            }
+          }
+        }
+      },
+      "3": {
+        "name": "Ropa",
+        "subcategories": {
+          "3.1": {
+            "name": "Camisas",
+            "thirdCategories": {
+              "3.1.1": {
+                "name": "Camisas de Botones"
+              },
+              "3.1.2": {
+                "name": "Camisetas"
+              },
+              "3.1.3": {
+                "name": "Camisas Polo"
+              },
+              "3.1.4": {
+                "name": "Camisas de Manga Larga"
+              }
+            }
+          },
+          "3.2": {
+            "name": "Pantalones",
+            "thirdCategories": {
+              "3.2.1": {
+                "name": "Jeans"
+              },
+              "3.2.2": {
+                "name": "Chinos"
+              },
+              "3.2.3": {
+                "name": "Pantalones Cargo"
+              },
+              "3.2.4": {
+                "name": "Shorts"
+              }
+            }
+          },
+          "3.3": {
+            "name": "Vestidos",
+            "thirdCategories": {
+              "3.3.1": {
+                "name": "Vestidos de Cóctel"
+              },
+              "3.3.2": {
+                "name": "Vestidos Largos"
+              },
+              "3.3.3": {
+                "name": "Vestidos de Verano"
+              },
+              "3.3.4": {
+                "name": "Vestidos de Noche"
+              }
+            }
+          },
+          "3.4": {
+            "name": "Zapatos",
+            "thirdCategories": {
+              "3.4.1": {
+                "name": "Zapatillas"
+              },
+              "3.4.2": {
+                "name": "Botas"
+              },
+              "3.4.3": {
+                "name": "Zapatillas Planas"
+              },
+              "3.4.4": {
+                "name": "Tacones"
+              }
+            }
+          }
+        }
+      },
+      "4": {
+        "name": "Hogar",
+        "subcategories": {
+          "4.1": {
+            "name": "Muebles",
+            "thirdCategories": {
+              "4.1.1": {
+                "name": "Sofás"
+              },
+              "4.1.2": {
+                "name": "Mesas"
+              },
+              "4.1.3": {
+                "name": "Sillas"
+              },
+              "4.1.4": {
+                "name": "Camas"
+              },
+              "4.1.5": {
+                "name": "Gabinetes"
+              },
+              "4.1.6": {
+                "name": "Escritorios"
+              }
+            }
+          },
+          "4.2": {
+            "name": "Electrodomésticos de Cocina",
+            "thirdCategories": {
+              "4.2.1": {
+                "name": "Refrigeradores"
+              },
+              "4.2.2": {
+                "name": "Estufas"
+              },
+              "4.2.3": {
+                "name": "Microondas"
+              },
+              "4.2.4": {
+                "name": "Lavavajillas"
+              },
+              "4.2.5": {
+                "name": "Cafeteras"
+              },
+              "4.2.6": {
+                "name": "Licuadoras"
+              }
+            }
+          },
+          "4.3": {
+            "name": "Decoración del Hogar",
+            "thirdCategories": {
+              "4.3.1": {
+                "name": "Arte de Pared"
+              },
+              "4.3.2": {
+                "name": "Cortinas"
+              },
+              "4.3.3": {
+                "name": "Tapetes"
+              },
+              "4.3.4": {
+                "name": "Almohadones Decorativos"
+              },
+              "4.3.5": {
+                "name": "Velas"
+              },
+              "4.3.6": {
+                "name": "Jarrones"
+              }
+            }
+          },
+          "4.4": {
+            "name": "Mejoras para el Hogar",
+            "thirdCategories": {
+              "4.4.1": {
+                "name": "Herramientas"
+              },
+              "4.4.2": {
+                "name": "Pintura"
+              },
+              "4.4.3": {
+                "name": "Iluminación"
+              },
+              "4.4.4": {
+                "name": "Fontanería"
+              },
+              "4.4.5": {
+                "name": "Eléctrico"
+              },
+              "4.4.6": {
+                "name": "Pisos"
+              }
+            }
+          }
+        }
+      },
+      "5": {
+        "name": "Herramientas",
+        "subcategories": {
+          "5.1": {
+            "name": "Herramientas Eléctricas",
+            "thirdCategories": {
+              "5.1.1": {
+                "name": "Taladros"
+              },
+              "5.1.2": {
+                "name": "Sierras"
+              },
+              "5.1.3": {
+                "name": "Lijadoras"
+              },
+              "5.1.4": {
+                "name": "Amoladoras"
+              },
+              "5.1.5": {
+                "name": "Máquinas de Soldar"
+              },
+              "5.1.6": {
+                "name": "Compresores de Aire"
+              }
+            }
+          },
+          "5.2": {
+            "name": "Herramientas Manuales",
+            "thirdCategories": {
+              "5.2.1": {
+                "name": "Martillos"
+              },
+              "5.2.2": {
+                "name": "Destornilladores"
+              },
+              "5.2.3": {
+                "name": "Alicates"
+              },
+              "5.2.4": {
+                "name": "Llaves"
+              },
+              "5.2.5": {
+                "name": "Dados"
+              },
+              "5.2.6": {
+                "name": "Cuchillos"
+              }
+            }
+          },
+          "5.3": {
+            "name": "Herramientas de Jardín",
+            "thirdCategories": {
+              "5.3.1": {
+                "name": "Cortadoras de Césped"
+              },
+              "5.3.2": {
+                "name": "Podadoras de Setos"
+              },
+              "5.3.3": {
+                "name": "Tijeras de Podar"
+              },
+              "5.3.4": {
+                "name": "Sopladores de Hojas"
+              },
+              "5.3.5": {
+                "name": "Mangueras de Jardín"
+              },
+              "5.3.6": {
+                "name": "Rociadores"
+              }
+            }
+          }
+        }
+      },
+      "6": {
+        "name": "Servicios",
+        "subcategories": {
+          "6.1": {
+            "name": "Servicios para el Hogar",
+            "thirdCategories": {
+              "6.1.1": {
+                "name": "Servicios de Limpieza"
+              },
+              "6.1.2": {
+                "name": "Servicios de Plomería"
+              },
+              "6.1.3": {
+                "name": "Servicios Eléctricos"
+              },
+              "6.1.4": {
+                "name": "Servicios de Paisajismo"
+              },
+              "6.1.5": {
+                "name": "Servicios de Mudanza"
+              },
+              "6.1.6": {
+                "name": "Servicios de Pintura"
+              }
+            }
+          },
+          "6.2": {
+            "name": "Servicios Personales",
+            "thirdCategories": {
+              "6.2.1": {
+                "name": "Servicios de Belleza"
+              },
+              "6.2.2": {
+                "name": "Servicios de Fitness"
+              },
+              "6.2.3": {
+                "name": "Servicios de Tutoría"
+              },
+              "6.2.4": {
+                "name": "Servicios de Fotografía"
+              },
+              "6.2.5": {
+                "name": "Servicios de Planificación de Eventos"
+              },
+              "6.2.6": {
+                "name": "Servicios de Masajes"
+              }
+            }
+          },
+          "6.3": {
+            "name": "Servicios Profesionales",
+            "thirdCategories": {
+              "6.3.1": {
+                "name": "Servicios Legales"
+              },
+              "6.3.2": {
+                "name": "Servicios de Contabilidad"
+              },
+              "6.3.3": {
+                "name": "Servicios de IT"
+              },
+              "6.3.4": {
+                "name": "Servicios de Marketing"
+              },
+              "6.3.5": {
+                "name": "Servicios de Consultoría"
+              },
+              "6.3.6": {
+                "name": "Servicios Financieros"
+              }
+            }
+          }
+        }
+      },
+      "7": {
+        "name": "Educación",
+        "subcategories": {
+          "7.1": {
+            "name": "Tutorías",
+            "thirdCategories": {
+              "7.1.1": {
+                "name": "Tutorías de Matemáticas"
+              },
+              "7.1.2": {
+                "name": "Tutorías de Idiomas"
+              },
+              "7.1.3": {
+                "name": "Tutorías de Ciencias"
+              },
+              "7.1.4": {
+                "name": "Tutorías de Música"
+              },
+              "7.1.5": {
+                "name": "Tutorías para Preparación de Exámenes"
+              },
+              "7.1.6": {
+                "name": "Tutorías de Arte"
+              }
+            }
+          },
+          "7.2": {
+            "name": "Cursos en Línea",
+            "thirdCategories": {
+              "7.2.1": {
+                "name": "Cursos de Programación"
+              },
+              "7.2.2": {
+                "name": "Cursos de Negocios"
+              },
+              "7.2.3": {
+                "name": "Cursos de Marketing"
+              },
+              "7.2.4": {
+                "name": "Cursos de Idiomas"
+              },
+              "7.2.5": {
+                "name": "Cursos de Fotografía"
+              },
+              "7.2.6": {
+                "name": "Cursos de Cocina"
+              }
+            }
+          },
+          "7.3": {
+            "name": "Juguetes Educativos",
+            "thirdCategories": {
+              "7.3.1": {
+                "name": "Rompecabezas"
+              },
+              "7.3.2": {
+                "name": "Bloques de Construcción"
+              },
+              "7.3.3": {
+                "name": "Kits de Ciencia"
+              },
+              "7.3.4": {
+                "name": "Materiales de Arte"
+              },
+              "7.3.5": {
+                "name": "Instrumentos Musicales"
+              },
+              "7.3.6": {
+                "name": "Juegos Educativos"
+              }
+            }
+          },
+          "7.4": {
+            "name": "Libros de Texto",
+            "thirdCategories": {
+              "7.4.1": {
+                "name": "Libros de Texto de Matemáticas"
+              },
+              "7.4.2": {
+                "name": "Libros de Texto de Ciencias"
+              },
+              "7.4.3": {
+                "name": "Libros de Texto de Literatura"
+              },
+              "7.4.4": {
+                "name": "Libros de Texto de Historia"
+              },
+              "7.4.5": {
+                "name": "Libros de Texto de Arte"
+              },
+              "7.4.6": {
+                "name": "Libros de Texto de Negocios"
+              }
+            }
+          }
+        }
+      },
+      "8": {
+        "name": "Maquinaria Pesada",
+        "subcategories": {
+          "8.1": {
+            "name": "Maquinaria de Construcción",
+            "thirdCategories": {
+              "8.1.1": {
+                "name": "Excavadoras"
+              },
+              "8.1.2": {
+                "name": "Bulldozers"
+              },
+              "8.1.3": {
+                "name": "Grúas"
+              },
+              "8.1.4": {
+                "name": "Cargadores"
+              },
+              "8.1.5": {
+                "name": "Camiones Volquete"
+              },
+              "8.1.6": {
+                "name": "Mezcladoras de Concreto"
+              }
+            }
+          },
+          "8.2": {
+            "name": "Maquinaria Agrícola",
+            "thirdCategories": {
+              "8.2.1": {
+                "name": "Tractores"
+              },
+              "8.2.2": {
+                "name": "Cosechadoras"
+              },
+              "8.2.3": {
+                "name": "Sembradoras"
+              },
+              "8.2.4": {
+                "name": "Aspersoras"
+              },
+              "8.2.5": {
+                "name": "Empacadoras"
+              },
+              "8.2.6": {
+                "name": "Cortadoras"
+              }
+            }
+          },
+          "8.3": {
+            "name": "Maquinaria Forestal",
+            "thirdCategories": {
+              "8.3.1": {
+                "name": "Cosechadoras"
+              },
+              "8.3.2": {
+                "name": "Remolcadores"
+              },
+              "8.3.3": {
+                "name": "Trituradoras"
+              },
+              "8.3.4": {
+                "name": "Molinillos"
+              },
+              "8.3.5": {
+                "name": "Arrastradores"
+              },
+              "8.3.6": {
+                "name": "Desmenuzadoras"
+              }
+            }
+          }
+        }
+      }
     }
   }
+  

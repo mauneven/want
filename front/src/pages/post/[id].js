@@ -4,9 +4,12 @@ import Link from 'next/link';
 import RelatedPosts from '@/components/posts/RelatedPosts';
 import ReportPostModal from '@/components/report/ReportPostModal';
 import UserModal from '@/components/user/UserModal';
+import { useTranslation } from 'react-i18next';
+
 const PostDetails = () => {
   const router = useRouter();
   const { id } = router.query;
+  const { t } = useTranslation();
 
   const [post, setPost] = useState(null);
   const [mainImage, setMainImage] = useState('');
@@ -189,11 +192,11 @@ const PostDetails = () => {
             </p>
             <p className="description-container-id">{post.description}</p>
             <p className='pb-0 mb-0 small-text mt-3'>
-              Published in {post.city}, {post.state}, {post.country}
+              {t('postDetails.publishedIn')} {post.city}, {post.state}, {post.country}
             </p>
             <p className='small'>
-              {post.mainCategory}, {post.subCategory}, {post.thirdCategory}
-            </p>
+  {t(`categories.${post.mainCategory}.name`)}, {t(`categories.${post.mainCategory}.subcategories.${post.subCategory}.name`)}, {t(`categories.${post.mainCategory}.subcategories.${post.subCategory}.thirdCategories.${post.thirdCategory}.name`)}
+</p>
             <div className="d-flex align-items-center text-start" onClick={() => openUserModal(post.createdBy)}>
               <img
                 src={
@@ -208,12 +211,12 @@ const PostDetails = () => {
                 className='mb-0 p-0'
                 style={{ cursor: 'pointer' }}
               >
-                {post.createdBy.firstName} {post.createdBy.lastName} | <i class="bi bi-star-fill"></i> {post.createdBy.reports ? 5 - (0.3 * post.createdBy.reports.length) : ""}
+                {post.createdBy.firstName} {post.createdBy.lastName} | <i className="bi bi-star-fill"></i> {post.createdBy.reports ? 5 - (0.3 * post.createdBy.reports.length) : ""}
               </p>
             </div>
             <div className='mt-3'>
               <Link href={`/createOffer?postId=${id}`}>
-                <button className="btn rounded-5 btn-offer">Make an offer</button>
+                <button className="btn rounded-5 btn-offer">{t('postDetails.makeAnOffer')}</button>
               </Link>
               <ReportPostModal postId={post._id} onReport={handleReportPost} />
             </div>
