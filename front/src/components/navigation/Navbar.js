@@ -215,7 +215,7 @@ export default function MegaMenu({
             />
           </Navbar.Brand>
           <Form
-            className="d-flex flex-grow-1 w-auto search-bar border rounded-5 search-bar-navbar"
+            className="d-flex flex-grow-1 w-auto search-bar border rounded-4 search-bar-navbar"
             onSubmit={handleSearchSubmit}
           >
             {isMobile ? null : (
@@ -258,7 +258,7 @@ export default function MegaMenu({
                 className="nav-item"
                 onClick={() => router.push("/createPost")}
               >
-                <Button className="btn btn-post rounded-5 align-items-center nav-item">
+                <Button className="btn btn-post rounded-4 align-items-center nav-item">
                   {t("navbar.createPost")}
                 </Button>
               </Nav.Link>
@@ -269,7 +269,7 @@ export default function MegaMenu({
               )}
               {user ? (
                 <NavDropdown
-                  className="nav-item rounded-5 border-0"
+                  className="nav-item rounded-4 border-0"
                   title={
                     <>
                       <img
@@ -405,7 +405,7 @@ export default function MegaMenu({
                 setShowOffcanvas(false);
               }}
             >
-              <Button className="btn btn-post rounded-5 align-items-center">
+              <Button className="btn btn-post rounded-4 align-items-center">
                 {t("navbar.createPost")}
               </Button>
             </Nav.Link>

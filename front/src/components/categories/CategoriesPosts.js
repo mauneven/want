@@ -92,13 +92,13 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="dark rounded-5" onClick={handleSeeAllCategories}>
+          <Button variant="dark rounded-4" onClick={handleSeeAllCategories}>
             See all categories
           </Button>
-          <Button variant="secondary rounded-5" onClick={handleClose}>
+          <Button variant="secondary rounded-4" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="success rounded-5" onClick={handleAccept}>
+          <Button variant="success rounded-4" onClick={handleAccept}>
             Accept
           </Button>
         </Modal.Footer>

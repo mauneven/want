@@ -164,7 +164,7 @@ const EditProfile = () => {
   return (
     <div className="container">
       <h1 className='my-4'>{t('editProfile.checkEditProfile')}</h1>
-      <div className="card rounded-5 my-4">
+      <div className="card rounded-4 my-4">
         <div className="card-body">
           <div className="text-center">
             <img
@@ -219,10 +219,10 @@ const EditProfile = () => {
             ))}
             {editingField && (
               <div className="text-center">
-                <button type="button" className="btn btn-secondary rounded-5 me-3" onClick={handleCancel}>
+                <button type="button" className="btn btn-secondary rounded-4 me-3" onClick={handleCancel}>
                   {t('editProfile.cancel')}
                 </button>
-                <button type="submit" className="btn btn-success rounded-5" disabled={!editingField || (editingField === 'photo' && !photo)}>
+                <button type="submit" className="btn btn-success rounded-4" disabled={!editingField || (editingField === 'photo' && !photo)}>
                   {t('editProfile.update')}
                 </button>
               </div>
@@ -230,15 +230,15 @@ const EditProfile = () => {
           </form>
         </div>
       </div>
-      <div className="my-5 card p-3 border border-success rounded-5">
+      <div className="my-5 card p-3 border border-success rounded-4">
         <h3 className="text-success">{t('editProfile.changePassword')}</h3>
         <Link href="/changePassword">
-          <button className="btn btn-success rounded-5">{t('editProfile.changePassword')}</button>
+          <button className="btn btn-success rounded-4">{t('editProfile.changePassword')}</button>
         </Link>
       </div>
-      <div className="my-5 border border-danger rounded-5 p-3">
+      <div className="my-5 border border-danger rounded-4 p-3">
         <h3 className="text-danger">{t('editProfile.deleteAccount')}</h3>
-        <button className="btn btn-danger rounded-5" onClick={handleDeleteAccount}>
+        <button className="btn btn-danger rounded-4" onClick={handleDeleteAccount}>
           {t('editProfile.deleteAccount')}
         </button>
       </div>

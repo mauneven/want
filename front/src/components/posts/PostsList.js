@@ -147,7 +147,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
 
               return (
                 <div key={post._id} className="col">
-                  <div className="card post rounded-5">
+                  <div className="card post rounded-4">
                     {post.photos && post.photos.length > 0 && (
                       <div
                         id={`carousel-${post._id}`}

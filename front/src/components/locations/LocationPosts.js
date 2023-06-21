@@ -103,7 +103,7 @@ const LocationModal = ({
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success rounded-5" onClick={handleAccept}>
+          <Button variant="success rounded-4" onClick={handleAccept}>
             Accept
           </Button>
         </Modal.Footer>

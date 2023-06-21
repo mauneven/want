@@ -128,7 +128,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
 
               return (
                 <div key={relatedPost._id} className="col">
-                  <div className="card post rounded-5">
+                  <div className="card post rounded-4">
                     <button className="rounded-circle btn-save" title="Save">
                       <i className="bi bi-heart"></i>
                     </button>

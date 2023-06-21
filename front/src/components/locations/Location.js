@@ -73,7 +73,7 @@ const Location = ({
 
   return (
     <div className="d-flex flex-wrap align-items-center">
-      <select id="country-select" className="form-select me-4" value={selectedCountry?.id} onChange={handleCountryChange} required={isRequired}>
+      <select id="country-select" className="form-select rounded-4" value={selectedCountry?.id} onChange={handleCountryChange} required={isRequired}>
         <option value="">Choose a country</option>
         {modifiedCountries.map((country) => (
           <option key={country.id} value={country.id}>
@@ -84,7 +84,7 @@ const Location = ({
 
       {selectedCountry && (
         <React.Fragment>
-          <select id="state-select" className="form-select me-4 mt-2" value={selectedState?.id} onChange={handleStateChange} required={isRequired}>
+          <select id="state-select" className="form-select mt-2 rounded-4" value={selectedState?.id} onChange={handleStateChange} required={isRequired}>
             <option value="">Choose an state</option>
             {selectedCountry.states.map((state) => (
               <option key={state.id} value={state.id}>
@@ -97,7 +97,7 @@ const Location = ({
 
       {selectedState && (
         <React.Fragment>
-          <select id="city-select" className="form-select mt-2" value={selectedCity} onChange={handleCityChange} required={isRequired}>
+          <select id="city-select" className="form-select mt-2 rounded-4" value={selectedCity} onChange={handleCityChange} required={isRequired}>
             <option value="">Choose a city</option>
             {selectedState.cities.map((city) => (
               <option key={city} value={city}>

@@ -163,6 +163,9 @@
     "markingRead": "Marquage comme lu..."
   },
   "categories": {
+    "selectMainCategory": "1 | catégorie générale",
+    "selectSubCategory": "2 |  sous-catégorie",
+    "selectThirdCategory": "3 | catégorie spécifique",
     "1": {
       "name": "Technologie",
       "subcategories": {

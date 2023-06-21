@@ -172,15 +172,15 @@ exports.updatePost = async (req, res, next) => {
     if (deletedImages) {
       const deletedImagePaths = deletedImages.split(',');
       post.photos = post.photos.filter(photo => !deletedImagePaths.includes(photo));
-
+    
       await Promise.all(deletedImagePaths.map(async (imagePath) => {
         const parsedUrl = url.parse(imagePath);
         const localPath = parsedUrl.pathname;
         const oldPhotoPath = path.join(__dirname, '..', localPath);
         try {
-          await fs.promises.unlink(oldPhotoPath); // Reemplaza 'photo.path' con 'oldPhotoPath'
+          await fs.promises.unlink(oldPhotoPath);
         } catch (err) {
-          console.error(`Error deleting file ${oldPhotoPath}: ${err.message}`); // Reemplaza 'photo.path' con 'oldPhotoPath'
+          console.error(`Error deleting file ${oldPhotoPath}: ${err.message}`);
         }
       }));
     }

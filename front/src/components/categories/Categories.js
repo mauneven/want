@@ -113,12 +113,12 @@ export default function PostCategory({
     <div className="d-flex flex-wrap align-items-center">
       <select
         id="category-select"
-        className="form-select mt-2"
+        className="form-select mt-2 rounded-4"
         value={selectedCategory}
         onChange={handleCategoryChange}
         required={isRequired}
       >
-        <option value="">{t('selectCategory')}</option>
+        <option value="">{t('categories.selectMainCategory')}</option>
         {categoriesData.map((category) => (
           <option key={category.id} value={category.id}>
             {getCategoryTranslation(category.id)}
@@ -129,12 +129,12 @@ export default function PostCategory({
       {selectedCategory && (
         <select
           id="subcategory-select"
-          className="form-select mt-2"
+          className="form-select mt-2 rounded-4"
           value={selectedSubcategory || initialSubcategory}
           onChange={handleSubcategoryChange}
           required={isRequired}
         >
-          <option value="">{t('selectCategory')}</option>
+          <option value="">{t('categories.selectSubCategory')}</option>
           {subcategoryOptions.map((subcategory) => (
             <option key={subcategory.id} value={subcategory.id}>
               {getSubcategoryTranslation(selectedCategory, subcategory.id)}
@@ -146,12 +146,12 @@ export default function PostCategory({
       {selectedSubcategory && (
         <select
           id="thirdcategory-select"
-          className="form-select mt-2"
+          className="form-select mt-2 rounded-4"
           value={selectedThirdCategory}
           onChange={handleThirdCategoryChange}
           required={isRequired}
         >
-          <option value="">{t('selectCategory')}</option>
+          <option value="">{t('categories.selectThirdCategory')}</option>
           {thirdCategoryOptions.map((thirdCategory) => (
             <option key={thirdCategory.id} value={thirdCategory.id}>
               {getThirdCategoryTranslation(selectedCategory, selectedSubcategory, thirdCategory.id)}

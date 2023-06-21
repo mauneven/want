@@ -1,10 +1,9 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import WordsFilter from '@/badWordsFilter/WordsFilter';
-import { Button, Carousel } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 import { validations } from '@/utils/validations';
-import { Modal } from 'react-bootstrap';
-import countries from '../data/countries.json';
+import { countries } from '../data/countries.json';
 
 const CreateOffer = () => {
   const router = useRouter();
@@ -98,7 +97,6 @@ const CreateOffer = () => {
 
   useEffect(() => {
     const fetchPost = async () => {
-      // Llama a la API para obtener el post por ID.
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`);
       const data = await response.json();
       setPost(data);
@@ -111,34 +109,19 @@ const CreateOffer = () => {
 
   const bwf = new WordsFilter();
 
-  const handleFileChange = (e) => {
-    const newPhotos = Array.from(e.target.files);
-
-    const isFileSizeValid = newPhotos.every((photo) => photo.size <= 50000000);
-
-    if (!isFileSizeValid) {
-      alert('The file size exceeds the maximum allowed limit of 50MB.');
-      return;
+  const handleFileChange = (e, index) => {
+    const file = e.target.files[0];
+    if (file) {
+      const newPhotos = [...photos];
+      newPhotos[index] = file;
+      setPhotos(newPhotos);
     }
-
-    const isFileTypeValid = newPhotos.every((photo) => {
-      const extension = photo.name.split('.').pop();
-      return ['jpg', 'jpeg', 'png'].includes(extension.toLowerCase());
-    });
-
-    if (!isFileTypeValid) {
-      alert('Only JPEG, JPG, and PNG files are allowed.');
-      return;
-    }
-
-    setPhotos([...photos, ...newPhotos]);
   };
 
-  const handleDeletePhoto = (e) => {
-    const activeIndex = getActivePhotoIndex();
-    if (activeIndex !== -1) {
-      removePhoto(activeIndex);
-    }
+  const handleDeletePhoto = (index) => {
+    const newPhotos = [...photos];
+    newPhotos[index] = null;
+    setPhotos(newPhotos);
   };
 
   const handleCountryChange = (e) => {
@@ -179,7 +162,6 @@ const CreateOffer = () => {
     formData.append('postId', postId);
 
     try {
-      // Llama a la API para crear la oferta
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/create`, {
         method: 'POST',
         headers: {
@@ -229,8 +211,8 @@ const CreateOffer = () => {
           </button>
         </Modal.Footer>
       </Modal>
-      <div className="row row-cols-1 mt-2 row-cols-md-4 g-4">
-        <div className="col-md-6 p-0">
+      <div className="container form-container">
+        <div className=" p-0">
           <form onSubmit={handleSubmit} className="container">
             <h5 className='text-center'>Build your offer</h5>
             <div className="mb-3">
@@ -270,7 +252,7 @@ const CreateOffer = () => {
                   onChange={handleCountryChange}
                 >
                   <option value="">Choose a country code</option>
-                  {countries.countries.map((country) => (
+                  {countries.map((country) => (
                     <option key={country.id} value={country.phoneCode}>
                       {`${country.name} +${country.phoneCode}`}
                     </option>
@@ -282,7 +264,7 @@ const CreateOffer = () => {
                   placeholder="Phone number"
                   value={phoneNumber}
                   onChange={handlePhoneNumberChange}
-                  onKeyPress={handleKeyPress} // Agrega el controlador de eventos para permitir solo números
+                  onKeyPress={handleKeyPress}
                 />
               </div>
             </div>
@@ -317,79 +299,56 @@ const CreateOffer = () => {
               <label htmlFor="photo" className="form-label">
                 Upload photos*
               </label>
-              <input
-                type="file"
-                className="form-control"
-                id="photo"
-                accept="image/png, image/jpeg"
-                onChange={handleFileChange}
-                disabled={photos.length >= 4}
-                required
-              />
-            </div>
-            <button type="submit" className="btn btn-primary position-relative">
-              {isSubmitting ? (
-                <>
-                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                  Creating offer...
-                </>
-              ) : (
-                'Create offer'
-              )}
-            </button>
-            <button type="button" className="btn" onClick={handleShowModal}>
-              <i className="bi bi-info-circle-fill"></i>
-            </button>
-          </form>
-        </div>
-        <div className="col-md-6">
-          <h5 className='text-center'>Preview your offer</h5>
-          <div className="post rounded-5 card-preview card">
-            {photos.length > 0 && (
-              <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
-                <div className="carousel-inner">
-                  {photos.map((photo, index) => (
-                    <div key={index} data-index={index} className={index === 0 ? 'carousel-item active' : 'carousel-item'}>
-                      <img src={URL.createObjectURL(photo)} className="d-block w-100" alt={`Photo ${index}`} />
+              <div className="row row-cols-xl-2">
+                {[1, 2, 3, 4].map((index) => (
+                  <div className="form-group mt-2 mb-2" key={index}>
+                    <div className="photo-upload-container col text-center align-items-center">
+                      {photos[index - 1] && (
+                        <div className="photo-preview">
+                          <img
+                            src={URL.createObjectURL(photos[index - 1])}
+                            className="img-thumbnail border-0 uploaded-photos rounded-4"
+                            alt={`Photo ${index}`}
+                          />
+                        </div>
+                      )}
+                      {!photos[index - 1] && (
+                        <label htmlFor={`photo${index}`} className="photo-upload">
+                          <i className="bi bi-image divhover display-1"></i>
+                          <i className="bi bi-plus-circle-fill display-6 divhover"></i>
+                        </label>
+                      )}
+                      {photos[index - 1] && (
+                      <button
+                      className="btn btn-light circle btn-sm delete-photo"
+                      onClick={() => handleDeletePhoto(index - 1)}
+                      type="button"
+                    >
+                      <i className="bi bi-trash fs-5"></i>
+                    </button>
+                      )}
+                      <input
+                        type="file"
+                        id={`photo${index}`}
+                        className="form-control visually-hidden"
+                        accept="image/jpeg,image/png,image/gif"
+                        onChange={(e) => handleFileChange(e, index - 1)}
+                      />
                     </div>
-                  ))}
-                </div>
-                <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                  <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span className="visually-hidden">Previous</span>
-                </button>
-                <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                  <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span className="visually-hidden">Next</span>
-                </button>
-              </div>
-            )}
-            {photos.length > 0 && (
-              <button className="btn btn-danger btn-sm delete-photo" onClick={handleDeletePhoto}>
-                <i className="bi bi-trash"></i>
-              </button>
-            )}
-            <div className="card-body mt-2 ">
-              <h5 className="card-title mt-2 ">{title || 'Offer title'}</h5>
-              <h5 className="text-success mt-2 ">{Number(price).toLocaleString()}</h5>
-              <p className="card-text mt-2 mb-2">{description || 'Offer description'}</p>
-              {phoneNumber && selectedCountryCode && (
-                <>
-                <div>
-                  <button className="btn rounded-5 btn-success mb-2" onClick={() => window.open(`https://wa.me/${selectedCountryCode}${phoneNumber}`, '_blank')}>
-                    <i className="bi bi-whatsapp mt-2"></i>{`+${selectedCountryCode} ${phoneNumber}`}
-                  </button>
                   </div>
-                  <div>
-                  <button className="btn-primary btn rounded-5 mb-2" onClick={() => window.open(`tel:+${selectedCountryCode}${phoneNumber}`, '_blank')}>
-                    <i className="bi bi-telephone-forward"></i> {`+${selectedCountryCode} ${phoneNumber}`}
-                  </button>
-                </div>
-                </>
-              )}
-              <p className="card-text mt-2 ">{contact || 'Other way to contact you'}</p>
+                ))}
+              </div>
             </div>
-          </div>
+            <div className="mb-3">
+              <button
+                type="submit"
+                className="btn btn-success"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Creating...' : 'Create Offer'}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

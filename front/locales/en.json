@@ -163,6 +163,9 @@
     "markingRead": "Marking as read..."
   },
   "categories": {
+    "selectMainCategory":"1 | General Category",
+    "selectSubCategory":"2 | Sub Category",
+    "selectThirdCategory":"3 | Specific Category",
     "1": {
       "name": "Technology",
       "subcategories": {
