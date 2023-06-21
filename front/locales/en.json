@@ -110,6 +110,58 @@
     "howTo": "How to...",
     "allRightsReserved": "All rights reserved."
   },
+  "deleteOn": {
+    "deletionProcessTitle": "Your account is in the process of being deleted.",
+    "continueDeletionProcess": "Continue with my deletion process",
+    "cancelDeletionProcess": "Cancel my deletion process"
+  },
+  "isNotVerified": {
+    "title": "We're almost there",
+    "description": "You need to verify your account so we know it's you. We have sent an email with a link for you to verify your account.",
+    "homepageLink": "In the meantime, you can go back to the homepage"
+  },
+  "custom404": {
+    "title": "Ups, this page isn't for you",
+    "description": "Sorry, the page you are looking for does not exist.",
+    "homeLink": "Go home"
+  },
+  "blocked": {
+    "title": "You have been banned",
+    "description": "Your account has been blocked due to multiple reports.",
+    "contactSupport": "If you think this is a mistake, please contact support."
+  },
+  "verifyEmail": {
+    "title": "Email Verification",
+    "successMessage": "You have been successfully verified. You can now post.",
+    "alreadyConfirmedMessage": "Your email has already been confirmed.",
+    "expiredLinkMessage": "Your validation link has expired. Please request another one.",
+    "errorMessage": "An error occurred while verifying your email.",
+    "resendSuccessMessage": "A new verification email has been sent. Please check your inbox.",
+    "resendErrorMessage": "An error occurred while resending the verification email.",
+    "emailPlaceholder": "Email",
+    "resendButton": "Request new verification link"
+  },
+  "detailsModal": {
+    "offerForPost": "Offer for your post {{title}}",
+    "offerBy": "Offered by",
+    "otherWaysToContact": "Other ways to contact {{firstName}}: {{contact}}",
+    "closeButton": "Close"
+  },
+  "resetPassword": {
+    "resetPasswordTitle": "Reset Password",
+    "newPasswordLabel": "New password",
+    "confirmNewPasswordLabel": "Confirm new password",
+    "resetPasswordButton": "Reset Password",
+    "passwordMismatch": "Passwords don't match",
+    "passwordResetSuccess": "Password successfully reset",
+    "passwordResetError": "Error: Unable to reset password"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "Empty",
+    "markAllRead": "Mark all as read",
+    "markingRead": "Marking as read..."
+  },
   "categories": {
     "1": {
       "name": "Technology",

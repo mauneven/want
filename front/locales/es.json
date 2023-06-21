@@ -110,6 +110,58 @@
     "howTo": "Cómo...",
     "allRightsReserved": "Todos los derechos reservados."
   },
+  "deleteOn": {
+    "deletionProcessTitle": "Tu cuenta está en proceso de eliminación.",
+    "continueDeletionProcess": "Continuar con el proceso de eliminación",
+    "cancelDeletionProcess": "Cancelar el proceso de eliminación"
+  },
+  "isNotVerified": {
+    "title": "¡Casi estamos listos!",
+    "description": "Necesitas verificar tu cuenta para que sepamos que eres tú. Hemos enviado un correo electrónico con un enlace para que puedas verificar tu cuenta.",
+    "homepageLink": "Mientras tanto, puedes volver a la página de inicio"
+  },
+  "custom404": {
+    "title": "Ups, esta página no es para ti",
+    "description": "Lo siento, la página que estás buscando no existe.",
+    "homeLink": "Ir a la página de inicio"
+  },
+  "blocked": {
+    "title": "Has sido bloqueado",
+    "description": "Tu cuenta ha sido bloqueada debido a múltiples informes.",
+    "contactSupport": "Si crees que esto es un error, por favor contacta al soporte."
+  },
+  "verifyEmail": {
+    "title": "Verificación de correo electrónico",
+    "successMessage": "Tu correo electrónico ha sido verificado exitosamente. Ahora puedes publicar.",
+    "alreadyConfirmedMessage": "Tu correo electrónico ya ha sido confirmado.",
+    "expiredLinkMessage": "Tu enlace de validación ha expirado. Por favor, solicita otro enlace.",
+    "errorMessage": "Se produjo un error al verificar tu correo electrónico.",
+    "resendSuccessMessage": "Se ha enviado un nuevo correo electrónico de verificación. Por favor, revisa tu bandeja de entrada.",
+    "resendErrorMessage": "Se produjo un error al reenviar el correo electrónico de verificación.",
+    "emailPlaceholder": "Correo electrónico",
+    "resendButton": "Solicitar nuevo enlace de verificación"
+  },
+  "detailsModal": {
+    "offerForPost": "Oferta para tu publicación {{title}}",
+    "offerBy": "Ofrecido por",
+    "otherWaysToContact": "Otras formas de contactar a {{firstName}}: {{contact}}",
+    "closeButton": "Cerrar"
+  },
+  "resetPassword": {
+    "resetPasswordTitle": "Restablecer contraseña",
+    "newPasswordLabel": "Nueva contraseña",
+    "confirmNewPasswordLabel": "Confirmar nueva contraseña",
+    "resetPasswordButton": "Restablecer contraseña",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "passwordResetSuccess": "Contraseña restablecida correctamente",
+    "passwordResetError": "Error: No se pudo restablecer la contraseña"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "empty": "Vacío",
+    "markAllRead": "Marcar todo como leído",
+    "markingRead": "Marcando como leído..."
+  },
   "categories": {
     "1": {
       "name": "Tecnología",

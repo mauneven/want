@@ -15,7 +15,8 @@ export default function PostCategory({
 
   const [selectedCategory, setSelectedCategory] = useState(initialMainCategory);
   const [selectedSubcategory, setSelectedSubcategory] = useState(initialSubcategory);
-  const [selectedThirdCategory, setSelectedThirdCategory] = useState(initialThirdCategory);
+  const [selectedThirdCategory, setSelectedThirdCategory] = useState('');
+
   const [subcategoryOptions, setSubcategoryOptions] = useState([]);
   const [thirdCategoryOptions, setThirdCategoryOptions] = useState([]);
 
@@ -28,24 +29,27 @@ export default function PostCategory({
   useEffect(() => {
     if (selectedCategory) {
       const category = categoriesData.find((cat) => cat.id === selectedCategory);
-      setSubcategoryOptions(category.subcategories);
+      setSubcategoryOptions(category ? category.subcategories : []);
+      setSelectedSubcategory(initialSubcategory !== '' ? initialSubcategory : '');
+      setSelectedThirdCategory('');
     } else {
       setSubcategoryOptions([]);
+      setSelectedSubcategory('');
+      setSelectedThirdCategory('');
     }
-    setSelectedSubcategory('');
-    setSelectedThirdCategory('');
-  }, [selectedCategory]);
+  }, [selectedCategory]);  
 
   useEffect(() => {
     if (selectedSubcategory) {
       const category = categoriesData.find((cat) => cat.id === selectedCategory);
       const subcategory = category.subcategories.find((subcat) => subcat.id === selectedSubcategory);
-      setThirdCategoryOptions(subcategory.thirdCategories);
+      setThirdCategoryOptions(subcategory ? subcategory.thirdCategories : []);
+      setSelectedThirdCategory(initialThirdCategory !== '' ? initialThirdCategory : '');
     } else {
       setThirdCategoryOptions([]);
+      setSelectedThirdCategory('');
     }
-    setSelectedThirdCategory('');
-  }, [selectedSubcategory]);
+  }, [selectedSubcategory]);  
 
   const handleCategoryChange = (event) => {
     const category = event.target.value;
@@ -64,20 +68,24 @@ export default function PostCategory({
     if (onThirdCategoryChange) {
       onThirdCategoryChange('');
     }
+
+    const selectedCategoryData = categoriesData.find((cat) => cat.id === category);
+    setSubcategoryOptions(selectedCategoryData ? selectedCategoryData.subcategories : []);
   };
 
   const handleSubcategoryChange = (event) => {
     const subcategory = event.target.value;
     setSelectedSubcategory(subcategory);
-    setSelectedThirdCategory('');
 
     if (onSubcategoryChange) {
       onSubcategoryChange(subcategory);
     }
 
-    if (onThirdCategoryChange) {
-      onThirdCategoryChange('');
-    }
+    const category = categoriesData.find((cat) => cat.id === selectedCategory);
+    const selectedSubcategoryData = category.subcategories.find((subcat) => subcat.id === subcategory);
+    setThirdCategoryOptions(selectedSubcategoryData ? selectedSubcategoryData.thirdCategories : []);
+
+    setSelectedThirdCategory('');
   };
 
   const handleThirdCategoryChange = (event) => {
@@ -105,7 +113,7 @@ export default function PostCategory({
     <div className="d-flex flex-wrap align-items-center">
       <select
         id="category-select"
-        className="form-select me-4"
+        className="form-select mt-2"
         value={selectedCategory}
         onChange={handleCategoryChange}
         required={isRequired}
@@ -121,8 +129,8 @@ export default function PostCategory({
       {selectedCategory && (
         <select
           id="subcategory-select"
-          className="form-select me-4"
-          value={selectedSubcategory}
+          className="form-select mt-2"
+          value={selectedSubcategory || initialSubcategory}
           onChange={handleSubcategoryChange}
           required={isRequired}
         >

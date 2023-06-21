@@ -2,9 +2,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useTranslation } from 'react-i18next';
 
 const ResetPassword = () => {
   const router = useRouter();
+  const { t } = useTranslation();
   const { token } = router.query;
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -14,7 +16,7 @@ const ResetPassword = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setMessage("Passwords don't match");
+      setMessage(t('resetPassword.passwordMismatch'));
       return;
     }
 
@@ -28,23 +30,23 @@ const ResetPassword = () => {
       });
 
       if (response.ok) {
-        setMessage('Password successfully reset');
+        setMessage(t('resetPassword.passwordResetSuccess'));
         router.push('/login');
       } else {
-        setMessage('Error: Unable to reset password');
+        setMessage(t('resetPassword.passwordResetError'));
       }
     } catch (error) {
-      setMessage('Error: Unable to reset password');
+      setMessage(t('resetPassword.passwordResetError'));
     }
   };
 
   return (
     <div className="container">
-      <h1>Reset Password</h1>
+      <h1>{t('resetPassword.resetPasswordTitle')}</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="password" className="form-label">
-            New Password
+            {t('resetPassword.newPasswordLabel')}
           </label>
           <input
             type="password"
@@ -57,7 +59,7 @@ const ResetPassword = () => {
         </div>
         <div className="mb-3">
           <label htmlFor="confirmPassword" className="form-label">
-            Confirm New Password
+            {t('resetPassword.confirmNewPasswordLabel')}
           </label>
           <input
             type="password"
@@ -69,7 +71,7 @@ const ResetPassword = () => {
           />
         </div>
         <button type="submit" className="btn btn-primary">
-          Reset Password
+          {t('resetPassword.resetPasswordButton')}
         </button>
       </form>
       {message && (

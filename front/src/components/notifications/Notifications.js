@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Modal, Badge } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const router = useRouter();
+  const { t } = useTranslation();
   const [unreadNotifications, setUnreadNotifications] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -111,7 +113,7 @@ export default function Notifications() {
 
       <Modal centered show={showModal} onHide={() => setShowModal(false)} className='modal-lg'>
         <Modal.Header closeButton>
-          <Modal.Title>Notifications</Modal.Title>
+          <Modal.Title>{t('notifications.title')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {notifications.length > 0 ? (
@@ -128,7 +130,7 @@ export default function Notifications() {
               </div>
             ))
           ) : (
-            <div className="notification-item">Empty</div>
+            <div className="notification-item">{t('notifications.empty')}</div>
           )}
         </Modal.Body>
         <Modal.Footer>
@@ -144,11 +146,11 @@ export default function Notifications() {
                 aria-hidden="true"
               ></span>
             )}
-            {isLoading ? 'Marking as read...' : 'Mark all as read'}
+            {isLoading ? t('notifications.markingRead') : t('notifications.markAllRead')}
           </button>
         </Modal.Footer>
 
       </Modal>
     </>
   );
-};
+}

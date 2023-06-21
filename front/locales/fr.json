@@ -110,6 +110,58 @@
     "howTo": "Comment...",
     "allRightsReserved": "Tous droits réservés."
   },
+  "deleteOn": {
+    "deletionProcessTitle": "Votre compte est en cours de suppression.",
+    "continueDeletionProcess": "Continuer mon processus de suppression",
+    "cancelDeletionProcess": "Annuler mon processus de suppression"
+  },
+  "isNotVerified": {
+    "title": "Nous y sommes presque",
+    "description": "Vous devez vérifier votre compte pour que nous sachions que c'est vous. Nous avons envoyé un e-mail avec un lien pour vérifier votre compte.",
+    "homepageLink": "En attendant, vous pouvez revenir à la page d'accueil"
+  },
+  "custom404": {
+    "title": "Oups, cette page n'est pas pour vous",
+    "description": "Désolé, la page que vous recherchez n'existe pas.",
+    "homeLink": "Retourner à la page d'accueil"
+  },
+  "blocked": {
+    "title": "Vous avez été banni",
+    "description": "Votre compte a été bloqué en raison de plusieurs signalements.",
+    "contactSupport": "Si vous pensez qu'il s'agit d'une erreur, veuillez contacter le support."
+  },
+  "verifyEmail": {
+    "title": "Vérification de l'email",
+    "successMessage": "Votre email a été vérifié avec succès. Vous pouvez maintenant publier.",
+    "alreadyConfirmedMessage": "Votre email a déjà été confirmé.",
+    "expiredLinkMessage": "Votre lien de validation a expiré. Veuillez en demander un autre.",
+    "errorMessage": "Une erreur s'est produite lors de la vérification de votre email.",
+    "resendSuccessMessage": "Un nouvel email de vérification a été envoyé. Veuillez vérifier votre boîte de réception.",
+    "resendErrorMessage": "Une erreur s'est produite lors de la renvoi de l'email de vérification.",
+    "emailPlaceholder": "Email",
+    "resendButton": "Demander un nouveau lien de vérification"
+  },
+  "detailsModal": {
+    "offerForPost": "Offre pour votre publication {{title}}",
+    "offerBy": "Proposé par",
+    "otherWaysToContact": "Autres moyens de contacter {{firstName}} : {{contact}}",
+    "closeButton": "Fermer"
+  },
+  "resetPassword": {
+    "resetPasswordTitle": "Réinitialiser le mot de passe",
+    "newPasswordLabel": "Nouveau mot de passe",
+    "confirmNewPasswordLabel": "Confirmer le nouveau mot de passe",
+    "resetPasswordButton": "Réinitialiser le mot de passe",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "passwordResetSuccess": "Réinitialisation du mot de passe réussie",
+    "passwordResetError": "Erreur : impossible de réinitialiser le mot de passe"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "Vide",
+    "markAllRead": "Tout marquer comme lu",
+    "markingRead": "Marquage comme lu..."
+  },
   "categories": {
     "1": {
       "name": "Technologie",

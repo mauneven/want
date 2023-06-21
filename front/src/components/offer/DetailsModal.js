@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import UserModal from "../user/UserModal";
+import { useTranslation } from 'react-i18next';
 
 const DetailsModal = ({ show, onHide, offer }) => {
   if (!offer) return null;
@@ -14,6 +15,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [selectedUser, setSelectedUser] = useState(null);
   const [showUserModal, setShowUserModal] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (offer.photos && offer.photos.length > 0) {
@@ -87,7 +89,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
     <>
       <Modal show={show} onHide={onHide} dialogClassName="modal-xl">
         <Modal.Header closeButton>
-          <Modal.Title>Offer for your post {offer.post.title}</Modal.Title>
+          <Modal.Title>{t('detailsModal.offerForPost', { title: offer.post.title })}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="row">
@@ -146,7 +148,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
               </p>
               <p>{offer.description}</p>
               <p className='mb-2'>
-                Offer by{' '}
+                {t('detailsModal.offerBy')}{' '}
                 <span className="text-success" style={{ cursor: 'pointer' }} onClick={() => openUserModal(offer.createdBy)}>
                   {offer.createdBy.firstName} {offer.createdBy.lastName}
                 </span>
@@ -170,7 +172,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
                   </button>
                   </div>
                   <p>
-                    Other ways to contact {offer.createdBy.firstName}: {offer.contact}
+                    {t('detailsModal.otherWaysToContact', { firstName: offer.createdBy.firstName, contact: offer.contact })}
                   </p>
                 </>
               )}
@@ -179,7 +181,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
         </Modal.Body>
         <Modal.Footer>
           <button className="btn btn-secondary" onClick={onHide}>
-            Close
+            {t('detailsModal.closeButton')}
           </button>
         </Modal.Footer>
       </Modal>
