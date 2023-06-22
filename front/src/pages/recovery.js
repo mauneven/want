@@ -45,7 +45,7 @@ const PasswordRecovery = () => {
             required
           />
         </div>
-        <button type="submit" className="btn btn-warning">
+        <button type="submit" className="btn btn-success">
           Send me a recovery for my account
         </button>
       </form>

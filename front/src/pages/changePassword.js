@@ -115,7 +115,7 @@ const ChangePassword = () => {
                         required
                     />
                 </div>
-                <button type="submit" className="btn btn-warning">
+                <button type="submit" className="btn btn-success">
                     Change my password
                 </button>
             </form>

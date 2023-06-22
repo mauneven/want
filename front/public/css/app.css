@@ -1,0 +1,11 @@
+.container-fluid{
+    padding-left: 4em;
+    padding-right: 4em;
+}
+
+@media (max-width: 766px) {
+    .container-fluid{
+        padding-left: 0em;
+        padding-right: 0em;
+    }
+  }

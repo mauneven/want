@@ -192,13 +192,12 @@ export default function MegaMenu({
 
   return (
     <>
-      <Navbar style={{ top: 0, zIndex: 1000 }} className="border">
-        <div className="container-fluid">
+      <Navbar style={{ top: 0, zIndex: 1000 }} className="">
           <Navbar.Brand
             onClick={handleLogoClick}
             className="divhover text-center align-center m-0 p-0"
           >
-            <h3 className="want-logo m-0 text-center text-warning">Want</h3>
+            <h3 className="want-logo m-0 text-center text-success">Want</h3>
           </Navbar.Brand>
           <Form
             className="d-flex flex-grow-1 w-auto search-bar border rounded-5 search-bar-navbar text-center"
@@ -236,12 +235,6 @@ export default function MegaMenu({
           {!isMobile && (
             <Nav className="">
               <LanguageSelector />
-              <CategoriesModal
-                isShown={showCategoriesModal}
-                onHide={handleCloseCategories}
-                onCategorySelected={handleCategorySelected}
-                buttonText={categoriesButtonText}
-              />
               <Nav.Link className="nav-item"></Nav.Link>
               <Nav.Link
                 className="nav-item"
@@ -332,7 +325,6 @@ export default function MegaMenu({
               </Button>
             </>
           )}
-        </div>
       </Navbar>
       {isMobile && (
         <Offcanvas
@@ -407,7 +399,7 @@ export default function MegaMenu({
           </Offcanvas.Body>
         </Offcanvas>
       )}
-      <CategorySlider onCategorySelected={handleCategorySelected} />
+          <CategorySlider onCategorySelected={handleCategorySelected} />
     </>
   );
 }

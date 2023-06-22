@@ -62,7 +62,8 @@ export default function MyApp({ Component, pageProps }) {
 
   return (
     <LanguageProvider>
-      <div className="container-fluid p-0">
+      <div className="container-fluid">
+        <link rel="stylesheet" href="/css/app.css" />
         <header className="sticky-top">
           <MegaMenu
             onLocationFilterChange={handleLocationFilterChange}
@@ -74,7 +75,7 @@ export default function MyApp({ Component, pageProps }) {
           <link rel="stylesheet" href="/css/navbar.css" />
         </header>
 
-        <div className="containerboy">
+        <div className="">
           <Suspense fallback="Loading...">
             <Component
               {...pageProps}

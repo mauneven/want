@@ -70,7 +70,7 @@ const ResetPassword = () => {
             required
           />
         </div>
-        <button type="submit" className="btn btn-warning">
+        <button type="submit" className="btn btn-success">
           {t('resetPassword.resetPasswordButton')}
         </button>
       </form>

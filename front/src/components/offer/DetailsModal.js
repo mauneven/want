@@ -165,7 +165,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
                   </div>
                   <div>
                   <button
-                    className="btn-warning btn rounded-5 mt-2 mb-2"
+                    className="btn-success btn rounded-5 mt-2 mb-2"
                     onClick={() => window.open(`tel:+${offer.countryCode}${offer.phoneNumber}`, '_blank')}
                   >
                     <i className="bi bi-telephone-forward"></i> {`+${offer.countryCode} ${offer.phoneNumber}`}

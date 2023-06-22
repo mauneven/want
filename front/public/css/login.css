@@ -12,17 +12,17 @@
 }
 
 .btn-login{
-    background-color: #f3b34d;
+    background-color: #3bb305;
     border:none;
     transition: 0.3s;
 }
 
 .btn-login:hover{
-    background-color: #f3b34d;
+    background-color: #3bb305;
 }
 
 .user-link{
-    color: #f3b34d;
+    color: #3bb305;
     transition: 0.1s;
 }
 .user-link:hover{
@@ -30,8 +30,8 @@
 }
 
 .user-link:active{
-    color: #f3b34d;
-    box-shadow: 0 0 2px #f3b34d;
+    color: #3bb305;
+    box-shadow: 0 0 2px #3bb305;
 }
 
 .rst-pwd{
@@ -41,6 +41,6 @@
 }
 
 .rst-pwd:hover{
-    color: #f3b34d;
+    color: #3bb305;
     text-decoration: underline;
 }

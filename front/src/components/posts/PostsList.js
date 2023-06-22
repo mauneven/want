@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import ContentLoader from "react-content-loader";
 import { useRouter } from "next/router";
 import UserModal from "../user/UserModal";
-import PostsListCategories from "../categories/PostsListCategories";
-import SubcategoriesSlider from "../categories/CategorySlider";
 
 const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter,
 }) => {
@@ -150,7 +148,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter,
   };
 
   return (
-    <div className="container-fluid">
+    <div className="">
       <div className="row row-cols-1 row-cols-md-4 row-cols-lg-5 row-cols-xl-5 g-4">
         {posts.map((post) => {
           const userReputation = 5 - 0.3 * post.createdBy.reports.length;
