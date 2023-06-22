@@ -4,6 +4,9 @@ import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import MegaMenu from "@/components/navigation/Navbar";
 import { LanguageProvider } from "@/components/language/LanguageProvider";
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import Footer from "@/components/footer/Footer";
 import i18n from "../../i18n";
 
@@ -59,7 +62,7 @@ export default function MyApp({ Component, pageProps }) {
 
   return (
     <LanguageProvider>
-      <div>
+      <div className="container-fluid p-0">
         <header className="sticky-top">
           <MegaMenu
             onLocationFilterChange={handleLocationFilterChange}
@@ -71,7 +74,7 @@ export default function MyApp({ Component, pageProps }) {
           <link rel="stylesheet" href="/css/navbar.css" />
         </header>
 
-        <Container className="containerboy">
+        <div className="containerboy">
           <Suspense fallback="Loading...">
             <Component
               {...pageProps}
@@ -88,7 +91,7 @@ export default function MyApp({ Component, pageProps }) {
           <link rel="stylesheet" href="/css/notifications.css" />
           <link rel="stylesheet" href="/css/postById.css" />
           <link rel="stylesheet" href="/css/receivedOffers.css" />
-        </Container>
+        </div>
 
         <footer>
           <Footer />

@@ -40,7 +40,7 @@ const ReportOfferModal = ({ offerId, onReport }) => {
                 required
               />
             </Form.Group>
-            <Button variant="primary" type="submit">
+            <Button variant="warning" type="submit">
               Send report
             </Button>
           </Form>

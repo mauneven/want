@@ -9,7 +9,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-light py-4">
-      <Container>
+      <div className='container-fluid'>
         <Row className="g-3">
           <Col md="3">
             <h5>{t('footer.wantTitle')}</h5>
@@ -93,7 +93,7 @@ const Footer = () => {
             <p className="mb-0">&copy; {new Date().getFullYear()} Want, S.A.S | {t('footer.allRightsReserved')}</p>
           </Col>
         </Row>
-      </Container>
+      </div>
     </footer>
   );
 };

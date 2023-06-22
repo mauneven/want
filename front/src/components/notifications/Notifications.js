@@ -124,7 +124,7 @@ export default function Notifications() {
                   handleNotificationClick(notification._id);
                   setShowModal(false);
                 }}
-                className={`notification-item ${!notification.isRead ? 'bg-primary text-white' : ''}`}
+                className={`notification-item ${!notification.isRead ? 'bg-warning text-white' : ''}`}
               >
                 {notification.content}
               </div>
@@ -135,7 +135,7 @@ export default function Notifications() {
         </Modal.Body>
         <Modal.Footer>
           <button
-            className="btn btn-success rounded-4"
+            className="btn btn-success rounded-5"
             onClick={markAllNotificationsAsRead}
             disabled={isLoading}
           >

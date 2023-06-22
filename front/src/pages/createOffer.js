@@ -307,7 +307,7 @@ const CreateOffer = () => {
                         <div className="photo-preview">
                           <img
                             src={URL.createObjectURL(photos[index - 1])}
-                            className="img-thumbnail border-0 uploaded-photos rounded-4"
+                            className="img-thumbnail border-0 uploaded-photos rounded-5"
                             alt={`Photo ${index}`}
                           />
                         </div>

@@ -183,7 +183,7 @@ export default function ReceivedOffers() {
                 .sort(compareOffersByDate)
                 .map((offer) => (
                   <div key={offer._id} className="col-12 col-md-6">
-                    <div className="card post rounded-4 mb-4">
+                    <div className="card post rounded-5 mb-4">
                       <div>
                         <div className="card-body d-flex flex-column">
                           <div className="card-body d-flex flex-row align-items-center">

@@ -61,58 +61,30 @@ const CreatePost = () => {
     }
   };
 
-  const handleFileChange = (e, index) => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const newPhotos = [...photos];
-      newPhotos[index] = file;
+      const emptyIndex = newPhotos.findIndex((photo) => photo === null);
+      if (emptyIndex !== -1) {
+        newPhotos[emptyIndex] = file;
+      } else {
+        newPhotos.push(file);
+      }
       setPhotos(newPhotos);
     }
   };
 
   const handleDeletePhoto = (index) => {
     const newPhotos = [...photos];
-    newPhotos[index] = null;
-    setPhotos(newPhotos);
+    newPhotos.splice(index, 1);
+    setPhotos(newPhotos.slice(0, 4));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleCreatePost = async () => {
     setLoading(true);
 
-    // Check for bad words in title and description
-    if (bwf.containsBadWord(title)) {
-      alert(
-        `Escribiste una mala palabra en el titulo: ${bwf.devolverPalabra(
-          title
-        )}`
-      );
-      setLoading(false);
-      return;
-    }
-
-    if (bwf.containsBadWord(description)) {
-      alert(
-        `Escribiste una mala palabra en la descripción: ${bwf.devolverPalabra(
-          description
-        )}`
-      );
-      setLoading(false);
-      return;
-    }
-
-    console.log("Submitting post with values:", {
-      title,
-      description,
-      country,
-      state,
-      city,
-      mainCategory,
-      subCategory,
-      thirdCategory,
-      price,
-      photos,
-    });
+    // Validar los campos requeridos y realizar otras validaciones necesarias
 
     const formData = new FormData();
     formData.append("title", title);
@@ -150,7 +122,7 @@ const CreatePost = () => {
       }
 
       setLoading(false);
-      router.push("/"); // Redirige al inicio después de crear un post exitosamente
+      router.push("/");
     } catch (error) {
       setLoading(false);
       setError(error.message);
@@ -162,14 +134,14 @@ const CreatePost = () => {
       <h1 className="text-center mb-4">Create a post about what you Want</h1>
       <div className="">
         <div className="form-container container">
-          <form onSubmit={handleSubmit} className="">
+          <form>
             <div className="mb-3">
               <label htmlFor="title" className="form-label">
                 Give a title to what you want*
               </label>
               <input
                 type="text"
-                className="form-control rounded-4"
+                className="form-control rounded-5"
                 id="title"
                 value={title}
                 onChange={handleTitleChange}
@@ -181,11 +153,11 @@ const CreatePost = () => {
                 Now describe it in more detail*
               </label>
               <textarea
-                className="form-control rounded-4"
+                className="form-control rounded-5"
                 id="description"
                 value={description}
                 onChange={handleDescriptionChange}
-                rows={4} // Establece el número de filas iniciales
+                rows={4}
                 required
               ></textarea>
             </div>
@@ -195,7 +167,7 @@ const CreatePost = () => {
               </label>
               <input
                 type="number"
-                className="form-control rounded-4"
+                className="form-control rounded-5"
                 id="price"
                 value={price}
                 onChange={handlePriceChange}
@@ -251,7 +223,7 @@ const CreatePost = () => {
                       <div className="photo-preview">
                         <img
                           src={URL.createObjectURL(photos[index - 1])}
-                          className="img-thumbnail border-0 uploaded-photos rounded-4"
+                          className="img-thumbnail border-0 uploaded-photos rounded-5"
                           alt={`Photo ${index}`}
                         />
                       </div>
@@ -265,7 +237,7 @@ const CreatePost = () => {
                           className="form-control visually-hidden"
                           id={`photo${index}`}
                           accept="image/png, image/jpeg"
-                          onChange={(e) => handleFileChange(e, index - 1)}
+                          onChange={handleFileChange}
                         />
                       </label>
                     )}
@@ -273,6 +245,7 @@ const CreatePost = () => {
                       <button
                         className="btn btn-light circle btn-sm delete-photo"
                         onClick={() => handleDeletePhoto(index - 1)}
+                        type="button"
                       >
                         <i className="bi bi-trash fs-5"></i>
                       </button>
@@ -281,10 +254,12 @@ const CreatePost = () => {
                 </div>
               ))}
             </div>
+            {error && <div className="alert alert-danger">{error}</div>}
             <button
-              type="submit"
-              className="btn btn-success rounded-4 mt-2"
+              type="button"
+              className="btn btn-success rounded-5 mt-2"
               disabled={loading}
+              onClick={handleCreatePost}
             >
               {loading ? (
                 <span

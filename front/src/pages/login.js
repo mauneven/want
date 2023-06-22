@@ -122,7 +122,7 @@ export default function Login() {
 
   return (
     <div className="container form-container">
-      <div className='card login-form rounded-4 p-3'>
+      <div className='card login-form rounded-5 p-3'>
         <div className='card-body'>
           <div className="container">
             <h1 className="text-center">{isLogin ? t('login.loginTitle') : t('login.signupTitle')}</h1>
@@ -135,39 +135,39 @@ export default function Login() {
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label htmlFor="email" className="form-label">{t('login.emailLabel')}</label>
-                <input type="email" className="form-control rounded-4" id="email" name="email" placeholder={t('login.emailPlaceholder')} required />
+                <input type="email" className="form-control rounded-5" id="email" name="email" placeholder={t('login.emailPlaceholder')} required />
               </div>
               <div className="mb-3">
                 <label htmlFor="password" className="form-label">{t('login.passwordLabel')}</label>
-                <input type="password" className="form-control rounded-4" id="password" name="password" placeholder={t('login.passwordPlaceholder')} required />
+                <input type="password" className="form-control rounded-5" id="password" name="password" placeholder={t('login.passwordPlaceholder')} required />
               </div>
               {!isLogin && (
                 <>
                   <div className="mb-3">
                     <label htmlFor="confirmPassword" className="form-label">{t('login.confirmPasswordLabel')}</label>
-                    <input type="password" className="form-control rounded-4" id="confirmPassword" name="confirmPassword" placeholder={t('login.confirmPasswordPlaceholder')} required />
+                    <input type="password" className="form-control rounded-5" id="confirmPassword" name="confirmPassword" placeholder={t('login.confirmPasswordPlaceholder')} required />
                   </div>
 
                   <div className="mb-3">
                     <label htmlFor="firstName" className="form-label">{t('login.firstNameLabel')}</label>
-                    <input type="text" className="form-control rounded-4" id="firstName" name="firstName" required />
+                    <input type="text" className="form-control rounded-5" id="firstName" name="firstName" required />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="lastName" className="form-label">{t('login.lastNameLabel')}</label>
-                    <input type="text" className="form-control rounded-4" id="lastName" name="lastName" required />
+                    <input type="text" className="form-control rounded-5" id="lastName" name="lastName" required />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="phone" className="form-label">{t('login.phoneLabel')}</label>
-                    <input type="tel" className="form-control rounded-4" id="phone" name="phone" required />
+                    <input type="tel" className="form-control rounded-5" id="phone" name="phone" required />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="birthdate" className="form-label">{t('login.birthdateLabel')}</label>
-                    <input type="date" className="form-control rounded-4" id="birthdate" name="birthdate" required />
+                    <input type="date" className="form-control rounded-5" id="birthdate" name="birthdate" required />
                   </div>
                 </>
               )}
               <div className="mb-3">
-                <button type="submit" className="btn btn-success rounded-4 btn-login">{isLogin ? t('login.loginButton') : t('login.signupButton')}</button>
+                <button type="submit" className="btn btn-success rounded-5 btn-login">{isLogin ? t('login.loginButton') : t('login.signupButton')}</button>
               </div>
             </form>
             <div>

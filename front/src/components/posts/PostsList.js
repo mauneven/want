@@ -2,121 +2,126 @@ import React, { useState, useEffect } from "react";
 import ContentLoader from "react-content-loader";
 import { useRouter } from "next/router";
 import UserModal from "../user/UserModal";
+import PostsListCategories from "../categories/PostsListCategories";
+import SubcategoriesSlider from "../categories/CategorySlider";
 
-const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, currentPage, setCurrentPage }) => {
+const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter,
+}) => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [pageSize, setPageSize] = useState(12);
+  const [pageSize, setPageSize] = useState(6);
   const [totalPosts, setTotalPosts] = useState(0);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const maxPagesToShow = 6;
-  const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMorePosts, setHasMorePosts] = useState(false);
+  const [noMorePosts, setNoMorePosts] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
   const router = useRouter();
 
   const fetchPosts = async () => {
     try {
       setIsLoading(true);
+      setIsFetching(true);
 
       const filterParams = new URLSearchParams({
-        country: locationFilter?.country || '',
-        state: locationFilter?.state || '',
-        city: locationFilter?.city || '',
-        mainCategory: categoryFilter?.mainCategory || '',
-        subCategory: categoryFilter?.subCategory || '',
-        thirdCategory: categoryFilter?.thirdCategory || '', // Incluir tercer categoría
-        searchTerm: searchTerm || '',
+        country: locationFilter?.country || "",
+        state: locationFilter?.state || "",
+        city: locationFilter?.city || "",
+        mainCategory: categoryFilter?.mainCategory || "",
+        subCategory: categoryFilter?.subCategory || "", // Filtro por subcategoría
+        thirdCategory: categoryFilter?.thirdCategory || "",
+        searchTerm: searchTerm || "",
         page: currentPage,
-        pageSize
-      });      
+        pageSize,
+      });
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?${filterParams}`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?${filterParams}`
+      );
       const { posts: postsData, totalPosts } = await response.json();
 
       setTotalPosts(totalPosts);
-      setPosts(postsData);
+      setHasMorePosts(postsData.length < totalPosts);
+      setNoMorePosts(postsData.length === 0);
+
+      if (currentPage === 1) {
+        setPosts(postsData);
+      } else {
+        setPosts((prevPosts) => [...prevPosts, ...postsData]);
+      }
     } catch (error) {
-      console.error('Error fetching posts:', error);
+      console.error("Error fetching posts:", error);
     } finally {
+      setIsFetching(false);
       setIsLoading(false);
+      setIsFetchingMore(false);
     }
   };
 
   useEffect(() => {
+    setCurrentPage(1);
+  }, [locationFilter, userIdFilter, searchTerm, categoryFilter]);
+
+  useEffect(() => {
     fetchPosts();
-  }, [locationFilter, userIdFilter, searchTerm, categoryFilter, currentPage, pageSize]);
+  }, [
+    locationFilter,
+    userIdFilter,
+    searchTerm,
+    categoryFilter,
+    currentPage,
+    pageSize,
+  ]);
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop =
+        (document.documentElement && document.documentElement.scrollTop) ||
+        document.body.scrollTop;
+      const scrollHeight =
+        (document.documentElement && document.documentElement.scrollHeight) ||
+        document.body.scrollHeight;
+      const clientHeight =
+        document.documentElement.clientHeight || window.innerHeight;
+      const scrolledToBottom =
+        Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+      const scrolledToTop = scrollTop === 0;
 
-  const totalPages = Math.ceil(totalPosts / pageSize);
-  const showEllipsis = totalPages > maxPagesToShow;
+      if (
+        scrolledToBottom &&
+        hasMorePosts &&
+        !isLoading &&
+        !isFetching &&
+        !isFetchingMore
+      ) {
+        setIsFetchingMore(true);
+        setCurrentPage((prevPage) => prevPage + 1);
+      }
 
-  const renderPagination = () => {
-    const pages = [];
+      if (scrolledToTop && !isLoading && !isFetching && !isFetchingMore) {
+        setHasMorePosts(false);
+      }
+    };
 
-    // Rango de páginas a mostrar
-    const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+    window.addEventListener("scroll", handleScroll);
 
-    // Botón "..."
-    if (showEllipsis && endPage < totalPages) {
-      pages.push(
-        <button key={0} className="btn btn-link" disabled>
-          ...
-        </button>
-      );
-    }
-
-    // Páginas
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(
-        <button
-          key={i}
-          className={`btn btn-success m-1${i === currentPage ? " active" : ""}`}
-          onClick={() => handlePageChange(i)}
-        >
-          {i}
-        </button>
-      );
-    }
-
-    return pages;
-  };
-
-  const renderPrevButton = () => {
-    if (currentPage > 1) {
-      return (
-        <button
-          className="btn btn-success m-1"
-          onClick={() => handlePageChange(currentPage - 1)}
-        >
-          {"<"}
-        </button>
-      );
-    }
-
-    return null;
-  };
-
-  const renderNextButton = () => {
-    if (currentPage < totalPages) {
-      return (
-        <button
-          className="btn btn-success m-1"
-          onClick={() => handlePageChange(currentPage + 1)}
-        >
-          {">"}
-        </button>
-      );
-    }
-
-    return null;
-  };
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [hasMorePosts, isLoading, isFetching, isFetchingMore]);
 
   const Placeholder = () => (
     <div className="col mx-auto">
-      <ContentLoader speed={2} width="100%" height={450} viewBox="0 0 260 450" backgroundColor="#f3f3f3" foregroundColor="#ecebeb">
+      <ContentLoader
+        speed={2}
+        width="100%"
+        height={450}
+        viewBox="0 0 260 450"
+        backgroundColor="#f3f3f3"
+        foregroundColor="#ecebeb"
+      >
         <rect x="0" y="0" rx="10" ry="10" width="260" height="310" />
         <rect x="0" y="330" rx="3" ry="3" width="260" height="20" />
         <rect x="0" y="360" rx="3" ry="3" width="260" height="20" />
@@ -136,107 +141,132 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
     setShowModal(false);
   };
 
-  return (
-    <div className="container">
-      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 pb-5">
-        {!isLoading ? (
-          posts.length > 0 ? (
-            posts.map((post) => {
-              // Calcular la reputación del usuario
-              const userReputation = 5 - (0.3 * post.createdBy.reports.length);
+  const handleSubcategoryChange = (subcategory) => {
+    setCurrentPage(1); // Reiniciar la página al cambiar la subcategoría
+    setPosts([]); // Limpiar los posts actuales
+    setNoMorePosts(false); // Restablecer el estado de noMorePosts
 
-              return (
-                <div key={post._id} className="col">
-                  <div className="card post rounded-4">
-                    {post.photos && post.photos.length > 0 && (
-                      <div
-                        id={`carousel-${post._id}`}
-                        className="carousel slide"
-                        data-bs-ride="carousel"
-                        style={{ height: "200px", overflow: "hidden" }}
-                      >
-                        <div className="carousel-inner">
-                          {post.photos.map((photos, index) => (
-                            <div
-                              className={`carousel-item ${index === 0 ? "active" : ""}`}
-                              key={index}
-                            >
-                              <img
-                                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`}
-                                className="d-block w-100"
-                                alt={`Slide ${index}`}
-                                loading="lazy"
-                              />
-                            </div>
-                          ))}
+    // Realizar cualquier acción adicional según sea necesario al cambiar la subcategoría
+  };
+
+  return (
+    <div className="container-fluid">
+      <div className="row row-cols-1 row-cols-md-4 row-cols-lg-5 row-cols-xl-5 g-4">
+        {posts.map((post) => {
+          const userReputation = 5 - 0.3 * post.createdBy.reports.length;
+          return (
+            <div key={post._id} className="col">
+              <div className="card post rounded-5">
+                {post.photos && post.photos.length > 0 && (
+                  <div
+                    id={`carousel-${post._id}`}
+                    className="carousel slide"
+                    data-bs-ride="carousel"
+                    style={{ height: "200px", overflow: "hidden" }}
+                  >
+                    <div className="carousel-inner">
+                      {post.photos.map((photos, index) => (
+                        <div
+                          className={`carousel-item ${
+                            index === 0 ? "active" : ""
+                          }`}
+                          key={index}
+                        >
+                          <img
+                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`}
+                            className="d-block w-100"
+                            alt={`Slide ${index}`}
+                            loading="lazy"
+                          />
                         </div>
-                        <button
-                          className="carousel-control-prev"
-                          type="button"
-                          data-bs-target={`#carousel-${post._id}`}
-                          data-bs-slide="prev"
-                          style={{ bottom: "40px" }} // Posición inferior del botón prev
-                        >
-                          <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                          <span className="visually-hidden">Previous</span>
-                        </button>
-                        <button
-                          className="carousel-control-next"
-                          type="button"
-                          data-bs-target={`#carousel-${post._id}`}
-                          data-bs-slide="next"
-                          style={{ bottom: "40px" }} // Posición inferior del botón next
-                        >
-                          <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                          <span className="visually-hidden">Next</span>
-                        </button>
-                      </div>
-                    )}
-                    <div className="card-body">
-                      <h5 className="card-title post-title mb-2" onClick={() => router.push(`/post/${post._id}`)}>
-                        <a style={{ color: "inherit", textDecoration: "none" }}>
-                          {post.title}
-                        </a>
-                      </h5>
-                      <h5 className="text-success" onClick={() => router.push(`/post/${post._id}`)}>
-                        ${post.price.toLocaleString()}
-                      </h5>
-                      <p className="card-text post-text mb-2" onClick={() => router.push(`/post/${post._id}`)}>
-                        {post.description.length > 100 ? post.description.substring(0, 100) + "..." : post.description}
-                      </p>
+                      ))}
                     </div>
-                    <div className="card-footer text-center" onClick={() => openModal(post.createdBy)} style={{ cursor: "pointer" }}>
-                      <div className="d-flex align-items-center justify-content-center">
-                        <img
-                          src={
-                            post.createdBy.photo
-                              ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
-                              : "/icons/person-circle.svg"
-                          }
-                          alt=""
-                          className="createdBy-photo p-1"
-                        />
-                        <div className="ms-2">
-                          <small className="text-muted text-center">
-                            {post.createdBy.firstName}
-                          </small>
-                          <div className="d-flex align-items-center">
-                            <i className="bi bi-star-fill me-1"></i>
-                            <small className="text-muted">{userReputation.toFixed(1)}</small>
-                          </div>
-                        </div>
+                    <button
+                      className="carousel-control-prev"
+                      type="button"
+                      data-bs-target={`#carousel-${post._id}`}
+                      data-bs-slide="prev"
+                      style={{ bottom: "40px" }}
+                    >
+                      <span
+                        className="carousel-control-prev-icon"
+                        aria-hidden="true"
+                      ></span>
+                      <span className="visually-hidden">Previous</span>
+                    </button>
+                    <button
+                      className="carousel-control-next"
+                      type="button"
+                      data-bs-target={`#carousel-${post._id}`}
+                      data-bs-slide="next"
+                      style={{ bottom: "40px" }}
+                    >
+                      <span
+                        className="carousel-control-next-icon"
+                        aria-hidden="true"
+                      ></span>
+                      <span className="visually-hidden">Next</span>
+                    </button>
+                  </div>
+                )}
+                <div className="card-body">
+                  <h5
+                    className="card-title post-title mb-2"
+                    onClick={() => router.push(`/post/${post._id}`)}
+                  >
+                    <a style={{ color: "inherit", textDecoration: "none" }}>
+                      {post.title}
+                    </a>
+                  </h5>
+                  <h5
+                    className="text-success"
+                    onClick={() => router.push(`/post/${post._id}`)}
+                  >
+                    ${post.price.toLocaleString()}
+                  </h5>
+                  <p
+                    className="card-text post-text mb-2"
+                    onClick={() => router.push(`/post/${post._id}`)}
+                  >
+                    {post.description.length > 100
+                      ? post.description.substring(0, 100) + "..."
+                      : post.description}
+                  </p>
+                </div>
+                <div
+                  className="card-footer text-center"
+                  onClick={() => openModal(post.createdBy)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className="d-flex align-items-center justify-content-center">
+                    <img
+                      src={
+                        post.createdBy.photo
+                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
+                          : "/icons/person-circle.svg"
+                      }
+                      alt=""
+                      className="createdBy-photo p-1"
+                    />
+                    <div className="ms-2">
+                      <small className="text-muted text-center">
+                        {post.createdBy.firstName}
+                      </small>
+                      <div className="d-flex align-items-center">
+                        <i className="bi bi-star-fill me-1"></i>
+                        <small className="text-muted">
+                          {userReputation.toFixed(1)}
+                        </small>
                       </div>
                     </div>
                   </div>
                 </div>
-              );
-            })
-          ) : (
-            <div className="col-md-12">
-              <p>There are no posts with those filters. Please try something else.</p>
+              </div>
             </div>
-          )
-        ) : (
+          );
+        })}
+
+        {isLoading && (
           <>
             <Placeholder />
             <Placeholder />
@@ -252,12 +282,12 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
             <Placeholder />
           </>
         )}
-      </div>
 
-      <div className="pagination justify-content-center">
-        {renderPrevButton()}
-        {renderPagination()}
-        {renderNextButton()}
+        {!hasMorePosts && !isLoading && !isFetchingMore && (
+          <div className="col-md-12">
+            <p>No more posts available.</p>
+          </div>
+        )}
       </div>
 
       <UserModal

@@ -220,7 +220,7 @@ const EditPost = () => {
               </label>
               <input
                 type="text"
-                className="form-control rounded-4"
+                className="form-control rounded-5"
                 id="title"
                 value={title}
                 onChange={handleTitleChange}
@@ -232,7 +232,7 @@ const EditPost = () => {
                 Now describe it in more detail*
               </label>
               <textarea
-                className="form-control rounded-4"
+                className="form-control rounded-5"
                 id="description"
                 value={description}
                 onChange={handleDescriptionChange}
@@ -246,7 +246,7 @@ const EditPost = () => {
               </label>
               <input
                 type="number"
-                className="form-control rounded-4"
+                className="form-control rounded-5"
                 id="price"
                 value={price}
                 onChange={handlePriceChange}
@@ -305,7 +305,7 @@ const EditPost = () => {
                       <div className="photo-preview">
                         <img
                           src={photos[index - 1].preview}
-                          className="img-thumbnail border-0 uploaded-photos rounded-4"
+                          className="img-thumbnail border-0 uploaded-photos rounded-5"
                           alt={`Photo ${index}`}
                         />
                       </div>
@@ -339,7 +339,7 @@ const EditPost = () => {
             {error && <div className="alert alert-danger">{error}</div>}
             <button
               type="submit"
-              className="btn btn-lg btn-success rounded-4"
+              className="btn btn-lg btn-success rounded-5"
               disabled={loading}
             >
               {loading ? (

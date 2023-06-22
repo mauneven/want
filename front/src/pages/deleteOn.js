@@ -40,7 +40,7 @@ const DeleteOn = () => {
       <div className="card my-4">
         <div className="card-body">
           <h2>{t('deleteOn.deletionProcessTitle')}</h2>
-          <button className="btn btn-primary me-3" onClick={handleContinueDeletion}>
+          <button className="btn btn-warning me-3" onClick={handleContinueDeletion}>
             {t('deleteOn.continueDeletionProcess')}
           </button>
           <button className="btn btn-danger" onClick={handleCancelDeletion}>

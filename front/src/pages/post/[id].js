@@ -244,7 +244,7 @@ const PostDetails = () => {
             </div>
             <div className="mt-3">
               <Link href={`/createOffer?postId=${id}`}>
-                <button className="btn rounded-4 btn-offer">
+                <button className="btn rounded-5 btn-offer">
                   {t("postDetails.makeAnOffer")}
                 </button>
               </Link>

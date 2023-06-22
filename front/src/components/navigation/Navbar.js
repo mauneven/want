@@ -14,9 +14,9 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Notifications from "../notifications/Notifications";
 import CategoriesModal from "../categories/CategoriesPosts";
-import { useTranslation, I18nextProvider } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import LanguageSelector from "../language/LanguageSelector";
-import i18n from "../../../i18n";
+import CategorySlider from "../categories/CategorySlider";
 
 export default function MegaMenu({
   onLocationFilterChange,
@@ -25,7 +25,7 @@ export default function MegaMenu({
   currentPage,
   setCurrentPage,
 }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [user, setUser] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
@@ -61,7 +61,6 @@ export default function MegaMenu({
     setSelectedCategory("");
     setSelectedSubcategory("");
     setSelectedThirdCategory("");
-    setCurrentPage(1);
     onSearchTermChange("");
     onCategoryFilterChange({
       mainCategory: "",
@@ -193,29 +192,16 @@ export default function MegaMenu({
 
   return (
     <>
-      <Navbar
-        style={{ top: 0, zIndex: 1000 }}
-        className="sticky-top sticky-nav"
-        bg="light"
-        expand="lg"
-      >
-        <Container className="sticky-top">
+      <Navbar style={{ top: 0, zIndex: 1000 }} className="border">
+        <div className="container-fluid">
           <Navbar.Brand
             onClick={handleLogoClick}
-            className="divhover text-center align-center m-0"
+            className="divhover text-center align-center m-0 p-0"
           >
-            <Image
-              className="want-logo"
-              src={
-                isMobile ? "/icons/want-logo-mini.png" : "/icons/want-logo.svg"
-              }
-              alt="Want"
-              width={isMobile ? 30 : 90}
-              height={isMobile ? 30 : 50}
-            />
+            <h3 className="want-logo m-0 text-center text-warning">Want</h3>
           </Navbar.Brand>
           <Form
-            className="d-flex flex-grow-1 w-auto search-bar border rounded-4 search-bar-navbar"
+            className="d-flex flex-grow-1 w-auto search-bar border rounded-5 search-bar-navbar text-center"
             onSubmit={handleSearchSubmit}
           >
             {isMobile ? null : (
@@ -230,11 +216,15 @@ export default function MegaMenu({
             <FormControl
               type="search"
               placeholder={t("navbar.searchPlaceholder")}
-              className="mr-2 form-control p-1 px-3 search-bar-input"
+              className="mr-2 form-control p-1 px-3 search-bar-input align-items-center "
               aria-label="Search"
               name="search"
             />
-            <Button type="submit" variant="ml-2 search-btn btn">
+            <Button
+              type="submit"
+              variant=""
+              className=" search-btn border-0 m-1"
+            >
               <i className="bi bi-search"></i>
             </Button>
           </Form>
@@ -244,21 +234,20 @@ export default function MegaMenu({
             </Nav.Link>
           )}
           {!isMobile && (
-            <Nav className="ms-auto">
+            <Nav className="">
               <LanguageSelector />
-              <Nav.Link className="nav-item">
-                <CategoriesModal
-                  isShown={showCategoriesModal}
-                  onHide={handleCloseCategories}
-                  onCategorySelected={handleCategorySelected}
-                  buttonText={categoriesButtonText}
-                />
-              </Nav.Link>
+              <CategoriesModal
+                isShown={showCategoriesModal}
+                onHide={handleCloseCategories}
+                onCategorySelected={handleCategorySelected}
+                buttonText={categoriesButtonText}
+              />
+              <Nav.Link className="nav-item"></Nav.Link>
               <Nav.Link
                 className="nav-item"
                 onClick={() => router.push("/createPost")}
               >
-                <Button className="btn btn-post rounded-4 align-items-center nav-item">
+                <Button className="btn btn-post rounded-5 align-items-center nav-item">
                   {t("navbar.createPost")}
                 </Button>
               </Nav.Link>
@@ -269,7 +258,7 @@ export default function MegaMenu({
               )}
               {user ? (
                 <NavDropdown
-                  className="nav-item rounded-4 border-0"
+                  className="nav-item rounded-5 border-0"
                   title={
                     <>
                       <img
@@ -281,7 +270,6 @@ export default function MegaMenu({
                         alt="Profile"
                         className="createdBy-photo"
                       />{" "}
-                      {`${user.firstName}`}
                     </>
                   }
                   id="user-dropdown"
@@ -344,152 +332,82 @@ export default function MegaMenu({
               </Button>
             </>
           )}
-        </Container>
+        </div>
       </Navbar>
-
-      <Offcanvas
-        show={showOffcanvas}
-        onHide={() => setShowOffcanvas(false)}
-        placement="end"
-      >
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title className="text-success">
-            {t("navbar.menu")}
-          </Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body>
-          <Nav.Link
-            className="nav-item p-3"
-            onClick={() => {
-              router.push("/");
-              setShowOffcanvas(false);
-            }}
-          >
-            <i className="bi bi-house me-2"></i>
-            {t("navbar.home")}
-          </Nav.Link>
-          <Nav.Link
-            className="nav-item p-3"
-            onClick={() => {
-              router.push("/");
-              setShowOffcanvas(false);
-            }}
-          >
-            <i className="bi bi-house me-2"></i>
-            {t("navbar.home")}
-          </Nav.Link>
-          <Nav className="flex-column">
-            <Nav.Link className="nav-item">
-              <i className="bi bi-globe-americas"></i>
-              <LocationModal
-                show={showLocationModal}
-                onHide={() => setShowLocationModal(false)}
-                onLocationSelected={handleLocationSelected}
-                onLocationFilterChange={onLocationFilterChange}
-                selectedLocation={selectedLocation}
-              />
-            </Nav.Link>
-            <Nav.Link className="nav-item">
-              <i className="bi bi-tags"></i>
-              <CategoriesModal
-                isShown={showCategoriesModal}
-                onHide={handleCloseCategories}
-                onCategorySelected={handleCategorySelected}
-                buttonText={categoriesButtonText}
-              />
-            </Nav.Link>
-            <Nav.Link
-              className="nav-item"
-              onClick={() => {
-                router.push("/createPost");
-                setShowOffcanvas(false);
-              }}
-            >
-              <Button className="btn btn-post rounded-4 align-items-center">
-                {t("navbar.createPost")}
-              </Button>
-            </Nav.Link>
-            {user ? (
-              <>
-                <Nav.Link className="nav-item">
-                  <img
-                    src={
-                      user.photo
-                        ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}`
-                        : "/icons/person-circle.svg"
-                    }
-                    alt="Profile"
-                    className="createdBy-photo"
-                  />{" "}
-                  {user.firstName}
-                </Nav.Link>
-                <Nav.Link
-                  className="nav-item"
-                  onClick={() => {
-                    router.push("/myPosts");
-                    setShowOffcanvas(false);
-                  }}
-                >
-                  <i className="bi bi-stickies-fill me-3"></i>
-                  {t("navbar.myPosts")}
-                </Nav.Link>
-                <Nav.Link
-                  className="nav-item"
-                  onClick={() => {
-                    router.push("/sentOffers");
-                    setShowOffcanvas(false);
-                  }}
-                >
-                  <i className="bi bi-send-check-fill me-3"></i>
-                  {t("navbar.sentOffers")}
-                </Nav.Link>
-                <Nav.Link
-                  className="nav-item"
-                  onClick={() => {
-                    router.push("/receivedOffers");
-                    setShowOffcanvas(false);
-                  }}
-                >
-                  <i className="bi bi-receipt me-3"></i>
-                  {t("navbar.receivedOffers")}
-                </Nav.Link>
-                <Nav.Link
-                  className="nav-item"
-                  onClick={() => {
-                    router.push("/editProfile");
-                    setShowOffcanvas(false);
-                  }}
-                >
-                  <i className="bi bi-person-lines-fill me-3"></i>
-                  {t("navbar.myProfile")}
-                </Nav.Link>
-                <hr />
-                <Nav.Link
-                  className="nav-item"
-                  onClick={() => {
-                    router.push("/logout");
-                    setShowOffcanvas(false);
-                  }}
-                >
-                  <i className="bi bi-box-arrow-right me-3"></i>
-                  {t("navbar.logout")}
-                </Nav.Link>
-              </>
-            ) : (
-              <Nav.Link
-                onClick={() => {
-                  router.push("/login");
-                  setShowOffcanvas(false);
-                }}
-                className="nav-item pt-3"
-              >
-                <i className="bi bi-door-open"></i>
-                {t("navbar.login")}
-              </Nav.Link>
-            )}
-          </Nav>
-        </Offcanvas.Body>
-      </Offcanvas>
+      {isMobile && (
+        <Offcanvas
+          show={showOffcanvas}
+          onHide={() => setShowOffcanvas(false)}
+          placement="end"
+        >
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>{t("navbar.menu")}</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            <div className="container">
+              <div className="row">
+                <div className="col">
+                  <Form
+                    className="search-bar border rounded-5 search-bar-navbar"
+                    onSubmit={handleSearchSubmit}
+                  >
+                    <FormControl
+                      type="search"
+                      placeholder={t("navbar.searchPlaceholder")}
+                      className="form-control p-1 px-3 search-bar-input align-items-center"
+                      aria-label="Search"
+                      name="search"
+                    />
+                    <Button
+                      type="submit"
+                      variant=""
+                      className="search-btn border-0 m-1"
+                    >
+                      <i className="bi bi-search"></i>
+                    </Button>
+                  </Form>
+                </div>
+              </div>
+              <div className="row mt-3">
+                <div className="col">
+                  <Button
+                    variant="outline-secondary"
+                    className="w-100 mb-3"
+                    onClick={handleShow}
+                  >
+                    {categoriesButtonText}
+                  </Button>
+                </div>
+              </div>
+              {user && (
+                <div className="row mt-3">
+                  <div className="col">
+                    <Button
+                      variant="outline-secondary"
+                      className="w-100 mb-3"
+                      onClick={() => router.push("/createPost")}
+                    >
+                      {t("navbar.createPost")}
+                    </Button>
+                  </div>
+                </div>
+              )}
+              <div className="row mt-3">
+                <div className="col">
+                  <Button
+                    variant="outline-secondary"
+                    className="w-100 mb-3"
+                    onClick={() => router.push("/login")}
+                  >
+                    {t("navbar.login")}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Offcanvas.Body>
+        </Offcanvas>
+      )}
+      <CategorySlider onCategorySelected={handleCategorySelected} />
     </>
   );
 }
