@@ -111,7 +111,7 @@ export default function SentOffers() {
                     </div>
                     <div className="card-buttons-container d-flex flex-column justify-content-end mt-auto">
                       <button
-                        className="btn btn-success mb-2"
+                        className="btn want-button mb-2"
                         onClick={() => handleShowDetailsModal(offer)}
                       >
                         {t('sentOffers.viewDetails')}

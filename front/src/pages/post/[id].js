@@ -243,11 +243,9 @@ const PostDetails = () => {
               </p>
             </div>
             <div className="mt-3">
-              <Link href={`/createOffer?postId=${id}`}>
-                <button className="btn rounded-5 btn-offer">
+                <button className="btn rounded-5 btn-offer" onClick={() => router.push(`/createOffer?postId=${id}`)}>
                   {t("postDetails.makeAnOffer")}
                 </button>
-              </Link>
               <ReportPostModal postId={post._id} onReport={handleReportPost} />
             </div>
           </div>

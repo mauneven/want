@@ -73,7 +73,7 @@ const ChangePassword = () => {
     };
 
     return (
-        <div className="container">
+        <div className="">
             <h1>Change Password</h1>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
@@ -115,7 +115,7 @@ const ChangePassword = () => {
                         required
                     />
                 </div>
-                <button type="submit" className="btn btn-success">
+                <button type="submit" className="btn want-button">
                     Change my password
                 </button>
             </form>

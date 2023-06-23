@@ -87,7 +87,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
           <li className={`page-item m-1 ${currentPage === 1 ? "disabled" : ""}`}>
             <button
               onClick={() => handlePageChange(currentPage - 1)}
-              className="btn btn-success"
+              className="btn want-button"
               disabled={currentPage === 1}
             >
               {"<"}
@@ -97,7 +97,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
             <li key={number} className="page-item m-1">
               <button
                 onClick={() => handlePageChange(number)}
-                className={`btn btn-success ${number === currentPage ? "active" : ""}`}
+                className={`btn want-button ${number === currentPage ? "active" : ""}`}
               >
                 {number}
               </button>
@@ -106,7 +106,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
           <li className={`page-item m-1 ${currentPage === Math.ceil(totalPosts / pageSize) ? "disabled" : ""}`}>
             <button
               onClick={() => handlePageChange(currentPage + 1)}
-              className="btn btn-success"
+              className="btn want-button"
               disabled={currentPage === Math.ceil(totalPosts / pageSize)}
             >
               {">"}

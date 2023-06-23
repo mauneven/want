@@ -167,7 +167,7 @@ export default function Login() {
                 </>
               )}
               <div className="mb-3">
-                <button type="submit" className="btn btn-success rounded-5 btn-login">{isLogin ? t('login.loginButton') : t('login.signupButton')}</button>
+                <button type="submit" className="btn want-button rounded-5 btn-login">{isLogin ? t('login.loginButton') : t('login.signupButton')}</button>
               </div>
             </form>
             <div>

@@ -9,7 +9,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-light py-4">
-      <div className='container-fluid'>
+      <div className=''>
         <Row className="g-3">
           <Col md="3">
             <h5>{t('footer.wantTitle')}</h5>

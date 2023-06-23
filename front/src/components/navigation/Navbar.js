@@ -33,6 +33,7 @@ export default function MegaMenu({
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
+  const [resetSlider, setResetSlider] = useState(false);
   const [categoriesButtonText, setCategoriesButtonText] = useState(
     t("navbar.selectCategory")
   );
@@ -69,6 +70,7 @@ export default function MegaMenu({
     });
     setCategoriesButtonText(t("navbar.selectCategory"));
     router.push("/");
+    setResetSlider(true);
   };
 
   const handleCloseCategories = () => {
@@ -192,139 +194,135 @@ export default function MegaMenu({
 
   return (
     <>
-      <Navbar style={{ top: 0, zIndex: 1000 }} className="">
+      <Navbar className="nav-borders ps-5 pe-5">
+        <div className="d-flex w-100">
           <Navbar.Brand
             onClick={handleLogoClick}
-            className="divhover text-center align-center m-0 p-0"
+            className="divhover align-center m-0 p-0 col-3 justify-content-start"
           >
-            <h3 className="want-logo m-0 text-center text-success">Want</h3>
+            <Image
+              src={"icons/want-logo-new.svg"}
+              className="w-50 h-100"
+              width={100}
+              height={100}
+            ></Image>
           </Navbar.Brand>
-          <Form
-            className="d-flex flex-grow-1 w-auto search-bar border rounded-5 search-bar-navbar text-center"
-            onSubmit={handleSearchSubmit}
-          >
-            {isMobile ? null : (
-              <LocationModal
-                show={showLocationModal}
-                onHide={() => setShowLocationModal(false)}
-                onLocationSelected={handleLocationSelected}
-                onLocationFilterChange={onLocationFilterChange}
-                selectedLocation={selectedLocation}
-              />
-            )}
-            <FormControl
-              type="search"
-              placeholder={t("navbar.searchPlaceholder")}
-              className="mr-2 form-control p-1 px-3 search-bar-input align-items-center "
-              aria-label="Search"
-              name="search"
-            />
-            <Button
-              type="submit"
-              variant=""
-              className=" search-btn border-0 m-1"
+          <div className="col-6 text-center align-items-center justify-content-center d-flex">
+            <Form
+              className="d-flex search-bar border rounded-5 search-bar-navbar text-center align-items-center justify-content-center"
+              onSubmit={handleSearchSubmit}
             >
-              <i className="bi bi-search"></i>
-            </Button>
-          </Form>
-          {isMobile && user && (
-            <Nav.Link className="nav-item ms-2">
-              <Notifications />
-            </Nav.Link>
-          )}
-          {!isMobile && (
-            <Nav className="">
-              <LanguageSelector />
-              <Nav.Link className="nav-item"></Nav.Link>
-              <Nav.Link
-                className="nav-item"
-                onClick={() => router.push("/createPost")}
-              >
-                <Button className="btn btn-post rounded-5 align-items-center nav-item">
-                  {t("navbar.createPost")}
-                </Button>
-              </Nav.Link>
-              {user && (
-                <Nav.Link className="nav-item">
-                  <Notifications />
-                </Nav.Link>
+              {isMobile ? null : (
+                <LocationModal
+                  show={showLocationModal}
+                  onHide={() => setShowLocationModal(false)}
+                  onLocationSelected={handleLocationSelected}
+                  onLocationFilterChange={onLocationFilterChange}
+                  selectedLocation={selectedLocation}
+                />
               )}
-              {user ? (
-                <NavDropdown
-                  className="nav-item rounded-5 border-0"
-                  title={
-                    <>
-                      <img
-                        src={
-                          user.photo
-                            ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}`
-                            : "/icons/person-circle.svg"
-                        }
-                        alt="Profile"
-                        className="createdBy-photo"
-                      />{" "}
-                    </>
-                  }
-                  id="user-dropdown"
-                  style={{
-                    boxShadow: "none",
-                  }}
-                  menuVariant="light"
-                  renderMenuOnMount={true}
-                >
-                  <style>{`
-                    .dropdown-menu {
-                      border: none;
-                      border-radius: 10px;
-                      box-shadow: 0px 0px 15px -1px #00000042;
-                    }
-                  `}</style>
-                  <NavDropdown.Item onClick={() => router.push("/myPosts")}>
-                    <i className="bi bi-stickies-fill me-3"></i>
-                    {t("navbar.myPosts")}
-                  </NavDropdown.Item>
-                  <NavDropdown.Item onClick={() => router.push("/sentOffers")}>
-                    <i className="bi bi-send-check-fill me-3"></i>
-                    {t("navbar.sentOffers")}
-                  </NavDropdown.Item>
-                  <NavDropdown.Item
-                    onClick={() => router.push("/receivedOffers")}
-                  >
-                    <i className="bi bi-receipt me-3"></i>
-                    {t("navbar.receivedOffers")}
-                  </NavDropdown.Item>
-                  <NavDropdown.Item onClick={() => router.push("/editProfile")}>
-                    <i className="bi bi-person-lines-fill me-3"></i>
-                    {t("navbar.myProfile")}
-                  </NavDropdown.Item>
-                  <hr />
-                  <NavDropdown.Item onClick={() => router.push("/logout")}>
-                    <i className="bi bi-box-arrow-right me-3"></i>
-                    {t("navbar.logout")}
-                  </NavDropdown.Item>
-                </NavDropdown>
-              ) : (
-                <Nav.Link
-                  onClick={() => router.push("/login")}
-                  className="nav-item"
-                >
-                  <span className="nav-link">{t("navbar.login")}</span>
-                </Nav.Link>
-              )}
-            </Nav>
-          )}
-          {isMobile && (
-            <>
-              <LanguageSelector />
+              <FormControl
+                type="search"
+                placeholder={t("navbar.searchPlaceholder")}
+                className="mr-2 form-control p-1 px-3 search-bar-input align-items-center "
+                aria-label="Search"
+                name="search"
+              />
               <Button
-                variant="outline-success"
-                className="ms-2"
-                onClick={() => setShowOffcanvas(true)}
+                type="submit"
+                variant=""
+                className=" search-btn border-0 m-1"
               >
-                <i className="bi bi-list"></i>
+                <i className="bi bi-search"></i>
               </Button>
-            </>
-          )}
+            </Form>
+          </div>
+          <div className="col-3 justify-content-end d-flex">
+            {isMobile && user && (
+              <Nav.Link className="nav-item ms-2">
+                <Notifications />
+              </Nav.Link>
+            )}
+            {!isMobile && (
+              <Nav className="">
+                <LanguageSelector />
+                <Nav.Link
+                  className="nav-item"
+                  onClick={() => router.push("/createPost")}
+                >
+                  <Button className="btn btn-post rounded-5 align-items-center nav-item">
+                    {t("navbar.createPost")}
+                  </Button>
+                </Nav.Link>
+                {user ? (
+                  <NavDropdown
+                    className="nav-item rounded-5 border-0 "
+                    title={
+                      <>
+                        <img
+                          src={
+                            user.photo
+                              ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}`
+                              : "/icons/person-circle.svg"
+                          }
+                          alt="Profile"
+                          className="navbar-user-photo"
+                        />{" "}
+                      </>
+                    }
+                  >
+                    <NavDropdown.Item onClick={() => router.push("/myPosts")}>
+                      <i className="bi bi-stickies-fill me-3"></i>
+                      {t("navbar.myPosts")}
+                    </NavDropdown.Item>
+                    <NavDropdown.Item
+                      onClick={() => router.push("/sentOffers")}
+                    >
+                      <i className="bi bi-send-check-fill me-3"></i>
+                      {t("navbar.sentOffers")}
+                    </NavDropdown.Item>
+                    <NavDropdown.Item
+                      onClick={() => router.push("/receivedOffers")}
+                    >
+                      <i className="bi bi-receipt me-3"></i>
+                      {t("navbar.receivedOffers")}
+                    </NavDropdown.Item>
+                    <NavDropdown.Item
+                      onClick={() => router.push("/editProfile")}
+                    >
+                      <i className="bi bi-person-lines-fill me-3"></i>
+                      {t("navbar.myProfile")}
+                    </NavDropdown.Item>
+                    <hr />
+                    <NavDropdown.Item onClick={() => router.push("/logout")}>
+                      <i className="bi bi-box-arrow-right me-3"></i>
+                      {t("navbar.logout")}
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                ) : (
+                  <Nav.Link
+                    onClick={() => router.push("/login")}
+                    className="nav-item"
+                  >
+                    <span className="nav-link">{t("navbar.login")}</span>
+                  </Nav.Link>
+                )}
+              </Nav>
+            )}
+            {isMobile && (
+              <>
+                <LanguageSelector />
+                <Button
+                  variant="outline-success"
+                  className="ms-2"
+                  onClick={() => setShowOffcanvas(true)}
+                >
+                  <i className="bi bi-list"></i>
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
       </Navbar>
       {isMobile && (
         <Offcanvas
@@ -337,29 +335,6 @@ export default function MegaMenu({
           </Offcanvas.Header>
           <Offcanvas.Body>
             <div className="container">
-              <div className="row">
-                <div className="col">
-                  <Form
-                    className="search-bar border rounded-5 search-bar-navbar"
-                    onSubmit={handleSearchSubmit}
-                  >
-                    <FormControl
-                      type="search"
-                      placeholder={t("navbar.searchPlaceholder")}
-                      className="form-control p-1 px-3 search-bar-input align-items-center"
-                      aria-label="Search"
-                      name="search"
-                    />
-                    <Button
-                      type="submit"
-                      variant=""
-                      className="search-btn border-0 m-1"
-                    >
-                      <i className="bi bi-search"></i>
-                    </Button>
-                  </Form>
-                </div>
-              </div>
               <div className="row mt-3">
                 <div className="col">
                   <Button
@@ -399,7 +374,25 @@ export default function MegaMenu({
           </Offcanvas.Body>
         </Offcanvas>
       )}
-          <CategorySlider onCategorySelected={handleCategorySelected} />
+      {router.pathname === "/" ? (
+        <div className="pe-5 ps-5 nav-borders d-flex">
+          <div className="col-11">
+            <CategorySlider
+              onCategorySelected={handleCategorySelected}
+              resetSlider={resetSlider}
+              setResetSlider={setResetSlider}
+            />
+          </div>
+          <div className="col-1 align-content-center justify-content-center text-center bg-white">
+            <CategoriesModal
+              isShown={showCategoriesModal}
+              onHide={handleCloseCategories}
+              onCategorySelected={handleCategorySelected}
+              buttonText={categoriesButtonText}
+            />
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }

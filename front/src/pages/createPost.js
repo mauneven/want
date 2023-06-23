@@ -130,10 +130,10 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="mt-3 mb-3">
+    <div className="mt-3 mb-3 container">
       <h1 className="text-center mb-4">Create a post about what you Want</h1>
       <div className="">
-        <div className="form-container container">
+        <div className="form-container ">
           <form>
             <div className="mb-3">
               <label htmlFor="title" className="form-label">
@@ -257,13 +257,13 @@ const CreatePost = () => {
             {error && <div className="alert alert-danger">{error}</div>}
             <button
               type="button"
-              className="btn btn-success rounded-5 mt-2"
+              className="btn want-button rounded-5 mt-2"
               disabled={loading}
               onClick={handleCreatePost}
             >
               {loading ? (
                 <span
-                  className="spinner-border spinner-border-sm me-2"
+                  className="spinner-border rounded-5 spinner-border-sm me-2"
                   role="status"
                   aria-hidden="true"
                 ></span>

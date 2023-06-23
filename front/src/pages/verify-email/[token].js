@@ -64,7 +64,7 @@ const VerifyEmail = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <button className='btn btn-success rounded-5 mt-2' type="submit">{t('verifyEmail.resendButton')}</button>
+            <button className='btn want-button rounded-5 mt-2' type="submit">{t('verifyEmail.resendButton')}</button>
           </form>
         )}
     </div>

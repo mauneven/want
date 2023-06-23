@@ -189,7 +189,7 @@ const CreateOffer = () => {
   }
 
   return (
-    <div className="container mt-4 mb-4">
+    <div className="mt-4 mb-4">
       <h1 className="mt-3 text-center">Creating an offer for "{post.title}"</h1>
       <h2 className="mt-3 text-center">Payment of ${Number(post.price).toLocaleString()}</h2>
       <h4 className="mt-3 text-center text-success">Do your best offer</h4>
@@ -342,7 +342,7 @@ const CreateOffer = () => {
             <div className="mb-3">
               <button
                 type="submit"
-                className="btn btn-success"
+                className="btn want-button rounded-5"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? 'Creating...' : 'Create Offer'}

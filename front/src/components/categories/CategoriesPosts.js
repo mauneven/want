@@ -53,7 +53,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
     resetCategories();
 
     if (onCategorySelected) {
-      onCategorySelected(mainCategory, subCategory, thirdCategory);
+      onCategorySelected('', '', '');
     }
     handleClose()
 
@@ -68,8 +68,9 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
 
   return (
     <>
-      <Button variant="" onClick={handleShow} className="nav-item fs-4">
-      <i class="bi bi-gear"></i>
+      <Button variant="" onClick={handleShow} className="bg-white">
+      <i class="bi bi-tags fs-4"></i>
+      <p className='m-0 small'>Filters</p>
       </Button>
 
       <Modal

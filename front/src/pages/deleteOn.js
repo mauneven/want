@@ -36,11 +36,11 @@ const DeleteOn = () => {
   };  
 
   return (
-    <div className="container">
+    <div className="">
       <div className="card my-4">
         <div className="card-body">
           <h2>{t('deleteOn.deletionProcessTitle')}</h2>
-          <button className="btn btn-success me-3" onClick={handleContinueDeletion}>
+          <button className="btn want-button me-3" onClick={handleContinueDeletion}>
             {t('deleteOn.continueDeletionProcess')}
           </button>
           <button className="btn btn-danger" onClick={handleCancelDeletion}>

@@ -4,9 +4,9 @@ import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import MegaMenu from "@/components/navigation/Navbar";
 import { LanguageProvider } from "@/components/language/LanguageProvider";
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import Footer from "@/components/footer/Footer";
 import i18n from "../../i18n";
 
@@ -62,7 +62,7 @@ export default function MyApp({ Component, pageProps }) {
 
   return (
     <LanguageProvider>
-      <div className="container-fluid">
+      <div className="">
         <link rel="stylesheet" href="/css/app.css" />
         <header className="sticky-top">
           <MegaMenu
@@ -75,7 +75,7 @@ export default function MyApp({ Component, pageProps }) {
           <link rel="stylesheet" href="/css/navbar.css" />
         </header>
 
-        <div className="">
+        <div className="want-container">
           <Suspense fallback="Loading...">
             <Component
               {...pageProps}
@@ -95,8 +95,10 @@ export default function MyApp({ Component, pageProps }) {
         </div>
 
         <footer>
+          <div className="want-container">
           <Footer />
           <link rel="stylesheet" href="/css/footer.css" />
+          </div>
         </footer>
       </div>
     </LanguageProvider>

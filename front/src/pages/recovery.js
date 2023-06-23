@@ -29,7 +29,7 @@ const PasswordRecovery = () => {
   };
 
   return (
-    <div className="container">
+    <div className="">
       <h1>Recovery</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
@@ -45,7 +45,7 @@ const PasswordRecovery = () => {
             required
           />
         </div>
-        <button type="submit" className="btn btn-success">
+        <button type="submit" className="btn want-button">
           Send me a recovery for my account
         </button>
       </form>

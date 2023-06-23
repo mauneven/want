@@ -13,7 +13,6 @@
   width: 70%;
   height: 200px;
   position: absolute;
-  z-index: 10;
 }
 
 .createdBy-photo-id {
@@ -36,6 +35,5 @@
   color: white;
   border: none;
   background-size: cover;
-  position: relative;
   
 }

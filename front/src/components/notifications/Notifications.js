@@ -135,7 +135,7 @@ export default function Notifications() {
         </Modal.Body>
         <Modal.Footer>
           <button
-            className="btn btn-success rounded-5"
+            className="btn want-button rounded-5"
             onClick={markAllNotificationsAsRead}
             disabled={isLoading}
           >

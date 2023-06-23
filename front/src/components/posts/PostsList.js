@@ -3,11 +3,15 @@ import ContentLoader from "react-content-loader";
 import { useRouter } from "next/router";
 import UserModal from "../user/UserModal";
 
-const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter,
+const PostsList = ({
+  locationFilter,
+  userIdFilter,
+  searchTerm,
+  categoryFilter,
 }) => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [pageSize, setPageSize] = useState(6);
+  const [pageSize, setPageSize] = useState(12);
   const [totalPosts, setTotalPosts] = useState(0);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -28,7 +32,7 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter,
         state: locationFilter?.state || "",
         city: locationFilter?.city || "",
         mainCategory: categoryFilter?.mainCategory || "",
-        subCategory: categoryFilter?.subCategory || "", // Filtro por subcategoría
+        subCategory: categoryFilter?.subCategory || "",
         thirdCategory: categoryFilter?.thirdCategory || "",
         searchTerm: searchTerm || "",
         page: currentPage,
@@ -140,30 +144,32 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter,
   };
 
   const handleSubcategoryChange = (subcategory) => {
-    setCurrentPage(1); // Reiniciar la página al cambiar la subcategoría
-    setPosts([]); // Limpiar los posts actuales
-    setNoMorePosts(false); // Restablecer el estado de noMorePosts
-
-    // Realizar cualquier acción adicional según sea necesario al cambiar la subcategoría
+    setCurrentPage(1);
+    setPosts([]);
+    setNoMorePosts(false);
   };
 
   return (
-    <div className="">
-      <div className="row row-cols-1 row-cols-md-4 row-cols-lg-5 row-cols-xl-5 g-4">
+    <div className="ps-5 pe-5">
+      <div className="row row-cols-1 row-cols-md-4 row-cols-lg-5 row-cols-xl-5 g-4 pe-2 ps-2">
         {posts.map((post) => {
           const userReputation = 5 - 0.3 * post.createdBy.reports.length;
+          let photoIndex = 0;
           return (
-            <div key={post._id} className="col">
-              <div className="card post rounded-5">
+            <div key={post._id} className="col post-card rounded-5">
+              <div className="card rounded-5 divhover">
                 {post.photos && post.photos.length > 0 && (
                   <div
                     id={`carousel-${post._id}`}
-                    className="carousel slide"
+                    className="carousel slide rounded-5 me-2 ms-2 mt-3 img-post"
                     data-bs-ride="carousel"
                     style={{ height: "200px", overflow: "hidden" }}
                   >
-                    <div className="carousel-inner">
-                      {post.photos.map((photos, index) => (
+                    <div
+                      className="carousel-inner "
+                      onClick={() => router.push(`/post/${post._id}`)}
+                    >
+                      {post.photos.map((photo, index) => (
                         <div
                           className={`carousel-item ${
                             index === 0 ? "active" : ""
@@ -171,72 +177,64 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter,
                           key={index}
                         >
                           <img
-                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`}
+                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
                             className="d-block w-100"
-                            alt={`Slide ${index}`}
+                            alt={`Image ${index}`}
                             loading="lazy"
+                            onClick={() => router.push(`/post/${post._id}`)}
                           />
                         </div>
                       ))}
                     </div>
-                    <button
-                      className="carousel-control-prev"
-                      type="button"
-                      data-bs-target={`#carousel-${post._id}`}
-                      data-bs-slide="prev"
-                      style={{ bottom: "40px" }}
-                    >
-                      <span
-                        className="carousel-control-prev-icon"
-                        aria-hidden="true"
-                      ></span>
-                      <span className="visually-hidden">Previous</span>
-                    </button>
-                    <button
-                      className="carousel-control-next"
-                      type="button"
-                      data-bs-target={`#carousel-${post._id}`}
-                      data-bs-slide="next"
-                      style={{ bottom: "40px" }}
-                    >
-                      <span
-                        className="carousel-control-next-icon"
-                        aria-hidden="true"
-                      ></span>
-                      <span className="visually-hidden">Next</span>
-                    </button>
+                    {post.photos.length > 1 && (
+                      <>
+                        <button
+                          className="carousel-control-prev custom-slider-button ms-1"
+                          type="button"
+                          data-bs-target={`#carousel-${post._id}`}
+                          data-bs-slide="prev"
+                          style={{ bottom: "40px" }}
+                          disabled={photoIndex === 0}
+                          onClick={() => {
+                            photoIndex--;
+                          }}
+                        >
+                          <i class="bi bi-chevron-left"></i>
+                        </button>
+                        <button
+                          className="carousel-control-next custom-slider-button me-1"
+                          type="button"
+                          data-bs-target={`#carousel-${post._id}`}
+                          data-bs-slide="next"
+                          style={{ bottom: "40px" }}
+                          disabled={photoIndex === post.photos.length - 1}
+                          onClick={() => {
+                            photoIndex++;
+                          }}
+                        >
+                          <i class="bi bi-chevron-right"></i>
+                        </button>
+                      </>
+                    )}
                   </div>
                 )}
                 <div className="card-body">
-                  <h5
-                    className="card-title post-title mb-2"
+                  <h4
+                    className="card-title post-title"
                     onClick={() => router.push(`/post/${post._id}`)}
                   >
-                    <a style={{ color: "inherit", textDecoration: "none" }}>
-                      {post.title}
-                    </a>
-                  </h5>
-                  <h5
-                    className="text-success"
+                    {post.title}
+                  </h4>
+                  <h3
+                    className="text-price"
                     onClick={() => router.push(`/post/${post._id}`)}
                   >
                     ${post.price.toLocaleString()}
-                  </h5>
-                  <p
-                    className="card-text post-text mb-2"
-                    onClick={() => router.push(`/post/${post._id}`)}
+                  </h3>
+                  <div
+                    className="d-flex"
+                    onClick={() => openModal(post.createdBy)}
                   >
-                    {post.description.length > 100
-                      ? post.description.substring(0, 100) + "..."
-                      : post.description}
-                  </p>
-                </div>
-                <div
-                  className="card-footer text-center"
-                  onClick={() => openModal(post.createdBy)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <div className="d-flex align-items-center justify-content-center">
                     <img
                       src={
                         post.createdBy.photo
@@ -247,10 +245,10 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter,
                       className="createdBy-photo p-1"
                     />
                     <div className="ms-2">
-                      <small className="text-muted text-center">
+                      <small className="text-muted ">
                         {post.createdBy.firstName}
                       </small>
-                      <div className="d-flex align-items-center">
+                      <div className="d-flex">
                         <i className="bi bi-star-fill me-1"></i>
                         <small className="text-muted">
                           {userReputation.toFixed(1)}

@@ -6,10 +6,10 @@ const Custom404 = () => {
   const { t } = useTranslation();
 
   return (
-    <div className='container text-center p-5'>
+    <div className=' text-center p-5'>
       <h1>{t('custom404.title')}</h1>
       <p>{t('custom404.description')}</p>
-      <Link className='btn btn-success rounded-5' href="/">
+      <Link className='btn want-button rounded-5' href="/">
         <h1>{t('custom404.homeLink')}</h1>
       </Link>
     </div>

@@ -2,13 +2,31 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import categoriesData from '../../data/categories.json';
 
-export default function CategorySlider({ onCategorySelected }) {
+export default function CategorySlider({ onCategorySelected, resetSlider, setResetSlider }) {
   const { t } = useTranslation();
   const [selectedSubcategory, setSelectedSubcategory] = useState('');
   const [showLeftButton, setShowLeftButton] = useState(true);
   const [showRightButton, setShowRightButton] = useState(true);
+  const [shouldReset, setShouldReset] = useState(false);
 
   const sliderRef = useRef(null);
+
+  useEffect(() => {
+    if (resetSlider) {
+      setShouldReset(true);
+      setResetSlider(false); // Reiniciar el estado a false para futuros cambios
+    }
+  }, [resetSlider]);
+
+  useEffect(() => {
+    if (shouldReset) {
+      setSelectedSubcategory('');
+      if (onCategorySelected) {
+        onCategorySelected('', '');
+      }
+      setShouldReset(false); // Reiniciar el estado a false después de restablecer
+    }
+  }, [shouldReset, onCategorySelected]);
 
   useEffect(() => {
     const sliderContainer = sliderRef.current;
@@ -81,13 +99,14 @@ export default function CategorySlider({ onCategorySelected }) {
         onClick={handleLeftButtonClick}
         disabled={!showLeftButton}
       >
-        <i class="bi bi-chevron-left"></i>
+        <i className="bi bi-chevron-left"></i>
       </button>
       <div className="category-slider" ref={sliderRef}>
+        <div className="slider-border shadow-start"></div> {/* Agregar sombra al inicio */}
         {allSubcategories.map((subcategory) => (
           <button
-            className={`subcategory-button btn rounded-5 border ${
-              selectedSubcategory === subcategory.id ? 'active' : ''
+            className={`subcategory-button btn btn-slider-categories${
+              selectedSubcategory === subcategory.id ? ' btn btn-slider-categories-active rounded-5' : ''
             }`}
             key={subcategory.id}
             onClick={() =>
@@ -107,13 +126,14 @@ export default function CategorySlider({ onCategorySelected }) {
             )}
           </button>
         ))}
+        <div className="slider-border shadow-end"></div> {/* Agregar sombra al final */}
       </div>
       <button
         className="slider-button right-button"
         onClick={handleRightButtonClick}
         disabled={!showRightButton}
       >
-        <i class="bi bi-chevron-right"></i>
+        <i className="bi bi-chevron-right"></i>
       </button>
     </div>
   );

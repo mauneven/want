@@ -339,7 +339,7 @@ const EditPost = () => {
             {error && <div className="alert alert-danger">{error}</div>}
             <button
               type="submit"
-              className="btn btn-lg btn-success rounded-5"
+              className="btn btn-lg want-button rounded-5"
               disabled={loading}
             >
               {loading ? (

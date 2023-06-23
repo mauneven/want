@@ -222,7 +222,7 @@ const EditProfile = () => {
                 <button type="button" className="btn btn-secondary rounded-5 me-3" onClick={handleCancel}>
                   {t('editProfile.cancel')}
                 </button>
-                <button type="submit" className="btn btn-success rounded-5" disabled={!editingField || (editingField === 'photo' && !photo)}>
+                <button type="submit" className="btn want-button rounded-5" disabled={!editingField || (editingField === 'photo' && !photo)}>
                   {t('editProfile.update')}
                 </button>
               </div>
@@ -233,7 +233,7 @@ const EditProfile = () => {
       <div className="my-5 card p-3 border border-success rounded-5">
         <h3 className="text-success">{t('editProfile.changePassword')}</h3>
         <Link href="/changePassword">
-          <button className="btn btn-success rounded-5">{t('editProfile.changePassword')}</button>
+          <button className="btn want-button rounded-5">{t('editProfile.changePassword')}</button>
         </Link>
       </div>
       <div className="my-5 border border-danger rounded-5 p-3">

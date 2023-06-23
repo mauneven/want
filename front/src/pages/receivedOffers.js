@@ -207,7 +207,7 @@ export default function ReceivedOffers() {
                           </div>
                           <div className="card-buttons-container d-flex flex-column justify-content-end mt-auto">
                             <button
-                              className="btn btn-success mb-2"
+                              className="btn want-button mb-2"
                               onClick={() => handleShowDetailsModal(offer)}
                             >
                               {t('receivedOffers.viewDetails')} <i className="bi bi-eye ms-2"></i>

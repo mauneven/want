@@ -24,8 +24,8 @@ export default function LanguageSelector() {
   return (
     <div className="nav-item nav-link">
       <Button
-        variant="warning"
-        className="rounded-5 align-items-center nav-item"
+        
+        className="rounded-5 align-items-center nav-item want-button border-0"
         onClick={() => setShowModal(true)}
       >
         {selectedLanguage ? selectedLanguage.toUpperCase() : "Choose Language"}
@@ -36,13 +36,13 @@ export default function LanguageSelector() {
           <Modal.Title>Select Language</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Button variant="warning" onClick={() => handleChangeLanguage("en")}>
+          <Button onClick={() => handleChangeLanguage("en")}>
             English
           </Button>
-          <Button variant="warning" onClick={() => handleChangeLanguage("es")}>
+          <Button onClick={() => handleChangeLanguage("es")}>
             Español
           </Button>
-          <Button variant="warning" onClick={() => handleChangeLanguage("fr")}>
+          <Button onClick={() => handleChangeLanguage("fr")}>
             Français
           </Button>
         </Modal.Body>
