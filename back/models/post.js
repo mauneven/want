@@ -18,17 +18,13 @@ const postSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  country: {
-    type: String,
-    required: true
+  latitude: {
+    type: Number,
+    required: true,
   },
-  state: {
-    type: String,
-    required: true
-  },
-  city: {
-    type: String,
-    required: true
+  longitude: {
+    type: Number,
+    required: true,
   },
   mainCategory: {
     type: String,

@@ -96,8 +96,9 @@ exports.getPostById = async (req, res, next) => {
 
 exports.createPost = async (req, res, next) => {
   try {
-    const { title, description, country, state, city, mainCategory, subCategory, thirdCategory, price } = req.body;
+    const { title, description, latitude, longitude, mainCategory, subCategory, thirdCategory, price } = req.body;
     const photos = req.files.map(file => ({
+      type: file.mimetype,
       path: file.path,
       originalname: file.originalname
     }));
@@ -122,9 +123,8 @@ exports.createPost = async (req, res, next) => {
       title,
       description,
       createdBy: req.session.userId,
-      country,
-      state,
-      city,
+      latitude,
+      longitude,
       mainCategory,
       subCategory,
       thirdCategory,

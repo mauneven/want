@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import PostCategory from "@/components/categories/Categories";
-import Location from "@/components/locations/Location";
+import Location from "@/components/locations/";
 import WordsFilter from "@/badWordsFilter/WordsFilter.js";
 import { validations } from "@/utils/validations";
 
@@ -9,13 +9,12 @@ const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-  const [city, setCity] = useState("");
   const [mainCategory, setMainCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
   const [thirdCategory, setThirdCategory] = useState("");
   const [price, setPrice] = useState("");
+  const [latitude, setLatitude] = useState(null); // Agrega el estado para latitude
+  const [longitude, setLongitude] = useState(null); // Agrega el estado para longitude
   const [photos, setPhotos] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -75,6 +74,14 @@ const CreatePost = () => {
     }
   };
 
+  const handleLatitudeChange = (latitude) => {
+    setLatitude(latitude);
+  };
+
+  const handleLongitudeChange = (longitude) => {
+    setLongitude(longitude);
+  };
+
   const handleDeletePhoto = (index) => {
     const newPhotos = [...photos];
     newPhotos.splice(index, 1);
@@ -84,14 +91,11 @@ const CreatePost = () => {
   const handleCreatePost = async () => {
     setLoading(true);
 
-    // Validar los campos requeridos y realizar otras validaciones necesarias
-
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
-    formData.append("country", country);
-    formData.append("state", state);
-    formData.append("city", city);
+    formData.append("latitude", latitude || 0); // Proporcionar un valor predeterminado de 0 si latitude es null
+    formData.append("longitude", longitude || 0); // Proporcionar un valor predeterminado de 0 si longitude es null
     formData.append("mainCategory", mainCategory);
     formData.append("subCategory", subCategory);
     formData.append("thirdCategory", thirdCategory);
@@ -183,14 +187,10 @@ const CreatePost = () => {
               <label htmlFor="price" className="form-label">
                 Give an approximate location of where you want this*
               </label>
-              <Location
-                onCountryChange={(selectedCountry) =>
-                  setCountry(selectedCountry)
-                }
-                onStateChange={(selectedState) => setState(selectedState)}
-                onCityChange={(selectedCity) => setCity(selectedCity)}
-                isRequired={true}
-              />
+    <Location
+      onLatitudeChange={handleLatitudeChange}
+      onLongitudeChange={handleLongitudeChange}
+    />
             </div>
             <div className="mb-3">
               <label htmlFor="price" className="form-label">

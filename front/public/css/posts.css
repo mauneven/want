@@ -16,6 +16,13 @@
   transition: 0.3s;
 }
 
+
+.resultas-map{
+
+  max-width: 600px;
+  
+}
+
 .card{
   border: 0;
 }
