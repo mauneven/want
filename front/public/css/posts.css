@@ -17,10 +17,28 @@
 }
 
 
-.resultas-map{
+.results-map {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 
-  max-width: 600px;
-  
+.results-map {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.results-map {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.results-map li:hover {
+  background-color: #f0f0f0;
 }
 
 .card{

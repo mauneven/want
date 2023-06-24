@@ -1,42 +1,32 @@
-const Post = require('../models/post');
-const multer = require('multer');
-const path = require('path');
-const Offer = require('../models/offer');
-const Notification = require('../models/notification');
-const fs = require('fs');
-const sharp = require('sharp');
-const { v4: uuidv4 } = require('uuid');
-const url = require('url');
-const User = require('../models/user');
+const Post = require("../models/post");
+const multer = require("multer");
+const path = require("path");
+const Offer = require("../models/offer");
+const Notification = require("../models/notification");
+const fs = require("fs");
+const sharp = require("sharp");
+const { v4: uuidv4 } = require("uuid");
+const url = require("url");
+const User = require("../models/user");
+const geolib = require("geolib");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/');
+    cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
+  },
 });
 
-const upload = multer({ storage }).array('photos[]', 4);
+const upload = multer({ storage }).array("photos[]", 4);
 
 exports.uploadPhotoMiddleware = upload;
 
 exports.getAllPosts = async (req, res, next) => {
   try {
     const filters = {};
-
-    // Filtrar por ubicación
-    if (req.query.country) {
-      filters['country'] = req.query.country;
-    }
-    if (req.query.state) {
-      filters['state'] = req.query.state;
-    }
-    if (req.query.city) {
-      filters['city'] = req.query.city;
-    }
 
     // Filtrar por categoría
     if (req.query.mainCategory) {
@@ -53,7 +43,7 @@ exports.getAllPosts = async (req, res, next) => {
     if (req.query.searchTerm) {
       filters['$or'] = [
         { title: { $regex: req.query.searchTerm, $options: 'i' } },
-        { description: { $regex: req.query.searchTerm, $options: 'i' } }
+        { description: { $regex: req.query.searchTerm, $options: 'i' } },
       ];
     }
 
@@ -61,20 +51,55 @@ exports.getAllPosts = async (req, res, next) => {
     const pageSize = parseInt(req.query.pageSize) || 10;
     const skip = (page - 1) * pageSize;
 
-    const posts = await Post.find(filters)
-      .skip(skip)
-      .limit(pageSize)
-      .sort({ createdAt: -1 }) // Ordenar por fecha de creación en orden descendente
+    // Obtener todos los posts sin filtrar por distancia
+    let allPosts = await Post.find(filters)
+      .sort({ createdAt: -1 })
       .populate({
         path: 'createdBy',
-        select: 'firstName totalPosts totalOffers lastName photo createdAt ',
+        select: 'firstName totalPosts totalOffers lastName photo createdAt',
         populate: {
           path: 'reports',
-          select: '_id'
-        }
+          select: '_id',
+        },
       });
 
-    const totalPosts = await Post.countDocuments(filters);
+    // Filtrar los posts por distancia
+    if (
+      req.query.latitude &&
+      req.query.longitude &&
+      req.query.radius &&
+      !isNaN(req.query.latitude) &&
+      !isNaN(req.query.longitude) &&
+      !isNaN(req.query.radius)
+    ) {
+      const userLocation = {
+        latitude: parseFloat(req.query.latitude),
+        longitude: parseFloat(req.query.longitude),
+      };
+      const radius = parseFloat(req.query.radius) * 1000; // Convertir a metros
+
+      allPosts = allPosts.filter((post) => {
+        if (
+          !isNaN(post.latitude) &&
+          !isNaN(post.longitude)
+        ) {
+          const postLocation = {
+            latitude: parseFloat(post.latitude),
+            longitude: parseFloat(post.longitude),
+          };
+
+          const distance = geolib.getDistance(userLocation, postLocation, 1); // Especificar la precisión decimal para evitar errores
+
+          return distance <= radius;
+        }
+
+        return false;
+      });
+    }
+
+    // Obtener los posts paginados
+    const posts = allPosts.slice(skip, skip + pageSize);
+    const totalPosts = allPosts.length;
 
     res.status(200).json({ posts, totalPosts });
   } catch (err) {
@@ -84,9 +109,12 @@ exports.getAllPosts = async (req, res, next) => {
 
 exports.getPostById = async (req, res, next) => {
   try {
-    const post = await Post.findById(req.params.id).populate('createdBy', 'firstName totalPosts totalOffers lastName photo reports createdAt');
+    const post = await Post.findById(req.params.id).populate(
+      "createdBy",
+      "firstName totalPosts totalOffers lastName photo reports createdAt"
+    );
     if (!post) {
-      return res.status(404).send('Post not found');
+      return res.status(404).send("Post not found");
     }
     res.status(200).json(post);
   } catch (err) {
@@ -96,27 +124,40 @@ exports.getPostById = async (req, res, next) => {
 
 exports.createPost = async (req, res, next) => {
   try {
-    const { title, description, latitude, longitude, mainCategory, subCategory, thirdCategory, price } = req.body;
-    const photos = req.files.map(file => ({
+    const {
+      title,
+      description,
+      latitude,
+      longitude,
+      mainCategory,
+      subCategory,
+      thirdCategory,
+      price,
+    } = req.body;
+    const photos = req.files.map((file) => ({
       type: file.mimetype,
       path: file.path,
-      originalname: file.originalname
+      originalname: file.originalname,
     }));
     let compressedImagePaths = [];
 
     if (photos.length > 0) {
-      compressedImagePaths = await Promise.all(photos.map(async (photo) => {
-        const compressedImagePath = `uploads/${uuidv4()}.jpg`;
-        await sharp(photo.path).resize({ width: 500 }).toFile(compressedImagePath);
-        try {
-          await fs.promises.unlink(photo.path);
-        } catch (err) {
-          console.error(`Error deleting file ${photo.path}: ${err.message}`);
-        }
-        return compressedImagePath;
-      }));
+      compressedImagePaths = await Promise.all(
+        photos.map(async (photo) => {
+          const compressedImagePath = `uploads/${uuidv4()}.jpg`;
+          await sharp(photo.path)
+            .resize({ width: 500 })
+            .toFile(compressedImagePath);
+          try {
+            await fs.promises.unlink(photo.path);
+          } catch (err) {
+            console.error(`Error deleting file ${photo.path}: ${err.message}`);
+          }
+          return compressedImagePath;
+        })
+      );
 
-      req.files = compressedImagePaths.map(path => ({ path }));
+      req.files = compressedImagePaths.map((path) => ({ path }));
     }
 
     const post = new Post({
@@ -134,7 +175,9 @@ exports.createPost = async (req, res, next) => {
     await post.save();
 
     // Incrementar contador de totalPosts del usuario
-    await User.findByIdAndUpdate(req.session.userId, { $inc: { totalPosts: 1 } });
+    await User.findByIdAndUpdate(req.session.userId, {
+      $inc: { totalPosts: 1 },
+    });
 
     res.status(201).json(post);
   } catch (err) {
@@ -145,69 +188,95 @@ exports.createPost = async (req, res, next) => {
 exports.updatePost = async (req, res, next) => {
   try {
     if (!req.session.userId) {
-      return res.status(401).send('You must be logged in to edit a post');
+      return res.status(401).send("You must be logged in to edit a post");
     }
 
-    const { title, description, country, state, city, mainCategory, subCategory, thirdCategory, price, deletedImages } = req.body;
+    const {
+      title,
+      description,
+      latitude,
+      longitude,
+      mainCategory,
+      subCategory,
+      thirdCategory,
+      price,
+      deletedImages,
+    } = req.body;
 
     const post = await Post.findById(req.params.id);
     if (!post) {
-      return res.status(404).send('Post not found');
+      return res.status(404).send("Post not found");
     }
 
-    if (post.createdBy.toString() !== req.session.userId && req.user && req.user.role !== 'admin') {
-      return res.status(401).send('You are not authorized to edit this post');
+    if (
+      post.createdBy.toString() !== req.session.userId &&
+      req.user &&
+      req.user.role !== "admin"
+    ) {
+      return res.status(401).send("You are not authorized to edit this post");
     }
 
     post.title = title;
     post.description = description;
-    post.country = country;
-    post.state = state;
-    post.city = city;
+    post.latitude = latitude;
+    post.longitude = longitude;
     post.mainCategory = mainCategory;
     post.subCategory = subCategory;
     post.thirdCategory = thirdCategory;
     post.price = price;
 
     if (deletedImages) {
-      const deletedImagePaths = deletedImages.split(',');
-      post.photos = post.photos.filter(photo => !deletedImagePaths.includes(photo));
-    
-      await Promise.all(deletedImagePaths.map(async (imagePath) => {
-        const parsedUrl = url.parse(imagePath);
-        const localPath = parsedUrl.pathname;
-        const oldPhotoPath = path.join(__dirname, '..', localPath);
-        try {
-          await fs.promises.unlink(oldPhotoPath);
-        } catch (err) {
-          console.error(`Error deleting file ${oldPhotoPath}: ${err.message}`);
-        }
-      }));
+      const deletedImagePaths = deletedImages.split(",");
+      post.photos = post.photos.filter(
+        (photo) => !deletedImagePaths.includes(photo)
+      );
+
+      await Promise.all(
+        deletedImagePaths.map(async (imagePath) => {
+          const parsedUrl = url.parse(imagePath);
+          const localPath = parsedUrl.pathname;
+          const oldPhotoPath = path.join(__dirname, "..", localPath);
+          try {
+            await fs.promises.unlink(oldPhotoPath);
+          } catch (err) {
+            console.error(
+              `Error deleting file ${oldPhotoPath}: ${err.message}`
+            );
+          }
+        })
+      );
     }
 
     if (req.files.length > 0) {
-      const photos = req.files.map(file => file.path);
-      const compressedImagePaths = await Promise.all(photos.map(async (photo) => {
-        const compressedImagePath = `uploads/${uuidv4()}.jpg`;
-        await sharp(photo).resize({ width: 500 }).toFile(compressedImagePath);
-        try {
-          await fs.promises.unlink(photo);
-        } catch (err) {
-          console.error(`Error deleting file ${photo}: ${err.message}`);
-        }
-        return compressedImagePath;
-      }));
-      req.files = compressedImagePaths.map(path => ({ path }));
+      const photos = req.files.map((file) => file.path);
+      const compressedImagePaths = await Promise.all(
+        photos.map(async (photo) => {
+          const compressedImagePath = `uploads/${uuidv4()}.jpg`;
+          await sharp(photo).resize({ width: 500 }).toFile(compressedImagePath);
+          try {
+            await fs.promises.unlink(photo);
+          } catch (err) {
+            console.error(`Error deleting file ${photo}: ${err.message}`);
+          }
+          return compressedImagePath;
+        })
+      );
+      req.files = compressedImagePaths.map((path) => ({ path }));
 
       post.photos = [...post.photos, ...compressedImagePaths];
     }
 
-    await Promise.all(post.photos.map(async (photo) => {
-      const exists = await fs.promises.access(photo, fs.constants.F_OK).then(() => true).catch(() => false);
-      if (!exists) {
-        post.photos.pull(photo);
-      }
-    }));
+    await Promise.all(
+      post.photos.map(async (photo) => {
+        const exists = await fs.promises
+          .access(photo, fs.constants.F_OK)
+          .then(() => true)
+          .catch(() => false);
+        if (!exists) {
+          post.photos.pull(photo);
+        }
+      })
+    );
 
     await post.save();
 
@@ -222,11 +291,11 @@ exports.deletePost = async (req, res, next) => {
     const post = await Post.findById(req.params.id);
 
     if (!post) {
-      return res.status(404).send('Post not found');
+      return res.status(404).send("Post not found");
     }
 
     if (post.createdBy.toString() !== req.session.userId) {
-      return res.status(401).send('You are not authorized to delete this post');
+      return res.status(401).send("You are not authorized to delete this post");
     }
 
     // Buscar todas las ofertas asociadas con este post
@@ -235,12 +304,15 @@ exports.deletePost = async (req, res, next) => {
     // Eliminar las fotos de las ofertas asociadas con este post
     for (const offer of offers) {
       if (offer.photos) {
-        for (const photo of offer.photos) { // Añade este bucle para iterar sobre el array de fotos
+        for (const photo of offer.photos) {
+          // Añade este bucle para iterar sobre el array de fotos
           try {
-            const imagePath = path.join(__dirname, '..', photo);
+            const imagePath = path.join(__dirname, "..", photo);
             fs.unlinkSync(imagePath);
           } catch (err) {
-            console.error(`Error deleting image for offer ${offer._id}: ${err.message}`);
+            console.error(
+              `Error deleting image for offer ${offer._id}: ${err.message}`
+            );
           }
         }
       }
@@ -262,7 +334,7 @@ exports.deletePostById = async (postId) => {
 
   // Verificar si el post ya ha sido eliminado
   if (!post) {
-    console.log('Post already deleted');
+    console.log("Post already deleted");
     return;
   }
 
@@ -274,10 +346,12 @@ exports.deletePostById = async (postId) => {
     if (offer.photos) {
       for (const photo of offer.photos) {
         try {
-          const imagePath = path.join(__dirname, '..', photo);
+          const imagePath = path.join(__dirname, "..", photo);
           await fs.promises.unlink(imagePath);
         } catch (err) {
-          console.error(`Error deleting image for offer ${offer._id}: ${err.message}`);
+          console.error(
+            `Error deleting image for offer ${offer._id}: ${err.message}`
+          );
         }
       }
     }
@@ -291,10 +365,12 @@ exports.deletePostById = async (postId) => {
   if (post.photos) {
     for (const photo of post.photos) {
       try {
-        const imagePath = path.join(__dirname, '..', photo);
+        const imagePath = path.join(__dirname, "..", photo);
         await fs.promises.unlink(imagePath);
       } catch (err) {
-        console.error(`Error deleting image for post ${postId}: ${err.message}`);
+        console.error(
+          `Error deleting image for post ${postId}: ${err.message}`
+        );
       }
     }
   }
@@ -315,12 +391,12 @@ exports.schedulePostDeletion = async (postId, delay) => {
 exports.getPostsByCurrentUser = async (req, res, next) => {
   try {
     if (!req.session.userId) {
-      return res.status(401).send('You must be logged in to view your posts');
+      return res.status(401).send("You must be logged in to view your posts");
     }
 
     const posts = await Post.find({ createdBy: req.session.userId }).populate(
-      'createdBy',
-      'firstName totalPosts totalOffers lastName photo reports createdAt'
+      "createdBy",
+      "firstName totalPosts totalOffers lastName photo reports createdAt"
     );
     res.status(200).json(posts);
   } catch (err) {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import PostCategory from "@/components/categories/Categories";
-import Location from "@/components/locations/";
+import CreatePostLocation from "@/components/locations/createPost/";
 import WordsFilter from "@/badWordsFilter/WordsFilter.js";
 import { validations } from "@/utils/validations";
 
@@ -137,7 +137,7 @@ const CreatePost = () => {
     <div className="mt-3 mb-3 container">
       <h1 className="text-center mb-4">Create a post about what you Want</h1>
       <div className="">
-        <div className="form-container ">
+        <div className=" ">
           <form>
             <div className="mb-3">
               <label htmlFor="title" className="form-label">
@@ -185,15 +185,6 @@ const CreatePost = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="price" className="form-label">
-                Give an approximate location of where you want this*
-              </label>
-    <Location
-      onLatitudeChange={handleLatitudeChange}
-      onLongitudeChange={handleLongitudeChange}
-    />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="price" className="form-label">
                 Now, organize or define what you Want in 3 categories*
               </label>
               <PostCategory
@@ -210,6 +201,15 @@ const CreatePost = () => {
                 initialSubcategory={subCategory}
                 initialThirdCategory={thirdCategory}
                 isRequired={true}
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="price" className="form-label">
+                Give an approximate location of where you want this*
+              </label>
+              <CreatePostLocation
+                onLatitudeChange={handleLatitudeChange}
+                onLongitudeChange={handleLongitudeChange}
               />
             </div>
             <label htmlFor="price" className="form-label">

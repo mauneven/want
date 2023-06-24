@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import { Form, Dropdown } from 'react-bootstrap';
 import { Icon } from 'leaflet';
 
-const Location = ({ onLatitudeChange, onLongitudeChange }) => {
+const CreatePostLocation = ({ onLatitudeChange, onLongitudeChange }) => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,8 +19,8 @@ const Location = ({ onLatitudeChange, onLongitudeChange }) => {
           const lng = position.coords.longitude;
           setLatitude(lat);
           setLongitude(lng);
-          onLatitudeChange(lat); // Llama a la función de devolución de llamada en CreatePost
-          onLongitudeChange(lng); // Llama a la función de devolución de llamada en CreatePost
+          onLatitudeChange(lat); 
+          onLongitudeChange(lng); 
           setLocationDetected(true);
         },
         (error) => {
@@ -86,15 +86,27 @@ const Location = ({ onLatitudeChange, onLongitudeChange }) => {
     }
   };
 
-  const handleLocationDetection = () => {
+  const handleLocationDetection = async () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLatitude(position.coords.latitude);
-          setLongitude(position.coords.longitude);
-          onLatitudeChange(position.coords.latitude); // Llama a la función de devolución de llamada en CreatePost
-          onLongitudeChange(position.coords.longitude); // Llama a la función de devolución de llamada en CreatePost
-          setLocationDetected(true);
+        async (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
+            const data = await response.json();
+            const { city } = data.address;
+            setLatitude(lat);
+            setLongitude(lng);
+            onLatitudeChange(lat);
+            onLongitudeChange(lng);
+            setLocationDetected(true);
+            if (city) {
+              setSearchQuery(city);
+            }
+          } catch (error) {
+            console.error(error);
+          }
         },
         (error) => {
           console.error(error);
@@ -103,7 +115,7 @@ const Location = ({ onLatitudeChange, onLongitudeChange }) => {
     } else {
       console.error('Geolocation is not supported by this browser.');
     }
-  };
+  };  
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -129,7 +141,7 @@ const Location = ({ onLatitudeChange, onLongitudeChange }) => {
         <Form.Group controlId="searchForm">
           <Form.Control
             type="text"
-            placeholder="Buscar país, estado o ciudad..."
+            placeholder="Busca tu ciudad aqui..."
             value={searchQuery}
             className='rounded-5'
             onChange={handleSearchChange}
@@ -138,7 +150,7 @@ const Location = ({ onLatitudeChange, onLongitudeChange }) => {
         </Form.Group>
       </Form>
       {searchResults.length > 0 && (
-        <div className='mt-2 border rounded-5 resultas-map'>
+        <div className='mt-2 border rounded-5 results-map'>
           <ul className='p-3'>
             {searchResults.map((result, index) => (
               <li className='divhover dropdown-item' key={index} onClick={() => handleSearchSelect(result)}>
@@ -148,8 +160,9 @@ const Location = ({ onLatitudeChange, onLongitudeChange }) => {
           </ul>
         </div>
       )}
-      <div style={{ height: '400px', width: '100%', position: 'relative', marginTop: '10px' }}>
+      <div >
         {latitude && longitude ? (
+          <div style={{ height: '300px', position: 'relative', marginTop: '10px' }}>
           <MapContainer
             ref={mapRef}
             center={[latitude, longitude]}
@@ -162,20 +175,15 @@ const Location = ({ onLatitudeChange, onLongitudeChange }) => {
               url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
             />
             <Marker position={[latitude, longitude]} draggable={true} eventHandlers={{ dragend: handleLocationChange }} icon={new Icon({ iconUrl: '/icons/pin-location-icon.svg', iconSize: [32, 32], iconAnchor: [16, 32] })}>
-              <Popup>
-                Ubicación actual: {latitude}, {longitude}
-              </Popup>
             </Marker>
           </MapContainer>
+          </div>
         ) : (
-          <div>Cargando ubicación...</div>
+          <div><p className='text-success'>Permite a Want el acceso a tu ubicacion para poder ubicar donde quieres lo que vas a publicar, si no quieres permitir el acceso a tu ubicacion escribe arriba la ciudad donde lo necesitas</p></div>
         )}
       </div>
-      {!locationDetected && (
-        <button onClick={handleLocationDetection} style={{ marginTop: '10px' }}>Detectar ubicación</button>
-      )}
     </div>
   );
 };
 
-export default Location;
+export default CreatePostLocation;

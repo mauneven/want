@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import PostCategory from "@/components/categories/Categories";
-import Location from "@/components/locations/Location";
+import EditPostLocation from "@/components/locations/editPost/";
 import WordsFilter from "@/badWordsFilter/WordsFilter.js";
 import { validations } from "@/utils/validations";
 
@@ -9,13 +9,12 @@ const EditPost = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-  const [city, setCity] = useState("");
   const [mainCategory, setMainCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
   const [thirdCategory, setThirdCategory] = useState("");
   const [price, setPrice] = useState("");
+  const [latitude, setLatitude] = useState(null); // Agrega el estado para latitude
+  const [longitude, setLongitude] = useState(null); // Agrega el estado para longitude
   const [photos, setPhotos] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -23,6 +22,14 @@ const EditPost = () => {
   const [deletedImages, setDeletedImages] = useState([]);
   const router = useRouter();
   const bwf = new WordsFilter();
+
+  const handleLatitudeChange = (latitude) => {
+    setLatitude(latitude);
+  };
+
+  const handleLongitudeChange = (longitude) => {
+    setLongitude(longitude);
+  };
 
   useEffect(() => {
     validations(router);
@@ -41,9 +48,6 @@ const EditPost = () => {
         const postData = await response.json();
         setTitle(postData.title);
         setDescription(postData.description);
-        setCountry(postData.country);
-        setState(postData.state);
-        setCity(postData.city);
         setMainCategory(postData.mainCategory);
         setSubCategory(postData.subCategory);
         setThirdCategory(postData.thirdCategory);
@@ -54,6 +58,8 @@ const EditPost = () => {
             preview: `${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`,
           }))
         );
+        setLatitude(postData.latitude); // Establecer la latitud inicial
+        setLongitude(postData.longitude); // Establecer la longitud inicial
       } catch (error) {
         console.error(error);
       }
@@ -98,31 +104,36 @@ const EditPost = () => {
   };
 
   const handleFileChange = (e) => {
-    const newImages = [...e.target.files].map((file) => {
-      if (file.size > 50000000) { // 50MB en bytes
-        console.log('Selected file is too large.');
-        const errorMessage = 'The selected file is too large. Please select a file that is 50MB or smaller.';
-        setError(errorMessage);
-        alert(errorMessage);
-        return null;
-      } else if (!/^(image\/jpeg|image\/png|image\/jpg)$/.test(file.type)) {
-        console.log('Selected file is not a JPG, JPEG, or PNG.');
-        const errorMessage = 'The selected file must be in JPG, JPEG or PNG format.';
-        setError(errorMessage);
-        alert(errorMessage);
-        return null;
-      } else {
-        return {
-          file,
-          preview: URL.createObjectURL(file),
-        };
-      }
-    }).filter((image) => image !== null);
+    const newImages = [...e.target.files]
+      .map((file) => {
+        if (file.size > 50000000) {
+          // 50MB en bytes
+          console.log("Selected file is too large.");
+          const errorMessage =
+            "The selected file is too large. Please select a file that is 50MB or smaller.";
+          setError(errorMessage);
+          alert(errorMessage);
+          return null;
+        } else if (!/^(image\/jpeg|image\/png|image\/jpg)$/.test(file.type)) {
+          console.log("Selected file is not a JPG, JPEG, or PNG.");
+          const errorMessage =
+            "The selected file must be in JPG, JPEG or PNG format.";
+          setError(errorMessage);
+          alert(errorMessage);
+          return null;
+        } else {
+          return {
+            file,
+            preview: URL.createObjectURL(file),
+          };
+        }
+      })
+      .filter((image) => image !== null);
 
     const totalImages = photos.length + newImages.length;
 
     if (totalImages > 4) {
-      const errorMessage = 'You cannot upload more than 4 images.';
+      const errorMessage = "You cannot upload more than 4 images.";
       setError(errorMessage);
       alert(errorMessage);
     } else {
@@ -143,7 +154,7 @@ const EditPost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-  
+
     if (bwf.containsBadWord(title)) {
       alert(
         `Escribiste una mala palabra en el titulo: ${bwf.devolverPalabra(
@@ -153,7 +164,7 @@ const EditPost = () => {
       setLoading(false);
       return;
     }
-  
+
     if (bwf.containsBadWord(description)) {
       alert(
         `Escribiste una mala palabra en la descripción: ${bwf.devolverPalabra(
@@ -163,25 +174,27 @@ const EditPost = () => {
       setLoading(false);
       return;
     }
-  
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
-    formData.append("country", country);
-    formData.append("state", state);
-    formData.append("city", city);
+    formData.append("latitude", latitude || 0); // Proporcionar un valor predeterminado de 0 si latitude es null
+    formData.append("longitude", longitude || 0); // Proporcionar un valor predeterminado de 0 si longitude es null
     formData.append("mainCategory", mainCategory);
     formData.append("subCategory", subCategory);
     formData.append("thirdCategory", thirdCategory);
     formData.append("price", price);
-    formData.append('deletedImages', deletedImages.map(image => image.preview).join(','));
-  
+    formData.append(
+      "deletedImages",
+      deletedImages.map((image) => image.preview).join(",")
+    );
+
     photos.forEach((photo, index) => {
       if (photo.file) {
         formData.append("photos[]", photo.file);
       }
     });
-  
+
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${router.query.id}`,
@@ -194,19 +207,19 @@ const EditPost = () => {
           body: formData,
         }
       );
-  
+
       if (!response.ok) {
         const error = await response.text();
         throw new Error(error);
       }
-  
+
       setLoading(false);
       router.push("/myPosts");
     } catch (error) {
       setLoading(false);
       setError(error.message);
     }
-  };  
+  };
 
   return (
     <div className="mt-3 mb-3">
@@ -262,16 +275,11 @@ const EditPost = () => {
               <label htmlFor="price" className="form-label">
                 Give an approximate location of where you want this*
               </label>
-              <Location
-                onCountryChange={(selectedCountry) =>
-                  setCountry(selectedCountry)
-                }
-                onStateChange={(selectedState) => setState(selectedState)}
-                onCityChange={(selectedCity) => setCity(selectedCity)}
-                isRequired={true}
-                initialCountry={country}
-                initialState={state}
-                initialCity={city}
+              <EditPostLocation
+                latitude={latitude}
+                longitude={longitude}
+                onLatitudeChange={handleLatitudeChange}
+                onLongitudeChange={handleLongitudeChange}
               />
             </div>
             <div className="mb-3">

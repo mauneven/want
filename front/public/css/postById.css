@@ -11,8 +11,9 @@
   background-size: 10%;
   background-repeat: no-repeat;
   width: 70%;
-  height: 200px;
+  height: 250px;
   position: absolute;
+  z-index: 10000000!important;
 }
 
 .createdBy-photo-id {

@@ -37,11 +37,6 @@ export default function MegaMenu({
   const [categoriesButtonText, setCategoriesButtonText] = useState(
     t("navbar.selectCategory")
   );
-  const [selectedLocation, setSelectedLocation] = useState({
-    country: "",
-    state: "",
-    city: "",
-  });
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const [selectedThirdCategory, setSelectedThirdCategory] = useState("");
@@ -198,29 +193,15 @@ export default function MegaMenu({
         <div className="d-flex w-100">
           <Navbar.Brand
             onClick={handleLogoClick}
-            className="divhover align-center m-0 p-0 col-3 justify-content-start"
+            className="divhover d-flex align-items-center m-0 p-0 col-3 justify-content-center"
           >
-            <Image
-              src={"icons/want-logo-new.svg"}
-              className="w-50 h-100"
-              width={100}
-              height={100}
-            ></Image>
+            <p className="fs-1 text-success d-flex  m-0 w-100 h-100 align-items-center">Want</p>
           </Navbar.Brand>
-          <div className="col-6 text-center align-items-center justify-content-center d-flex">
+          <div className="col-6 text-center justify-content-center align-items-center d-flex">
             <Form
               className="d-flex search-bar border rounded-5 search-bar-navbar text-center align-items-center justify-content-center"
               onSubmit={handleSearchSubmit}
             >
-              {isMobile ? null : (
-                <LocationModal
-                  show={showLocationModal}
-                  onHide={() => setShowLocationModal(false)}
-                  onLocationSelected={handleLocationSelected}
-                  onLocationFilterChange={onLocationFilterChange}
-                  selectedLocation={selectedLocation}
-                />
-              )}
               <FormControl
                 type="search"
                 placeholder={t("navbar.searchPlaceholder")}

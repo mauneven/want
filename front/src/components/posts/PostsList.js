@@ -2,13 +2,9 @@ import React, { useState, useEffect } from "react";
 import ContentLoader from "react-content-loader";
 import { useRouter } from "next/router";
 import UserModal from "../user/UserModal";
+import PostsLocation from "../locations/Posts/";
 
-const PostsList = ({
-  locationFilter,
-  userIdFilter,
-  searchTerm,
-  categoryFilter,
-}) => {
+const PostsList = ({ userIdFilter, searchTerm, categoryFilter }) => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [pageSize, setPageSize] = useState(12);
@@ -20,23 +16,47 @@ const PostsList = ({
   const [noMorePosts, setNoMorePosts] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [radius, setRadius] = useState(5);
+  const [hasLocation, setHasLocation] = useState(false);
   const router = useRouter();
 
+  const handleLatitudeChange = (lat) => {
+    setLatitude(lat);
+  };
+
+  const handleLongitudeChange = (lng) => {
+    setLongitude(lng);
+  };
+
+  const handleRadiusChange = (event) => {
+    if (event && event.target && event.target.value) {
+      const selectedRadius = parseInt(event.target.value);
+      setRadius(selectedRadius);
+      onRadiusChange(selectedRadius);
+    }
+  };
+
   const fetchPosts = async () => {
+    if (!hasLocation) {
+      return;
+    }
+
     try {
       setIsLoading(true);
       setIsFetching(true);
 
       const filterParams = new URLSearchParams({
-        country: locationFilter?.country || "",
-        state: locationFilter?.state || "",
-        city: locationFilter?.city || "",
         mainCategory: categoryFilter?.mainCategory || "",
         subCategory: categoryFilter?.subCategory || "",
         thirdCategory: categoryFilter?.thirdCategory || "",
         searchTerm: searchTerm || "",
         page: currentPage,
         pageSize,
+        latitude,
+        longitude,
+        radius,
       });
 
       const response = await fetch(
@@ -44,15 +64,14 @@ const PostsList = ({
       );
       const { posts: postsData, totalPosts } = await response.json();
 
-      setTotalPosts(totalPosts);
-      setHasMorePosts(postsData.length < totalPosts);
-      setNoMorePosts(postsData.length === 0);
-
       if (currentPage === 1) {
         setPosts(postsData);
       } else {
         setPosts((prevPosts) => [...prevPosts, ...postsData]);
       }
+
+      setTotalPosts(totalPosts);
+      setHasMorePosts(postsData.length > 0);
     } catch (error) {
       console.error("Error fetching posts:", error);
     } finally {
@@ -60,21 +79,34 @@ const PostsList = ({
       setIsLoading(false);
       setIsFetchingMore(false);
     }
+    closeModal();
   };
 
   useEffect(() => {
+    setPosts([]);
+    setTotalPosts(0);
+    setHasMorePosts(false);
     setCurrentPage(1);
-  }, [locationFilter, userIdFilter, searchTerm, categoryFilter]);
+  }, [userIdFilter, searchTerm, categoryFilter, latitude, longitude, radius]);
+
+  useEffect(() => {
+    if (latitude !== null && longitude !== null) {
+      setHasLocation(true);
+    }
+  }, [latitude, longitude]);
 
   useEffect(() => {
     fetchPosts();
   }, [
-    locationFilter,
     userIdFilter,
     searchTerm,
     categoryFilter,
     currentPage,
     pageSize,
+    hasLocation,
+    latitude,
+    longitude,
+    radius,
   ]);
 
   useEffect(() => {
@@ -151,6 +183,7 @@ const PostsList = ({
 
   return (
     <div className="ps-5 pe-5">
+      <PostsLocation onLatitudeChange={setLatitude} onLongitudeChange={setLongitude} onRadiusChange={setRadius} />
       <div className="row row-cols-1 row-cols-md-4 row-cols-lg-5 row-cols-xl-5 g-4 pe-2 ps-2">
         {posts.map((post) => {
           const userReputation = 5 - 0.3 * post.createdBy.reports.length;
