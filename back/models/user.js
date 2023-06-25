@@ -38,6 +38,18 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  mainCategoryCounts: {
+    type: Object,
+    default: {}
+  },
+  subCategoryCounts: {
+    type: Object,
+    default: {}
+  },
+  thirdCategoryCounts: {
+    type: Object,
+    default: {}
+  },
   isDeleted: {
     type: Boolean,
     default: false

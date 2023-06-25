@@ -232,7 +232,7 @@ const PostsList = ({ userIdFilter, searchTerm, categoryFilter }) => {
                             photoIndex--;
                           }}
                         >
-                          <i class="bi bi-chevron-left"></i>
+                          <i className="bi bi-chevron-left"></i>
                         </button>
                         <button
                           className="carousel-control-next custom-slider-button me-1"
@@ -245,7 +245,7 @@ const PostsList = ({ userIdFilter, searchTerm, categoryFilter }) => {
                             photoIndex++;
                           }}
                         >
-                          <i class="bi bi-chevron-right"></i>
+                          <i className="bi bi-chevron-right"></i>
                         </button>
                       </>
                     )}

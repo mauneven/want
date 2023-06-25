@@ -1,65 +1,65 @@
-const fs = require('fs');
-const path = require('path');
-const { v4: uuidv4 } = require('uuid');
-const sharp = require('sharp');
+const fs = require("fs");
+const path = require("path");
+const { v4: uuidv4 } = require("uuid");
+const sharp = require("sharp");
 
-const mongoose = require('mongoose');
-const User = require('../models/user');
-const multer = require('multer');
+const mongoose = require("mongoose");
+const User = require("../models/user");
+const multer = require("multer");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/')
+    cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname));
-  }
+  },
 });
 
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 1024 * 1024 * 50 // 50MB
+    fileSize: 1024 * 1024 * 50, // 50MB
   },
   fileFilter: function (req, file, cb) {
-    if (file.mimetype.startsWith('image/')) {
+    if (file.mimetype.startsWith("image/")) {
       cb(null, true);
     } else {
-      cb(new Error('Only image files are allowed'));
+      cb(new Error("Only image files are allowed"));
     }
-  }
+  },
 });
 
 exports.getCurrentUser = async (req, res, next) => {
   try {
-    const User = mongoose.model('User');
+    const User = mongoose.model("User");
 
     if (req.session.userId) {
       const user = await User.findById(req.session.userId);
       if (user) {
         res.status(200).json({ user });
       } else {
-        res.status(404).json({ error: 'User not found' });
+        res.status(404).json({ error: "User not found" });
       }
     } else {
-      res.status(401).json({ error: 'Unauthorized' });
+      res.status(401).json({ error: "Unauthorized" });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-exports.uploadPhotoMiddleware = upload.single('photo');
+exports.uploadPhotoMiddleware = upload.single("photo");
 
 exports.updateCurrentUser = async (req, res, next) => {
   try {
-    const User = mongoose.model('User');
+    const User = mongoose.model("User");
     const userId = req.session.userId;
 
     const user = await User.findById(userId);
 
     if (!user) {
-      res.status(404).send('User not found');
+      res.status(404).send("User not found");
       return;
     }
 
@@ -71,11 +71,11 @@ exports.updateCurrentUser = async (req, res, next) => {
     if (req.file) {
       const fileExt = path.extname(req.file.originalname);
       const newFilename = `${uuidv4()}_${Date.now()}${fileExt}`;
-      const newFilePath = path.join(__dirname, '..', 'uploads', newFilename);
+      const newFilePath = path.join(__dirname, "..", "uploads", newFilename);
 
       // Elimina la foto anterior del servidor si existe
       if (user.photo) {
-        const oldFilePath = path.join(__dirname, '..', user.photo);
+        const oldFilePath = path.join(__dirname, "..", user.photo);
         if (fs.existsSync(oldFilePath)) {
           fs.unlinkSync(oldFilePath);
         }
@@ -94,7 +94,53 @@ exports.updateCurrentUser = async (req, res, next) => {
 
     await user.save();
 
-    res.status(200).send('User updated successfully');
+    res.status(200).send("User updated successfully");
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.updateUserPreferences = async (req, res, next) => {
+  try {
+    const { postId, userPreferences } = req.body;
+    const userId = req.session.userId;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(404).send("User not found");
+      return;
+    }
+
+    const {
+      mainCategoryPreferences,
+      subCategoryPreferences,
+      thirdCategoryPreferences,
+    } = userPreferences;
+
+    const updateCounter = (counter, categories) => {
+      categories.forEach((category) => {
+        if (counter[category]) {
+          counter[category] += 1; // Sumar 1 al contador existente
+        } else {
+          counter[category] = 1; // Inicializar el contador en 1 si no existe
+        }
+      });
+    };
+
+    // Actualizar los contadores de las categorías principales
+    updateCounter(user.mainCategoryCounts, mainCategoryPreferences);
+
+    // Actualizar los contadores de las subcategorías
+    updateCounter(user.subCategoryCounts, subCategoryPreferences);
+
+    // Actualizar los contadores de las terceras categorías
+    updateCounter(user.thirdCategoryCounts, thirdCategoryPreferences);
+
+    // Guardar los cambios en la base de datos
+    await user.save();
+
+    res.status(200).send("User preferences updated successfully");
   } catch (err) {
     next(err);
   }

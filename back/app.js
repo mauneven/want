@@ -2,7 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const cors = require('cors');
-const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
 const postRoutes = require('./routes/postRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const User = require('./models/user');
@@ -69,7 +69,7 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.use('/api', authRoutes);
+app.use('/api', userRoutes);
 app.use('/api', postRoutes);
 app.use('/api', offerRoutes);
 app.use("/api", docxRoutes);

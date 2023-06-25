@@ -1,4 +1,3 @@
-// authRoutes
 const express = require('express');
 const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
@@ -22,5 +21,6 @@ router.get('/check-verified', authController.checkVerified);
 router.delete('/delete-account', authController.deleteAccount);
 router.get('/check-pending-deletion', authController.checkPendingDeletion);
 router.put('/cancel-deletion-process', authController.cancelDeletionProcess);
+router.post('/updateUserPreferences', userController.updateUserPreferences);
 
 module.exports = router;

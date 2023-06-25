@@ -69,7 +69,7 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
   return (
     <>
       <Button variant="" onClick={handleShow} className="bg-white">
-      <i class="bi bi-tags fs-4"></i>
+      <i className="bi bi-tags fs-4"></i>
       <p className='m-0 small'>Filters</p>
       </Button>
 

@@ -1,4 +1,3 @@
-// PostDetails.js
 import { useRouter } from 'next/router';
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -12,7 +11,7 @@ const PostDetails = () => {
   const router = useRouter();
   const { id } = router.query;
   const { t } = useTranslation();
-
+  const [isLogged, setIsLogged] = useState(false);
   const [post, setPost] = useState(null);
   const [mainImage, setMainImage] = useState('');
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
@@ -22,6 +21,65 @@ const PostDetails = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showUserModal, setShowUserModal] = useState(false);
+  const [user, setUser] = useState(null);
+  const [userPreferences, setUserPreferences] = useState({
+    mainCategoryPreferences: [],
+    subCategoryPreferences: [],
+    thirdCategoryPreferences: []
+  });  
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user || null);
+        setIsLogged(true);
+      } else if (response.status === 401) {
+        setIsLogged(false);
+      }
+    };
+
+    checkSession();
+  }, [router.pathname]);
+
+  const updateUserPreferences = async (postId) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/updateUserPreferences`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            postId,
+            userPreferences: {
+              mainCategoryPreferences: userPreferences.mainCategoryPreferences,
+              subCategoryPreferences: userPreferences.subCategoryPreferences,
+              thirdCategoryPreferences: userPreferences.thirdCategoryPreferences
+            }
+          }),
+          credentials: 'include'
+        }
+      );
+  
+      if (response.ok) {
+        console.log('Preferencias del usuario actualizadas');
+      } else {
+        console.error('Error al actualizar las preferencias del usuario');
+      }
+    } catch (error) {
+      console.error('Error al actualizar las preferencias del usuario', error);
+    }
+  };   
 
   const isMobile = () => {
     return (
@@ -99,6 +157,63 @@ const PostDetails = () => {
       fetchPost();
     }
   }, [id]);
+
+  useEffect(() => {
+    const updatePreferences = async () => {
+      if (user) {
+        const preferences = {
+          mainCategoryPreferences: Array.isArray(user.mainCategoryPreferences) ? [...user.mainCategoryPreferences] : [],
+          subCategoryPreferences: Array.isArray(user.subCategoryPreferences) ? [...user.subCategoryPreferences] : [],
+          thirdCategoryPreferences: Array.isArray(user.thirdCategoryPreferences) ? [...user.thirdCategoryPreferences] : []
+        };
+  
+        const { mainCategory, subCategory, thirdCategory } = post;
+  
+        if (!preferences.mainCategoryPreferences.includes(mainCategory)) {
+          preferences.mainCategoryPreferences.push(mainCategory);
+        }
+  
+        if (!preferences.subCategoryPreferences.includes(subCategory)) {
+          preferences.subCategoryPreferences.push(subCategory);
+        }
+  
+        if (!preferences.thirdCategoryPreferences.includes(thirdCategory)) {
+          preferences.thirdCategoryPreferences.push(thirdCategory);
+        }
+  
+        await updateUserPreferences(post._id);
+        setUserPreferences(preferences);
+      } else {
+        // No hay usuario logueado, guardar en el localStorage
+        const preferences = JSON.parse(localStorage.getItem('userPreferences')) || {
+          mainCategoryPreferences: [],
+          subCategoryPreferences: [],
+          thirdCategoryPreferences: []
+        };
+  
+        const { mainCategory, subCategory, thirdCategory } = post;
+  
+        if (!preferences.mainCategoryPreferences.includes(mainCategory)) {
+          preferences.mainCategoryPreferences.push(mainCategory);
+        }
+  
+        if (!preferences.subCategoryPreferences.includes(subCategory)) {
+          preferences.subCategoryPreferences.push(subCategory);
+        }
+  
+        if (!preferences.thirdCategoryPreferences.includes(thirdCategory)) {
+          preferences.thirdCategoryPreferences.push(thirdCategory);
+        }
+  
+        localStorage.setItem('userPreferences', JSON.stringify(preferences));
+        setUserPreferences(preferences);
+      }
+    };
+  
+    if (post && userPreferences) {
+      updatePreferences();
+    }
+  }, [post, user, userPreferences]);  // Añade `userPreferences` como dependencia aquí
 
   const handleThumbnailMouseOver = (imageUrl) => {
     setMainImage(imageUrl);
@@ -202,17 +317,15 @@ const PostDetails = () => {
                 }}
               ></div>
             )}
-            <h1>{post.title}</h1>
+            <h2>{post.title}</h2>
             <p>
-              <span className="text-success h2">
+              <span className="text-success fs-1">
                 $ {post.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               </span>
             </p>
             <p className="description-container-id">{post.description}</p>
             <p className="pb-0 mb-0 small-text mt-3">
               <PostDetailsLocation latitude={post.latitude} longitude={post.longitude} />
-              {t('postDetails.publishedIn')} {post.city}, {post.state},{' '}
-              {post.country}
             </p>
             <p className="small">
               {t(`categories.${post.mainCategory}.name`)},{' '}
@@ -256,19 +369,6 @@ const PostDetails = () => {
           </div>
         </div>
       </div>
-      <RelatedPosts
-        locationFilter={{
-          country: post.country,
-          state: post.state,
-          city: post.city,
-        }}
-        categoryFilter={{
-          mainCategory: post.mainCategory,
-          subCategory: post.subCategory,
-        }}
-        post={post}
-        currentPage={Number(router.query.page) || 1}
-      />
       {showUserModal && (
         <UserModal
           selectedUser={selectedUser}

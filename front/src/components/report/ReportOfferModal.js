@@ -21,7 +21,7 @@ const ReportOfferModal = ({ offerId, onReport }) => {
     <>
       <Button variant="danger" onClick={handleShow}>
         Report 
-        <i class="bi bi-flag ms-2"></i>
+        <i className="bi bi-flag ms-2"></i>
       </Button>
 
       <Modal show={show} onHide={handleClose}>

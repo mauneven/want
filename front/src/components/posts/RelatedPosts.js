@@ -208,7 +208,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
                         className="createdBy-photo p-1"
                       />
                       <small className="text-muted text-center">
-                        {relatedPost.createdBy.firstName} | <i class="bi bi-star-fill"></i> {userReputation.toFixed(1)}
+                        {relatedPost.createdBy.firstName} | <i className="bi bi-star-fill"></i> {userReputation.toFixed(1)}
                       </small>
                     </div>
                   </div>

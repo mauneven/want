@@ -31,7 +31,7 @@ const UserModal = ({ selectedUser, showModal, closeModal }) => {
                 <h5 className="user-profile__name">
                   {selectedUser.firstName} {selectedUser.lastName}
                 </h5>
-                <h5><i class="bi bi-star-fill"></i> {selectedUser.reports ? 5 - (0.3 * selectedUser.reports.length) : ""}</h5>
+                <h5><i className="bi bi-star-fill"></i> {selectedUser.reports ? 5 - (0.3 * selectedUser.reports.length) : ""}</h5>
                 <div className="user-profile__stats">
                   <p className="user-profile__stat">
                     Want user {getFormattedDate(selectedUser.createdAt)}
