@@ -2,7 +2,6 @@ const fs = require("fs");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const sharp = require("sharp");
-
 const mongoose = require("mongoose");
 const User = require("../models/user");
 const multer = require("multer");
@@ -108,39 +107,38 @@ exports.updateUserPreferences = async (req, res, next) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      res.status(404).send("User not found");
+      res.status(404).send('User not found');
       return;
     }
 
-    const {
-      mainCategoryPreferences,
-      subCategoryPreferences,
-      thirdCategoryPreferences,
-    } = userPreferences;
+    const { mainCategoryPreferences, subCategoryPreferences, thirdCategoryPreferences } = userPreferences;
 
     const updateCounter = (counter, categories) => {
-      categories.forEach((category) => {
-        if (counter[category]) {
-          counter[category] += 1; // Sumar 1 al contador existente
-        } else {
-          counter[category] = 1; // Inicializar el contador en 1 si no existe
-        }
-      });
-    };
+      if (Array.isArray(categories)) {
+        categories.forEach((category) => {
+          const [mainCategory, subCategory, thirdCategory] = category.split('.');
+          const categoryKey = [mainCategory, subCategory, thirdCategory].filter(Boolean).join('.');
 
-    // Actualizar los contadores de las categorías principales
+          if (!counter[categoryKey]) {
+            counter[categoryKey] = 1;
+          } else {
+            counter[categoryKey] += 1;
+          }
+        });
+      }
+    };    
+
     updateCounter(user.mainCategoryCounts, mainCategoryPreferences);
-
-    // Actualizar los contadores de las subcategorías
     updateCounter(user.subCategoryCounts, subCategoryPreferences);
-
-    // Actualizar los contadores de las terceras categorías
     updateCounter(user.thirdCategoryCounts, thirdCategoryPreferences);
 
-    // Guardar los cambios en la base de datos
+    user.markModified('mainCategoryCounts');
+    user.markModified('subCategoryCounts');
+    user.markModified('thirdCategoryCounts');
+
     await user.save();
 
-    res.status(200).send("User preferences updated successfully");
+    res.status(200).send('User preferences updated successfully');
   } catch (err) {
     next(err);
   }

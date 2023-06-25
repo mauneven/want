@@ -22,19 +22,14 @@ const PostDetails = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [showUserModal, setShowUserModal] = useState(false);
   const [user, setUser] = useState(null);
-  const [userPreferences, setUserPreferences] = useState({
-    mainCategoryPreferences: [],
-    subCategoryPreferences: [],
-    thirdCategoryPreferences: []
-  });  
 
   useEffect(() => {
     const checkSession = async () => {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
         {
-          method: "GET",
-          credentials: "include",
+          method: 'GET',
+          credentials: 'include',
         }
       );
 
@@ -57,17 +52,17 @@ const PostDetails = () => {
         {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             postId,
             userPreferences: {
-              mainCategoryPreferences: userPreferences.mainCategoryPreferences,
-              subCategoryPreferences: userPreferences.subCategoryPreferences,
-              thirdCategoryPreferences: userPreferences.thirdCategoryPreferences
-            }
+              mainCategoryPreferences: [post.mainCategory],
+              subCategoryPreferences: [post.subCategory],
+              thirdCategoryPreferences: [post.thirdCategory],
+            },
           }),
-          credentials: 'include'
+          credentials: 'include',
         }
       );
   
@@ -79,7 +74,7 @@ const PostDetails = () => {
     } catch (error) {
       console.error('Error al actualizar las preferencias del usuario', error);
     }
-  };   
+  };  
 
   const isMobile = () => {
     return (
@@ -160,60 +155,13 @@ const PostDetails = () => {
 
   useEffect(() => {
     const updatePreferences = async () => {
-      if (user) {
-        const preferences = {
-          mainCategoryPreferences: Array.isArray(user.mainCategoryPreferences) ? [...user.mainCategoryPreferences] : [],
-          subCategoryPreferences: Array.isArray(user.subCategoryPreferences) ? [...user.subCategoryPreferences] : [],
-          thirdCategoryPreferences: Array.isArray(user.thirdCategoryPreferences) ? [...user.thirdCategoryPreferences] : []
-        };
-  
-        const { mainCategory, subCategory, thirdCategory } = post;
-  
-        if (!preferences.mainCategoryPreferences.includes(mainCategory)) {
-          preferences.mainCategoryPreferences.push(mainCategory);
-        }
-  
-        if (!preferences.subCategoryPreferences.includes(subCategory)) {
-          preferences.subCategoryPreferences.push(subCategory);
-        }
-  
-        if (!preferences.thirdCategoryPreferences.includes(thirdCategory)) {
-          preferences.thirdCategoryPreferences.push(thirdCategory);
-        }
-  
-        await updateUserPreferences(post._id);
-        setUserPreferences(preferences);
-      } else {
-        // No hay usuario logueado, guardar en el localStorage
-        const preferences = JSON.parse(localStorage.getItem('userPreferences')) || {
-          mainCategoryPreferences: [],
-          subCategoryPreferences: [],
-          thirdCategoryPreferences: []
-        };
-  
-        const { mainCategory, subCategory, thirdCategory } = post;
-  
-        if (!preferences.mainCategoryPreferences.includes(mainCategory)) {
-          preferences.mainCategoryPreferences.push(mainCategory);
-        }
-  
-        if (!preferences.subCategoryPreferences.includes(subCategory)) {
-          preferences.subCategoryPreferences.push(subCategory);
-        }
-  
-        if (!preferences.thirdCategoryPreferences.includes(thirdCategory)) {
-          preferences.thirdCategoryPreferences.push(thirdCategory);
-        }
-  
-        localStorage.setItem('userPreferences', JSON.stringify(preferences));
-        setUserPreferences(preferences);
-      }
+      if (!post || !user) return;
+
+      await updateUserPreferences(post._id);
     };
-  
-    if (post && userPreferences) {
-      updatePreferences();
-    }
-  }, [post, user, userPreferences]);  // Añade `userPreferences` como dependencia aquí
+
+    updatePreferences();
+  }, [post, user]);
 
   const handleThumbnailMouseOver = (imageUrl) => {
     setMainImage(imageUrl);
@@ -325,7 +273,10 @@ const PostDetails = () => {
             </p>
             <p className="description-container-id">{post.description}</p>
             <p className="pb-0 mb-0 small-text mt-3">
-              <PostDetailsLocation latitude={post.latitude} longitude={post.longitude} />
+              <PostDetailsLocation
+                latitude={post.latitude}
+                longitude={post.longitude}
+              />
             </p>
             <p className="small">
               {t(`categories.${post.mainCategory}.name`)},{' '}
