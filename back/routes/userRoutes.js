@@ -22,5 +22,6 @@ router.delete('/delete-account', authController.deleteAccount);
 router.get('/check-pending-deletion', authController.checkPendingDeletion);
 router.put('/cancel-deletion-process', authController.cancelDeletionProcess);
 router.post('/updateUserPreferences', userController.updateUserPreferences);
+router.get('/user/preferences', userController.getUserPreferences);
 
 module.exports = router;

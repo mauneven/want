@@ -143,3 +143,25 @@ exports.updateUserPreferences = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getUserPreferences = async (req, res, next) => {
+  try {
+    const userId = req.session.userId;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(404).send('User not found');
+      return;
+    }
+
+    const preferences = {
+      mainCategoryCounts: user.mainCategoryCounts,
+      subCategoryCounts: user.subCategoryCounts,
+      thirdCategoryCounts: user.thirdCategoryCounts
+    };
+
+    res.status(200).json(preferences);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

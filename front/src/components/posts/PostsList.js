@@ -20,6 +20,9 @@ const PostsList = ({ userIdFilter, searchTerm, categoryFilter }) => {
   const [longitude, setLongitude] = useState(null);
   const [radius, setRadius] = useState(5);
   const [hasLocation, setHasLocation] = useState(false);
+  const [userPreferences, setUserPreferences] = useState({});
+  const [userPreferencesLoaded, setUserPreferencesLoaded] = useState(false); // Estado adicional para indicar si las preferencias se han cargado
+
   const router = useRouter();
 
   const handleLatitudeChange = (lat) => {
@@ -38,14 +41,43 @@ const PostsList = ({ userIdFilter, searchTerm, categoryFilter }) => {
     }
   };
 
+  const getUserPreferences = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/preferences`,
+        {
+          credentials: "include", // Incluir las cookies en la solicitud
+        }
+      );
+      const data = await response.json();
+      setUserPreferences(data);
+      setUserPreferencesLoaded(true); // Indicar que las preferencias se han cargado correctamente
+    } catch (error) {
+      console.error("Error al obtener las preferencias de usuario:", error);
+    }
+  };
+
+  useEffect(() => {
+    getUserPreferences();
+  }, []);
+
   const fetchPosts = async () => {
-    if (!hasLocation) {
+    if (!hasLocation || !userPreferencesLoaded) { // Verificar si las preferencias se han cargado antes de hacer la solicitud de los posts
       return;
     }
 
     try {
       setIsLoading(true);
       setIsFetching(true);
+
+      const convertKeysToSingleQuotes = (preferences) => {
+        const convertedPreferences = {};
+        for (const key in preferences) {
+          const convertedKey = key.replace(/"/g, "'");
+          convertedPreferences[convertedKey] = preferences[key];
+        }
+        return convertedPreferences;
+      };
 
       const filterParams = new URLSearchParams({
         mainCategory: categoryFilter?.mainCategory || "",
@@ -57,6 +89,9 @@ const PostsList = ({ userIdFilter, searchTerm, categoryFilter }) => {
         latitude,
         longitude,
         radius,
+        mainCategoryPreferences: JSON.stringify(convertKeysToSingleQuotes(userPreferences.mainCategoryCounts)),
+        subCategoryPreferences: JSON.stringify(convertKeysToSingleQuotes(userPreferences.subCategoryCounts)),
+        thirdCategoryPreferences: JSON.stringify(convertKeysToSingleQuotes(userPreferences.thirdCategoryCounts)),
       });
 
       const response = await fetch(
@@ -107,6 +142,8 @@ const PostsList = ({ userIdFilter, searchTerm, categoryFilter }) => {
     latitude,
     longitude,
     radius,
+    userPreferences,
+    userPreferencesLoaded, // Agregar las preferencias cargadas como dependencia
   ]);
 
   useEffect(() => {
@@ -183,7 +220,11 @@ const PostsList = ({ userIdFilter, searchTerm, categoryFilter }) => {
 
   return (
     <div className="ps-5 pe-5">
-      <PostsLocation onLatitudeChange={setLatitude} onLongitudeChange={setLongitude} onRadiusChange={setRadius} />
+      <PostsLocation
+        onLatitudeChange={setLatitude}
+        onLongitudeChange={setLongitude}
+        onRadiusChange={setRadius}
+      />
       <div className="row row-cols-1 row-cols-md-4 row-cols-lg-5 row-cols-xl-5 g-4 pe-2 ps-2">
         {posts.map((post) => {
           const userReputation = 5 - 0.3 * post.createdBy.reports.length;

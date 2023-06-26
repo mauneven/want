@@ -257,8 +257,8 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
 
   return (
     <>
-      <button onClick={openModal} className="mb-2 btn want-button rounded-5 border-0">
-        {locationName ? `${locationName} - ${radius} km` : 'Select a location to see posts'}
+      <button onClick={openModal} className="mb-2 fs-5 btn text-success btn-link rounded-5 border-0">
+        {locationName ? `${locationName} · ${radius} km` : 'Select a location to see posts'}
       </button>
 
       <Modal show={showModal} onHide={closeModal} size="lg">
