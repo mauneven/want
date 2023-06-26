@@ -6,6 +6,7 @@ import ReportPostModal from "@/components/report/ReportPostModal";
 import UserModal from "@/components/user/UserModal";
 import PostDetailsLocation from "@/components/locations/postDetails/";
 import { useTranslation } from "react-i18next";
+import GoBackButton from "@/components/reusable/GoBackButton";
 
 const PostDetails = () => {
   const router = useRouter();
@@ -243,6 +244,7 @@ const PostDetails = () => {
   return (
     <>
       <div className="container mt-5 mb-5">
+        <GoBackButton/>
         <div className="row">
           <div className="col-lg-6">
             <div

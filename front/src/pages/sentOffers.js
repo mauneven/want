@@ -4,6 +4,7 @@ import { Modal, Button } from 'react-bootstrap';
 import DetailsModal from '@/components/offer/DetailsModal';
 import { validations } from '@/utils/validations';
 import { useTranslation } from 'react-i18next';
+import GoBackButton from '@/components/reusable/GoBackButton';
 
 export default function SentOffers() {
   const [offers, setOffers] = useState([]);
@@ -86,6 +87,7 @@ export default function SentOffers() {
       </Modal>
       <div className="container">
         <h1 className='my-4'>{t('sentOffers.yourOffers')}</h1>
+        <GoBackButton/>
         <div className="row">
           {offers.map((offer) => (
             <div key={offer._id} className="col-12 col-md-6">

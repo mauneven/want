@@ -4,6 +4,7 @@ import { Modal, Button } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import { validations } from '@/utils/validations';
 import { useTranslation } from 'react-i18next';
+import GoBackButton from '@/components/reusable/GoBackButton';
 
 export default function MyPosts() {
   const [posts, setPosts] = useState([]);
@@ -70,6 +71,7 @@ export default function MyPosts() {
       </Modal>
       <div className="container">
         <h1 className='my-4'>{t('myPosts.yourPosts')}</h1>
+        <GoBackButton/>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
         {posts.map((post) => {
           const userReputation = 5 - 0.3 * post.createdBy.reports.length;

@@ -9,9 +9,7 @@ import {
   Button,
   Offcanvas,
 } from "react-bootstrap";
-import LocationModal from "../locations/LocationPosts";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import Notifications from "../notifications/Notifications";
 import CategoriesModal from "../categories/CategoriesPosts";
 import { useTranslation } from "react-i18next";
@@ -19,7 +17,6 @@ import LanguageSelector from "../language/LanguageSelector";
 import CategorySlider from "../categories/CategorySlider";
 
 export default function MegaMenu({
-  onLocationFilterChange,
   onSearchTermChange,
   onCategoryFilterChange,
   currentPage,
@@ -29,15 +26,15 @@ export default function MegaMenu({
 
   const [user, setUser] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
-  const [locationFilter, setLocationFilter] = useState(null);
-  const [showLocationModal, setShowLocationModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
+  const [removeActiveClass, setRemoveActiveClass] = useState(false);
   const [resetSlider, setResetSlider] = useState(false);
   const [categoriesButtonText, setCategoriesButtonText] = useState(
     t("navbar.selectCategory")
   );
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [activeSubcategory, setActiveSubcategory] = useState("");
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const [selectedThirdCategory, setSelectedThirdCategory] = useState("");
   const [isMobile, setIsMobile] = useState(false);
@@ -97,23 +94,6 @@ export default function MegaMenu({
     }
   };
 
-  const handleLocationSelected = (country, state, city) => {
-    const newLocation = { country, state, city };
-    setSelectedLocation(newLocation);
-    setLocationFilter(newLocation);
-    onLocationFilterChange(newLocation);
-    localStorage.setItem("locationFilter", JSON.stringify(newLocation));
-  };
-
-  useEffect(() => {
-    const locationFilterString = localStorage.getItem("locationFilter");
-    if (locationFilterString) {
-      const parsedLocationFilter = JSON.parse(locationFilterString);
-      setLocationFilter(parsedLocationFilter);
-      onLocationFilterChange(parsedLocationFilter);
-    }
-  }, []);
-
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     setSelectedCategory("");
@@ -133,34 +113,31 @@ export default function MegaMenu({
     router.push("/");
   };
 
-  const handleClose = () => setShowLocationModal(false);
-  const handleShow = () => setShowLocationModal(true);
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
 
-useEffect(() => {
-  const checkSession = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
-        {
-          method: "GET",
-          credentials: "include",
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.user || null);
+        } else if (response.status === 401) {
+          setUser(null);
+          console.log("no logged");
         }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data.user || null);
-      } else if (response.status === 401) {
-        setUser(null);
-        console.log('no logged')
+      } catch (error) {
+        console.error("Error al verificar la sesión:", error);
       }
-    } catch (error) {
-      console.error("Error al verificar la sesión:", error);
-    }
-  };
+    };
 
-  checkSession();
-}, [router.pathname]);
+    checkSession();
+  }, [router.pathname]);
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 1000);
@@ -175,7 +152,6 @@ useEffect(() => {
 
   useEffect(() => {
     const handleRouteChange = () => {
-      setShowLocationModal(false);
       setShowCategoriesModal(false);
       setShowOffcanvas(false);
     };
@@ -199,7 +175,9 @@ useEffect(() => {
             onClick={handleLogoClick}
             className="divhover d-flex align-items-center m-0 p-0 col-3 justify-content-center"
           >
-            <p className="fs-1 text-success d-flex  m-0 w-100 h-100 align-items-center">Want</p>
+            <p className="fs-1 text-success d-flex  m-0 w-100 h-100 align-items-center">
+              Want
+            </p>
           </Navbar.Brand>
           <div className="col-6 text-center justify-content-center align-items-center d-flex">
             <Form
@@ -321,15 +299,7 @@ useEffect(() => {
           <Offcanvas.Body>
             <div className="container">
               <div className="row mt-3">
-                <div className="col">
-                  <Button
-                    variant="outline-secondary"
-                    className="w-100 mb-3"
-                    onClick={handleShow}
-                  >
-                    {categoriesButtonText}
-                  </Button>
-                </div>
+                <div className="col"></div>
               </div>
               {user && (
                 <div className="row mt-3">
@@ -362,11 +332,13 @@ useEffect(() => {
       {router.pathname === "/" ? (
         <div className="pe-5 ps-5 nav-borders d-flex">
           <div className="col-11">
-            <CategorySlider
-              onCategorySelected={handleCategorySelected}
-              resetSlider={resetSlider}
-              setResetSlider={setResetSlider}
-            />
+          <CategorySlider
+    onCategorySelected={handleCategorySelected}
+    resetSlider={resetSlider}
+    setResetSlider={setResetSlider}
+    removeActiveClass={removeActiveClass}
+    activeSubcategory={selectedSubcategory} // Pasar la subcategoría activa
+  />
           </div>
           <div className="col-1 align-content-center justify-content-center text-center bg-white">
             <CategoriesModal

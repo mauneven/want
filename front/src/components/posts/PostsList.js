@@ -3,6 +3,7 @@ import ContentLoader from "react-content-loader";
 import { useRouter } from "next/router";
 import UserModal from "../user/UserModal";
 import PostsLocation from "../locations/Posts/";
+import PostCategory from "../categories/PostCategory";
 
 const PostsList = ({ userIdFilter, searchTerm, categoryFilter }) => {
   const [posts, setPosts] = useState([]);
@@ -269,6 +270,7 @@ const PostsList = ({ userIdFilter, searchTerm, categoryFilter }) => {
         onLongitudeChange={setLongitude}
         onRadiusChange={setRadius}
       />
+      <PostCategory/>
       <div className="row row-cols-1 row-cols-md-4 row-cols-lg-5 row-cols-xl-5 g-4 pe-2 ps-2">
         {posts.map((post) => {
           const userReputation = 5 - 0.3 * post.createdBy.reports.length;
