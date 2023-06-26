@@ -116,6 +116,9 @@ const EditPostLocation = ({ latitude, longitude, onLatitudeChange, onLongitudeCh
               style={{ height: '100%', width: '100%' }}
               scrollWheelZoom={true}
               attributionControl={false} // Desactiva la atribución de Leaflet
+              dragging={false}
+              zoomSnap={false}
+              doubleClickZoom={false}
             >
               <TileLayer
                 url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'

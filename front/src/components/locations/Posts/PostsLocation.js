@@ -15,12 +15,27 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
   const [radius, setRadius] = useState(5); // Valor predeterminado de radio: 5 km
   const radiusOptions = [1, 2, 5, 10, 20, 30, 50, 80, 100, 10000000000]; // Opciones de radio en km
   const [locationName, setLocationName] = useState(null); // Nombre de la ubicación
+  const [zoomLevel, setZoomLevel] = useState(13); // Nivel de zoom predeterminado: 13
+
+  useEffect(() => {
+    const storedRadius = localStorage.getItem('radius');
+    if (storedRadius) {
+      setRadius(parseInt(storedRadius));
+      onRadiusChange(parseInt(storedRadius));
+    }
+
+    const storedZoomLevel = localStorage.getItem('zoomLevel');
+    if (storedZoomLevel) {
+      setZoomLevel(parseInt(storedZoomLevel));
+    }
+  }, []);
 
   useEffect(() => {
     const storedLatitude = localStorage.getItem('latitude');
     const storedLongitude = localStorage.getItem('longitude');
     const storedRadius = localStorage.getItem('radius');
     const storedLocationName = localStorage.getItem('locationName');
+    const storedZoomLevel = localStorage.getItem('zoomLevel');
 
     if (storedLatitude && storedLongitude && storedRadius) {
       setLatitude(parseFloat(storedLatitude));
@@ -30,6 +45,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
       onLongitudeChange(parseFloat(storedLongitude));
       onRadiusChange(parseInt(storedRadius));
       setLocationName(storedLocationName);
+      setZoomLevel(parseInt(storedZoomLevel));
     } else if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -110,7 +126,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
         setLongitude(parseFloat(lon));
         setSearchQuery('');
         setSearchResults([]);
-        mapRef.current.setView([parseFloat(lat), parseFloat(lon)], 13);
+        mapRef.current.setView([parseFloat(lat), parseFloat(lon)], zoomLevel);
         onLatitudeChange(parseFloat(lat));
         onLongitudeChange(parseFloat(lon));
         fetchLocationName(parseFloat(lat), parseFloat(lon));
@@ -181,6 +197,9 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
       zoomLevel = 8;
     }
 
+    setZoomLevel(zoomLevel);
+    localStorage.setItem('zoomLevel', zoomLevel.toString());
+
     mapRef.current.setView([latitude, longitude], zoomLevel);
   };
 
@@ -243,7 +262,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
 
   useEffect(() => {
     if (latitude && longitude && mapRef.current) {
-      mapRef.current.setView([latitude, longitude], 13);
+      mapRef.current.setView([latitude, longitude], zoomLevel);
     }
   }, [latitude, longitude]);
 
@@ -300,10 +319,13 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
                 <MapContainer
                   ref={mapRef}
                   center={[latitude, longitude]}
-                  zoom={13}
+                  zoom={zoomLevel}
                   style={{ height: '100%', width: '100%' }}
                   scrollWheelZoom={true}
                   attributionControl={false} // Desactiva la atribución de Leaflet
+                  dragging={false}
+                  zoomSnap={false}
+                  doubleClickZoom={false}
                 >
                   <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                   <Marker

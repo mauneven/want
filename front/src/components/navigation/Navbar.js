@@ -136,8 +136,9 @@ export default function MegaMenu({
   const handleClose = () => setShowLocationModal(false);
   const handleShow = () => setShowLocationModal(true);
 
-  useEffect(() => {
-    const checkSession = async () => {
+useEffect(() => {
+  const checkSession = async () => {
+    try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
         {
@@ -149,14 +150,17 @@ export default function MegaMenu({
       if (response.ok) {
         const data = await response.json();
         setUser(data.user || null);
-        setIsLogged(true);
       } else if (response.status === 401) {
-        setIsLogged(false);
+        setUser(null);
+        console.log('no logged')
       }
-    };
+    } catch (error) {
+      console.error("Error al verificar la sesión:", error);
+    }
+  };
 
-    checkSession();
-  }, [router.pathname]);
+  checkSession();
+}, [router.pathname]);
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 1000);

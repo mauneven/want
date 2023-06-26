@@ -22,6 +22,7 @@ const PostsList = ({ userIdFilter, searchTerm, categoryFilter }) => {
   const [hasLocation, setHasLocation] = useState(false);
   const [userPreferences, setUserPreferences] = useState({});
   const [userPreferencesLoaded, setUserPreferencesLoaded] = useState(false); // Estado adicional para indicar si las preferencias se han cargado
+  const [user, setUser] = useState(null); // Estado del usuario
 
   const router = useRouter();
 
@@ -43,15 +44,30 @@ const PostsList = ({ userIdFilter, searchTerm, categoryFilter }) => {
 
   const getUserPreferences = async () => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/preferences`,
-        {
-          credentials: "include", // Incluir las cookies en la solicitud
-        }
-      );
-      const data = await response.json();
-      setUserPreferences(data);
-      setUserPreferencesLoaded(true); // Indicar que las preferencias se han cargado correctamente
+      if (user) {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/preferences`,
+          {
+            credentials: "include", // Incluir las cookies en la solicitud
+          }
+        );
+        const data = await response.json();
+        setUserPreferences(data);
+        setUserPreferencesLoaded(true); // Indicar que las preferencias se han cargado correctamente
+        console.log("Datos enviados con el usuario");
+      } else {
+        const mainCategoryPreferences = JSON.parse(localStorage.getItem("mainCategoryPreferences")) || {};
+        const subCategoryPreferences = JSON.parse(localStorage.getItem("subCategoryPreferences")) || {};
+        const thirdCategoryPreferences = JSON.parse(localStorage.getItem("thirdCategoryPreferences")) || {};
+
+        setUserPreferences({
+          mainCategoryCounts: mainCategoryPreferences,
+          subCategoryCounts: subCategoryPreferences,
+          thirdCategoryCounts: thirdCategoryPreferences,
+        });
+        setUserPreferencesLoaded(true); // Indicar que las preferencias se han cargado correctamente
+        console.log("Datos enviados con el localStorage");
+      }
     } catch (error) {
       console.error("Error al obtener las preferencias de usuario:", error);
     }
@@ -59,10 +75,38 @@ const PostsList = ({ userIdFilter, searchTerm, categoryFilter }) => {
 
   useEffect(() => {
     getUserPreferences();
-  }, []);
+  }, [user]);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+  
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.user || null);
+        } else if (response.status === 401) {
+          setUser(null);
+          console.log('no logged')
+        }
+      } catch (error) {
+        console.error("Error al verificar la sesión:", error);
+      }
+    };
+  
+    checkSession();
+  }, [router.pathname]);  
+  
 
   const fetchPosts = async () => {
-    if (!hasLocation || !userPreferencesLoaded) { // Verificar si las preferencias se han cargado antes de hacer la solicitud de los posts
+    if (!hasLocation || !userPreferencesLoaded) {
+      // Verificar si las preferencias se han cargado antes de hacer la solicitud de los posts
       return;
     }
 
