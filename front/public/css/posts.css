@@ -188,6 +188,21 @@
   transition: 300ms;
 }
 
+.slider-container {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.slider-container {
+  scrollbar-width: none; /* Para navegadores que admiten 'scrollbar-width' */
+  -ms-overflow-style: none; /* Para Internet Explorer y Edge */
+}
+
+.slider-container::-webkit-scrollbar {
+  display: none; /* Para navegadores basados en WebKit */
+}
+
+
 .custom-slider-button {
   background-color: white;
   opacity: 1;
@@ -214,5 +229,4 @@
   display: block;
   transition: 500ms;
 }
-
 

@@ -1,14 +1,13 @@
-import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
-import RelatedPosts from "@/components/posts/RelatedPosts";
+import { Modal, Button } from "react-bootstrap";
+import { useRouter } from "next/router";
 import ReportPostModal from "@/components/report/ReportPostModal";
 import UserModal from "@/components/user/UserModal";
 import PostDetailsLocation from "@/components/locations/postDetails/";
 import { useTranslation } from "react-i18next";
-import GoBackButton from "@/components/reusable/GoBackButton";
+import CreateOfferModal from "../offer/CreateOfferModal";
 
-const PostDetails = () => {
+const PostDetailsModal = ({ postId, showModal, closeModal }) => {
   const router = useRouter();
   const { id } = router.query;
   const { t } = useTranslation();
@@ -19,10 +18,11 @@ const PostDetails = () => {
   const imageRef = useRef(null);
   const zoomRef = useRef(null);
   const [isZoomVisible, setIsZoomVisible] = useState(false);
-  const [showModal, setShowModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showUserModal, setShowUserModal] = useState(false);
   const [user, setUser] = useState(null);
+  const [showCreateOfferModal, setShowCreateOfferModal] = useState(false);
+
 
   useEffect(() => {
     const checkSession = async () => {
@@ -147,11 +147,16 @@ const PostDetails = () => {
   };
 
   const handleImageClick = () => {
-    setShowModal(true);
+    showModal(); // Llamar a la función showModal para abrir el modal
   };
 
   const handleCloseClick = () => {
-    setShowModal(false);
+    closeModal(); // Llamar a la función closeModal para cerrar el modal
+  };
+
+  const handleMakeOfferClick = () => {
+    closeModal(); // Cerrar el modal de detalles
+    setShowCreateOfferModal(true); // Abrir el modal de creación de oferta
   };
 
   const openUserModal = (user) => {
@@ -172,7 +177,7 @@ const PostDetails = () => {
   useEffect(() => {
     const fetchPost = async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${id}`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`
       );
       const data = await response.json();
       setPost(data);
@@ -181,10 +186,10 @@ const PostDetails = () => {
       }
     };
 
-    if (id) {
+    if (postId) {
       fetchPost();
     }
-  }, [id]);
+  }, [postId]);
 
   useEffect(() => {
     const updatePreferences = async () => {
@@ -239,132 +244,143 @@ const PostDetails = () => {
   };
 
   if (!post) {
-    return <p className="container mt-5">Loading...</p>;
+    return null;
   }
 
   return (
     <>
-      <div className="container mt-5 mb-5">
-        <GoBackButton/>
-        <div className="row">
-          <div className="col-lg-6">
-            <div
-              ref={imageRef}
-              className="img-container"
-              onMouseMove={handleMouseMove}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onClick={handleImageClick}
-              style={{
-                position: "relative",
-                backgroundImage: `url(${process.env.NEXT_PUBLIC_API_BASE_URL}/${mainImage})`,
-                backgroundSize: "contain",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                width: "100%",
-                height: "420px",
-              }}
-            >
-              {!mobileDevice && <div style={overlayStyle}></div>}
-            </div>
-            <div className="mt-3 d-flex">
-              {post.photos.map((photo, index) => (
-                <img
-                  key={index}
-                  src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
-                  className="img-thumbnail mr-2"
-                  onMouseOver={() => handleThumbnailMouseOver(photo)}
-                  alt={post.title}
+      <Modal show={showModal} onHide={handleCloseClick} size="xl">
+        <Modal.Header closeButton>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="container">
+            <div className="row">
+              <div className="col-lg-6">
+                <div
+                  ref={imageRef}
+                  className="img-container"
+                  onMouseMove={handleMouseMove}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
                   style={{
-                    width: "80px",
-                    height: "80px",
-                    objectFit: "cover",
-                    cursor: "pointer",
+                    position: "relative",
+                    backgroundImage: `url(${process.env.NEXT_PUBLIC_API_BASE_URL}/${mainImage})`,
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    width: "100%",
+                    height: "420px",
                   }}
-                />
-              ))}
-            </div>
-          </div>
-          <div
-            className="col-lg-6"
-            style={{ maxWidth: "100%", overflowWrap: "break-word" }}
-          >
-            {!mobileDevice && isZoomVisible && (
+                >
+                  {!mobileDevice && <div style={overlayStyle}></div>}
+                </div>
+                <div className="mt-3 d-flex">
+                  {post.photos.map((photo, index) => (
+                    <img
+                      key={index}
+                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
+                      className="img-thumbnail mr-2"
+                      onMouseOver={() => handleThumbnailMouseOver(photo)}
+                      alt={post.title}
+                      style={{
+                        width: "80px",
+                        height: "80px",
+                        objectFit: "cover",
+                        cursor: "pointer",
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
               <div
-                ref={zoomRef}
-                className="zoom"
-                style={{
-                  backgroundImage: `url(${process.env.NEXT_PUBLIC_API_BASE_URL}/${mainImage})`,
-                  backgroundSize: "200%",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: `${cursorPosition.x}% ${cursorPosition.y}%`,
-                  width: "500px",
-                  height: "500px",
-                }}
-              ></div>
-            )}
-            <h2>{post.title}</h2>
-            <div>
-              <span className="text-success fs-1">
-                $ {post.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-              </span>
-            </div>
-            <div className="d-flex">
-              <button className="btn rounded-5 border m-2">
-                {t(`categories.${post.mainCategory}.name`)}
-              </button>
-              <button className="btn rounded-5 border m-2">
-                {" "}
-                {t(
-                  `categories.${post.mainCategory}.subcategories.${post.subCategory}.name`
-                )}
-              </button>
-              <button className="btn rounded-5 border m-2">
-              {t(
-                `categories.${post.mainCategory}.subcategories.${post.subCategory}.thirdCategories.${post.thirdCategory}.name`
-              )}
-              </button>
-            </div>
-            <p className="description-container-id">{post.description}</p>
-            <p className="pb-0 mb-0 small-text mt-3">
-              <PostDetailsLocation
-                latitude={post.latitude}
-                longitude={post.longitude}
-              />
-            </p>
-            <div
-              className="d-flex align-items-center text-start"
-              onClick={() => openUserModal(post.createdBy)}
-            >
-              <img
-                src={
-                  post.createdBy.photo
-                    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
-                    : "/icons/person-circle.svg"
-                }
-                alt=""
-                className="createdBy-photo-id"
-              />
-              <p className="mb-0 p-0" style={{ cursor: "pointer" }}>
-                {post.createdBy.firstName} {post.createdBy.lastName} |{" "}
-                <i className="bi bi-star-fill"></i>{" "}
-                {post.createdBy.reports
-                  ? 5 - 0.3 * post.createdBy.reports.length
-                  : ""}
-              </p>
-            </div>
-            <div className="mt-3">
-              <button
-                className="btn rounded-5 btn-offer"
-                onClick={() => router.push(`/createOffer?postId=${id}`)}
+                className="col-lg-6"
+                style={{ maxWidth: "100%", overflowWrap: "break-word" }}
               >
-                {t("postDetails.makeAnOffer")}
-              </button>
-              <ReportPostModal postId={post._id} onReport={handleReportPost} />
+                {!mobileDevice && isZoomVisible && (
+                  <div
+                    ref={zoomRef}
+                    className="zoom"
+                    style={{
+                      backgroundImage: `url(${process.env.NEXT_PUBLIC_API_BASE_URL}/${mainImage})`,
+                      backgroundSize: "200%",
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: `${cursorPosition.x}% ${cursorPosition.y}%`,
+                      width: "500px",
+                      height: "500px",
+                    }}
+                  ></div>
+                )}
+                <h2>{post.title}</h2>
+                <div>
+                  <span className="text-success fs-1">
+                    $ {post.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  </span>
+                </div>
+                <div className="d-flex">
+                  <button className="btn rounded-5 border m-2">
+                    {t(`categories.${post.mainCategory}.name`)}
+                  </button>
+                  <button className="btn rounded-5 border m-2">
+                    {" "}
+                    {t(
+                      `categories.${post.mainCategory}.subcategories.${post.subCategory}.name`
+                    )}
+                  </button>
+                  <button className="btn rounded-5 border m-2">
+                    {t(
+                      `categories.${post.mainCategory}.subcategories.${post.subCategory}.thirdCategories.${post.thirdCategory}.name`
+                    )}
+                  </button>
+                </div>
+                <p className="description-container-id">{post.description}</p>
+                <p className="pb-0 mb-0 small-text mt-3">
+                  <PostDetailsLocation
+                    latitude={post.latitude}
+                    longitude={post.longitude}
+                  />
+                </p>
+                <div
+                  className="d-flex align-items-center text-start"
+                  onClick={() => openUserModal(post.createdBy)}
+                >
+                  <img
+                    src={
+                      post.createdBy.photo
+                        ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
+                        : "/icons/person-circle.svg"
+                    }
+                    alt=""
+                    className="createdBy-photo-id"
+                  />
+                  <p className="mb-0 p-0" style={{ cursor: "pointer" }}>
+                    {post.createdBy.firstName} {post.createdBy.lastName} |{" "}
+                    <i className="bi bi-star-fill"></i>{" "}
+                    {post.createdBy.reports
+                      ? 5 - 0.3 * post.createdBy.reports.length
+                      : ""}
+                  </p>
+                </div>
+                <div className="mt-3">
+                  <button
+                    className="btn rounded-5 btn-offer"
+                    onClick={handleMakeOfferClick}
+                  >
+                    {t("postDetails.makeAnOffer")}
+                  </button>
+                  <ReportPostModal postId={post._id} onReport={handleReportPost} />
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </Modal.Body>
+      </Modal>
+      {showCreateOfferModal && (
+        <CreateOfferModal
+          postId={post._id}
+          showModal={showCreateOfferModal}
+          closeModal={() => setShowCreateOfferModal(false)}
+        />
+      )}
       {showUserModal && (
         <UserModal
           selectedUser={selectedUser}
@@ -376,4 +392,4 @@ const PostDetails = () => {
   );
 };
 
-export default PostDetails;
+export default PostDetailsModal;

@@ -11,10 +11,8 @@ import {
 } from "react-bootstrap";
 import { useRouter } from "next/router";
 import Notifications from "../notifications/Notifications";
-import CategoriesModal from "../categories/CategoriesPosts";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "../language/LanguageSelector";
-import CategorySlider from "../categories/CategorySlider";
 
 export default function MegaMenu({
   onSearchTermChange,
@@ -27,12 +25,6 @@ export default function MegaMenu({
   const [user, setUser] = useState(null);
   const [isLogged, setIsLogged] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [showCategoriesModal, setShowCategoriesModal] = useState(false);
-  const [removeActiveClass, setRemoveActiveClass] = useState(false);
-  const [resetSlider, setResetSlider] = useState(false);
-  const [categoriesButtonText, setCategoriesButtonText] = useState(
-    t("navbar.selectCategory")
-  );
   const [selectedCategory, setSelectedCategory] = useState("");
   const [activeSubcategory, setActiveSubcategory] = useState("");
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
@@ -60,38 +52,7 @@ export default function MegaMenu({
       subCategory: "",
       thirdCategory: "",
     });
-    setCategoriesButtonText(t("navbar.selectCategory"));
     router.push("/");
-    setResetSlider(true);
-  };
-
-  const handleCloseCategories = () => {
-    setShowCategoriesModal(false);
-    setShowOffcanvas(false);
-  };
-
-  const handleCategorySelected = (mainCategory, subCategory, thirdCategory) => {
-    clearSearchBar();
-    setCurrentPage(1);
-    onSearchTermChange("");
-    const selectedCategory = {
-      mainCategory: mainCategory || "",
-      subCategory: subCategory || "",
-      thirdCategory: thirdCategory || "",
-    };
-    onCategoryFilterChange(selectedCategory);
-    handleCloseCategories();
-
-    // Update the button text
-    if (thirdCategory) {
-      setCategoriesButtonText(thirdCategory);
-    } else if (subCategory) {
-      setCategoriesButtonText(subCategory);
-    } else if (mainCategory) {
-      setCategoriesButtonText(mainCategory);
-    } else {
-      setCategoriesButtonText(t("navbar.selectCategory"));
-    }
   };
 
   const handleSearchSubmit = (e) => {
@@ -106,7 +67,6 @@ export default function MegaMenu({
       subCategory: "",
       thirdCategory: "",
     });
-    setCategoriesButtonText(t("navbar.selectCategory"));
     const newSearchTerm = e.target.search.value;
     setSearchTerm(newSearchTerm);
     onSearchTermChange(newSearchTerm);
@@ -150,26 +110,9 @@ export default function MegaMenu({
     };
   }, []);
 
-  useEffect(() => {
-    const handleRouteChange = () => {
-      setShowCategoriesModal(false);
-      setShowOffcanvas(false);
-    };
-
-    router.events.on("routeChangeComplete", handleRouteChange);
-
-    return () => {
-      router.events.off("routeChangeComplete", handleRouteChange);
-    };
-  }, [router]);
-
-  useEffect(() => {
-    setCategoriesButtonText(t("navbar.selectCategory")); // Actualizar el estado con la traducción inicial
-  }, [t]);
-
   return (
     <>
-      <Navbar className="nav-borders ps-5 pe-5">
+      <Navbar className="nav-borders">
         <div className="d-flex w-100">
           <Navbar.Brand
             onClick={handleLogoClick}
@@ -329,27 +272,6 @@ export default function MegaMenu({
           </Offcanvas.Body>
         </Offcanvas>
       )}
-      {router.pathname === "/" ? (
-        <div className="pe-5 ps-5 nav-borders d-flex">
-          <div className="col-11">
-          <CategorySlider
-    onCategorySelected={handleCategorySelected}
-    resetSlider={resetSlider}
-    setResetSlider={setResetSlider}
-    removeActiveClass={removeActiveClass}
-    activeSubcategory={selectedSubcategory} // Pasar la subcategoría activa
-  />
-          </div>
-          <div className="col-1 align-content-center justify-content-center text-center bg-white">
-            <CategoriesModal
-              isShown={showCategoriesModal}
-              onHide={handleCloseCategories}
-              onCategorySelected={handleCategorySelected}
-              buttonText={categoriesButtonText}
-            />
-          </div>
-        </div>
-      ) : null}
     </>
   );
 }

@@ -3,12 +3,10 @@ import { useState, useEffect } from 'react';
 import WordsFilter from '@/badWordsFilter/WordsFilter';
 import { Button, Modal } from 'react-bootstrap';
 import { validations } from '@/utils/validations';
-import { countries } from '../data/countries.json';
-import React, { useState } from 'react';
+import { countries } from '../../data/countries.json';
 
-const CreateOffer = () => {
+const CreateOfferModal = ({ postId, showModal, closeModal }) => {
   const router = useRouter();
-  const { postId } = router.query;
 
   const [post, setPost] = useState(null);
   const [title, setTitle] = useState('');
@@ -19,7 +17,6 @@ const CreateOffer = () => {
   const [selectedCountryCode, setSelectedCountryCode] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photos, setPhotos] = useState([]);
-  const [showModal, setShowModal] = useState(false);
 
   const getActivePhotoIndex = () => {
     const activeItem = document.querySelector('.carousel-item.active');
@@ -34,12 +31,12 @@ const CreateOffer = () => {
   };
 
   const handleShowModal = () => {
-    setShowModal(true);
+    showModal(); // Llamar a la función showModal para abrir el modal
   };
-
+  
   const handleCloseModal = () => {
-    setShowModal(false);
-  };
+    closeModal(); // Llamar a la función closeModal para cerrar el modal
+  };  
 
   const removePhoto = (index) => {
     const newPhotos = [...photos];
@@ -190,31 +187,19 @@ const CreateOffer = () => {
   }
 
   return (
-    <div className="mt-4 mb-4">
-      <h1 className="mt-3 text-center">Creating an offer for "{post.title}"</h1>
-      <h2 className="mt-3 text-center">Payment of ${Number(post.price).toLocaleString()}</h2>
-      <h4 className="mt-3 text-center text-success">Do your best offer</h4>
-      <Modal show={showModal} onHide={handleCloseModal}>
+    <>
+      <Button variant="primary" onClick={handleShowModal}>
+        Create Offer
+      </Button>
+      <Modal show={showModal} onHide={handleCloseModal} size="xl">
         <Modal.Header closeButton>
-          <Modal.Title>Info about when you create an offer</Modal.Title>
+          <Modal.Title></Modal.Title>
         </Modal.Header>
-        <Modal.Body className="p-0">
-          <ul className="list-group list-group-flush">
-            <li className="list-group-item">1. Your offer will be sent immediately but will be available only for the lifetime of the post (30 days max).</li>
-            <li className="list-group-item">2. If the post you are offering on is removed, then your offer will also be removed.</li>
-            <li className="list-group-item">3. You are free to delete the offer, but not to edit it.</li>
-            <li className="list-group-item">4. If you decide to delete the offer manually, then it will also be deleted for the person you send it to.</li>
-          </ul>
-        </Modal.Body>
-        <Modal.Footer>
-          <button className="btn btn-secondary" onClick={handleCloseModal}>
-            Ok
-          </button>
-        </Modal.Footer>
-      </Modal>
-      <div className="container form-container">
-        <div className=" p-0">
-          <form onSubmit={handleSubmit} className="container">
+        <Modal.Body>
+            <h1 className='mt-3 text-center'>Creating an offer for "{post.title}"</h1>
+          <h2 className="mt-3 text-center">Payment of ${Number(post.price).toLocaleString()}</h2>
+          <h4 className="mt-3 text-center text-success">Do your best offer</h4>
+          <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="title" className="form-label">
                 Offer title*
@@ -293,7 +278,9 @@ const CreateOffer = () => {
                 onKeyPress={handleKeyPress}
                 required
               />
-              {price ? <small className="form-text text-muted">Price: {Number(price).toLocaleString()}</small> : null}
+              {price ? (
+                <small className="form-text text-muted">Price: {Number(price).toLocaleString()}</small>
+              ) : null}
             </div>
             <div className="mb-3">
               <label htmlFor="photo" className="form-label">
@@ -319,13 +306,13 @@ const CreateOffer = () => {
                         </label>
                       )}
                       {photos[index - 1] && (
-                      <button
-                      className="btn btn-light circle btn-sm delete-photo"
-                      onClick={() => handleDeletePhoto(index - 1)}
-                      type="button"
-                    >
-                      <i className="bi bi-trash fs-5"></i>
-                    </button>
+                        <button
+                          className="btn btn-light circle btn-sm delete-photo"
+                          onClick={() => handleDeletePhoto(index - 1)}
+                          type="button"
+                        >
+                          <i className="bi bi-trash fs-5"></i>
+                        </button>
                       )}
                       <input
                         type="file"
@@ -340,19 +327,15 @@ const CreateOffer = () => {
               </div>
             </div>
             <div className="mb-3">
-              <button
-                type="submit"
-                className="btn want-button rounded-5"
-                disabled={isSubmitting}
-              >
+              <button type="submit" className="btn want-button rounded-5" disabled={isSubmitting}>
                 {isSubmitting ? 'Creating...' : 'Create Offer'}
               </button>
             </div>
           </form>
-        </div>
-      </div>
-    </div>
+        </Modal.Body>
+      </Modal>
+    </>
   );
 };
 
-export default CreateOffer;
+export default CreateOfferModal;

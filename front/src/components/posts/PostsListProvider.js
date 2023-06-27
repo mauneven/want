@@ -1,35 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ContentLoader from "react-content-loader";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
-import { setPosts } from "@/actions/postsActions";
-
 import UserModal from "../user/UserModal";
 import PostsLocation from "../locations/Posts/";
 import PostCategory from "../categories/PostCategory";
-import PostDetailsModal from "./PostDetailsModal"; // Importamos el componente PostDetailsModal
 
-const PostsList = ({ searchTerm }) => {
+// Creamos un contexto para almacenar el estado del componente
+const PostsListContext = React.createContext();
+
+// Componente de contexto para envolver el componente PostsList y proporcionar el estado
+const PostsListProvider = ({ children, searchTerm  }) => {
+  const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [pageSize, setPageSize] = useState(8);
+  const [pageSize, setPageSize] = useState(12);
   const [totalPosts, setTotalPosts] = useState(0);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [postId, setPostId] = useState(null); // Nuevo estado para almacenar el ID del post
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMorePosts, setHasMorePosts] = useState(false);
+  const [noMorePosts, setNoMorePosts] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
-  const [radius, setRadius] = useState(10);
+  const [radius, setRadius] = useState(5);
   const [hasLocation, setHasLocation] = useState(false);
   const [userPreferences, setUserPreferences] = useState({});
   const [userPreferencesLoaded, setUserPreferencesLoaded] = useState(false);
   const [user, setUser] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState({});
-  const dispatch = useDispatch();
-  const posts = useSelector((state) => state.posts.posts);
 
   const router = useRouter();
 
@@ -47,6 +46,27 @@ const PostsList = ({ searchTerm }) => {
       setRadius(selectedRadius);
       onRadiusChange(selectedRadius);
     }
+  };
+
+  const handleMainCategoryChange = (mainCategory) => {
+    setCategoryFilter((prevFilter) => ({
+      ...prevFilter,
+      mainCategory,
+    }));
+  };
+
+  const handleSubcategoryChange = (subcategory) => {
+    setCategoryFilter((prevFilter) => ({
+      ...prevFilter,
+      subCategory: subcategory,
+    }));
+  };
+
+  const handleThirdCategoryChange = (thirdCategory) => {
+    setCategoryFilter((prevFilter) => ({
+      ...prevFilter,
+      thirdCategory,
+    }));
   };
 
   const getUserPreferences = async () => {
@@ -158,9 +178,9 @@ const PostsList = ({ searchTerm }) => {
       const { posts: postsData, totalPosts } = await response.json();
 
       if (currentPage === 1) {
-        dispatch(setPosts(postsData));
+        setPosts(postsData);
       } else {
-        dispatch(setPosts([...posts, ...postsData]));
+        setPosts((prevPosts) => [...prevPosts, ...postsData]);
       }
 
       setTotalPosts(totalPosts);
@@ -176,11 +196,17 @@ const PostsList = ({ searchTerm }) => {
   };
 
   useEffect(() => {
-    dispatch(setPosts([]));
+    setPosts([]);
     setTotalPosts(0);
     setHasMorePosts(false);
     setCurrentPage(1);
-  }, [searchTerm, categoryFilter, latitude, longitude, radius]);
+  }, [
+    searchTerm,
+    categoryFilter,
+    latitude,
+    longitude,
+    radius,
+  ]);
 
   useEffect(() => {
     if (latitude !== null && longitude !== null) {
@@ -259,192 +285,72 @@ const PostsList = ({ searchTerm }) => {
     </div>
   );
 
-  const openModal = (postId) => {
-    // Función para abrir el modal y almacenar el ID del post
-    setPostId(postId);
+  const openModal = (user) => {
+    setSelectedUser(user);
     setShowModal(true);
   };
 
   const closeModal = () => {
-    setPostId(null);
+    setSelectedUser(null);
     setShowModal(false);
   };
 
-  const handleMainCategoryChange = (mainCategory) => {
-    setCategoryFilter((prevFilter) => ({
-      ...prevFilter,
-      mainCategory,
-    }));
-  };
-
-  const handleSubcategoryChange = (subcategory) => {
-    setCategoryFilter((prevFilter) => ({
-      ...prevFilter,
-      subCategory: subcategory,
-    }));
-  };
-
-  const handleThirdCategoryChange = (thirdCategory) => {
-    setCategoryFilter((prevFilter) => ({
-      ...prevFilter,
-      thirdCategory,
-    }));
-  };
-
   return (
-    <div className="">
-      <PostCategory
-        onMainCategoryChange={handleMainCategoryChange}
-        onSubcategoryChange={handleSubcategoryChange}
-        onThirdCategoryChange={handleThirdCategoryChange}
-      />
-      <PostsLocation
-        onLatitudeChange={setLatitude}
-        onLongitudeChange={setLongitude}
-        onRadiusChange={setRadius}
-      />
-      <div className="row row-cols-1 row-cols-md-4 row-cols-lg-5 row-cols-xl-5 g-4 pe-2 ps-2">
-        {posts.map((post) => {
-          const userReputation = 5 - 0.3 * post.createdBy.reports.length;
-          let photoIndex = 0;
-          return (
-            <div key={post._id} className="col post-card rounded-5">
-              <div className="card rounded-5 divhover">
-                {post.photos && post.photos.length > 0 && (
-                  <div
-                    id={`carousel-${post._id}`}
-                    className="carousel slide rounded-5 me-2 ms-2 mt-3 img-post"
-                    data-bs-ride="carousel"
-                    style={{ height: "200px", overflow: "hidden" }}
-                  >
-                    <div
-                      className="carousel-inner "
-                      onClick={() => openModal(post._id)} // Abrir el modal al hacer clic en la imagen
-                    >
-                      {post.photos.map((photo, index) => (
-                        <div
-                          className={`carousel-item ${
-                            index === 0 ? "active" : ""
-                          }`}
-                          key={index}
-                        >
-                          <img
-                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
-                            className="d-block w-100"
-                            alt={`Image ${index}`}
-                            loading="lazy"
-                            onClick={() => openModal(post._id)} // Abrir el modal al hacer clic en la imagen
-                          />
-                        </div>
-                      ))}
-                    </div>
-                    {post.photos.length > 1 && (
-                      <>
-                        <button
-                          className="carousel-control-prev custom-slider-button ms-1"
-                          type="button"
-                          data-bs-target={`#carousel-${post._id}`}
-                          data-bs-slide="prev"
-                          style={{ bottom: "40px" }}
-                          disabled={photoIndex === 0}
-                          onClick={() => {
-                            photoIndex--;
-                          }}
-                        >
-                          <i className="bi bi-chevron-left"></i>
-                        </button>
-                        <button
-                          className="carousel-control-next custom-slider-button me-1"
-                          type="button"
-                          data-bs-target={`#carousel-${post._id}`}
-                          data-bs-slide="next"
-                          style={{ bottom: "40px" }}
-                          disabled={photoIndex === post.photos.length - 1}
-                          onClick={() => {
-                            photoIndex++;
-                          }}
-                        >
-                          <i className="bi bi-chevron-right"></i>
-                        </button>
-                      </>
-                    )}
-                  </div>
-                )}
-                <div className="card-body">
-                  <h4
-                    className="card-title post-title"
-                    onClick={() => openModal(post._id)} // Abrir el modal al hacer clic en el título
-                  >
-                    {post.title}
-                  </h4>
-                  <h3
-                    className="text-price"
-                    onClick={() => openModal(post._id)} // Abrir el modal al hacer clic en el precio
-                  >
-                    ${post.price.toLocaleString()}
-                  </h3>
-                  <div
-                    className="d-flex"
-                    onClick={() => openModal(post.createdBy._id)} // Abrir el modal al hacer clic en el usuario
-                  >
-                    <img
-                      src={
-                        post.createdBy.photo
-                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
-                          : "/icons/person-circle.svg"
-                      }
-                      alt=""
-                      className="createdBy-photo p-1"
-                    />
-                    <div className="ms-2">
-                      <small className="text-muted ">
-                        {post.createdBy.firstName}
-                      </small>
-                      <div className="d-flex">
-                        <i className="bi bi-star-fill me-1"></i>
-                        <small className="text-muted">
-                          {userReputation.toFixed(1)}
-                        </small>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-
-        {isLoading && (
-          <>
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-          </>
-        )}
-
-        {!hasMorePosts && !isLoading && !isFetchingMore && (
-          <div className="col-md-12">
-            <p>No more posts available.</p>
-          </div>
-        )}
-      </div>
-
-      <PostDetailsModal // Renderizar el componente PostDetailsModal si showModal es true y postId tiene un valor
-        postId={postId}
-        showModal={showModal}
-        closeModal={closeModal}
-      />
-    </div>
+    <PostsListContext.Provider
+      value={{
+        posts,
+        setPosts,
+        isLoading,
+        setIsLoading,
+        pageSize,
+        setPageSize,
+        totalPosts,
+        setTotalPosts,
+        selectedUser,
+        setSelectedUser,
+        showModal,
+        setShowModal,
+        currentPage,
+        setCurrentPage,
+        hasMorePosts,
+        setHasMorePosts,
+        noMorePosts,
+        setNoMorePosts,
+        isFetching,
+        setIsFetching,
+        isFetchingMore,
+        setIsFetchingMore,
+        latitude,
+        setLatitude,
+        longitude,
+        setLongitude,
+        radius,
+        setRadius,
+        hasLocation,
+        setHasLocation,
+        userPreferences,
+        setUserPreferences,
+        userPreferencesLoaded,
+        setUserPreferencesLoaded,
+        user,
+        setUser,
+        categoryFilter,
+        setCategoryFilter,
+        handleLatitudeChange,
+        handleLongitudeChange,
+        handleRadiusChange,
+        handleMainCategoryChange,
+        handleSubcategoryChange,
+        handleThirdCategoryChange,
+        fetchPosts,
+        Placeholder,
+        openModal,
+        closeModal,
+      }}
+    >
+      {children}
+    </PostsListContext.Provider>
   );
 };
 
-export default PostsList;
+export default PostsListProvider;

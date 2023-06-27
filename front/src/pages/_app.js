@@ -1,17 +1,15 @@
 import React, { useState, useEffect, Suspense } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import MegaMenu from "@/components/navigation/Navbar";
 import { LanguageProvider } from "@/components/language/LanguageProvider";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+import { Provider } from "react-redux";
+import store from "@/store/store";
 import Footer from "@/components/footer/Footer";
 import i18n from "../../i18n";
+import "animate.css";
 
 export default function MyApp({ Component, pageProps }) {
-  const { t } = useTranslation();
   const [hasMounted, setHasMounted] = useState(false);
 
   const [locationFilter, setLocationFilter] = useState(null);
@@ -62,7 +60,7 @@ export default function MyApp({ Component, pageProps }) {
 
   return (
     <LanguageProvider>
-      <div className="">
+      <div className="container-fluid">
         <link rel="stylesheet" href="/css/app.css" />
         <header className="sticky-top">
           <MegaMenu
@@ -75,17 +73,19 @@ export default function MyApp({ Component, pageProps }) {
           <link rel="stylesheet" href="/css/navbar.css" />
         </header>
 
-        <div className="want-container">
-          <Suspense fallback="Loading...">
-            <Component
-              {...pageProps}
-              locationFilter={locationFilter}
-              searchTerm={searchTerm}
-              categoryFilter={categoryFilter}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-            />
-          </Suspense>
+        <div className="">
+          <Provider store={store}>
+            <Suspense fallback="Loading...">
+              <Component
+                {...pageProps}
+                locationFilter={locationFilter}
+                searchTerm={searchTerm}
+                categoryFilter={categoryFilter}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+              />
+            </Suspense>
+          </Provider>
           <link rel="stylesheet" href="/css/posts.css" />
           <link rel="stylesheet" href="/css/modals.css" />
           <link rel="stylesheet" href="/css/login.css" />
@@ -96,8 +96,8 @@ export default function MyApp({ Component, pageProps }) {
 
         <footer>
           <div className="want-container">
-          <Footer />
-          <link rel="stylesheet" href="/css/footer.css" />
+            <Footer />
+            <link rel="stylesheet" href="/css/footer.css" />
           </div>
         </footer>
       </div>
