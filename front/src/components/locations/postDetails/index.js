@@ -4,16 +4,12 @@ const DynamicLocation = dynamic(() => import("./PostDetailsLocation"), {
   ssr: false,
 });
 
-const PostDetailsLocationDynamic = ({
-  latitude,
-  longitude,
-}) => {
+const PostDetailsLocationDynamic = ({ latitude, longitude }) => {
   return (
     <div>
-      <DynamicLocation
-        latitude={latitude}
-        longitude={longitude}
-      />
+      <div>
+        <DynamicLocation latitude={latitude} longitude={longitude} />
+      </div>
     </div>
   );
 };

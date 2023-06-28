@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import WordsFilter from "@/badWordsFilter/WordsFilter";
 import { Button, Modal } from "react-bootstrap";
 import { validations } from "@/utils/validations";
-import { countries } from "../../data/countries.json";
+import countriesData from "../../data/countries.json";
 
 const CreateOfferModal = ({ postId, showModal, closeModal }) => {
   const router = useRouter();
@@ -17,6 +17,8 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
   const [selectedCountryCode, setSelectedCountryCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photos, setPhotos] = useState([]);
+
+  const countries = countriesData.countries;
 
   const getActivePhotoIndex = () => {
     const activeItem = document.querySelector(".carousel-item.active");
@@ -210,7 +212,7 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
         size="modal-dialog modal-fullscreen"
         animation={false}
       >
-        <Modal.Body closeButton>
+        <Modal.Body>
           <div className="container">
             <button className="close-modal-button" onClick={handleCloseClick}>
               <i className="bi bi-x-lg"></i>

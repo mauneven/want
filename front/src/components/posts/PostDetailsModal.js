@@ -7,7 +7,12 @@ import PostDetailsLocation from "@/components/locations/postDetails/";
 import { useTranslation } from "react-i18next";
 import CreateOfferModal from "../offer/CreateOfferModal";
 
-const PostDetailsModal = ({ postId, showModal, closeModal }) => {
+const PostDetailsModal = ({
+  postId,
+  showModal,
+  closeModal,
+  applyCategoryFilter,
+}) => {
   const router = useRouter();
   const { id } = router.query;
   const { t } = useTranslation();
@@ -24,6 +29,11 @@ const PostDetailsModal = ({ postId, showModal, closeModal }) => {
   const [showUserModal, setShowUserModal] = useState(false);
   const [user, setUser] = useState(null);
   const [showCreateOfferModal, setShowCreateOfferModal] = useState(false);
+
+  const handleCategoryClick = (mainCategory, subCategory, thirdCategory) => {
+    closeModal(); // Cerrar el modal de detalles
+    applyCategoryFilter({ mainCategory, subCategory, thirdCategory }); // Aplicar el filtro de categoría
+  };
 
   const handleSearchTermChange = (newSearchTerm) => {
     setSearchTerm(newSearchTerm);
@@ -260,7 +270,7 @@ const PostDetailsModal = ({ postId, showModal, closeModal }) => {
         size="modal-dialog modal-fullscreen"
         animation={false}
       >
-        <Modal.Body closeButton>
+        <Modal.Body>
           <div className="justify-content-center align-content-center">
             <button className="close-modal-button" onClick={handleCloseClick}>
               <i className="bi bi-x-lg"></i>
@@ -332,27 +342,50 @@ const PostDetailsModal = ({ postId, showModal, closeModal }) => {
                     </span>
                   </div>
                   <div className="d-flex">
-                    <button className="btn rounded-5 border col-4">
+                    <button
+                      className="btn rounded-5 border col-4"
+                      onClick={() =>
+                        handleCategoryClick(post.mainCategory, null, null)
+                      }
+                    >
                       {t(`categories.${post.mainCategory}.name`)}
                     </button>
-                    <button className="btn rounded-5 border col-4">
+                    <button
+                      className="btn rounded-5 border col-4"
+                      onClick={() =>
+                        handleCategoryClick(
+                          post.mainCategory,
+                          post.subCategory,
+                          null
+                        )
+                      }
+                    >
                       {t(
                         `categories.${post.mainCategory}.subcategories.${post.subCategory}.name`
                       )}
                     </button>
-                    <button className="btn rounded-5 border col-4">
+                    <button
+                      className="btn rounded-5 border col-4"
+                      onClick={() =>
+                        handleCategoryClick(
+                          post.mainCategory,
+                          post.subCategory,
+                          post.thirdCategory
+                        )
+                      }
+                    >
                       {t(
                         `categories.${post.mainCategory}.subcategories.${post.subCategory}.thirdCategories.${post.thirdCategory}.name`
                       )}
                     </button>
                   </div>
-                  <p className="description-container-id mt-2">{post.description}</p>
-                  <p className="pb-0 mb-0 small-text mt-3">
-                    <PostDetailsLocation
-                      latitude={post.latitude}
-                      longitude={post.longitude}
-                    />
+                  <p className="description-container-id mt-2">
+                    {post.description}
                   </p>
+                  <PostDetailsLocation
+                    latitude={post.latitude}
+                    longitude={post.longitude}
+                  />
                   <div
                     className="d-flex align-items-center text-start"
                     onClick={() => openUserModal(post.createdBy)}

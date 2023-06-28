@@ -1,13 +1,24 @@
 import React, { useState, useEffect, Suspense } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { useTranslation } from "react-i18next";
 import MegaMenu from "@/components/navigation/Navbar";
 import { LanguageProvider } from "@/components/language/LanguageProvider";
 import { Provider } from "react-redux";
 import store from "@/store/store";
 import Footer from "@/components/footer/Footer";
 import i18n from "../../i18n";
-import "animate.css";
+import "../../node_modules/leaflet/dist/leaflet.css";
+
+import "../../public/css/app.css";
+import "../../public/css/categories.css";
+import "../../public/css/navbar.css";
+import "../../public/css/mobile-menu.css";
+import "../../public/css/posts.css";
+import "../../public/css/modals.css";
+import "../../public/css/login.css";
+import "../../public/css/notifications.css";
+import "../../public/css/postById.css";
+import "../../public/css/receivedOffers.css";
+import "../../public/css/footer.css";
+import MobileMenu from "@/components/navigation/MobileMenu";
 
 export default function MyApp({ Component, pageProps }) {
   const [hasMounted, setHasMounted] = useState(false);
@@ -61,7 +72,6 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <LanguageProvider>
       <div className="container-fluid">
-        <link rel="stylesheet" href="/css/app.css" />
         <header className="sticky-top">
           <MegaMenu
             onSearchTermChange={handleSearchTermChange}
@@ -69,7 +79,6 @@ export default function MyApp({ Component, pageProps }) {
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
           />
-          <link rel="stylesheet" href="/css/navbar.css" />
         </header>
 
         <div className="">
@@ -85,18 +94,11 @@ export default function MyApp({ Component, pageProps }) {
               />
             </Suspense>
           </Provider>
-          <link rel="stylesheet" href="/css/posts.css" />
-          <link rel="stylesheet" href="/css/modals.css" />
-          <link rel="stylesheet" href="/css/login.css" />
-          <link rel="stylesheet" href="/css/notifications.css" />
-          <link rel="stylesheet" href="/css/postById.css" />
-          <link rel="stylesheet" href="/css/receivedOffers.css" />
         </div>
 
         <footer>
           <div className="want-container">
-            <Footer />
-            <link rel="stylesheet" href="/css/footer.css" />
+            <MobileMenu/>
           </div>
         </footer>
       </div>

@@ -10,14 +10,3 @@
   .no-dropdown-toggle {
     pointer-events: none;
   }
-
-  .notification-icon {
-    position: relative;
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-  } 
-  .notification-icon i.bi-bell {
-    font-size: 28px;
-  }
-   

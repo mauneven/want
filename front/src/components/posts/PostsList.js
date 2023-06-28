@@ -3,8 +3,6 @@ import ContentLoader from "react-content-loader";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "@/actions/postsActions";
-
-import UserModal from "../user/UserModal";
 import PostsLocation from "../locations/Posts/";
 import PostCategory from "../categories/PostCategory";
 import PostDetailsModal from "./PostDetailsModal"; // Importamos el componente PostDetailsModal
@@ -47,6 +45,11 @@ const PostsList = ({ searchTerm }) => {
       setRadius(selectedRadius);
       onRadiusChange(selectedRadius);
     }
+  };
+
+  const handleCategoryFilter = (categoryFilter) => {
+    setCategoryFilter(categoryFilter);
+    setCurrentPage(1); // Reiniciar la página a 1 cuando se aplique un nuevo filtro de categoría
   };
 
   const getUserPreferences = async () => {
@@ -297,6 +300,9 @@ const PostsList = ({ searchTerm }) => {
         onMainCategoryChange={handleMainCategoryChange}
         onSubcategoryChange={handleSubcategoryChange}
         onThirdCategoryChange={handleThirdCategoryChange}
+        initialMainCategory={categoryFilter.mainCategory} // Establecer la categoría principal inicial
+        initialSubcategory={categoryFilter.subCategory} // Establecer la subcategoría inicial
+        initialThirdCategory={categoryFilter.thirdCategory} // Establecer la tercera categoría inicial
       />
       <PostsLocation
         onLatitudeChange={setLatitude}
@@ -438,10 +444,11 @@ const PostsList = ({ searchTerm }) => {
         )}
       </div>
 
-      <PostDetailsModal // Renderizar el componente PostDetailsModal si showModal es true y postId tiene un valor
+      <PostDetailsModal
         postId={postId}
         showModal={showModal}
         closeModal={closeModal}
+        applyCategoryFilter={handleCategoryFilter} // Pasamos la función de manejo del filtro de categoría como prop
       />
     </div>
   );

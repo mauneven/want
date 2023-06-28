@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
+
 import { Form, Modal, Button } from 'react-bootstrap';
 import { Icon } from 'leaflet';
 
@@ -59,7 +59,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
           fetchLocationName(lat, lng);
         },
         (error) => {
-          console.error(error);
+          console.log('esperando datos de openstreetmap')
         }
       );
     } else {
@@ -85,7 +85,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
       const data = await response.json();
       setSearchResults(data.map((result) => result.display_name));
     } catch (error) {
-      console.error(error);
+      console.log('esperando datos de openstreetmap')
     }
   };
 
@@ -99,7 +99,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
       setLocationName(cityName);
       localStorage.setItem('locationName', cityName);
     } catch (error) {
-      console.error(error);
+      console.log('esperando datos de openstreetmap')
     }
   };
 
@@ -132,7 +132,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
         fetchLocationName(parseFloat(lat), parseFloat(lon));
       }
     } catch (error) {
-      console.error(error);
+      console.log('esperando datos de openstreetmap')
     }
   };
 
@@ -251,7 +251,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
         setLocationName(cityName);
         localStorage.setItem('locationName', cityName);
       } catch (error) {
-        console.error(error);
+        console.log('esperando datos de openstreetmap')
       }
     };
 

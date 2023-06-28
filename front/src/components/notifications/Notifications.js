@@ -102,10 +102,10 @@ export default function Notifications() {
 
   return (
     <>
-      <div className='notification-icon align-items-center' onClick={handleModalOpen}>
-        <i className="bi bi-bell fs-24"></i>
+      <div className='divhover d-flex' onClick={handleModalOpen}>
+        <i className="bi bi-bell fs-3"></i>
         {unreadNotifications.length > 0 && (
-          <Badge pill bg="danger" className="position-absolute" style={{ top: -5, right: -10 }}>
+          <Badge pill bg="danger" className="position-absolute">
             {unreadNotifications.length}
           </Badge>
         )}
@@ -124,7 +124,7 @@ export default function Notifications() {
                   handleNotificationClick(notification._id);
                   setShowModal(false);
                 }}
-                className={`notification-item ${!notification.isRead ? 'bg-warning text-white' : ''}`}
+                className={`notification-item ${!notification.isRead ? 'bg-success text-white' : ''}`}
               >
                 {notification.content}
               </div>

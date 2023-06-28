@@ -138,147 +138,146 @@ const CreatePost = () => {
       <h1 className="text-center mb-4">Create a post about what you Want</h1>
       <div className="">
         <div className=" ">
-          <form>
-            <div className="mb-3">
-              <label htmlFor="title" className="form-label">
-                Give a title to what you want*
-              </label>
-              <input
-                type="text"
-                className="form-control rounded-5"
-                id="title"
-                value={title}
-                onChange={handleTitleChange}
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="description" className="form-label">
-                Now describe it in more detail*
-              </label>
-              <textarea
-                className="form-control rounded-5"
-                id="description"
-                value={description}
-                onChange={handleDescriptionChange}
-                rows={4}
-                required
-              ></textarea>
-            </div>
-            <div className="mb-3">
-              <label htmlFor="price" className="form-label">
-                How much would you pay for what you want*
-              </label>
-              <input
-                type="number"
-                className="form-control rounded-5"
-                id="price"
-                value={price}
-                onChange={handlePriceChange}
-                required
-              />
-              {price ? (
-                <small className="form-text text-muted">
-                  Price: {Number(price).toLocaleString()}
-                </small>
-              ) : null}
-            </div>
-            <div className="mb-3">
-              <label htmlFor="price" className="form-label">
-                Now, organize or define what you Want in 3 categories*
-              </label>
-              <PostCategory
-                onMainCategoryChange={(selectedMainCategory) =>
-                  setMainCategory(selectedMainCategory)
-                }
-                onSubcategoryChange={(selectedSubCategory) =>
-                  setSubCategory(selectedSubCategory)
-                }
-                onThirdCategoryChange={(selectedThirdCategory) =>
-                  setThirdCategory(selectedThirdCategory)
-                }
-                initialMainCategory={mainCategory}
-                initialSubcategory={subCategory}
-                initialThirdCategory={thirdCategory}
-                isRequired={true}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="price" className="form-label">
-                Give an approximate location of where you want this*
-              </label>
-              <CreatePostLocation
-                onLatitudeChange={handleLatitudeChange}
-                onLongitudeChange={handleLongitudeChange}
-              />
-            </div>
-            <label htmlFor="price" className="form-label">
-              upload upto 4 photos about what you Want*
+          <div className="mb-3">
+            <label htmlFor="title" className="form-label">
+              Give a title to what you want*
             </label>
-            <div className="row row-cols-xl-2">
-              {[1, 2, 3, 4].map((index) => (
-                <div className="form-group mt-2 mb-2" key={index}>
-                  <div className="photo-upload-container col text-center align-items-center">
-                    {photos[index - 1] && (
-                      <div className="photo-preview">
-                        <img
-                          src={URL.createObjectURL(photos[index - 1])}
-                          className="img-thumbnail border-0 uploaded-photos rounded-5"
-                          alt={`Photo ${index}`}
-                        />
-                      </div>
-                    )}
-                    {!photos[index - 1] && (
-                      <label htmlFor={`photo${index}`} className="photo-upload">
-                        <i className="bi bi-image divhover display-1"></i>
-                        <i className="bi bi-plus-circle-fill display-6 divhover"></i>
-                        <input
-                          type="file"
-                          className="form-control visually-hidden"
-                          id={`photo${index}`}
-                          accept="image/png, image/jpeg"
-                          onChange={handleFileChange}
-                        />
-                      </label>
-                    )}
-                    {photos[index - 1] && (
-                      <button
-                        className="btn btn-light circle btn-sm delete-photo"
-                        onClick={() => handleDeletePhoto(index - 1)}
-                        type="button"
-                      >
-                        <i className="bi bi-trash fs-5"></i>
-                      </button>
-                    )}
-                  </div>
+            <input
+              type="text"
+              className="form-control rounded-5"
+              id="title"
+              value={title}
+              onChange={handleTitleChange}
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="description" className="form-label">
+              Now describe it in more detail*
+            </label>
+            <textarea
+              className="form-control rounded-5"
+              id="description"
+              value={description}
+              onChange={handleDescriptionChange}
+              rows={4}
+              required
+            ></textarea>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="price" className="form-label">
+              How much would you pay for what you want*
+            </label>
+            <input
+              type="number"
+              className="form-control rounded-5"
+              id="price"
+              value={price}
+              onChange={handlePriceChange}
+              required
+            />
+            {price ? (
+              <small className="form-text text-muted">
+                Price: {Number(price).toLocaleString()}
+              </small>
+            ) : null}
+          </div>
+          <div className="mb-3">
+            <label htmlFor="price" className="form-label">
+              Now, organize or define what you Want in 3 categories*
+            </label>
+            <PostCategory
+              onMainCategoryChange={(selectedMainCategory) =>
+                setMainCategory(selectedMainCategory)
+              }
+              onSubcategoryChange={(selectedSubCategory) =>
+                setSubCategory(selectedSubCategory)
+              }
+              onThirdCategoryChange={(selectedThirdCategory) =>
+                setThirdCategory(selectedThirdCategory)
+              }
+              initialMainCategory={mainCategory}
+              initialSubcategory={subCategory}
+              initialThirdCategory={thirdCategory}
+              isRequired={true}
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="price" className="form-label">
+              Give an approximate location of where you want this*
+            </label>
+            <CreatePostLocation
+              onLatitudeChange={handleLatitudeChange}
+              onLongitudeChange={handleLongitudeChange}
+            />
+          </div>
+          <label htmlFor="price" className="form-label">
+            upload upto 4 photos about what you Want*
+          </label>
+          <div className="row row-cols-xl-2">
+            {[1, 2, 3, 4].map((index) => (
+              <div className="form-group mt-2 mb-2" key={index}>
+                <div className="photo-upload-container col text-center align-items-center">
+                  {photos[index - 1] && (
+                    <div className="photo-preview">
+                      <img
+                        src={URL.createObjectURL(photos[index - 1])}
+                        className="img-thumbnail border-0 uploaded-photos rounded-5"
+                        alt={`Photo ${index}`}
+                      />
+                    </div>
+                  )}
+                  {!photos[index - 1] && (
+                    <label htmlFor={`photo${index}`} className="photo-upload">
+                      <i className="bi bi-image divhover display-1"></i>
+                      <i className="bi bi-plus-circle-fill display-6 divhover"></i>
+                      <input
+                        type="file"
+                        className="form-control visually-hidden"
+                        id={`photo${index}`}
+                        accept="image/png, image/jpeg"
+                        onChange={handleFileChange}
+                      />
+                    </label>
+                  )}
+                  {photos[index - 1] && (
+                    <button
+                      className="btn btn-light circle btn-sm delete-photo"
+                      onClick={() => handleDeletePhoto(index - 1)}
+                      type="button"
+                    >
+                      <i className="bi bi-trash fs-5"></i>
+                    </button>
+                  )}
                 </div>
-              ))}
-            </div>
-            {error && <div className="alert alert-danger">{error}</div>}
-            <button
-              type="button"
-              className="btn want-button rounded-5 mt-2"
-              disabled={loading}
-              onClick={handleCreatePost}
-            >
-              {loading ? (
-                <span
-                  className="spinner-border rounded-5 spinner-border-sm me-2"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
-              ) : (
-                "Create Post"
-              )}
-            </button>
-            <button type="button" className="btn" onClick={handleShowModal}>
-              <i className="bi bi-info-circle-fill"></i>
-            </button>
-          </form>
+              </div>
+            ))}
+          </div>
+          {error && <div className="alert alert-danger">{error}</div>}
+          <button
+            type="button"
+            className="btn want-button rounded-5 mt-2"
+            disabled={loading}
+            onClick={handleCreatePost}
+          >
+            {loading ? (
+              <span
+                className="spinner-border rounded-5 spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            ) : (
+              "Create Post"
+            )}
+          </button>
+          <button type="button" className="btn" onClick={handleShowModal}>
+            <i className="bi bi-info-circle-fill"></i>
+          </button>
         </div>
       </div>
     </div>
   );
+  
 };
 
 export default CreatePost;

@@ -39,7 +39,7 @@ const ReportPostModal = ({ postId, onReport }) => {
                 required
               />
             </Form.Group>
-            <Button variant="warning" type="submit">
+            <Button variant="danger" type="submit">
               Send report
             </Button>
           </Form>

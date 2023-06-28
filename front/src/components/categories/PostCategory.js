@@ -132,10 +132,31 @@ export default function PostCategory({
     });
   };
 
+  const isSubcategoryVisible = (category) => {
+    if (!selectedCategory || selectedCategory === category.id) {
+      return true;
+    }
+    return false;
+  };
+
+  const isThirdCategoryVisible = (subcategory) => {
+    if (!selectedSubcategory || selectedSubcategory === subcategory.id) {
+      return true;
+    }
+    return false;
+  };
+
+  const isThirdCategoryButtonVisible = (thirdCategory) => {
+    if (!selectedThirdCategory || selectedThirdCategory === thirdCategory.id) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <div className="d-flex">
-      <div className="col-auto">
-        <i className="bi bi-caret-left" onClick={scrollLeft}></i>
+      <div className="col-auto align-items-center justify-content-center">
+        <i className="bi bi-caret-left " onClick={scrollLeft}></i>
       </div>
       <div className="col" style={{ overflowX: "hidden" }}>
         <div className="slider-container" ref={contentRef}>
@@ -143,15 +164,12 @@ export default function PostCategory({
             {categoriesData.map((category) => (
               <button
                 key={category.id}
-                className={`btn rounded-5 border m-2 animate__fadeIn animate__animated ${
+                className={`btn rounded-5 border m-2 ${
                   selectedCategory === category.id ? " want-button border-0" : ""
                 }`}
                 onClick={() => handleCategoryChange(category.id)}
                 style={{
-                  display:
-                    selectedCategory !== "" && selectedCategory !== category.id
-                      ? "none"
-                      : "inline-block",
+                  display: isSubcategoryVisible(category) ? "inline-block" : "none",
                 }}
               >
                 <div className="d-flex justify-content-center align-items-center">
@@ -159,114 +177,88 @@ export default function PostCategory({
                   <div
                     className={`${
                       selectedCategory === category.id
-                        ? "animate__animated animate__slideInRight"
+                        ? "animate__animated animate__bounceIn d-flex justify-content-center align-items-center"
                         : ""
                     }`}
                   >
                     {selectedCategory === category.id && (
-                      <i
-                        className="bi bi-arrow-left text-white p-2 fs-5"
-                        onClick={() => handleCategoryChange("")}
-                      ></i>
+                      <i className="bi bi-x-circle close-button-categories"></i>
                     )}
                   </div>
                 </div>
               </button>
             ))}
 
-            {selectedCategory && (
-              <>
-                {categoriesData
-                  .find((cat) => cat.id === selectedCategory)
-                  .subcategories.map((subcategory) => (
-                    <button
-                      key={subcategory.id}
-                      className={`btn rounded-5 border m-2 animate__fadeIn animate__animated ${
-                        selectedSubcategory === subcategory.id ? "want-button" : ""
-                      }`}
-                      onClick={() => handleSubcategoryChange(subcategory.id)}
-                      style={{
-                        display:
-                          selectedSubcategory !== "" &&
-                          selectedSubcategory !== subcategory.id
-                            ? "none"
-                            : "inline-block",
-                      }}
-                    >
-                      <div className="d-flex justify-content-center align-items-center">
-                        <div>
-                          {getSubcategoryTranslation(
-                            selectedCategory,
-                            subcategory.id
-                          )}
-                        </div>
-                        <div
-                          className={`${
-                            selectedSubcategory === subcategory.id
-                              ? "animate__animated animate__slideInRight"
-                              : ""
-                          }`}
-                        >
-                          {selectedSubcategory === subcategory.id && (
-                            <i
-                              className="bi bi-arrow-left text-white p-2 fs-5"
-                              onClick={() => handleSubcategoryChange("")}
-                            ></i>
-                          )}
-                        </div>
+            {selectedCategory &&
+              categoriesData
+                .find((cat) => cat.id === selectedCategory)
+                .subcategories.map((subcategory) => (
+                  <button
+                    key={subcategory.id}
+                    className={`btn rounded-5 border m-2 ${
+                      selectedSubcategory === subcategory.id ? "want-button" : ""
+                    }`}
+                    onClick={() => handleSubcategoryChange(subcategory.id)}
+                    style={{
+                      display: isThirdCategoryVisible(subcategory) ? "inline-block" : "none",
+                    }}
+                  >
+                    <div className="d-flex justify-content-center align-items-center">
+                      <div>
+                        {getSubcategoryTranslation(selectedCategory, subcategory.id)}
                       </div>
-                    </button>
-                  ))}
-              </>
-            )}
+                      <div
+                        className={`${
+                          selectedSubcategory === subcategory.id
+                            ? "animate__animated animate__bounceIn d-flex justify-content-center align-items-center"
+                            : ""
+                        }`}
+                      >
+                        {selectedSubcategory === subcategory.id && (
+                          <i className="bi bi-x-circle close-button-categories"></i>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                ))}
 
-            {selectedSubcategory && (
-              <>
-                {categoriesData
-                  .find((cat) => cat.id === selectedCategory)
-                  .subcategories.find((subcat) => subcat.id === selectedSubcategory)
-                  .thirdCategories.map((thirdCategory) => (
-                    <button
-                      key={thirdCategory.id}
-                      className={`btn rounded-5 border m-2 animate__fadeIn animate__animated ${
-                        selectedThirdCategory === thirdCategory.id ? "want-button" : ""
-                      }`}
-                      onClick={() => handleThirdCategoryChange(thirdCategory.id)}
-                      style={{
-                        display:
-                          selectedThirdCategory !== "" &&
-                          selectedThirdCategory !== thirdCategory.id
-                            ? "none"
-                            : "inline-block",
-                      }}
-                    >
-                      <div className="d-flex justify-content-center align-items-center">
-                        <div>
-                          {getThirdCategoryTranslation(
-                            selectedCategory,
-                            selectedSubcategory,
-                            thirdCategory.id
-                          )}
-                        </div>
-                        <div
-                          className={`${
-                            selectedThirdCategory === thirdCategory.id
-                              ? "animate__animated animate__slideInRight"
-                              : ""
-                          }`}
-                        >
-                          {selectedThirdCategory === thirdCategory.id && (
-                            <i
-                              className="bi bi-arrow-left text-white p-2 fs-5"
-                              onClick={() => handleThirdCategoryChange("")}
-                            ></i>
-                          )}
-                        </div>
+            {selectedSubcategory &&
+              categoriesData
+                .find((cat) => cat.id === selectedCategory)
+                .subcategories.find((subcat) => subcat.id === selectedSubcategory)
+                .thirdCategories.map((thirdCategory) => (
+                  <button
+                    key={thirdCategory.id}
+                    className={`btn rounded-5 border m-2 ${
+                      selectedThirdCategory === thirdCategory.id ? "want-button" : ""
+                    }`}
+                    onClick={() => handleThirdCategoryChange(thirdCategory.id)}
+                    style={{
+                      display: isThirdCategoryButtonVisible(thirdCategory) ? "inline-block" : "none",
+                    }}
+                  >
+                    <div className="d-flex justify-content-center align-items-center">
+                      <div>
+                        {getThirdCategoryTranslation(
+                          selectedCategory,
+                          selectedSubcategory,
+                          thirdCategory.id
+                        )}
                       </div>
-                    </button>
-                  ))}
-              </>
-            )}
+                      <div
+                        className={`${
+                          selectedThirdCategory === thirdCategory.id
+                            ? "animate__animated animate__bounceIn d-flex justify-content-center align-items-center"
+                            : ""
+                        }`}
+                      >
+                        {selectedThirdCategory === thirdCategory.id && (
+                          <i className="bi bi-x-circle close-button-categories"></i>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                ))}
           </div>
         </div>
       </div>

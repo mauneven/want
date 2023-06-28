@@ -185,11 +185,11 @@ export default function MyPosts() {
                       setShowModal(true);
                     }}
                   >
-                    <i className="bi bi-trash-fill">{t('myPosts.delete')}</i>
+                    <i className="bi bi-trash-fill"></i>{t('myPosts.delete')}
                   </button>
                   <Link href={`/editPost/${post._id}`}>
                     <button className="ms-2 text-decoration-none btn btn-outline-success btn-sm">
-                      <i className="bi bi-pencil-fill">{t('myPosts.edit')}</i>
+                      <i className="bi bi-pencil-fill"></i>{t('myPosts.edit')}
                     </button>
                   </Link>
                 </div>

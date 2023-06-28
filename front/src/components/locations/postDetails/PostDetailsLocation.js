@@ -1,7 +1,7 @@
 // PostDetailsLocation.js
 import React, { useRef, useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+
 import { Icon } from "leaflet";
 
 const PostDetailsLocation = ({ latitude, longitude }) => {
@@ -17,26 +17,6 @@ const PostDetailsLocation = ({ latitude, longitude }) => {
       shadowUrl: null,
     });
   }, []);
-
-  useEffect(() => {
-    const fetchLocationName = async () => {
-      try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
-        );
-        const data = await response.json();
-        const cityName =
-          data.address.city || data.address.town || data.address.village;
-        setLocationName(cityName);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    if (latitude && longitude) {
-      fetchLocationName();
-    }
-  }, [latitude, longitude]);
 
   useEffect(() => {
     if (latitude && longitude && mapRef.current) {

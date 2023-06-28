@@ -28,13 +28,13 @@ p h1 h2 h3 h4 h5 {
 }
 
 .close-modal-button {
-  background-color: #424242;
-  color: white;
+  background-color: rgba(241, 241, 241, 0.425);
+  color: #444444;
   border-radius: 60px;
   font-size: 30px;
+  border: 1px solid #444444;
   height: 50px;
   width: 50px;
-  border: 0;
 }
 
 @media (max-width: 766px) {
