@@ -47,6 +47,7 @@ export default function MegaMenu({
     setSelectedSubcategory("");
     setSelectedThirdCategory("");
     onSearchTermChange("");
+    setCurrentPage(1);
     onCategoryFilterChange({
       mainCategory: "",
       subCategory: "",

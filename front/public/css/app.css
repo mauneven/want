@@ -8,12 +8,12 @@ p h1 h2 h3 h4 h5 {
 }
 
 .want-container {
-    padding-left: 12px;
-    padding-right: 12px;
-    background-color: white;
-    height: 100;
-    width: 100%;
-  }  
+  padding-left: 12px;
+  padding-right: 12px;
+  background-color: white;
+  height: 100;
+  width: 100%;
+}
 
 .want-button {
   background-color: #3bb305;
@@ -25,6 +25,16 @@ p h1 h2 h3 h4 h5 {
   background-color: #3bb305;
   color: white;
   font-weight: 400;
+}
+
+.close-modal-button {
+  background-color: #424242;
+  color: white;
+  border-radius: 60px;
+  font-size: 30px;
+  height: 50px;
+  width: 50px;
+  border: 0;
 }
 
 @media (max-width: 766px) {

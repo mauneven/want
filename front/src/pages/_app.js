@@ -64,7 +64,6 @@ export default function MyApp({ Component, pageProps }) {
         <link rel="stylesheet" href="/css/app.css" />
         <header className="sticky-top">
           <MegaMenu
-            onLocationFilterChange={handleLocationFilterChange}
             onSearchTermChange={handleSearchTermChange}
             onCategoryFilterChange={handleCategoryFilterChange}
             currentPage={currentPage}

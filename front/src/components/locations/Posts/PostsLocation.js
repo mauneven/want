@@ -277,7 +277,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
   return (
     <>
       <button onClick={openModal} className="ms-2 btn text-success rounded-5 border-0">
-      <i class="bi bi-geo-alt-fill"></i>{locationName ? `${locationName} · ${radius} km` : 'Select a location to see posts'}
+      <i className="bi bi-geo-alt-fill"></i>{locationName ? `${locationName} · ${radius} km` : 'Select a location to see posts'}
       </button>
 
       <Modal show={showModal} onHide={closeModal} size="lg">

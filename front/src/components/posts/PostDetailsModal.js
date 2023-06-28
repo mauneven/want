@@ -11,6 +11,8 @@ const PostDetailsModal = ({ postId, showModal, closeModal }) => {
   const router = useRouter();
   const { id } = router.query;
   const { t } = useTranslation();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [isLogged, setIsLogged] = useState(false);
   const [post, setPost] = useState(null);
   const [mainImage, setMainImage] = useState("");
@@ -23,6 +25,9 @@ const PostDetailsModal = ({ postId, showModal, closeModal }) => {
   const [user, setUser] = useState(null);
   const [showCreateOfferModal, setShowCreateOfferModal] = useState(false);
 
+  const handleSearchTermChange = (newSearchTerm) => {
+    setSearchTerm(newSearchTerm);
+  };
 
   useEffect(() => {
     const checkSession = async () => {
@@ -249,125 +254,138 @@ const PostDetailsModal = ({ postId, showModal, closeModal }) => {
 
   return (
     <>
-      <Modal show={showModal} onHide={handleCloseClick} size="xl">
-        <Modal.Header closeButton>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="container">
-            <div className="row">
-              <div className="col-lg-6">
-                <div
-                  ref={imageRef}
-                  className="img-container"
-                  onMouseMove={handleMouseMove}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                  style={{
-                    position: "relative",
-                    backgroundImage: `url(${process.env.NEXT_PUBLIC_API_BASE_URL}/${mainImage})`,
-                    backgroundSize: "contain",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    width: "100%",
-                    height: "420px",
-                  }}
-                >
-                  {!mobileDevice && <div style={overlayStyle}></div>}
-                </div>
-                <div className="mt-3 d-flex">
-                  {post.photos.map((photo, index) => (
-                    <img
-                      key={index}
-                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
-                      className="img-thumbnail mr-2"
-                      onMouseOver={() => handleThumbnailMouseOver(photo)}
-                      alt={post.title}
-                      style={{
-                        width: "80px",
-                        height: "80px",
-                        objectFit: "cover",
-                        cursor: "pointer",
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-              <div
-                className="col-lg-6"
-                style={{ maxWidth: "100%", overflowWrap: "break-word" }}
-              >
-                {!mobileDevice && isZoomVisible && (
+      <Modal
+        show={showModal}
+        onHide={handleCloseClick}
+        size="modal-dialog modal-fullscreen"
+        animation={false}
+      >
+        <Modal.Body closeButton>
+          <div className="justify-content-center align-content-center">
+            <button className="close-modal-button" onClick={handleCloseClick}>
+              <i className="bi bi-x-lg"></i>
+            </button>
+            <div className="container">
+              <div className="row">
+                <div className="col-lg-6">
                   <div
-                    ref={zoomRef}
-                    className="zoom"
+                    ref={imageRef}
+                    className="img-container"
+                    onMouseMove={handleMouseMove}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
                     style={{
+                      position: "relative",
                       backgroundImage: `url(${process.env.NEXT_PUBLIC_API_BASE_URL}/${mainImage})`,
-                      backgroundSize: "200%",
+                      backgroundSize: "contain",
                       backgroundRepeat: "no-repeat",
-                      backgroundPosition: `${cursorPosition.x}% ${cursorPosition.y}%`,
-                      width: "500px",
-                      height: "500px",
+                      backgroundPosition: "center",
+                      width: "100%",
+                      height: "420px",
                     }}
-                  ></div>
-                )}
-                <h2>{post.title}</h2>
-                <div>
-                  <span className="text-success fs-1">
-                    $ {post.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                  </span>
-                </div>
-                <div className="d-flex">
-                  <button className="btn rounded-5 border m-2">
-                    {t(`categories.${post.mainCategory}.name`)}
-                  </button>
-                  <button className="btn rounded-5 border m-2">
-                    {" "}
-                    {t(
-                      `categories.${post.mainCategory}.subcategories.${post.subCategory}.name`
-                    )}
-                  </button>
-                  <button className="btn rounded-5 border m-2">
-                    {t(
-                      `categories.${post.mainCategory}.subcategories.${post.subCategory}.thirdCategories.${post.thirdCategory}.name`
-                    )}
-                  </button>
-                </div>
-                <p className="description-container-id">{post.description}</p>
-                <p className="pb-0 mb-0 small-text mt-3">
-                  <PostDetailsLocation
-                    latitude={post.latitude}
-                    longitude={post.longitude}
-                  />
-                </p>
-                <div
-                  className="d-flex align-items-center text-start"
-                  onClick={() => openUserModal(post.createdBy)}
-                >
-                  <img
-                    src={
-                      post.createdBy.photo
-                        ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
-                        : "/icons/person-circle.svg"
-                    }
-                    alt=""
-                    className="createdBy-photo-id"
-                  />
-                  <p className="mb-0 p-0" style={{ cursor: "pointer" }}>
-                    {post.createdBy.firstName} {post.createdBy.lastName} |{" "}
-                    <i className="bi bi-star-fill"></i>{" "}
-                    {post.createdBy.reports
-                      ? 5 - 0.3 * post.createdBy.reports.length
-                      : ""}
-                  </p>
-                </div>
-                <div className="mt-3">
-                  <button
-                    className="btn rounded-5 btn-offer"
-                    onClick={handleMakeOfferClick}
                   >
-                    {t("postDetails.makeAnOffer")}
-                  </button>
-                  <ReportPostModal postId={post._id} onReport={handleReportPost} />
+                    {!mobileDevice && <div style={overlayStyle}></div>}
+                  </div>
+                  <div className="mt-3 d-flex">
+                    {post.photos.map((photo, index) => (
+                      <img
+                        key={index}
+                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
+                        className="img-thumbnail mr-2"
+                        onMouseOver={() => handleThumbnailMouseOver(photo)}
+                        alt={post.title}
+                        style={{
+                          width: "80px",
+                          height: "80px",
+                          objectFit: "cover",
+                          cursor: "pointer",
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div
+                  className="col-lg-6"
+                  style={{ maxWidth: "100%", overflowWrap: "break-word" }}
+                >
+                  {!mobileDevice && isZoomVisible && (
+                    <div
+                      ref={zoomRef}
+                      className="zoom"
+                      style={{
+                        backgroundImage: `url(${process.env.NEXT_PUBLIC_API_BASE_URL}/${mainImage})`,
+                        backgroundSize: "200%",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: `${cursorPosition.x}% ${cursorPosition.y}%`,
+                        width: "500px",
+                        height: "500px",
+                      }}
+                    ></div>
+                  )}
+                  <h2>{post.title}</h2>
+                  <div>
+                    <span className="text-success fs-1">
+                      ${" "}
+                      {post.price
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    </span>
+                  </div>
+                  <div className="d-flex">
+                    <button className="btn rounded-5 border col-4">
+                      {t(`categories.${post.mainCategory}.name`)}
+                    </button>
+                    <button className="btn rounded-5 border col-4">
+                      {t(
+                        `categories.${post.mainCategory}.subcategories.${post.subCategory}.name`
+                      )}
+                    </button>
+                    <button className="btn rounded-5 border col-4">
+                      {t(
+                        `categories.${post.mainCategory}.subcategories.${post.subCategory}.thirdCategories.${post.thirdCategory}.name`
+                      )}
+                    </button>
+                  </div>
+                  <p className="description-container-id mt-2">{post.description}</p>
+                  <p className="pb-0 mb-0 small-text mt-3">
+                    <PostDetailsLocation
+                      latitude={post.latitude}
+                      longitude={post.longitude}
+                    />
+                  </p>
+                  <div
+                    className="d-flex align-items-center text-start"
+                    onClick={() => openUserModal(post.createdBy)}
+                  >
+                    <img
+                      src={
+                        post.createdBy.photo
+                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
+                          : "/icons/person-circle.svg"
+                      }
+                      alt=""
+                      className="createdBy-photo-id"
+                    />
+                    <p className="mb-0 p-0" style={{ cursor: "pointer" }}>
+                      {post.createdBy.firstName} {post.createdBy.lastName} |{" "}
+                      <i className="bi bi-star-fill"></i>{" "}
+                      {post.createdBy.reports
+                        ? 5 - 0.3 * post.createdBy.reports.length
+                        : ""}
+                    </p>
+                  </div>
+                  <div className="mt-3">
+                    <button
+                      className="btn rounded-5 btn-offer"
+                      onClick={handleMakeOfferClick}
+                    >
+                      {t("postDetails.makeAnOffer")}
+                    </button>
+                    <ReportPostModal
+                      postId={post._id}
+                      onReport={handleReportPost}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
