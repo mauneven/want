@@ -46,7 +46,7 @@
 }
 
 .text-price{
-  color: #3bb305;
+  color: var(--color-primary);
   font-weight: 600;
 }
 
@@ -57,9 +57,7 @@
 .post-title { 
   display: block;
   display: -webkit-box;
-  height: 56px;
   margin: 0 auto;
-  line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -174,18 +172,13 @@
 }
 
 .btn-slider-categories-active{
-  background-color: #3bb305;
+  background-color: var(--color-primary);
   color: white;
 }
 
 .btn-slider-categories-active:hover{
   background-color: #267700;
   color: white;
-}
-
-.post-card:hover{
-  box-shadow: 0 4px 10px 5px rgba(0, 0, 0, 0.123);
-  transition: 300ms;
 }
 
 .slider-container {

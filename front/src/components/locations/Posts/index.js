@@ -12,7 +12,7 @@ const PostLocationDynamic = ({ latitude, longitude, radius, onLatitudeChange, on
         onLongitudeChange={onLongitudeChange}
         onRadiusChange={onRadiusChange}
       />
-    </div>
+      </div>
   );
 };
 

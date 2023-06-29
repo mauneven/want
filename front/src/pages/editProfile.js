@@ -166,7 +166,7 @@ const EditProfile = () => {
     <div className="container">
       <h1 className='my-4'>{t('editProfile.checkEditProfile')}</h1>
       <GoBackButton/>
-      <div className="card rounded-5 my-4">
+      <div className="card want-rounded my-4">
         <div className="card-body">
           <div className="text-center">
             <img
@@ -181,7 +181,7 @@ const EditProfile = () => {
             />
             <label htmlFor="photo" className="mt-3">
               <div className="overlay">
-                <i className="bi bi-pencil text-success ms-4"></i> {t('editProfile.changeProfilePhoto')}
+                <i className="bi bi-pencil want-color ms-4"></i> {t('editProfile.changeProfilePhoto')}
               </div>
             </label>
             <input
@@ -211,7 +211,7 @@ const EditProfile = () => {
                   />
                   <button
                     type="button"
-                    className="btn btn-outline-secondary"
+                    className="btn-outline-secondary"
                     onClick={() => setEditingField(field.name)}
                   >
                     <i className="bi bi-pencil"></i>
@@ -221,10 +221,10 @@ const EditProfile = () => {
             ))}
             {editingField && (
               <div className="text-center">
-                <button type="button" className="btn btn-secondary rounded-5 me-3" onClick={handleCancel}>
+                <button type="button" className="generic-button want-rounded me-3" onClick={handleCancel}>
                   {t('editProfile.cancel')}
                 </button>
-                <button type="submit" className="btn want-button rounded-5" disabled={!editingField || (editingField === 'photo' && !photo)}>
+                <button type="submit" className="want-button want-rounded" disabled={!editingField || (editingField === 'photo' && !photo)}>
                   {t('editProfile.update')}
                 </button>
               </div>
@@ -232,15 +232,21 @@ const EditProfile = () => {
           </form>
         </div>
       </div>
-      <div className="my-5 card p-3 border border-success rounded-5">
-        <h3 className="text-success">{t('editProfile.changePassword')}</h3>
-        <Link href="/changePassword">
-          <button className="btn want-button rounded-5">{t('editProfile.changePassword')}</button>
+      <div className="my-5 card p-3  -secondary want-rounded">
+        <h3 className="text">{t('navbar.logout')}</h3>
+        <Link href="/logout">
+          <button className="generic-button want-rounded">{t('navbar.logout')}</button>
         </Link>
       </div>
-      <div className="my-5 border border-danger rounded-5 p-3">
+      <div className="my-5 card p-3   want-rounded">
+        <h3 className="want-color">{t('editProfile.changePassword')}</h3>
+        <Link href="/changePassword">
+          <button className="want-button want-rounded">{t('editProfile.changePassword')}</button>
+        </Link>
+      </div>
+      <div className="my-5  -danger want-rounded p-3">
         <h3 className="text-danger">{t('editProfile.deleteAccount')}</h3>
-        <button className="btn btn-danger rounded-5" onClick={handleDeleteAccount}>
+        <button className="btn-danger want-rounded" onClick={handleDeleteAccount}>
           {t('editProfile.deleteAccount')}
         </button>
       </div>

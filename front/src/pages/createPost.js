@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import PostCategory from "@/components/categories/Categories";
 import CreatePostLocation from "@/components/locations/createPost/";
 import WordsFilter from "@/badWordsFilter/WordsFilter.js";
 import { validations } from "@/utils/validations";
+import { useTranslation } from "react-i18next";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
@@ -13,13 +14,14 @@ const CreatePost = () => {
   const [subCategory, setSubCategory] = useState("");
   const [thirdCategory, setThirdCategory] = useState("");
   const [price, setPrice] = useState("");
-  const [latitude, setLatitude] = useState(null); // Agrega el estado para latitude
-  const [longitude, setLongitude] = useState(null); // Agrega el estado para longitude
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
   const [photos, setPhotos] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const bwf = new WordsFilter();
+  const { t } = useTranslation();
 
   useEffect(() => {
     validations(router);
@@ -88,7 +90,32 @@ const CreatePost = () => {
     setPhotos(newPhotos.slice(0, 4));
   };
 
+  const validateForm = () => {
+    const requiredFields = [
+      { name: t("createPost.titleField"), value: title },
+      { name: t("createPost.descriptionField"), value: description },
+      { name: t("createPost.categoriesField"), value: mainCategory && subCategory && thirdCategory },
+      { name: t("createPost.priceField"), value: price },
+    ];
+
+    const missingFields = requiredFields.filter((field) => !field.value);
+
+    if (missingFields.length > 0) {
+      const errorMessage = t("createPost.missingFieldsError", {
+        fields: missingFields.map((field) => field.name).join(", "),
+      });
+      setError(errorMessage);
+      return false;
+    }
+
+    return true;
+  };
+
   const handleCreatePost = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
 
     const formData = new FormData();
@@ -135,16 +162,16 @@ const CreatePost = () => {
 
   return (
     <div className="mt-3 mb-3 container">
-      <h1 className="text-center mb-4">Create a post about what you Want</h1>
+      <h1 className="text-center mb-4">{t("createPost.title")}</h1>
       <div className="">
         <div className=" ">
           <div className="mb-3">
             <label htmlFor="title" className="form-label">
-              Give a title to what you want*
+              {t("createPost.titleLabel")}
             </label>
             <input
               type="text"
-              className="form-control rounded-5"
+              className="form-control want-rounded"
               id="title"
               value={title}
               onChange={handleTitleChange}
@@ -153,10 +180,10 @@ const CreatePost = () => {
           </div>
           <div className="mb-3">
             <label htmlFor="description" className="form-label">
-              Now describe it in more detail*
+              {t("createPost.descriptionLabel")}
             </label>
             <textarea
-              className="form-control rounded-5"
+              className="form-control want-rounded"
               id="description"
               value={description}
               onChange={handleDescriptionChange}
@@ -166,11 +193,11 @@ const CreatePost = () => {
           </div>
           <div className="mb-3">
             <label htmlFor="price" className="form-label">
-              How much would you pay for what you want*
+              {t("createPost.priceLabel")}
             </label>
             <input
               type="number"
-              className="form-control rounded-5"
+              className="form-control want-rounded"
               id="price"
               value={price}
               onChange={handlePriceChange}
@@ -178,13 +205,13 @@ const CreatePost = () => {
             />
             {price ? (
               <small className="form-text text-muted">
-                Price: {Number(price).toLocaleString()}
+                {t("createPost.priceText", { price: Number(price).toLocaleString() })}
               </small>
             ) : null}
           </div>
           <div className="mb-3">
             <label htmlFor="price" className="form-label">
-              Now, organize or define what you Want in 3 categories*
+              {t("createPost.categoriesLabel")}
             </label>
             <PostCategory
               onMainCategoryChange={(selectedMainCategory) =>
@@ -204,7 +231,7 @@ const CreatePost = () => {
           </div>
           <div className="mb-3">
             <label htmlFor="price" className="form-label">
-              Give an approximate location of where you want this*
+              {t("createPost.locationLabel")}
             </label>
             <CreatePostLocation
               onLatitudeChange={handleLatitudeChange}
@@ -212,7 +239,7 @@ const CreatePost = () => {
             />
           </div>
           <label htmlFor="price" className="form-label">
-            upload upto 4 photos about what you Want*
+            {t("createPost.photosLabel")}
           </label>
           <div className="row row-cols-xl-2">
             {[1, 2, 3, 4].map((index) => (
@@ -222,7 +249,7 @@ const CreatePost = () => {
                     <div className="photo-preview">
                       <img
                         src={URL.createObjectURL(photos[index - 1])}
-                        className="img-thumbnail border-0 uploaded-photos rounded-5"
+                        className="img-thumbnail  uploaded-photos want-rounded"
                         alt={`Photo ${index}`}
                       />
                     </div>
@@ -242,7 +269,7 @@ const CreatePost = () => {
                   )}
                   {photos[index - 1] && (
                     <button
-                      className="btn btn-light circle btn-sm delete-photo"
+                      className="btn-light circle btn-sm delete-photo"
                       onClick={() => handleDeletePhoto(index - 1)}
                       type="button"
                     >
@@ -256,18 +283,18 @@ const CreatePost = () => {
           {error && <div className="alert alert-danger">{error}</div>}
           <button
             type="button"
-            className="btn want-button rounded-5 mt-2"
+            className="want-button want-rounded mt-2"
             disabled={loading}
             onClick={handleCreatePost}
           >
             {loading ? (
               <span
-                className="spinner-border rounded-5 spinner-border-sm me-2"
+                className="spinner-border want-rounded spinner-border-sm me-2"
                 role="status"
                 aria-hidden="true"
               ></span>
             ) : (
-              "Create Post"
+              t("createPost.createPostButton")
             )}
           </button>
           <button type="button" className="btn" onClick={handleShowModal}>
@@ -277,7 +304,6 @@ const CreatePost = () => {
       </div>
     </div>
   );
-  
 };
 
 export default CreatePost;

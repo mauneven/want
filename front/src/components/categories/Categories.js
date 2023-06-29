@@ -113,7 +113,7 @@ export default function PostCategory({
     <div className="d-flex flex-wrap align-items-center">
       <select
         id="category-select"
-        className="form-select mt-2 rounded-4"
+        className="form-select mt-2 want-rounded"
         value={selectedCategory}
         onChange={handleCategoryChange}
         required={isRequired}
@@ -129,7 +129,7 @@ export default function PostCategory({
       {selectedCategory && (
         <select
           id="subcategory-select"
-          className="form-select mt-2 rounded-4"
+          className="form-select mt-2 want-rounded"
           value={selectedSubcategory || initialSubcategory}
           onChange={handleSubcategoryChange}
           required={isRequired}
@@ -146,7 +146,7 @@ export default function PostCategory({
       {selectedSubcategory && (
         <select
           id="thirdcategory-select"
-          className="form-select mt-2 rounded-4"
+          className="form-select mt-2 want-rounded"
           value={selectedThirdCategory}
           onChange={handleThirdCategoryChange}
           required={isRequired}

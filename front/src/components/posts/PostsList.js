@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "@/actions/postsActions";
 import PostsLocation from "../locations/Posts/";
 import PostCategory from "../categories/PostCategory";
-import PostDetailsModal from "./PostDetailsModal"; // Importamos el componente PostDetailsModal
+import PostDetailsModal from "./PostDetailsModal";
 
 const PostsList = ({ searchTerm }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -13,7 +13,7 @@ const PostsList = ({ searchTerm }) => {
   const [totalPosts, setTotalPosts] = useState(0);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [postId, setPostId] = useState(null); // Nuevo estado para almacenar el ID del post
+  const [postId, setPostId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMorePosts, setHasMorePosts] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
@@ -49,7 +49,7 @@ const PostsList = ({ searchTerm }) => {
 
   const handleCategoryFilter = (categoryFilter) => {
     setCategoryFilter(categoryFilter);
-    setCurrentPage(1); // Reiniciar la página a 1 cuando se aplique un nuevo filtro de categoría
+    setCurrentPage(1);
   };
 
   const getUserPreferences = async () => {
@@ -179,6 +179,14 @@ const PostsList = ({ searchTerm }) => {
   };
 
   useEffect(() => {
+    if (searchTerm) {
+      setSelectedCategory("");
+      setSelectedSubcategory("");
+      setSelectedThirdCategory("");
+    }
+  }, [searchTerm]);  
+
+  useEffect(() => {
     dispatch(setPosts([]));
     setTotalPosts(0);
     setHasMorePosts(false);
@@ -263,7 +271,6 @@ const PostsList = ({ searchTerm }) => {
   );
 
   const openModal = (postId) => {
-    // Función para abrir el modal y almacenar el ID del post
     setPostId(postId);
     setShowModal(true);
   };
@@ -295,37 +302,44 @@ const PostsList = ({ searchTerm }) => {
   };
 
   return (
-    <div className="">
-      <PostCategory
-        onMainCategoryChange={handleMainCategoryChange}
-        onSubcategoryChange={handleSubcategoryChange}
-        onThirdCategoryChange={handleThirdCategoryChange}
-        initialMainCategory={categoryFilter.mainCategory} // Establecer la categoría principal inicial
-        initialSubcategory={categoryFilter.subCategory} // Establecer la subcategoría inicial
-        initialThirdCategory={categoryFilter.thirdCategory} // Establecer la tercera categoría inicial
-      />
-      <PostsLocation
-        onLatitudeChange={setLatitude}
-        onLongitudeChange={setLongitude}
-        onRadiusChange={setRadius}
-      />
-      <div className="row row-cols-1 row-cols-md-4 row-cols-lg-5 row-cols-xl-5 g-4 pe-2 ps-2">
+    <div>
+      <div className="text-center">
+        <PostCategory
+          onMainCategoryChange={handleMainCategoryChange}
+          onSubcategoryChange={handleSubcategoryChange}
+          onThirdCategoryChange={handleThirdCategoryChange}
+          initialMainCategory={categoryFilter.mainCategory}
+          initialSubcategory={categoryFilter.subCategory}
+          initialThirdCategory={categoryFilter.thirdCategory}
+        />
+      </div>
+      <div className="text-start m-2">
+        <PostsLocation
+          onLatitudeChange={setLatitude}
+          onLongitudeChange={setLongitude}
+          onRadiusChange={setRadius}
+        />
+      </div>
+      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-6 pe-2 ps-2">
         {posts.map((post) => {
           const userReputation = 5 - 0.3 * post.createdBy.reports.length;
           let photoIndex = 0;
           return (
-            <div key={post._id} className="col post-card rounded-5">
-              <div className="card rounded-5 divhover">
+            <div
+              key={post._id}
+              className="col post-card want-rounded d-flex align-items-stretch"
+            >
+              <div className="card want-rounded divhover w-100">
                 {post.photos && post.photos.length > 0 && (
                   <div
                     id={`carousel-${post._id}`}
-                    className="carousel slide rounded-5 me-2 ms-2 mt-3 img-post"
+                    className="carousel slide want-rounded me-2 ms-2 mt-3 img-post"
                     data-bs-ride="carousel"
                     style={{ height: "200px", overflow: "hidden" }}
                   >
                     <div
-                      className="carousel-inner "
-                      onClick={() => openModal(post._id)} // Abrir el modal al hacer clic en la imagen
+                      className="carousel-inner"
+                      onClick={() => openModal(post._id)}
                     >
                       {post.photos.map((photo, index) => (
                         <div
@@ -339,7 +353,7 @@ const PostsList = ({ searchTerm }) => {
                             className="d-block w-100"
                             alt={`Image ${index}`}
                             loading="lazy"
-                            onClick={() => openModal(post._id)} // Abrir el modal al hacer clic en la imagen
+                            onClick={() => openModal(post._id)}
                           />
                         </div>
                       ))}
@@ -376,22 +390,24 @@ const PostsList = ({ searchTerm }) => {
                     )}
                   </div>
                 )}
-                <div className="card-body">
-                  <h4
-                    className="card-title post-title"
-                    onClick={() => openModal(post._id)} // Abrir el modal al hacer clic en el título
-                  >
-                    {post.title}
-                  </h4>
+                <div className="card-body p-0 m-2">
+                  <div className="generic-button mb-2 want-rounded">
                   <h3
                     className="text-price"
-                    onClick={() => openModal(post._id)} // Abrir el modal al hacer clic en el precio
+                    onClick={() => openModal(post._id)}
                   >
                     ${post.price.toLocaleString()}
                   </h3>
+                  <h5
+                    className="card-title post-title p-1"
+                    onClick={() => openModal(post._id)}
+                  >
+                    {post.title}
+                  </h5>
+                  </div>
                   <div
-                    className="d-flex"
-                    onClick={() => openModal(post.createdBy._id)} // Abrir el modal al hacer clic en el usuario
+                    className="d-flex generic-button mb-2 generic-button want-rounded"
+                    onClick={() => openModal(post.createdBy._id)}
                   >
                     <img
                       src={
@@ -403,7 +419,7 @@ const PostsList = ({ searchTerm }) => {
                       className="createdBy-photo p-1"
                     />
                     <div className="ms-2">
-                      <small className="text-muted ">
+                      <small className="text-muted">
                         {post.createdBy.firstName}
                       </small>
                       <div className="d-flex">
@@ -448,7 +464,7 @@ const PostsList = ({ searchTerm }) => {
         postId={postId}
         showModal={showModal}
         closeModal={closeModal}
-        applyCategoryFilter={handleCategoryFilter} // Pasamos la función de manejo del filtro de categoría como prop
+        applyCategoryFilter={handleCategoryFilter}
       />
     </div>
   );

@@ -70,7 +70,13 @@ export default function MegaMenu({
     setSearchTerm(newSearchTerm);
     onSearchTermChange(newSearchTerm);
     router.push("/");
-  };
+  };  
+
+  useEffect(() => {
+    setSelectedCategory("");
+    setSelectedSubcategory("");
+    setSelectedThirdCategory("");
+  }, [searchTerm]);  
 
   useEffect(() => {
     const checkSession = async () => {
@@ -118,14 +124,14 @@ export default function MegaMenu({
               onClick={handleLogoClick}
               className="divhover d-flex align-items-center m-0 p-0 col-3 justify-content-center"
             >
-              <p className="fs-1 text-success d-flex  m-0 w-100 h-100 align-items-center">
-                Want
-              </p>
+              <div className="fs-1 want-color d-flex  m-0 w-100 h-100 align-items-center want-color">
+                Want <p className="small fs-5 m-2 p-1 want-border"> βeta V2</p>
+              </div>
             </Navbar.Brand>
           ) : null}
           <div className="w-100 d-flex justify-content-center align-items-center">
             <Form
-              className="d-flex m-0 w-100 border rounded-5 text-center align-items-center justify-content-center"
+              className="d-flex m-0 w-100 p-1 want-rounded text-center align-items-center justify-content-center generic-button"
               onSubmit={handleSearchSubmit}
             >
               <FormControl
@@ -135,16 +141,15 @@ export default function MegaMenu({
                 aria-label="Search"
                 name="search"
               />
-              <Button
+              <button
                 type="submit"
-                variant=""
-                className=" search-btn border-0 m-1"
+                className=" search-btn  m-1"
               >
                 <i className="bi bi-search"></i>
-              </Button>
+              </button>
             </Form>
           </div>
-          <div className="col-3 justify-content-end d-flex">
+          <div className="col-3 justify-content-end d-flex align-items-center">
             <Nav className="align-items-center justify-content-center">
               {!isMobile && (
                 <>
@@ -152,19 +157,19 @@ export default function MegaMenu({
                     className="nav-item"
                     onClick={() => router.push("/createPost")}
                   >
-                    <Button className="btn btn-post rounded-5 align-items-center nav-item">
-                      {t("navbar.createPost")}
-                    </Button>
+                    <button className="want-button want-rounded align-items-center">
+                      {t("navbar.wantSomething")}
+                    </button>
                   </Nav.Link>
                 </>
               )}
               <LanguageSelector />
-              <Notifications />
+              {user ? <div className="d-flex align-items-center justify-content-center"><Notifications /></div>  : null}
               {!isMobile && (
                 <>
                   {user ? (
                     <NavDropdown
-                      className="nav-item rounded-5 border-0 "
+                      className="nav-item want-rounded  "
                       title={
                         <>
                           <img

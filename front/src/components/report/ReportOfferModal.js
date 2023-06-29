@@ -1,9 +1,9 @@
-// components/ReportOfferModal.js
-
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 const ReportOfferModal = ({ offerId, onReport }) => {
+  const { t } = useTranslation();
   const [show, setShow] = useState(false);
   const [description, setDescription] = useState('');
 
@@ -19,19 +19,19 @@ const ReportOfferModal = ({ offerId, onReport }) => {
 
   return (
     <>
-      <Button variant="danger" onClick={handleShow}>
-        Report 
+      <button onClick={handleShow}>
+        {t('reportOfferModal.report')}
         <i className="bi bi-flag ms-2"></i>
-      </Button>
+      </button>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Report this offer</Modal.Title>
+          <Modal.Title>{t('reportOfferModal.reportOffer')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
             <Form.Group>
-              <Form.Label>Describe why you're reporting this offer</Form.Label>
+              <Form.Label>{t('reportOfferModal.describe')}</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
@@ -40,9 +40,9 @@ const ReportOfferModal = ({ offerId, onReport }) => {
                 required
               />
             </Form.Group>
-            <Button variant="warning" type="submit">
-              Send report
-            </Button>
+            <button type="submit">
+              {t('reportOfferModal.sendReport')}
+            </button>
           </Form>
         </Modal.Body>
       </Modal>

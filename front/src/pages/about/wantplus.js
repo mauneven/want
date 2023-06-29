@@ -12,7 +12,7 @@ We're excited to announce that we're working on Want+, a new feature that will a
 <p className="mb-4">
 We are also committed to developing a transparent and reasonable monetization strategy that doesn't compromise the user experience.
 </p>
-<button className="btn want-button btn-lg">Learn more</button>
+<button className="want-button btn-lg">Learn more</button>
 </div>
 </div>
 );

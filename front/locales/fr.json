@@ -1,166 +1,260 @@
+
 {
   "navbar": {
-    "home": "Accueil",
-    "createPost": "Créer une publication",
-    "selectCategory": "Sélectionner une catégorie",
-    "searchPlaceholder": "Ce que les gens veulent...",
-    "myPosts": "Mes publications",
-    "sentOffers": "Offres envoyées",
-    "receivedOffers": "Offres reçues",
-    "myProfile": "Mon profil",
-    "logout": "Déconnexion",
-    "login": "Connexion",
-    "menu": "Menu"
-  },
-  "createOffer": {
-    "title": "Titre de l'offre",
-    "description": "Description de l'offre"
+  "home": "Accueil",
+  "wantSomething": "Créer une publication",
+  "selectCategory": "Sélectionnez une catégorie",
+  "searchPlaceholder": "Les gens veulent...",
+  "myPosts": "Publications",
+  "sentOffers": "Envoyées",
+  "receivedOffers": "Reçues",
+  "myProfile": "Profil",
+  "logout": "Déconnexion",
+  "login": "Se connecter",
+  "menu": "Menu"
   },
   "createPost": {
-    "title": "Titre de la publication",
-    "description": "Description de la publication"
+  "title": "Créez une publication sur ce que vous voulez",
+  "titleLabel": "Attribuez un titre à ce que vous voulez*",
+  "descriptionLabel": "Décrivez en détail ce que vous voulez*",
+  "priceLabel": "Combien seriez-vous prêt à payer pour ce que vous voulez*",
+  "priceText": "Prix : {{price}}",
+  "categoriesLabel": "Organisez ou définissez en 3 catégories ce que vous voulez*",
+  "locationLabel": "Fournissez une localisation approximative de l'endroit où vous voulez cela*",
+  "photosLabel": "Téléchargez jusqu'à 4 photos de ce que vous voulez*",
+  "missingFieldsError": "Veuillez remplir tous les champs obligatoires :\n{{fields}}",
+  "createPostButton": "Créer une publication"
+  },
+  "createOffer": {
+  "title": "Titre de l'offre",
+  "description": "Description de l'offre"
+  },
+  "wantSomething": {
+  "title": "Titre de la publication",
+  "description": "Description de la publication"
   },
   "postDetails": {
-    "makeAnOffer": "Faire une offre",
-    "publishedIn": "Publié à"
+  "makeAnOffer": "Faire une offre",
+  "publishedIn": "Publié dans"
   },
   "myPosts": {
-    "deletePostTitle": "Supprimer cette publication",
-    "deletePostConfirmation": "Êtes-vous sûr(e) ?",
-    "cancel": "Annuler",
-    "delete": "Supprimer",
-    "yourPosts": "Vos publications",
-    "edit": "Modifier"
+  "deletePostTitle": "Supprimer cette publication",
+  "deletePostConfirmation": "Êtes-vous sûr(e) ?",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "yourPosts": "Vos publications",
+  "edit": "Modifier"
   },
   "editProfile": {
-    "checkEditProfile": "Vérifiez et modifiez votre profil",
-    "firstName": "Prénom",
-    "lastName": "Nom de famille",
-    "phone": "Téléphone",
-    "birthdate": "Date de naissance",
-    "changeProfilePhoto": "Changer la photo de profil",
-    "invalidImageFileType": "Le fichier doit être une image JPG, JPEG ou PNG.",
-    "imageFileSizeExceeded": "La taille du fichier doit être inférieure à 50 Mo.",
-    "cancel": "Annuler",
-    "update": "Mettre à jour",
-    "changePassword": "Changer le mot de passe",
-    "deleteAccount": "Supprimer le compte",
-    "deleteAccountConfirmation": "Êtes-vous sûr de vouloir mettre votre compte dans la file d'attente de suppression ? Votre compte sera supprimé dans 30 jours.",
-    "deleteAccountError": "Erreur lors de la suppression du compte",
-    "updateUserError": "Erreur lors de la mise à jour de l'utilisateur",
-    "updateUserPhotoError": "Erreur lors de la mise à jour de la photo de l'utilisateur"
+  "checkEditProfile": "Vérifiez et modifiez votre profil",
+  "firstName": "Prénom",
+  "lastName": "Nom",
+  "phone": "Téléphone",
+  "birthdate": "Date de naissance",
+  "changeProfilePhoto": "Changer la photo de profil",
+  "invalidImageFileType": "Le fichier doit être une image JPG, JPEG ou PNG.",
+  "imageFileSizeExceeded": "La taille du fichier doit être inférieure à 50 Mo.",
+  "cancel": "Annuler",
+  "update": "Mettre à jour",
+  "changePassword": "Changer le mot de passe",
+  "deleteAccount": "Supprimer le compte",
+  "deleteAccountConfirmation": "Êtes-vous sûr(e) de vouloir mettre votre compte en file d'attente de suppression ? Votre compte sera supprimé dans 30 jours.",
+  "deleteAccountError": "Erreur lors de la suppression du compte",
+  "updateUserError": "Erreur lors de la mise à jour de l'utilisateur",
+  "updateUserPhotoError": "Erreur lors de la mise à jour de la photo de l'utilisateur"
   },
   "sentOffers": {
-    "deleteOfferTitle": "Supprimer l'offre",
-    "deleteOfferConfirmation": "Êtes-vous sûr(e) ?",
-    "cancel": "Annuler",
-    "delete": "Supprimer",
-    "yourOffers": "Vos offres envoyées",
-    "price": "Prix",
-    "viewDetails": "Voir les détails"
+  "deleteOfferTitle": "Supprimer l'offre",
+  "deleteOfferConfirmation": "Êtes-vous sûr(e) ?",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "yourOffers": "Vos offres envoyées",
+  "price": "Prix",
+  "viewDetails": "Voir les détails"
   },
   "receivedOffers": {
-    "deleteOfferTitle": "Supprimer cette offre",
-    "deleteOfferConfirmation": "Êtes-vous sûr de vouloir supprimer cette offre ? Cette action est définitive.",
-    "cancel": "Annuler",
-    "delete": "Supprimer",
-    "yourOffers": "Vos offres reçues",
-    "yourPosts": "Vos publications",
-    "offers": "Offres",
-    "viewDetails": "Voir les détails"
+  "deleteOfferTitle": "Supprimer cette offre",
+  "deleteOfferConfirmation": "Êtes-vous sûr(e) de vouloir supprimer cette offre ? Cette action est définitive.",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "yourOffers": "Vos offres reçues",
+  "yourPosts": "Vos publications",
+  "offers": "Offres",
+  "viewDetails": "Voir les détails"
+  },
+  "changePassword": {
+  "title": "Changer le mot de passe",
+  "currentPasswordLabel": "Ancien mot de passe",
+  "newPasswordLabel": "Nouveau mot de passe",
+  "confirmNewPasswordLabel": "Confirmer le nouveau mot de passe",
+  "passwordsMismatch": "Les mots de passe ne correspondent pas",
+  "changePasswordButton": "Changer mon mot de passe",
+  "passwordChanged": "Mot de passe modifié avec succès",
+  "error": "Erreur : Impossible de changer le mot de passe"
+  },
+  "languageSelector": {
+  "chooseLanguage": "Choisir la langue",
+  "selectLanguage": "Sélectionner la langue",
+  "languageSelectionDescription": "Choisissez la langue que vous préférez pour l'interface de Want. Veuillez noter que cette sélection n'affectera que l'interface de Want et non la langue du contenu généré par les utilisateurs. Veuillez noter que cette fonctionnalité est encore en développement et que les traductions et les éléments de l'interface utilisateur sont toujours en cours de révision pour garantir précision et qualité.",
+  "english": "Anglais",
+  "spanish": "Espagnol",
+  "french": "Français"
+  },
+  "passwordRecovery": {
+  "title": "Récupération du mot de passe",
+  "emailLabel": "Votre adresse e-mail",
+  "submitButton": "Envoyer une demande de récupération",
+  "emailSent": "Un e-mail a été envoyé pour récupérer votre compte",
+  "emailError": "Erreur : Impossible d'envoyer l'e-mail de récupération"
+  },
+  "postsLocation": {
+  "selectLocation": "Sélectionner une localisation",
+  "searchLocation": "Rechercher votre localisation...",
+  "currentLocation": "Localisation actuelle",
+  "allowLocationAccess": "Autorisez l'accès à votre localisation pour voir les publications à proximité. Si vous ne souhaitez pas autoriser l'accès à votre localisation, saisissez la localisation où vous souhaitez voir les publications.",
+  "selectRadius": "Sélectionner un rayon (km) :",
+  "everywhere": "Partout BETA",
+  "useCurrentLocation": "Utiliser ma localisation actuelle"
+  },
+  "reportOfferModal": {
+  "report": "Signaler",
+  "reportOffer": "Signaler cette offre",
+  "describe": "Décrivez pourquoi vous signalez cette offre",
+  "sendReport": "Envoyer le rapport"
+  },
+  "reportPostModal": {
+  "reportPost": "Signaler cette publication",
+  "describe": "Décrivez pourquoi vous signalez cette publication",
+  "sendReport": "Envoyer le rapport"
+  },
+  "verificationPage": {
+  "title": "Vérification",
+  "enterVerificationCodeMessage": "Entrez le code de vérification",
+  "verificationCodeLabel": "Code de vérification",
+  "verificationCodePlaceholder": "Entrez le code de vérification",
+  "resendVerificationButton": "Renvoyer le code de vérification",
+  "verifyButton": "Vérifier",
+  "invalidTokenErrorMessage": "Erreur : Jeton de vérification invalide",
+  "incorrectCode": "Code de vérification incorrect",
+  "resendVerificationErrorMessage": "Erreur lors de la réexpédition du code de vérification",
+  "verificationCodeResentMessage": "Code de vérification renvoyé"
+  },
+  "logoutPage": {
+  "message": "À bientôt !"
+  },
+  "goBackButton": {
+  "homeButton": "Retourner à l'accueil"
   },
   "login": {
-    "loginTitle": "Connexion",
-    "signupTitle": "S'inscrire",
-    "emailLabel": "E-mail :",
-    "emailPlaceholder": "votreadresse@example.com",
-    "passwordLabel": "Mot de passe :",
-    "passwordPlaceholder": "votre mot de passe",
-    "confirmPasswordLabel": "Confirmer le mot de passe :",
-    "confirmPasswordPlaceholder": "confirmer votre mot de passe",
-    "firstNameLabel": "Prénom :",
-    "lastNameLabel": "Nom de famille :",
-    "phoneLabel": "Numéro de téléphone :",
-    "birthdateLabel": "Date de naissance :",
-    "noAccountText": "Vous n'avez pas de compte ?",
-    "haveAccountText": "Vous avez déjà un compte ?",
-    "signupLink": "S'inscrire",
-    "loginLink": "Connexion",
-    "loginButton": "Connexion",
-    "signupButton": "S'inscrire",
-    "ageValidationMessage": "Vous devez avoir au moins 14 ans pour créer un compte.",
-    "forgotPasswordLink": "J'ai oublié mon mot de passe, aidez-moi",
-    "invalidCredentialsErrorMessage": "E-mail ou mot de passe incorrect."
+  "loginTitle": "Se connecter",
+  "signupTitle": "S'inscrire",
+  "emailLabel": "Adresse e-mail :",
+  "emailPlaceholder": "votreadresse@example.com",
+  "passwordLabel": "Mot de passe :",
+  "passwordPlaceholder": "votre mot de passe",
+  "confirmPasswordLabel": "Confirmer le mot de passe :",
+  "confirmPasswordPlaceholder": "confirmez votre mot de passe",
+  "firstNameLabel": "Prénom :",
+  "lastNameLabel": "Nom :",
+  "phoneLabel": "Numéro de téléphone :",
+  "birthdateLabel": "Date de naissance :",
+  "noAccountText": "Vous n'avez pas de compte ?",
+  "haveAccountText": "Vous avez déjà un compte ?",
+  "signupLink": "S'inscrire",
+  "loginLink": "Se connecter",
+  "loginButton": "Se connecter",
+  "signupButton": "S'inscrire",
+  "ageValidationMessage": "Vous devez avoir au moins 14 ans pour créer un compte.",
+  "forgotPasswordLink": "J'ai oublié mon mot de passe, aidez-moi",
+  "invalidCredentialsErrorMessage": "Adresse e-mail ou mot de passe incorrects.",
+  "passwordValidationErrorMessage": "Les mots de passe doivent comporter au moins une majuscule, un chiffre et être composés de 8 caractères.",
+  "passwordMatchErrorMessage": "Les mots de passe ne correspondent pas"
   },
   "footer": {
-    "wantTitle": "Want",
-    "aboutUs": "À propos de nous",
-    "data": "Données",
-    "contact": "Contact",
-    "subscriptionsTitle": "Abonnements",
-    "wantPlus": "Want+",
-    "wantAI": "Want avec IA",
-    "limitations": "Limitations",
-    "legalTitle": "Légal",
-    "privacy": "Confidentialité",
-    "termsAndConditions": "Termes et conditions",
-    "helpTitle": "Aide",
-    "howToUseWant": "Comment utiliser Want",
-    "support": "Support",
-    "howTo": "Comment...",
-    "allRightsReserved": "Tous droits réservés."
+  "wantTitle": "Want",
+  "aboutUs": "À propos de nous",
+  "data": "Données",
+  "contact": "Contact",
+  "subscriptionsTitle": "Abonnements",
+  "wantPlus": "Want+",
+  "wantAI": "Want avec IA",
+  "limitations": "Limitations",
+  "legalTitle": "Légal",
+  "privacy": "Confidentialité",
+  "termsAndConditions": "Conditions générales",
+  "helpTitle": "Aide",
+  "howToUseWant": "Comment utiliser Want",
+  "support": "Support",
+  "howTo": "Comment...",
+  "allRightsReserved": "Tous droits réservés."
   },
   "deleteOn": {
-    "deletionProcessTitle": "Votre compte est en cours de suppression.",
-    "continueDeletionProcess": "Continuer mon processus de suppression",
-    "cancelDeletionProcess": "Annuler mon processus de suppression"
+  "deletionProcessTitle": "Votre compte est en cours de suppression.",
+  "continueDeletionProcess": "Continuer le processus de suppression",
+  "cancelDeletionProcess": "Annuler le processus de suppression"
   },
   "isNotVerified": {
-    "title": "Nous y sommes presque",
-    "description": "Vous devez vérifier votre compte pour que nous sachions que c'est vous. Nous avons envoyé un e-mail avec un lien pour vérifier votre compte.",
-    "homepageLink": "En attendant, vous pouvez revenir à la page d'accueil"
+  "title": "Nous y sommes presque !",
+  "description": "Vous devez vérifier votre compte pour que nous sachions que c'est vous. Nous avons envoyé un e-mail avec un lien pour vérifier votre compte.",
+  "homepageLink": "En attendant, vous pouvez revenir à la page d'accueil"
   },
   "custom404": {
-    "title": "Oups, cette page n'est pas pour vous",
-    "description": "Désolé, la page que vous recherchez n'existe pas.",
-    "homeLink": "Retourner à la page d'accueil"
+  "title": "Oups, cette page n'est pas pour vous",
+  "description": "Désolé, la page que vous recherchez n'existe pas.",
+  "homeLink": "Aller à la page d'accueil"
   },
   "blocked": {
-    "title": "Vous avez été banni",
-    "description": "Votre compte a été bloqué en raison de plusieurs signalements.",
-    "contactSupport": "Si vous pensez qu'il s'agit d'une erreur, veuillez contacter le support."
+  "title": "Vous avez été bloqué",
+  "description": "Votre compte a été bloqué en raison de plusieurs signalements.",
+  "contactSupport": "Si vous pensez qu'il s'agit d'une erreur, veuillez contacter le support."
   },
   "verifyEmail": {
-    "title": "Vérification de l'email",
-    "successMessage": "Votre email a été vérifié avec succès. Vous pouvez maintenant publier.",
-    "alreadyConfirmedMessage": "Votre email a déjà été confirmé.",
-    "expiredLinkMessage": "Votre lien de validation a expiré. Veuillez en demander un autre.",
-    "errorMessage": "Une erreur s'est produite lors de la vérification de votre email.",
-    "resendSuccessMessage": "Un nouvel email de vérification a été envoyé. Veuillez vérifier votre boîte de réception.",
-    "resendErrorMessage": "Une erreur s'est produite lors de la renvoi de l'email de vérification.",
-    "emailPlaceholder": "Email",
-    "resendButton": "Demander un nouveau lien de vérification"
+  "title": "Vérification de l'e-mail",
+  "successMessage": "Votre adresse e-mail a été vérifiée avec succès. Vous pouvez maintenant publier.",
+  "alreadyConfirmedMessage": "Votre adresse e-mail a déjà été confirmée.",
+  "expiredLinkMessage": "Votre lien de validation a expiré. Veuillez demander un nouveau lien.",
+  "errorMessage": "Une erreur s'est produite lors de la vérification de votre adresse e-mail.",
+  "resendSuccessMessage": "Un nouvel e-mail de vérification a été envoyé. Veuillez vérifier votre boîte de réception.",
+  "resendErrorMessage": "Une erreur s'est produite lors de la réexpédition de l'e-mail de vérification.",
+  "emailPlaceholder": "Adresse e-mail",
+  "resendButton": "Demander un nouveau lien de vérification"
+  },
+  "createOfferModal": {
+  "creatingOfferFor": "Création d'une offre pour ",
+  "paymentAmount": "Paiement jusqu'à ",
+  "doYourBestOffer": "Faites votre meilleure offre",
+  "offerTitle": "Titre de l'offre*",
+  "offerDescription": "Décrivez votre offre*",
+  "phoneContact": "Si vous le souhaitez, incluez votre numéro WhatsApp ou votre numéro de téléphone pour un contact direct",
+  "chooseCountryCode": "Choisissez un code de pays",
+  "phoneNumber": "Numéro de téléphone",
+  "otherContact": "Y a-t-il un autre moyen par lequel cette personne peut vous contacter ?",
+  "offerPrice": "Prix de l'offre*",
+  "priceLabel": "Prix : ",
+  "uploadPhotos": "Téléchargez des photos*",
+  "creating": "Création en cours...",
+  "createOffer": "Créer une offre"
   },
   "detailsModal": {
-    "offerForPost": "Offre pour votre publication {{title}}",
-    "offerBy": "Proposé par",
-    "otherWaysToContact": "Autres moyens de contacter {{firstName}} : {{contact}}",
-    "closeButton": "Fermer"
+  "offerForPost": "Offre pour votre publication {{title}}",
+  "offerBy": "Offert par",
+  "otherWaysToContact": "Autres façons de contacter {{firstName}} : {{contact}}",
+  "closeButton": "Fermer"
   },
   "resetPassword": {
-    "resetPasswordTitle": "Réinitialiser le mot de passe",
-    "newPasswordLabel": "Nouveau mot de passe",
-    "confirmNewPasswordLabel": "Confirmer le nouveau mot de passe",
-    "resetPasswordButton": "Réinitialiser le mot de passe",
-    "passwordMismatch": "Les mots de passe ne correspondent pas",
-    "passwordResetSuccess": "Réinitialisation du mot de passe réussie",
-    "passwordResetError": "Erreur : impossible de réinitialiser le mot de passe"
+  "resetPasswordTitle": "Réinitialiser le mot de passe",
+  "newPasswordLabel": "Nouveau mot de passe",
+  "confirmNewPasswordLabel": "Confirmer le nouveau mot de passe",
+  "resetPasswordButton": "Réinitialiser le mot de passe",
+  "passwordMismatch": "Les mots de passe ne correspondent pas",
+  "passwordResetSuccess": "Mot de passe réinitialisé avec succès",
+  "passwordResetError": "Erreur : Impossible de réinitialiser le mot de passe"
   },
   "notifications": {
-    "title": "Notifications",
-    "empty": "Vide",
-    "markAllRead": "Tout marquer comme lu",
-    "markingRead": "Marquage comme lu..."
+  "title": "Notifications",
+  "empty": "Vide",
+  "markAllRead": "Marquer tout comme lu",
+  "markingRead": "Marquage en cours..."
   },
   "categories": {
     "selectMainCategory": "1 | catégorie générale",

@@ -1,166 +1,260 @@
+
 {
   "navbar": {
-    "home": "Home",
-    "createPost": "Create Post",
-    "selectCategory": "Select a Category",
-    "searchPlaceholder": "What people want...",
-    "myPosts": "My Posts",
-    "sentOffers": "Sent Offers",
-    "receivedOffers": "Received Offers",
-    "myProfile": "My Profile",
-    "logout": "Logout",
-    "login": "Log In",
-    "menu": "Menu"
-  },
-  "createOffer": {
-    "title": "Offer Title",
-    "description": "Offer Description"
+  "home": "Home",
+  "wantSomething": "Create Post",
+  "selectCategory": "Select a category",
+  "searchPlaceholder": "People want...",
+  "myPosts": "Posts",
+  "sentOffers": "Sent",
+  "receivedOffers": "Received",
+  "myProfile": "Profile",
+  "logout": "Logout",
+  "login": "Login",
+  "menu": "Menu"
   },
   "createPost": {
-    "title": "Post Title",
-    "description": "Post Description"
+  "title": "Create a post about what you want",
+  "titleLabel": "Give a title to what you want*",
+  "descriptionLabel": "Describe in detail what you want*",
+  "priceLabel": "How much would you pay for what you want*",
+  "priceText": "Price: {{price}}",
+  "categoriesLabel": "Organize or define in 3 categories what you want*",
+  "locationLabel": "Provide an approximate location of where you want this*",
+  "photosLabel": "Upload up to 4 photos of what you want*",
+  "missingFieldsError": "Please complete all required fields:\n{{fields}}",
+  "createPostButton": "Create post"
+  },
+  "createOffer": {
+  "title": "Offer Title",
+  "description": "Offer Description"
+  },
+  "wantSomething": {
+  "title": "Post Title",
+  "description": "Post Description"
   },
   "postDetails": {
-    "makeAnOffer": "Make an offer",
-    "publishedIn": "Published in"
+  "makeAnOffer": "Make an Offer",
+  "publishedIn": "Published in"
   },
   "myPosts": {
-    "deletePostTitle": "Delete this post",
-    "deletePostConfirmation": "Are you sure?",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "yourPosts": "Your posts",
-    "edit": "Edit"
+  "deletePostTitle": "Delete this post",
+  "deletePostConfirmation": "Are you sure?",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "yourPosts": "Your posts",
+  "edit": "Edit"
   },
   "editProfile": {
-    "checkEditProfile": "Check & edit your profile",
-    "firstName": "First Name",
-    "lastName": "Last Name",
-    "phone": "Phone",
-    "birthdate": "Birthdate",
-    "changeProfilePhoto": "Change profile photo",
-    "invalidImageFileType": "The file must be a JPG, JPEG, or PNG image.",
-    "imageFileSizeExceeded": "The file size must be under 50 MB.",
-    "cancel": "Cancel",
-    "update": "Update",
-    "changePassword": "Change Password",
-    "deleteAccount": "Delete Account",
-    "deleteAccountConfirmation": "Are you sure you want to put your account on the delete queue? Your account will be deleted in 30 days.",
-    "deleteAccountError": "Error deleting account",
-    "updateUserError": "Error updating user",
-    "updateUserPhotoError": "Error updating user photo"
+  "checkEditProfile": "Verify and edit your profile",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "phone": "Phone",
+  "birthdate": "Birthdate",
+  "changeProfilePhoto": "Change profile photo",
+  "invalidImageFileType": "The file must be an image in JPG, JPEG, or PNG format.",
+  "imageFileSizeExceeded": "The file size must be less than 50 MB.",
+  "cancel": "Cancel",
+  "update": "Update",
+  "changePassword": "Change Password",
+  "deleteAccount": "Delete Account",
+  "deleteAccountConfirmation": "Are you sure you want to put your account in deletion queue? Your account will be deleted in 30 days.",
+  "deleteAccountError": "Error deleting the account",
+  "updateUserError": "Error updating the user",
+  "updateUserPhotoError": "Error updating the user's photo"
   },
   "sentOffers": {
-    "deleteOfferTitle": "Delete Offer",
-    "deleteOfferConfirmation": "Are you sure?",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "yourOffers": "Your Sent Offers",
-    "price": "Price",
-    "viewDetails": "View Details"
+  "deleteOfferTitle": "Delete offer",
+  "deleteOfferConfirmation": "Are you sure?",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "yourOffers": "Your sent offers",
+  "price": "Price",
+  "viewDetails": "View details"
   },
   "receivedOffers": {
-    "deleteOfferTitle": "Delete this offer",
-    "deleteOfferConfirmation": "Are you sure you want to delete this offer? This action is permanent.",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "yourOffers": "Your received offers",
-    "yourPosts": "Your posts",
-    "offers": "Offers",
-    "viewDetails": "View details"
+  "deleteOfferTitle": "Delete this offer",
+  "deleteOfferConfirmation": "Are you sure you want to delete this offer? This action is permanent.",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "yourOffers": "Your received offers",
+  "yourPosts": "Your posts",
+  "offers": "Offers",
+  "viewDetails": "View details"
+  },
+  "changePassword": {
+  "title": "Change Password",
+  "currentPasswordLabel": "Current Password",
+  "newPasswordLabel": "New Password",
+  "confirmNewPasswordLabel": "Confirm New Password",
+  "passwordsMismatch": "Passwords do not match",
+  "changePasswordButton": "Change my password",
+  "passwordChanged": "Password changed successfully",
+  "error": "Error: Could not change the password"
+  },
+  "languageSelector": {
+  "chooseLanguage": "Select language",
+  "selectLanguage": "Select language",
+  "languageSelectionDescription": "Choose the language you prefer for the Want interface. Please note that this selection will only affect the Want interface and not the language of user-generated content. Please note that this feature is still in development and translations and UI elements are still being reviewed to ensure accuracy and quality.",
+  "english": "English",
+  "spanish": "Spanish",
+  "french": "French"
+  },
+  "passwordRecovery": {
+  "title": "Password Recovery",
+  "emailLabel": "Your email",
+  "submitButton": "Send recovery request",
+  "emailSent": "An email has been sent to recover your account",
+  "emailError": "Error: Could not send the recovery email"
+  },
+  "postsLocation": {
+  "selectLocation": "Select location",
+  "searchLocation": "Search your location...",
+  "currentLocation": "Current location",
+  "allowLocationAccess": "Allow access to your location to view nearby posts. If you do not want to allow access to your location, enter the location where you want to view the posts.",
+  "selectRadius": "Select radius (km):",
+  "everywhere": "Everywhere BETA",
+  "useCurrentLocation": "Use my current location"
+  },
+  "reportOfferModal": {
+  "report": "Report",
+  "reportOffer": "Report this offer",
+  "describe": "Describe why you are reporting this offer",
+  "sendReport": "Send report"
+  },
+  "reportPostModal": {
+  "reportPost": "Report this post",
+  "describe": "Describe why you are reporting this post",
+  "sendReport": "Send report"
+  },
+  "verificationPage": {
+  "title": "Verification",
+  "enterVerificationCodeMessage": "Enter the verification code",
+  "verificationCodeLabel": "Verification code",
+  "verificationCodePlaceholder": "Enter the verification code",
+  "resendVerificationButton": "Resend verification code",
+  "verifyButton": "Verify",
+  "invalidTokenErrorMessage": "Error: Invalid verification token",
+  "incorrectCode": "Incorrect verification code",
+  "resendVerificationErrorMessage": "Error resending the verification code",
+  "verificationCodeResentMessage": "Verification code resent"
+  },
+  "logoutPage": {
+  "message": "Goodbye!"
+  },
+  "goBackButton": {
+  "homeButton": "Go to Home"
   },
   "login": {
-    "loginTitle": "Login",
-    "signupTitle": "Sign Up",
-    "emailLabel": "E-mail:",
-    "emailPlaceholder": "you@example.com",
-    "passwordLabel": "Password:",
-    "passwordPlaceholder": "your password",
-    "confirmPasswordLabel": "Confirm Password:",
-    "confirmPasswordPlaceholder": "confirm your password",
-    "firstNameLabel": "First name:",
-    "lastNameLabel": "Last name:",
-    "phoneLabel": "Phone number:",
-    "birthdateLabel": "Birthdate:",
-    "noAccountText": "Don't have an account?",
-    "haveAccountText": "Already have an account?",
-    "signupLink": "Sign up",
-    "loginLink": "Login",
-    "loginButton": "Login",
-    "signupButton": "Sign up",
-    "ageValidationMessage": "You must be at least 14 years old to create an account.",
-    "forgotPasswordLink": "I forgot my password, help",
-    "invalidCredentialsErrorMessage": "Invalid email or password."
+  "loginTitle": "Login",
+  "signupTitle": "Sign Up",
+  "emailLabel": "Email:",
+  "emailPlaceholder": "youremail@example.com",
+  "passwordLabel": "Password:",
+  "passwordPlaceholder": "your password",
+  "confirmPasswordLabel": "Confirm Password:",
+  "confirmPasswordPlaceholder": "confirm your password",
+  "firstNameLabel": "First Name:",
+  "lastNameLabel": "Last Name:",
+  "phoneLabel": "Phone Number:",
+  "birthdateLabel": "Birthdate:",
+  "noAccountText": "Don't have an account?",
+  "haveAccountText": "Already have an account?",
+  "signupLink": "Sign Up",
+  "loginLink": "Login",
+  "loginButton": "Login",
+  "signupButton": "Sign Up",
+  "ageValidationMessage": "You must be at least 14 years old to create an account.",
+  "forgotPasswordLink": "Forgot my password, help",
+  "invalidCredentialsErrorMessage": "Invalid email or password.",
+  "passwordValidationErrorMessage": "Passwords must have at least one uppercase letter, one number, and be 8 characters long.",
+  "passwordMatchErrorMessage": "Passwords do not match"
   },
   "footer": {
-    "wantTitle": "Want",
-    "aboutUs": "About us",
-    "data": "Data",
-    "contact": "Contact",
-    "subscriptionsTitle": "Subscriptions",
-    "wantPlus": "Want+",
-    "wantAI": "Want with AI",
-    "limitations": "Limitations",
-    "legalTitle": "Legal",
-    "privacy": "Privacy",
-    "termsAndConditions": "Terms and conditions",
-    "helpTitle": "Help",
-    "howToUseWant": "How to use Want",
-    "support": "Support",
-    "howTo": "How to...",
-    "allRightsReserved": "All rights reserved."
+  "wantTitle": "Want",
+  "aboutUs": "About Us",
+  "data": "Data",
+  "contact": "Contact",
+  "subscriptionsTitle": "Subscriptions",
+  "wantPlus": "Want+",
+  "wantAI": "Want with AI",
+  "limitations": "Limitations",
+  "legalTitle": "Legal",
+  "privacy": "Privacy",
+  "termsAndConditions": "Terms and Conditions",
+  "helpTitle": "Help",
+  "howToUseWant": "How to Use Want",
+  "support": "Support",
+  "howTo": "How to...",
+  "allRightsReserved": "All rights reserved."
   },
   "deleteOn": {
-    "deletionProcessTitle": "Your account is in the process of being deleted.",
-    "continueDeletionProcess": "Continue with my deletion process",
-    "cancelDeletionProcess": "Cancel my deletion process"
+  "deletionProcessTitle": "Your account is in the deletion process.",
+  "continueDeletionProcess": "Continue with the deletion process",
+  "cancelDeletionProcess": "Cancel the deletion process"
   },
   "isNotVerified": {
-    "title": "We're almost there",
-    "description": "You need to verify your account so we know it's you. We have sent an email with a link for you to verify your account.",
-    "homepageLink": "In the meantime, you can go back to the homepage"
+  "title": "We're almost there!",
+  "description": "You need to verify your account so we know it's you. We've sent an email with a link for you to verify your account.",
+  "homepageLink": "In the meantime, you can go back to the homepage"
   },
   "custom404": {
-    "title": "Ups, this page isn't for you",
-    "description": "Sorry, the page you are looking for does not exist.",
-    "homeLink": "Go home"
+  "title": "Oops, this page is not for you",
+  "description": "Sorry, the page you're looking for does not exist.",
+  "homeLink": "Go to homepage"
   },
   "blocked": {
-    "title": "You have been banned",
-    "description": "Your account has been blocked due to multiple reports.",
-    "contactSupport": "If you think this is a mistake, please contact support."
+  "title": "You have been blocked",
+  "description": "Your account has been blocked due to multiple reports.",
+  "contactSupport": "If you believe this is a mistake, please contact support."
   },
   "verifyEmail": {
-    "title": "Email Verification",
-    "successMessage": "You have been successfully verified. You can now post.",
-    "alreadyConfirmedMessage": "Your email has already been confirmed.",
-    "expiredLinkMessage": "Your validation link has expired. Please request another one.",
-    "errorMessage": "An error occurred while verifying your email.",
-    "resendSuccessMessage": "A new verification email has been sent. Please check your inbox.",
-    "resendErrorMessage": "An error occurred while resending the verification email.",
-    "emailPlaceholder": "Email",
-    "resendButton": "Request new verification link"
+  "title": "Email Verification",
+  "successMessage": "Your email has been successfully verified. You can now post.",
+  "alreadyConfirmedMessage": "Your email has already been confirmed.",
+  "expiredLinkMessage": "Your validation link has expired. Please request another link.",
+  "errorMessage": "An error occurred while verifying your email.",
+  "resendSuccessMessage": "A new verification email has been sent. Please check your inbox.",
+  "resendErrorMessage": "An error occurred while resending the verification email.",
+  "emailPlaceholder": "Email",
+  "resendButton": "Request new verification link"
+  },
+  "createOfferModal": {
+  "creatingOfferFor": "Creating an offer for ",
+  "paymentAmount": "Payment up to ",
+  "doYourBestOffer": "Do your best offer",
+  "offerTitle": "Offer Title*",
+  "offerDescription": "Describe your offer*",
+  "phoneContact": "If you want, include your WhatsApp number or phone number for direct contact",
+  "chooseCountryCode": "Select a country code",
+  "phoneNumber": "Phone Number",
+  "otherContact": "Is there any other way this person can contact you?",
+  "offerPrice": "Offer Price*",
+  "priceLabel": "Price: ",
+  "uploadPhotos": "Upload photos*",
+  "creating": "Creating...",
+  "createOffer": "Create offer"
   },
   "detailsModal": {
-    "offerForPost": "Offer for your post {{title}}",
-    "offerBy": "Offered by",
-    "otherWaysToContact": "Other ways to contact {{firstName}}: {{contact}}",
-    "closeButton": "Close"
+  "offerForPost": "Offer for your post {{title}}",
+  "offerBy": "Offered by",
+  "otherWaysToContact": "Other ways to contact {{firstName}}: {{contact}}",
+  "closeButton": "Close"
   },
   "resetPassword": {
-    "resetPasswordTitle": "Reset Password",
-    "newPasswordLabel": "New password",
-    "confirmNewPasswordLabel": "Confirm new password",
-    "resetPasswordButton": "Reset Password",
-    "passwordMismatch": "Passwords don't match",
-    "passwordResetSuccess": "Password successfully reset",
-    "passwordResetError": "Error: Unable to reset password"
+  "resetPasswordTitle": "Reset Password",
+  "newPasswordLabel": "New Password",
+  "confirmNewPasswordLabel": "Confirm New Password",
+  "resetPasswordButton": "Reset Password",
+  "passwordMismatch": "Passwords do not match",
+  "passwordResetSuccess": "Password reset successfully",
+  "passwordResetError": "Error: Could not reset the password"
   },
   "notifications": {
-    "title": "Notifications",
-    "empty": "Empty",
-    "markAllRead": "Mark all as read",
-    "markingRead": "Marking as read..."
+  "title": "Notifications",
+  "empty": "Empty",
+  "markAllRead": "Mark all as read",
+  "markingRead": "Marking as read..."
   },
   "categories": {
     "selectMainCategory":"1 | General Category",

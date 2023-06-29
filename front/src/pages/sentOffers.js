@@ -77,12 +77,12 @@ export default function SentOffers() {
         </Modal.Header>
         <Modal.Body>{t('sentOffers.deleteOfferConfirmation')}</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
+          <button onClick={() => setShowModal(false)}>
             {t('sentOffers.cancel')}
-          </Button>
-          <Button variant="danger" onClick={handleDeleteOffer}>
+          </button>
+          <button onClick={handleDeleteOffer}>
             {t('sentOffers.delete')}
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
       <div className="container">
@@ -91,7 +91,7 @@ export default function SentOffers() {
         <div className="row">
           {offers.map((offer) => (
             <div key={offer._id} className="col-12 col-md-6">
-              <div className="card post rounded-5 mb-4">
+              <div className="card post want-rounded mb-4">
                 <div>
                   <div className="card-body d-flex flex-column">
                     <div className="card-body d-flex flex-row align-items-center">
@@ -113,14 +113,14 @@ export default function SentOffers() {
                     </div>
                     <div className="card-buttons-container d-flex flex-column justify-content-end mt-auto">
                       <button
-                        className="btn want-button mb-2"
+                        className="want-button mb-2"
                         onClick={() => handleShowDetailsModal(offer)}
                       >
                         {t('sentOffers.viewDetails')}
                         <i className="bi bi-eye ms-2"></i>
                       </button>
                       <button
-                        className="btn btn-secondary mb-2"
+                        className="generic-button mb-2"
                         onClick={() => handleShowModal(offer._id)}
                       >
                         {t('sentOffers.delete')}

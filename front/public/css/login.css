@@ -9,29 +9,30 @@
     margin-bottom: 100px;
     width: 600px;
     max-width: 1000px;
+    padding: 0;
 }
 
 .btn-login{
-    background-color: #3bb305;
+    background-color: var(--color-primary);
     border:none;
     transition: 0.3s;
 }
 
 .btn-login:hover{
-    background-color: #3bb305;
+    background-color: var(--color-primary);
 }
 
 .user-link{
-    color: #3bb305;
+    color: var(--color-primary);
     transition: 0.1s;
 }
 .user-link:hover{
-    color: #198678;
+    color: var(--color-primary);
 }
 
 .user-link:active{
-    color: #3bb305;
-    box-shadow: 0 0 2px #3bb305;
+    color: var(--color-primary);
+    box-shadow: 0 0 2px var(--color-primary);
 }
 
 .rst-pwd{
@@ -41,6 +42,6 @@
 }
 
 .rst-pwd:hover{
-    color: #3bb305;
+    color: var(--color-primary);
     text-decoration: underline;
 }

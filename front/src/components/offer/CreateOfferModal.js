@@ -4,9 +4,11 @@ import WordsFilter from "@/badWordsFilter/WordsFilter";
 import { Button, Modal } from "react-bootstrap";
 import { validations } from "@/utils/validations";
 import countriesData from "../../data/countries.json";
+import { useTranslation } from "react-i18next";
 
 const CreateOfferModal = ({ postId, showModal, closeModal }) => {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [post, setPost] = useState(null);
   const [title, setTitle] = useState("");
@@ -33,15 +35,15 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
   };
 
   const handleCloseClick = () => {
-    closeModal(); // Llamar a la función closeModal para cerrar el modal
+    closeModal();
   };
 
   const handleShowModal = () => {
-    showModal(); // Llamar a la función showModal para abrir el modal
+    showModal();
   };
 
   const handleCloseModal = () => {
-    closeModal(); // Llamar a la función closeModal para cerrar el modal
+    closeModal();
   };
 
   const removePhoto = (index) => {
@@ -140,16 +142,14 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
     setIsSubmitting(true);
 
     if (bwf.containsBadWord(title)) {
-      alert(`You wrote a bad word in the title: ${bwf.devolverPalabra(title)}`);
+      alert(`${t("badWordTitle")}: ${bwf.devolverPalabra(title)}`);
       setIsSubmitting(false);
       return;
     }
 
     if (bwf.containsBadWord(description)) {
       alert(
-        `You wrote a bad word in the description: ${bwf.devolverPalabra(
-          description
-        )}`
+        `${t("badWordDescription")}: ${bwf.devolverPalabra(description)}`
       );
       setIsSubmitting(false);
       return;
@@ -185,10 +185,10 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
       );
 
       if (response.ok) {
-        alert("Offer created");
+        alert(t("offerCreated"));
         router.push(`/post/${postId}`);
       } else {
-        alert("There was an error, try again later or change the photos");
+        alert(t("createError"));
       }
     } catch (error) {
       console.error(error);
@@ -198,14 +198,14 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
   };
 
   if (!post) {
-    return <p className="container mt-5">Loading...</p>;
+    return <p className="container mt-5">{t("loading")}</p>;
   }
 
   return (
     <>
-      <Button variant="primary" onClick={handleShowModal}>
-        Create Offer
-      </Button>
+     <button className="want-button" onClick={handleShowModal}>
+        {t("createOfferModal.offerTitle")}
+      </button>
       <Modal
         show={showModal}
         onHide={handleCloseModal}
@@ -222,19 +222,19 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
               style={{ maxWidth: "100%", overflowWrap: "break-word" }}
             >
               <h2 className="mt-3 text-center">
-                Creating an offer for "{post.title}"
+                {t("createOfferModal.creatingOfferFor")} {post.title} 
               </h2>
 
               <h3 className="mt-3 text-center">
-                Payment of ${Number(post.price).toLocaleString()}
+                {t("createOfferModal.paymentAmount")} $ { Number(post.price).toLocaleString()} 
               </h3>
-              <h4 className="mt-3 text-center text-success">
-                Do your best offer
+              <h4 className="mt-3 text-center want-color">
+                {t("createOfferModal.doYourBestOffer")}
               </h4>
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label htmlFor="title" className="form-label">
-                    Offer title*
+                    {t("createOfferModal.offerTitle")}
                   </label>
                   <input
                     type="text"
@@ -247,7 +247,7 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
                 </div>
                 <div className="mb-3">
                   <label htmlFor="description" className="form-label">
-                    Describe your offer*
+                    {t("createOfferModal.offerDescription")}
                   </label>
                   <textarea
                     className="form-control"
@@ -259,7 +259,7 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
                 </div>
                 <div className="mb-3">
                   <label htmlFor="phone-country" className="form-label">
-                    If you want put your WhatsApp and phone for direct contact
+                    {t("createOfferModal.phoneContact")}
                   </label>
                   <div className="input-group">
                     <select
@@ -268,7 +268,7 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
                       value={selectedCountryCode}
                       onChange={handleCountryChange}
                     >
-                      <option value="">Choose a country code</option>
+                      <option value="">{t("createOfferModal.chooseCountryCode")}</option>
                       {countries.map((country) => (
                         <option key={country.id} value={country.phoneCode}>
                           {`${country.name} +${country.phoneCode}`}
@@ -278,7 +278,7 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
                     <input
                       type="text"
                       className="form-control no-spinners"
-                      placeholder="Phone number"
+                      placeholder={t("createOfferModal.phoneNumber")}
                       value={phoneNumber}
                       onChange={handlePhoneNumberChange}
                       onKeyPress={handleKeyPress}
@@ -287,7 +287,7 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
                 </div>
                 <div className="mb-3">
                   <label htmlFor="contact" className="form-label">
-                    Is there any other way this person can contact you?
+                    {t("createOfferModal.otherContact")}
                   </label>
                   <input
                     type="text"
@@ -299,7 +299,7 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
                 </div>
                 <div className="mb-3">
                   <label htmlFor="price" className="form-label">
-                    Price you offer*
+                    {t("createOfferModal.offerPrice")}
                   </label>
                   <input
                     type="text"
@@ -312,13 +312,13 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
                   />
                   {price ? (
                     <small className="form-text text-muted">
-                      Price: {Number(price).toLocaleString()}
+                      {t("createOfferModal.priceLabel", { price: Number(price).toLocaleString() })}
                     </small>
                   ) : null}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="photo" className="form-label">
-                    Upload photos*
+                    {t("createOfferModal.uploadPhotos")}
                   </label>
                   <div className="row row-cols-xl-2">
                     {[1, 2, 3, 4].map((index) => (
@@ -328,7 +328,7 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
                             <div className="photo-preview">
                               <img
                                 src={URL.createObjectURL(photos[index - 1])}
-                                className="img-thumbnail border-0 uploaded-photos rounded-5"
+                                className="img-thumbnail  uploaded-photos want-rounded"
                                 alt={`Photo ${index}`}
                               />
                             </div>
@@ -344,7 +344,7 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
                           )}
                           {photos[index - 1] && (
                             <button
-                              className="btn btn-light circle btn-sm delete-photo"
+                              className=" btn-light circle btn-sm delete-photo"
                               onClick={() => handleDeletePhoto(index - 1)}
                               type="button"
                             >
@@ -366,10 +366,10 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
                 <div className="mb-3">
                   <button
                     type="submit"
-                    className="btn want-button rounded-5"
+                    className="want-button want-rounded"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Creating..." : "Create Offer"}
+                    {isSubmitting ? t("createOfferModal.creating") : t("createOfferModal.createOffer")}
                   </button>
                 </div>
               </form>

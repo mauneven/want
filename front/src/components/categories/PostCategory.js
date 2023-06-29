@@ -14,9 +14,39 @@ export default function PostCategory({
   const { t } = useTranslation();
 
   const [selectedCategory, setSelectedCategory] = useState(initialMainCategory);
-  const [selectedSubcategory, setSelectedSubcategory] = useState(initialSubcategory);
-  const [selectedThirdCategory, setSelectedThirdCategory] = useState(initialThirdCategory);
+  const [selectedSubcategory, setSelectedSubcategory] =
+    useState(initialSubcategory);
+  const [selectedThirdCategory, setSelectedThirdCategory] =
+    useState(initialThirdCategory);
   const contentRef = useRef(null);
+  const [userPreferences, setUserPreferences] = useState(null);
+  const [userPreferencesLoaded, setUserPreferencesLoaded] = useState(false);
+  const [showLeftScroll, setShowLeftScroll] = useState(false);
+  const [showRightScroll, setShowRightScroll] = useState(false);
+
+  const getUserPreferences = async () => {
+    try {
+      if (userPreferencesLoaded) {
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/preferences`,
+        {
+          credentials: "include",
+        }
+      );
+      const data = await response.json();
+      setUserPreferences(data);
+      setUserPreferencesLoaded(true);
+    } catch (error) {
+      console.error("Error al obtener las preferencias de usuario:", error);
+    }
+  };
+
+  useEffect(() => {
+    getUserPreferences();
+  }, []);
 
   useEffect(() => {
     setSelectedCategory(initialMainCategory);
@@ -110,7 +140,11 @@ export default function PostCategory({
     return t(`categories.${categoryId}.subcategories.${subcategoryId}.name`);
   };
 
-  const getThirdCategoryTranslation = (categoryId, subcategoryId, thirdCategoryId) => {
+  const getThirdCategoryTranslation = (
+    categoryId,
+    subcategoryId,
+    thirdCategoryId
+  ) => {
     return t(
       `categories.${categoryId}.subcategories.${subcategoryId}.thirdCategories.${thirdCategoryId}.name`
     );
@@ -153,23 +187,61 @@ export default function PostCategory({
     return false;
   };
 
+  const handleButtonClick = (categoryId, subcategoryId, thirdCategoryId) => {
+    const container = contentRef.current;
+    const buttonId = `${categoryId}_${subcategoryId}_${thirdCategoryId}`;
+    const buttonElement = document.getElementById(buttonId);
+
+    if (buttonElement) {
+      buttonElement.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }
+  };
+
+  const handleScroll = () => {
+    const container = contentRef.current;
+    const scrollLeft = container.scrollLeft;
+    const scrollWidth = container.scrollWidth;
+    const clientWidth = container.clientWidth;
+
+    setShowLeftScroll(scrollLeft > 0);
+    setShowRightScroll(scrollLeft + clientWidth < scrollWidth);
+  };
+
+  useEffect(() => {
+    handleScroll();
+  }, [selectedCategory, selectedSubcategory, selectedThirdCategory]);
+
   return (
     <div className="d-flex">
-      <div className="col-auto align-items-center justify-content-center">
-        <i className="bi bi-caret-left " onClick={scrollLeft}></i>
+      <div className="col-auto d-flex align-items-center justify-content-center">
+        {showLeftScroll && (
+          <i className="bi bi-arrow-left fs-1" onClick={scrollLeft}></i>
+        )}
       </div>
       <div className="col" style={{ overflowX: "hidden" }}>
-        <div className="slider-container" ref={contentRef}>
+        <div className="slider-container" ref={contentRef} onScroll={handleScroll}>
           <div className="d-flex" style={{ whiteSpace: "nowrap" }}>
             {categoriesData.map((category) => (
               <button
                 key={category.id}
-                className={`btn rounded-5 border m-2 ${
-                  selectedCategory === category.id ? " want-button border-0" : ""
+                id={category.id}
+                className={`want-rounded  m-2 ${
+                  selectedCategory === category.id
+                    ? " want-button "
+                    : "generic-button"
                 }`}
-                onClick={() => handleCategoryChange(category.id)}
+                onClick={() => {
+                  handleButtonClick(category.id, "", "");
+                  handleCategoryChange(category.id);
+                }}
                 style={{
-                  display: isSubcategoryVisible(category) ? "inline-block" : "none",
+                  display: isSubcategoryVisible(category)
+                    ? "inline-block"
+                    : "none",
                 }}
               >
                 <div className="d-flex justify-content-center align-items-center">
@@ -195,17 +267,28 @@ export default function PostCategory({
                 .subcategories.map((subcategory) => (
                   <button
                     key={subcategory.id}
-                    className={`btn rounded-5 border m-2 ${
-                      selectedSubcategory === subcategory.id ? "want-button" : ""
+                    id={`${selectedCategory}_${subcategory.id}`}
+                    className={`want-rounded  m-2 ${
+                      selectedSubcategory === subcategory.id
+                        ? "want-button"
+                        : "generic-button"
                     }`}
-                    onClick={() => handleSubcategoryChange(subcategory.id)}
+                    onClick={() => {
+                      handleButtonClick(selectedCategory, subcategory.id, "");
+                      handleSubcategoryChange(subcategory.id);
+                    }}
                     style={{
-                      display: isThirdCategoryVisible(subcategory) ? "inline-block" : "none",
+                      display: isThirdCategoryVisible(subcategory)
+                        ? "inline-block"
+                        : "none",
                     }}
                   >
                     <div className="d-flex justify-content-center align-items-center">
                       <div>
-                        {getSubcategoryTranslation(selectedCategory, subcategory.id)}
+                        {getSubcategoryTranslation(
+                          selectedCategory,
+                          subcategory.id
+                        )}
                       </div>
                       <div
                         className={`${
@@ -225,16 +308,30 @@ export default function PostCategory({
             {selectedSubcategory &&
               categoriesData
                 .find((cat) => cat.id === selectedCategory)
-                .subcategories.find((subcat) => subcat.id === selectedSubcategory)
+                .subcategories.find(
+                  (subcat) => subcat.id === selectedSubcategory
+                )
                 .thirdCategories.map((thirdCategory) => (
                   <button
                     key={thirdCategory.id}
-                    className={`btn rounded-5 border m-2 ${
-                      selectedThirdCategory === thirdCategory.id ? "want-button" : ""
+                    id={`${selectedCategory}_${selectedSubcategory}_${thirdCategory.id}`}
+                    className={`want-rounded  m-2 ${
+                      selectedThirdCategory === thirdCategory.id
+                        ? "want-button"
+                        : "generic-button"
                     }`}
-                    onClick={() => handleThirdCategoryChange(thirdCategory.id)}
+                    onClick={() => {
+                      handleThirdCategoryChange(thirdCategory.id);
+                      handleButtonClick(
+                        selectedCategory,
+                        selectedSubcategory,
+                        thirdCategory.id
+                      );
+                    }}
                     style={{
-                      display: isThirdCategoryButtonVisible(thirdCategory) ? "inline-block" : "none",
+                      display: isThirdCategoryButtonVisible(thirdCategory)
+                        ? "inline-block"
+                        : "none",
                     }}
                   >
                     <div className="d-flex justify-content-center align-items-center">
@@ -262,8 +359,10 @@ export default function PostCategory({
           </div>
         </div>
       </div>
-      <div className="col-auto">
-        <i className="bi bi-caret-right" onClick={scrollRight}></i>
+      <div className="col-auto d-flex justify-content-center align-items-center">
+        {showRightScroll && (
+          <i className="bi bi-arrow-right fs-1" onClick={scrollRight}></i>
+        )}
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ const MobileMenu = () => {
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
   const router = useRouter();
+  const [user, setUser] = useState(null);
 
   const handleScroll = () => {
     const currentScrollPos = window.pageYOffset;
@@ -16,6 +17,32 @@ const MobileMenu = () => {
     setVisible(isScrolledDown || currentScrollPos === 0);
     setPrevScrollPos(currentScrollPos);
   };
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.user || null);
+        } else if (response.status === 401) {
+          setUser(null);
+          console.log("no logged");
+        }
+      } catch (error) {
+        console.error("Error al verificar la sesión:", error);
+      }
+    };
+
+    checkSession();
+  }, [router.pathname]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -29,70 +56,141 @@ const MobileMenu = () => {
     router.push(path);
   };
 
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.user || null);
+        } else if (response.status === 401) {
+          setUser(null);
+          console.log("no logged");
+        }
+      } catch (error) {
+        console.error("Error al verificar la sesión:", error);
+      }
+    };
+
+    checkSession();
+  }, [router.pathname]);
+
   return (
     <Navbar
-      bg="light"
-      variant="light"
       fixed="bottom"
-      className={visible ? "navbar-visible p-0 animate__animated animate__slideInUp" : "navbar-hidden p-0 animate__slideOutDown"}
+      className={
+        visible
+          ? "navbar-visible p-0 animate__animated animate__slideInUp"
+          : "navbar-hidden p-0"
+      }
     >
-      <div className="container-fluid w-100 border p-0">
+      <div className="container-fluid w-100  p-0">
         <div className="d-flex justify-content-center w-100">
           <div
             className="text-center divhover align-items-center m-1"
             onClick={() => handleNavItemClick("/")}
           >
-            <a href="#" className="justify-content-center align-items-center">
+            <a className="justify-content-center align-items-center">
               <i className="bi bi-house-fill"></i>
             </a>
             <div>
               <p className="mobile-menu-text">{t("navbar.home")}</p>
             </div>
           </div>
-          <div
-            className="text-center divhover  align-items-center m-1"
-            onClick={() => handleNavItemClick("/myPosts")}
-          >
-            <a href="#" className="justify-content-center align-items-center">
-              <i className="bi bi-stickies-fill"></i>
-            </a>
-            <div>
-              <p className="mobile-menu-text">{t("navbar.myPosts")}</p>
-            </div>
-          </div>
-          <div
-            className="text-center divhover  align-items-center m-1 justify-content-center"
-            onClick={() => handleNavItemClick("/createPost")}
-          >
-            <a href="#" className="justify-content-center align-items-center">
-            <i className="bi bi-plus-circle-fill"></i>
-            </a>
-            <div>
-              <p className="mobile-menu-text">{t("navbar.createPost")}</p>
-            </div>
-          </div>
-          <div
-            className="text-center divhover  align-items-center m-1"
-            onClick={() => handleNavItemClick("/sentOffers")}
-          >
-            <a href="#" className="justify-content-center align-items-center">
-              <i className="bi bi-send-check-fill"></i>
-            </a>
-            <div>
-              <p className="mobile-menu-text">{t("navbar.sentOffers")}</p>
-            </div>
-          </div>
-          <div
-            className="text-center divhover  align-items-center m-1"
-            onClick={() => handleNavItemClick("/editProfile")}
-          >
-            <a href="#" className="justify-content-center align-items-center">
-              <i className="bi bi-person-lines-fill success"></i>
-            </a>
-            <div>
-              <p className="mobile-menu-text">{t("navbar.myProfile")}</p>
-            </div>
-          </div>
+          {user ? (
+            <>
+              <div
+                className="text-center divhover  align-items-center m-1"
+                onClick={() => handleNavItemClick("/myPosts")}
+              >
+                <a
+                  className="justify-content-center align-items-center"
+                >
+                  <i className="bi bi-stickies-fill"></i>
+                </a>
+                <div>
+                  <p className="mobile-menu-text">{t("navbar.myPosts")}</p>
+                </div>
+              </div>
+              <div
+                className="text-center divhover  align-items-center m-1 justify-content-center"
+                onClick={() => handleNavItemClick("/createPost")}
+              >
+                <a
+                  className="justify-content-center align-items-center"
+                >
+                  <i className="bi bi-plus-circle-fill"></i>
+                </a>
+                <div>
+                  <p className="mobile-menu-text">{t("navbar.wantSomething")}</p>
+                </div>
+              </div>
+              <div
+                className="text-center divhover align-items-center m-1"
+                onClick={() => handleNavItemClick("/receivedOffers")}
+              >
+                <a
+                  className="justify-content-center align-items-center"
+                >
+                  <i className="bi bi-box-seam-fill"></i>
+                </a>
+                <div>
+                  <p className="mobile-menu-text">
+                    {t("navbar.receivedOffers")}
+                  </p>
+                </div>
+              </div>
+              <div
+                className="text-center divhover  align-items-center m-1"
+                onClick={() => handleNavItemClick("/sentOffers")}
+              >
+                <a
+                  className="justify-content-center align-items-center"
+                >
+                  <i className="bi bi-send-check-fill"></i>
+                </a>
+                <div>
+                  <p className="mobile-menu-text">{t("navbar.sentOffers")}</p>
+                </div>
+              </div>
+              <div
+                className="text-center divhover  align-items-center m-1"
+                onClick={() => handleNavItemClick("/editProfile")}
+              >
+                <a
+                  className="justify-content-center align-items-center"
+                >
+                  <i className="bi bi-person-lines-fill success"></i>
+                </a>
+                <div>
+                  <p className="mobile-menu-text">{t("navbar.myProfile")}</p>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div
+                className="text-center divhover  align-items-center m-1"
+                onClick={() => handleNavItemClick("/login")}
+              >
+                <a
+                  className="justify-content-center align-items-center"
+                >
+                  <i className="bi bi-person-lines-fill success"></i>
+                </a>
+                <div>
+                  <p className="mobile-menu-text">{t("navbar.login")}</p>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </Navbar>

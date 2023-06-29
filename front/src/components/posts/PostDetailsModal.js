@@ -175,7 +175,6 @@ const PostDetailsModal = ({
   };
 
   const openUserModal = (user) => {
-    closeModal(); // Cerrar el modal de detalles
     setSelectedUser(user);
     setShowUserModal(true);
   };
@@ -334,16 +333,16 @@ const PostDetailsModal = ({
                   )}
                   <h2>{post.title}</h2>
                   <div>
-                    <span className="text-success fs-1">
+                    <span className="want-color fs-1">
                       ${" "}
                       {post.price
                         .toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                     </span>
                   </div>
-                  <div className="d-flex">
+                  <div className="grid">
                     <button
-                      className="btn rounded-5 border col-4"
+                      className="generic-button"
                       onClick={() =>
                         handleCategoryClick(post.mainCategory, null, null)
                       }
@@ -351,7 +350,7 @@ const PostDetailsModal = ({
                       {t(`categories.${post.mainCategory}.name`)}
                     </button>
                     <button
-                      className="btn rounded-5 border col-4"
+                      className="generic-button ms-2"
                       onClick={() =>
                         handleCategoryClick(
                           post.mainCategory,
@@ -365,7 +364,7 @@ const PostDetailsModal = ({
                       )}
                     </button>
                     <button
-                      className="btn rounded-5 border col-4"
+                      className="generic-button me-2 mt-2 ms-2"
                       onClick={() =>
                         handleCategoryClick(
                           post.mainCategory,
@@ -407,9 +406,9 @@ const PostDetailsModal = ({
                         : ""}
                     </p>
                   </div>
-                  <div className="mt-3">
+                  <div className="">
                     <button
-                      className="btn rounded-5 btn-offer"
+                      className="want-button mt-2 me-3"
                       onClick={handleMakeOfferClick}
                     >
                       {t("postDetails.makeAnOffer")}

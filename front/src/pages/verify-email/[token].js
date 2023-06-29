@@ -57,14 +57,14 @@ const VerifyEmail = () => {
         verificationMessage === t('verifyEmail.errorMessage')) && (
           <form onSubmit={handleResendVerification}>
             <input
-            className='rounded-5 form-control'
+            className='want-rounded form-control'
               type="email"
               placeholder={t('verifyEmail.emailPlaceholder')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <button className='btn want-button rounded-5 mt-2' type="submit">{t('verifyEmail.resendButton')}</button>
+            <button className='want-button want-rounded mt-2' type="submit">{t('verifyEmail.resendButton')}</button>
           </form>
         )}
     </div>

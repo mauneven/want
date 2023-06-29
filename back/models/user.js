@@ -69,8 +69,8 @@ const userSchema = new mongoose.Schema({
       ref: 'Report'
     }
   ],
-  verificationTokenExpires: Date,
-  verificationToken: String,
+  verificationCode: String,
+  verificationCodeExpires: Date,
   resetPasswordToken: String,
   resetPasswordExpires: Date
 });

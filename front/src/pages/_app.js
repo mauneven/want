@@ -18,6 +18,7 @@ import "../../public/css/notifications.css";
 import "../../public/css/postById.css";
 import "../../public/css/receivedOffers.css";
 import "../../public/css/footer.css";
+import "../../public/css/post-category.css"
 import MobileMenu from "@/components/navigation/MobileMenu";
 
 export default function MyApp({ Component, pageProps }) {
@@ -52,6 +53,18 @@ export default function MyApp({ Component, pageProps }) {
   useEffect(() => {
     setIsMobile(isMobileDevice());
     setHasMounted(true); // indicamos que la aplicación se ha montado
+  }, []);
+
+  
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 1000);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1000);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   useEffect(() => {
@@ -98,7 +111,10 @@ export default function MyApp({ Component, pageProps }) {
 
         <footer>
           <div className="want-container">
-            <MobileMenu/>
+            {isMobile? (
+              <MobileMenu/>
+            ) : <Footer/>}
+            
           </div>
         </footer>
       </div>

@@ -150,12 +150,12 @@ export default function ReceivedOffers() {
         </Modal.Header>
         <Modal.Body>{t('receivedOffers.deleteOfferConfirmation')}</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
+          <button onClick={() => setShowModal(false)}>
             {t('receivedOffers.cancel')}
-          </Button>
-          <Button variant="danger" onClick={handleDeleteOffer}>
+          </button>
+          <button onClick={handleDeleteOffer}>
             {t('receivedOffers.delete')}
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
       <div className="container">
@@ -167,7 +167,7 @@ export default function ReceivedOffers() {
             {Object.values(offers).map((postWithOffers) => (
               <button
                 key={postWithOffers.post._id}
-                className={`list-group-item-action mt-3 mb-3 btn ${selectedPost === postWithOffers.post._id ? "post-received-selected" : "post-received"}`}
+                className={`list-group-item-action mt-3 mb-3 ${selectedPost === postWithOffers.post._id ? "post-received-selected" : "post-received"}`}
                 onClick={() => handlePostSelect(postWithOffers.post._id)}
               >
                 <h5 className=''>{postWithOffers.post.title.substring(0, 30)}</h5>
@@ -177,7 +177,7 @@ export default function ReceivedOffers() {
           <div className="col-md-1 d-none d-md-block">
             <div className="separator h-100"></div>
           </div>
-          <div className="col-md-8 border-secondary">
+          <div className="col-md-8 -secondary">
             <h3 className='mb-4'>{t('receivedOffers.offers')}</h3>
             <div className="row">
               {selectedPost && offers[selectedPost].offers
@@ -185,7 +185,7 @@ export default function ReceivedOffers() {
                 .sort(compareOffersByDate)
                 .map((offer) => (
                   <div key={offer._id} className="col-12 col-md-6">
-                    <div className="card post rounded-5 mb-4">
+                    <div className="card post want-rounded mb-4">
                       <div>
                         <div className="card-body d-flex flex-column">
                           <div className="card-body d-flex flex-row align-items-center">
@@ -200,7 +200,7 @@ export default function ReceivedOffers() {
                             <div className="d-flex flex-column flex-grow-1">
                               <div>
                                 <h4 className="card-title">{offer.title}</h4>
-                                <span className="text-success h5">
+                                <span className="want-color h5">
                                   $ {offer.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                 </span>
                                 <p className="card-text">{offer.description}</p>
@@ -209,13 +209,13 @@ export default function ReceivedOffers() {
                           </div>
                           <div className="card-buttons-container d-flex flex-column justify-content-end mt-auto">
                             <button
-                              className="btn want-button mb-2"
+                              className="want-button mb-2"
                               onClick={() => handleShowDetailsModal(offer)}
                             >
                               {t('receivedOffers.viewDetails')} <i className="bi bi-eye ms-2"></i>
                             </button>
                             <button
-                              className="btn btn-secondary mb-2"
+                              className="generic-button mb-2"
                               onClick={() => handleShowModal(offer._id)}
                             >
                               {t('receivedOffers.delete')} <i className="bi bi-trash3 ms-2"></i>

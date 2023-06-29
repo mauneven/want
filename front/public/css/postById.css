@@ -32,8 +32,8 @@
 }
 
 .btn-offer {
-  background-color: #3bb305;
-  color: white;
+  background-color: var(--color-primary-background);
+  color: var(--color-primary);
   border: none;
   background-size: cover;
 }

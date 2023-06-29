@@ -233,7 +233,7 @@ const EditPost = () => {
               </label>
               <input
                 type="text"
-                className="form-control rounded-5"
+                className="form-control want-rounded"
                 id="title"
                 value={title}
                 onChange={handleTitleChange}
@@ -245,7 +245,7 @@ const EditPost = () => {
                 Now describe it in more detail*
               </label>
               <textarea
-                className="form-control rounded-5"
+                className="form-control want-rounded"
                 id="description"
                 value={description}
                 onChange={handleDescriptionChange}
@@ -259,7 +259,7 @@ const EditPost = () => {
               </label>
               <input
                 type="number"
-                className="form-control rounded-5"
+                className="form-control want-rounded"
                 id="price"
                 value={price}
                 onChange={handlePriceChange}
@@ -313,7 +313,7 @@ const EditPost = () => {
                       <div className="photo-preview">
                         <img
                           src={photos[index - 1].preview}
-                          className="img-thumbnail border-0 uploaded-photos rounded-5"
+                          className="img-thumbnail  uploaded-photos want-rounded"
                           alt={`Photo ${index}`}
                         />
                       </div>
@@ -333,7 +333,7 @@ const EditPost = () => {
                     )}
                     {photos[index - 1] && (
                       <button
-                        className="btn btn-light circle btn-sm delete-photo"
+                        className="btn-light circle btn-sm delete-photo"
                         onClick={() => handleDeletePhoto(index - 1)}
                         type="button"
                       >
@@ -347,7 +347,7 @@ const EditPost = () => {
             {error && <div className="alert alert-danger">{error}</div>}
             <button
               type="submit"
-              className="btn btn-lg want-button rounded-5"
+              className="btn-lg want-button want-rounded"
               disabled={loading}
             >
               {loading ? (

@@ -1,22 +1,34 @@
 {
   "navbar": {
     "home": "Inicio",
-    "createPost": "Crear Publicación",
+    "wantSomething": "Crear Publicación",
     "selectCategory": "Selecciona una categoría",
     "searchPlaceholder": "La gente quiere...",
-    "myPosts": "Mis Publicaciones",
-    "sentOffers": "Ofertas Enviadas",
-    "receivedOffers": "Ofertas Recibidas",
-    "myProfile": "Mi Perfil",
+    "myPosts": "Posts",
+    "sentOffers": "Enviadas",
+    "receivedOffers": "Recibidas",
+    "myProfile": "Perfil",
     "logout": "Cerrar sesión",
     "login": "Iniciar sesión",
     "menu": "Menú"
+  },
+  "createPost": {
+    "title": "Crea una publicación sobre lo que quieres",
+    "titleLabel": "Asigna un título a lo que quieres*",
+    "descriptionLabel": "Describe en detalle lo que quieres*",
+    "priceLabel": "¿Cuánto pagarías por lo que quieres*",
+    "priceText": "Precio: {{price}}",
+    "categoriesLabel": "Organiza o define en 3 categorías lo que quieres*",
+    "locationLabel": "Proporciona una ubicación aproximada de donde quieres esto*",
+    "photosLabel": "Sube hasta 4 fotos de lo que quieres*",
+    "missingFieldsError": "Por favor completa todos los campos obligatorios:\n{{fields}}",
+    "createPostButton": "Crear post"
   },
   "createOffer": {
     "title": "Título de la oferta",
     "description": "Descripción de la oferta"
   },
-  "createPost": {
+  "wantSomething": {
     "title": "Título de la publicación",
     "description": "Descripción de la publicación"
   },
@@ -69,9 +81,72 @@
     "offers": "Ofertas",
     "viewDetails": "Ver detalles"
   },
+  "changePassword": {
+    "title": "Cambiar Contraseña",
+    "currentPasswordLabel": "Contraseña Anterior",
+    "newPasswordLabel": "Nueva Contraseña",
+    "confirmNewPasswordLabel": "Confirmar Nueva Contraseña",
+    "passwordsMismatch": "Las contraseñas no coinciden",
+    "changePasswordButton": "Cambiar mi contraseña",
+    "passwordChanged": "Contraseña cambiada exitosamente",
+    "error": "Error: No se pudo cambiar la contraseña"
+  },
+  "languageSelector": {
+    "chooseLanguage": "Seleccionar idioma",
+    "selectLanguage": "Seleccionar idioma",
+    "languageSelectionDescription": "Elige el idioma que prefieras para la interfaz de Want. Ten en cuenta que esta selección solo afectará a la interfaz de Want y no al idioma del contenido generado por los usuarios. Por favor, ten en cuenta que esta función aún está en desarrollo y las traducciones y elementos de la interfaz de usuario aún están siendo revisados para garantizar precisión y calidad.",
+    "english": "Inglés",
+    "spanish": "Español",
+    "french": "Francés"
+  },
+  "passwordRecovery": {
+    "title": "Recuperación de contraseña",
+    "emailLabel": "Tu correo electrónico",
+    "submitButton": "Enviar solicitud de recuperación",
+    "emailSent": "Se ha enviado un correo electrónico para recuperar tu cuenta",
+    "emailError": "Error: No se pudo enviar el correo electrónico de recuperación"
+  },
+  "postsLocation": {
+    "selectLocation": "Seleccionar ubicación",
+    "searchLocation": "Buscar tu ubicación...",
+    "currentLocation": "Ubicación actual",
+    "allowLocationAccess": "Permite el acceso a tu ubicación para ver publicaciones cercanas. Si no deseas permitir el acceso a tu ubicación, ingresa la ubicación donde deseas ver las publicaciones.",
+    "selectRadius": "Seleccionar radio (km):",
+    "everywhere": "En todas partes *BETA*",
+    "useCurrentLocation": "Usar mi ubicación actual"
+  },
+  "reportOfferModal": {
+    "report": "Reportar",
+    "reportOffer": "Reportar esta oferta",
+    "describe": "Describe por qué estás reportando esta oferta",
+    "sendReport": "Enviar reporte"
+  },
+  "reportPostModal": {
+    "reportPost": "Reportar esta publicación",
+    "describe": "Describe por qué estás reportando esta publicación",
+    "sendReport": "Enviar reporte"
+  },
+  "verificationPage": {
+    "title": "Verificación",
+    "enterVerificationCodeMessage": "Ingrese el código de verificación",
+    "verificationCodeLabel": "Código de verificación",
+    "verificationCodePlaceholder": "Ingrese el código de verificación",
+    "resendVerificationButton": "Reenviar código de verificación",
+    "verifyButton": "Verificar",
+    "invalidTokenErrorMessage": "Error: Token de verificación inválido",
+    "incorrectCode": "Código de verificación incorrecto",
+    "resendVerificationErrorMessage": "Error al reenviar el código de verificación",
+    "verificationCodeResentMessage": "Código de verificación reenviado"
+  },
+  "logoutPage": {
+    "message": "¡Hasta pronto!"
+  },
+  "goBackButton": {
+    "homeButton": "Ir al Inicio"
+  },
   "login": {
     "loginTitle": "Iniciar sesión",
-    "signupTitle": "Registrarse",
+    "signupTitle": "Registrate",
     "emailLabel": "Correo electrónico:",
     "emailPlaceholder": "tucorreo@example.com",
     "passwordLabel": "Contraseña:",
@@ -84,13 +159,15 @@
     "birthdateLabel": "Fecha de nacimiento:",
     "noAccountText": "¿No tienes una cuenta?",
     "haveAccountText": "¿Ya tienes una cuenta?",
-    "signupLink": "Registrarse",
+    "signupLink": "Registrate",
     "loginLink": "Iniciar sesión",
     "loginButton": "Iniciar sesión",
-    "signupButton": "Registrarse",
+    "signupButton": "Registrate",
     "ageValidationMessage": "Debes tener al menos 14 años de edad para crear una cuenta.",
     "forgotPasswordLink": "Olvidé mi contraseña, ayuda",
-    "invalidCredentialsErrorMessage": "Correo electrónico o contraseña inválidos."
+    "invalidCredentialsErrorMessage": "Correo electrónico o contraseña inválidos.",
+    "passwordValidationErrorMessage": "Las contraseñas deben tener almenos una mayúscula, un número y ser de 8 carácteres",
+    "passwordMatchErrorMessage": "Las contraseñas no coinciden"
   },
   "footer": {
     "wantTitle": "Want",
@@ -140,6 +217,22 @@
     "resendErrorMessage": "Se produjo un error al reenviar el correo electrónico de verificación.",
     "emailPlaceholder": "Correo electrónico",
     "resendButton": "Solicitar nuevo enlace de verificación"
+  },
+  "createOfferModal": {
+    "creatingOfferFor": "Creando una oferta para ",
+    "paymentAmount": "Pago de hasta ",
+    "doYourBestOffer": "Haz tu mejor oferta",
+    "offerTitle": "Título de la oferta*",
+    "offerDescription": "Describe tu oferta*",
+    "phoneContact": "Si quieres, incluye tu número de WhatsApp o teléfono para contacto directo",
+    "chooseCountryCode": "Selecciona un código de país",
+    "phoneNumber": "Número de teléfono",
+    "otherContact": "¿Hay alguna otra forma en que esta persona pueda contactarte?",
+    "offerPrice": "Precio de la oferta*",
+    "priceLabel": "Precio: ",
+    "uploadPhotos": "Sube fotos*",
+    "creating": "Creando...",
+    "createOffer": "Crear oferta"
   },
   "detailsModal": {
     "offerForPost": "Oferta para tu publicación {{title}}",

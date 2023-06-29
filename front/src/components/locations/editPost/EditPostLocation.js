@@ -89,14 +89,14 @@ const EditPostLocation = ({ latitude, longitude, onLatitudeChange, onLongitudeCh
             type="text"
             placeholder="Busca tu ciudad aquí..."
             value={searchQuery}
-            className='rounded-5'
+            className='want-rounded'
             onChange={handleSearchChange}
             onKeyDown={handleKeyDown}
           />
         </Form.Group>
       </Form>
       {searchResults.length > 0 && (
-        <div className='mt-2 border rounded-5 results-map'>
+        <div className='mt-2  want-rounded results-map'>
           <ul className='p-3'>
             {searchResults.map((result, index) => (
               <li className='divhover dropdown-item' key={index} onClick={() => handleSearchSelect(result)}>
@@ -130,7 +130,7 @@ const EditPostLocation = ({ latitude, longitude, onLatitudeChange, onLongitudeCh
                 icon={new Icon({ iconUrl: '/icons/pin-location-icon.svg', iconSize: [32, 32], iconAnchor: [16, 32] })}
               >
                 <Popup>
-                  Ubicación actual: {latitude}, {longitude}
+                  {latitude}, {longitude}
                 </Popup>
               </Marker>
             </MapContainer>

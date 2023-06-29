@@ -61,12 +61,12 @@ export default function MyPosts() {
         </Modal.Header>
         <Modal.Body>{t('myPosts.deletePostConfirmation')}</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
+          <button onClick={() => setShowModal(false)}>
             {t('myPosts.cancel')}
-          </Button>
-          <Button variant="danger" onClick={handleDeletePost}>
+          </button>
+          <button onClick={handleDeletePost}>
             {t('myPosts.delete')}
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
       <div className="container">
@@ -77,12 +77,12 @@ export default function MyPosts() {
           const userReputation = 5 - 0.3 * post.createdBy.reports.length;
           let photoIndex = 0;
           return (
-            <div key={post._id} className="col post-card rounded-5">
-              <div className="card rounded-5 divhover">
+            <div key={post._id} className="col post-card want-rounded">
+              <div className="card want-rounded divhover">
                 {post.photos && post.photos.length > 0 && (
                   <div
                     id={`carousel-${post._id}`}
-                    className="carousel slide rounded-5 me-2 ms-2 mt-3 img-post"
+                    className="carousel slide want-rounded me-2 ms-2 mt-3 img-post"
                     data-bs-ride="carousel"
                     style={{ height: "200px", overflow: "hidden" }}
                   >
@@ -179,7 +179,7 @@ export default function MyPosts() {
                   </div>
                   <div className="m-4 text-center">
                   <button
-                    className="btn btn-outline-danger btn-sm"
+                    className="btn-outline-danger btn-sm"
                     onClick={() => {
                       setSelectedPostId(post._id);
                       setShowModal(true);
@@ -188,7 +188,7 @@ export default function MyPosts() {
                     <i className="bi bi-trash-fill"></i>{t('myPosts.delete')}
                   </button>
                   <Link href={`/editPost/${post._id}`}>
-                    <button className="ms-2 text-decoration-none btn btn-outline-success btn-sm">
+                    <button className="ms-2 text-decoration-none btn-outline-success btn-sm">
                       <i className="bi bi-pencil-fill"></i>{t('myPosts.edit')}
                     </button>
                   </Link>

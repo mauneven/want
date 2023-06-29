@@ -3,8 +3,10 @@ import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 
 import { Form, Modal, Button } from 'react-bootstrap';
 import { Icon } from 'leaflet';
+import { useTranslation } from 'react-i18next';
 
 const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) => {
+  const { t } = useTranslation();
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -12,7 +14,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
   const [searchResults, setSearchResults] = useState([]);
   const [locationDetected, setLocationDetected] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [radius, setRadius] = useState(5); // Valor predeterminado de radio: 5 km
+  const [radius, setRadius] = useState(15); // Valor predeterminado de radio: 5 km
   const radiusOptions = [1, 2, 5, 10, 20, 30, 50, 80, 100, 10000000000]; // Opciones de radio en km
   const [locationName, setLocationName] = useState(null); // Nombre de la ubicación
   const [zoomLevel, setZoomLevel] = useState(13); // Nivel de zoom predeterminado: 13
@@ -59,7 +61,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
           fetchLocationName(lat, lng);
         },
         (error) => {
-          console.log('esperando datos de openstreetmap')
+          console.log('esperando datos de openstreetmap');
         }
       );
     } else {
@@ -85,7 +87,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
       const data = await response.json();
       setSearchResults(data.map((result) => result.display_name));
     } catch (error) {
-      console.log('esperando datos de openstreetmap')
+      console.log('esperando datos de openstreetmap');
     }
   };
 
@@ -99,7 +101,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
       setLocationName(cityName);
       localStorage.setItem('locationName', cityName);
     } catch (error) {
-      console.log('esperando datos de openstreetmap')
+      console.log('esperando datos de openstreetmap');
     }
   };
 
@@ -132,7 +134,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
         fetchLocationName(parseFloat(lat), parseFloat(lon));
       }
     } catch (error) {
-      console.log('esperando datos de openstreetmap')
+      console.log('esperando datos de openstreetmap');
     }
   };
 
@@ -143,7 +145,9 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
           try {
-            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
+            );
             const data = await response.json();
             const { city } = data.address;
             setLatitude(lat);
@@ -184,6 +188,8 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
     } else if (selectedRadius === 5) {
       zoomLevel = 12;
     } else if (selectedRadius === 10) {
+      zoomLevel = 11;
+    } else if (selectedRadius === 15) {
       zoomLevel = 11;
     } else if (selectedRadius === 20) {
       zoomLevel = 10;
@@ -251,7 +257,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
         setLocationName(cityName);
         localStorage.setItem('locationName', cityName);
       } catch (error) {
-        console.log('esperando datos de openstreetmap')
+        console.log('esperando datos de openstreetmap');
       }
     };
 
@@ -276,29 +282,30 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
 
   return (
     <>
-      <button onClick={openModal} className="ms-2 btn text-success rounded-5 border-0">
-      <i className="bi bi-geo-alt-fill"></i>{locationName ? `${locationName} · ${radius} km` : 'Select a location to see posts'}
+      <button onClick={openModal} className="want-button">
+        <i className="bi bi-geo-alt-fill"></i>
+        {locationName ? `${locationName} · ${radius} km` : t('postsLocation.selectLocation')}
       </button>
 
       <Modal show={showModal} onHide={closeModal} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>Select Location</Modal.Title>
+          <Modal.Title>{t('postsLocation.selectLocation')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group controlId="searchForm">
               <Form.Control
                 type="text"
-                placeholder="Search for your location..."
+                placeholder={t('postsLocation.searchLocation')}
                 value={searchQuery}
-                className="rounded-5"
+                className="want-rounded"
                 onChange={handleSearchChange}
                 onKeyDown={handleKeyDown}
               />
             </Form.Group>
           </Form>
           {searchResults.length > 0 && (
-            <div className="mt-2 border rounded-5 results-map">
+            <div className="mt-2  want-rounded results-map">
               <ul className="p-3" style={{ maxHeight: '300px', overflowY: 'auto' }}>
                 {searchResults.map((result, index) => (
                   <li
@@ -341,13 +348,18 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
                     }
                   >
                     <Popup>
-                      Current Location: {latitude}, {longitude}
+                      {t('postsLocation.currentLocation')}: {latitude}, {longitude}
                     </Popup>
                   </Marker>
                   {radius > 0 && (
                     <Circle
                       center={[latitude, longitude]}
-                      pathOptions={{ color: 'blue', fillColor: '#blue', fillOpacity: 0.2 }}
+                      pathOptions={{
+                        color: '#0d6ffc',
+                        fillColor: '#blue',
+                        fillOpacity: 0.07,
+                        fillColor: '#0d6ffc',
+                      }}
                       radius={radius * 1000} // Convert km to meters
                     />
                   )}
@@ -355,34 +367,31 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
               </div>
             ) : (
               <div>
-                <p className="text-success p-2">
-                  Allow Want access to your location to find the posts near you. If you don't want to allow access to your location, enter the location where you Want to see the posts.
-                </p>
+                <p className="want-color p-2">{t('postsLocation.allowLocationAccess')}</p>
               </div>
             )}
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Form.Label>Select Radius (km):</Form.Label>
+          <Form.Label>{t('postsLocation.selectRadius')}</Form.Label>
           <Form>
             <Form.Group controlId="radiusSelect">
               <Form.Control as="select" value={radius} onChange={handleRadiusChange}>
-                <option value={1}>1 km</option>
-                <option value={2}>2 km</option>
                 <option value={5}>5 km</option>
                 <option value={10}>10 km</option>
+                <option value={15}>15 km</option>
                 <option value={20}>20 km</option>
                 <option value={30}>30 km</option>
                 <option value={50}>50 km</option>
                 <option value={80}>80 km</option>
                 <option value={100}>100 km</option>
-                <option value={10000000000}>Everywhere</option>
+                <option value={10000000000}>{t('postsLocation.everywhere')}</option>
               </Form.Control>
             </Form.Group>
           </Form>
-          <Button variant="secondary" className="rounded-5" onClick={handleLocationDetection}>
-            Use My Current Location
-          </Button>
+          <button className="want-button" onClick={handleLocationDetection}>
+            {t('postsLocation.useCurrentLocation')}
+          </button>
         </Modal.Footer>
       </Modal>
     </>

@@ -305,21 +305,21 @@ const PostDetails = () => {
             )}
             <h2>{post.title}</h2>
             <div>
-              <span className="text-success fs-1">
+              <span className="want-color fs-1">
                 $ {post.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
               </span>
             </div>
             <div className="d-flex">
-              <button className="btn rounded-5 border m-2">
+              <button className="want-rounded  m-2">
                 {t(`categories.${post.mainCategory}.name`)}
               </button>
-              <button className="btn rounded-5 border m-2">
+              <button className="want-rounded  m-2">
                 {" "}
                 {t(
                   `categories.${post.mainCategory}.subcategories.${post.subCategory}.name`
                 )}
               </button>
-              <button className="btn rounded-5 border m-2">
+              <button className="want-rounded  m-2">
               {t(
                 `categories.${post.mainCategory}.subcategories.${post.subCategory}.thirdCategories.${post.thirdCategory}.name`
               )}
@@ -355,7 +355,7 @@ const PostDetails = () => {
             </div>
             <div className="mt-3">
               <button
-                className="btn rounded-5 btn-offer"
+                className="want-rounded btn-offer"
                 onClick={() => router.push(`/createOffer?postId=${id}`)}
               >
                 {t("postDetails.makeAnOffer")}

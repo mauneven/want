@@ -1,7 +1,6 @@
 // pages/recoveryPassword/[token].js
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { useTranslation } from 'react-i18next';
 
 const ResetPassword = () => {
@@ -70,7 +69,7 @@ const ResetPassword = () => {
             required
           />
         </div>
-        <button type="submit" className="btn want-button">
+        <button type="submit" className="want-button">
           {t('resetPassword.resetPasswordButton')}
         </button>
       </form>

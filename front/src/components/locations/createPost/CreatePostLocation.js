@@ -143,14 +143,14 @@ const CreatePostLocation = ({ onLatitudeChange, onLongitudeChange }) => {
             type="text"
             placeholder="Busca tu ciudad aqui..."
             value={searchQuery}
-            className='rounded-5'
+            className='want-rounded'
             onChange={handleSearchChange}
             onKeyDown={handleKeyDown}
           />
         </Form.Group>
       </Form>
       {searchResults.length > 0 && (
-        <div className='mt-2 border rounded-5 results-map'>
+        <div className='mt-2  want-rounded results-map'>
           <ul className='p-3'>
             {searchResults.map((result, index) => (
               <li className='divhover dropdown-item' key={index} onClick={() => handleSearchSelect(result)}>
@@ -182,7 +182,7 @@ const CreatePostLocation = ({ onLatitudeChange, onLongitudeChange }) => {
           </MapContainer>
           </div>
         ) : (
-          <div><p className='text-success'>Permite a Want el acceso a tu ubicacion para poder ubicar donde quieres lo que vas a publicar, si no quieres permitir el acceso a tu ubicacion escribe arriba la ciudad donde lo necesitas</p></div>
+          <div><p className='want-color'>Permite a Want el acceso a tu ubicacion para poder ubicar donde quieres lo que vas a publicar, si no quieres permitir el acceso a tu ubicacion escribe arriba la ciudad donde lo necesitas</p></div>
         )}
       </div>
     </div>

@@ -1,10 +1,9 @@
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
+import react, { useState, useEffect } from 'react';
 import WordsFilter from '@/badWordsFilter/WordsFilter';
 import { Button, Modal } from 'react-bootstrap';
 import { validations } from '@/utils/validations';
 import { countries } from '../data/countries.json';
-import React, { useState } from 'react';
 
 const CreateOffer = () => {
   const router = useRouter();
@@ -193,7 +192,7 @@ const CreateOffer = () => {
     <div className="mt-4 mb-4">
       <h1 className="mt-3 text-center">Creating an offer for "{post.title}"</h1>
       <h2 className="mt-3 text-center">Payment of ${Number(post.price).toLocaleString()}</h2>
-      <h4 className="mt-3 text-center text-success">Do your best offer</h4>
+      <h4 className="mt-3 text-center want-color">Do your best offer</h4>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Info about when you create an offer</Modal.Title>
@@ -207,7 +206,7 @@ const CreateOffer = () => {
           </ul>
         </Modal.Body>
         <Modal.Footer>
-          <button className="btn btn-secondary" onClick={handleCloseModal}>
+          <button className="generic-button" onClick={handleCloseModal}>
             Ok
           </button>
         </Modal.Footer>
@@ -307,7 +306,7 @@ const CreateOffer = () => {
                         <div className="photo-preview">
                           <img
                             src={URL.createObjectURL(photos[index - 1])}
-                            className="img-thumbnail border-0 uploaded-photos rounded-5"
+                            className="img-thumbnail  uploaded-photos want-rounded"
                             alt={`Photo ${index}`}
                           />
                         </div>
@@ -320,7 +319,7 @@ const CreateOffer = () => {
                       )}
                       {photos[index - 1] && (
                       <button
-                      className="btn btn-light circle btn-sm delete-photo"
+                      className="btn-light circle btn-sm delete-photo"
                       onClick={() => handleDeletePhoto(index - 1)}
                       type="button"
                     >
@@ -342,7 +341,7 @@ const CreateOffer = () => {
             <div className="mb-3">
               <button
                 type="submit"
-                className="btn want-button rounded-5"
+                className="want-button want-rounded"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? 'Creating...' : 'Create Offer'}

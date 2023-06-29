@@ -142,14 +142,14 @@ const DetailsModal = ({ show, onHide, offer }) => {
               )}
               <h2 className='mt-2'>{offer.title}</h2>
               <p>
-                <span className="text-success h3">
+                <span className="want-color h3">
                   $ {offer.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 </span>
               </p>
               <p>{offer.description}</p>
               <p className='mb-2'>
                 {t('detailsModal.offerBy')}{' '}
-                <span className="text-success" style={{ cursor: 'pointer' }} onClick={() => openUserModal(offer.createdBy)}>
+                <span className="want-color" style={{ cursor: 'pointer' }} onClick={() => openUserModal(offer.createdBy)}>
                   {offer.createdBy.firstName} {offer.createdBy.lastName}
                 </span>
               </p>
@@ -157,7 +157,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
                 <>
                 <div>
                   <button
-                    className="btn rounded-5 want-button mt-2 mb-2"
+                    className="btn want-rounded want-button mt-2 mb-2"
                     onClick={() => window.open(`https://wa.me/${offer.countryCode}${offer.phoneNumber}`, '_blank')}
                   >
                     <i className="bi bi-whatsapp mt-2"></i>{`+${offer.countryCode} ${offer.phoneNumber}`}
@@ -165,7 +165,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
                   </div>
                   <div>
                   <button
-                    className="want-button btn rounded-5 mt-2 mb-2"
+                    className="want-button btn want-rounded mt-2 mb-2"
                     onClick={() => window.open(`tel:+${offer.countryCode}${offer.phoneNumber}`, '_blank')}
                   >
                     <i className="bi bi-telephone-forward"></i> {`+${offer.countryCode} ${offer.phoneNumber}`}
@@ -180,7 +180,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <button className="btn btn-secondary" onClick={onHide}>
+          <button className="generic-button" onClick={onHide}>
             {t('detailsModal.closeButton')}
           </button>
         </Modal.Footer>
