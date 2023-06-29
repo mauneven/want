@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { validations } from '@/utils/validations';
+import { useTranslation } from 'react-i18next';
+import GoBackButton from '@/components/reusable/GoBackButton';
 
 const EditProfile = () => {
   const router = useRouter();
@@ -10,10 +12,11 @@ const EditProfile = () => {
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
   const [birthdate, setBirthdate] = useState('');
-  const [initialBirthdate, setInitialBirthdate] = useState(''); // Nuevo estado para almacenar el valor inicial del campo de fecha
+  const [initialBirthdate, setInitialBirthdate] = useState('');
   const [photo, setPhoto] = useState(null);
   const [editingField, setEditingField] = useState(null);
   const [fileSizeError, setFileSizeError] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     validations(router); 
@@ -23,7 +26,6 @@ const EditProfile = () => {
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`, { credentials: 'include' })
       .then((response) => {
         if (!response.ok) {
-          // Si el usuario no está autenticado, redirigir a la página de inicio de sesión
           router.push('/login');
           return;
         }
@@ -55,12 +57,12 @@ const EditProfile = () => {
     const maxSize = 50 * 1024 * 1024; // 50 MB
   
     if (!allowedExtensions.exec(file.name)) {
-      alert('The file must be a JPG, JPEG, or PNG image.');
+      alert(t('editProfile.invalidImageFileType'));
       return false;
     }
   
     if (file.size > maxSize) {
-      alert('The file size must be under 50 MB.');
+      alert(t('editProfile.imageFileSizeExceeded'));
       return false;
     }
   
@@ -68,7 +70,7 @@ const EditProfile = () => {
   };  
 
   const handleDeleteAccount = async () => {
-    if (window.confirm('Are you sure you want to put your account on the delete queue? Your account will be deleted in 30 days.')) {
+    if (window.confirm(t('editProfile.deleteAccountConfirmation'))) {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/delete-account`, {
           method: 'DELETE',
@@ -78,10 +80,10 @@ const EditProfile = () => {
         if (response.ok) {
           router.push('/logout');
         } else {
-          console.error('Error deleting account');
+          console.error(t('editProfile.deleteAccountError'));
         }
       } catch (error) {
-        console.error('Error deleting account', error);
+        console.error(t('editProfile.deleteAccountError'), error);
       }
     }
   };  
@@ -90,15 +92,14 @@ const EditProfile = () => {
     const file = e.target.files[0];
     if (file) {
       if (!validateImageFile(file)) {
-        return; // Termina la ejecución si el archivo no pasa la validación
+        return;
       }
       if (file) {
-        const fileName = user._id + '_' + file.name; // Renombrar el archivo con el id del usuario
-        const renamedFile = new File([file], fileName, {type: file.type}); // Crear un nuevo objeto File con el archivo renombrado
+        const fileName = user._id + '_' + file.name;
+        const renamedFile = new File([file], fileName, { type: file.type });
         setPhoto(renamedFile);
         setEditingField('photo');
   
-        // Actualizar el estado de la foto del usuario en la base de datos
         const formData = new FormData();
         formData.append('photo', renamedFile);
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/photo`, {
@@ -107,7 +108,7 @@ const EditProfile = () => {
           body: formData
         });
         if (!response.ok) {
-          console.error('Error updating user photo');
+          console.error(t('editProfile.updateUserPhotoError'));
         }
       }
     }
@@ -117,7 +118,7 @@ const EditProfile = () => {
     setFirstName(user.firstName);
     setLastName(user.lastName);
     setPhone(user.phone);
-    setBirthdate(initialBirthdate); // Restablecer el valor inicial de la fecha de nacimiento
+    setBirthdate(initialBirthdate);
     setPhoto(user.photo);
     setEditingField(null);
   };
@@ -145,26 +146,27 @@ const EditProfile = () => {
       if (response.ok) {
         router.push('/');
       } else {
-        console.error('Error updating user');
+        console.error(t('editProfile.updateUserError'));
       }
     } catch (error) {
-      console.error('Error updating user', error);
+      console.error(t('editProfile.updateUserError'), error);
     }
   };
 
   const inputFields = [
-    { name: 'firstName', label: 'First Name', type: 'text', value: firstName, onChange: (e) => setFirstName(e.target.value), required: true },
-    { name: 'lastName', label: 'Last Name', type: 'text', value: lastName, onChange: (e) => setLastName(e.target.value), required: true },
-    { name: 'phone', label: 'Phone', type: 'text', value: phone, onChange: (e) => setPhone(e.target.value), required: true },
-    { name: 'birthdate', label: 'Birthdate', type: 'date', value: birthdate, onChange: (e) => setBirthdate(e.target.value), required: true }
+    { name: 'firstName', label: t('editProfile.firstName'), type: 'text', value: firstName, onChange: (e) => setFirstName(e.target.value), required: true },
+    { name: 'lastName', label: t('editProfile.lastName'), type: 'text', value: lastName, onChange: (e) => setLastName(e.target.value), required: true },
+    { name: 'phone', label: t('editProfile.phone'), type: 'text', value: phone, onChange: (e) => setPhone(e.target.value), required: true },
+    { name: 'birthdate', label: t('editProfile.birthdate'), type: 'date', value: birthdate, onChange: (e) => setBirthdate(e.target.value), required: true }
   ];
   
   const photoUrl = typeof File !== 'undefined' && photo instanceof File ? URL.createObjectURL(photo) : (user?.photo ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}` : "/icons/person-circle.svg");
 
   return (
     <div className="container">
-      <h1 className='my-4'>Check & edit your profile</h1>
-      <div className="card rounded-5 my-4">
+      <h1 className='my-4'>{t('editProfile.checkEditProfile')}</h1>
+      <GoBackButton/>
+      <div className="card want-rounded my-4">
         <div className="card-body">
           <div className="text-center">
             <img
@@ -179,7 +181,7 @@ const EditProfile = () => {
             />
             <label htmlFor="photo" className="mt-3">
               <div className="overlay">
-                <i className="bi bi-pencil text-success ms-4"></i> Change profile photo
+                <i className="bi bi-pencil want-color ms-4"></i> {t('editProfile.changeProfilePhoto')}
               </div>
             </label>
             <input
@@ -209,7 +211,7 @@ const EditProfile = () => {
                   />
                   <button
                     type="button"
-                    className="btn btn-outline-secondary"
+                    className="btn-outline-secondary"
                     onClick={() => setEditingField(field.name)}
                   >
                     <i className="bi bi-pencil"></i>
@@ -219,27 +221,33 @@ const EditProfile = () => {
             ))}
             {editingField && (
               <div className="text-center">
-                <button type="button" className="btn btn-secondary rounded-5 me-3" onClick={handleCancel}>
-                  Cancel
+                <button type="button" className="generic-button want-rounded me-3" onClick={handleCancel}>
+                  {t('editProfile.cancel')}
                 </button>
-                <button type="submit" className="btn btn-success rounded-5" disabled={!editingField || (editingField === 'photo' && !photo)}>
-                  Update
+                <button type="submit" className="want-button want-rounded" disabled={!editingField || (editingField === 'photo' && !photo)}>
+                  {t('editProfile.update')}
                 </button>
               </div>
             )}
           </form>
         </div>
       </div>
-      <div className="my-5 card p-3 border border-success rounded-5">
-        <h3 className="text-success">Change Password</h3>
-        <Link href="/changePassword">
-          <button className="btn btn-success rounded-5">Change Password</button>
+      <div className="my-5 card p-3  -secondary want-rounded">
+        <h3 className="text">{t('navbar.logout')}</h3>
+        <Link href="/logout">
+          <button className="generic-button want-rounded">{t('navbar.logout')}</button>
         </Link>
       </div>
-      <div className="my-5 border border-danger rounded-5 p-3">
-        <h3 className="text-danger">Delete Account</h3>
-        <button className="btn btn-danger rounded-5" onClick={handleDeleteAccount}>
-          Delete Account
+      <div className="my-5 card p-3   want-rounded">
+        <h3 className="want-color">{t('editProfile.changePassword')}</h3>
+        <Link href="/changePassword">
+          <button className="want-button want-rounded">{t('editProfile.changePassword')}</button>
+        </Link>
+      </div>
+      <div className="my-5  -danger want-rounded p-3">
+        <h3 className="text-danger">{t('editProfile.deleteAccount')}</h3>
+        <button className="btn-danger want-rounded" onClick={handleDeleteAccount}>
+          {t('editProfile.deleteAccount')}
         </button>
       </div>
     </div>

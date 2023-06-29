@@ -1,122 +1,266 @@
 import React, { useState, useEffect } from "react";
 import ContentLoader from "react-content-loader";
 import { useRouter } from "next/router";
-import UserModal from "../user/UserModal";
+import { useDispatch, useSelector } from "react-redux";
+import { setPosts } from "@/actions/postsActions";
+import PostsLocation from "../locations/Posts/";
+import PostCategory from "../categories/PostCategory";
+import PostDetailsModal from "./PostDetailsModal";
 
-const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, currentPage, setCurrentPage }) => {
-  const [posts, setPosts] = useState([]);
+const PostsList = ({ searchTerm }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [pageSize, setPageSize] = useState(12);
+  const [pageSize, setPageSize] = useState(8);
   const [totalPosts, setTotalPosts] = useState(0);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const maxPagesToShow = 6;
-  const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+  const [postId, setPostId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMorePosts, setHasMorePosts] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [radius, setRadius] = useState(10);
+  const [hasLocation, setHasLocation] = useState(false);
+  const [userPreferences, setUserPreferences] = useState({});
+  const [userPreferencesLoaded, setUserPreferencesLoaded] = useState(false);
+  const [user, setUser] = useState(null);
+  const [categoryFilter, setCategoryFilter] = useState({});
+  const dispatch = useDispatch();
+  const posts = useSelector((state) => state.posts.posts);
+
   const router = useRouter();
 
-  const fetchPosts = async () => {
+  const handleLatitudeChange = (lat) => {
+    setLatitude(lat);
+  };
+
+  const handleLongitudeChange = (lng) => {
+    setLongitude(lng);
+  };
+
+  const handleRadiusChange = (event) => {
+    if (event && event.target && event.target.value) {
+      const selectedRadius = parseInt(event.target.value);
+      setRadius(selectedRadius);
+      onRadiusChange(selectedRadius);
+    }
+  };
+
+  const handleCategoryFilter = (categoryFilter) => {
+    setCategoryFilter(categoryFilter);
+    setCurrentPage(1);
+  };
+
+  const getUserPreferences = async () => {
     try {
-      setIsLoading(true);
+      if (user) {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/preferences`,
+          {
+            credentials: "include",
+          }
+        );
+        const data = await response.json();
+        setUserPreferences(data);
+        setUserPreferencesLoaded(true);
+        console.log("Datos enviados con el usuario");
+      } else {
+        const mainCategoryPreferences =
+          JSON.parse(localStorage.getItem("mainCategoryPreferences")) || {};
+        const subCategoryPreferences =
+          JSON.parse(localStorage.getItem("subCategoryPreferences")) || {};
+        const thirdCategoryPreferences =
+          JSON.parse(localStorage.getItem("thirdCategoryPreferences")) || {};
 
-      const filterParams = new URLSearchParams({
-        country: locationFilter?.country || '',
-        state: locationFilter?.state || '',
-        city: locationFilter?.city || '',
-        mainCategory: categoryFilter?.mainCategory || '',
-        subCategory: categoryFilter?.subCategory || '',
-        thirdCategory: categoryFilter?.thirdCategory || '', // Incluir tercer categoría
-        searchTerm: searchTerm || '',
-        page: currentPage,
-        pageSize
-      });      
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?${filterParams}`);
-      const { posts: postsData, totalPosts } = await response.json();
-
-      setTotalPosts(totalPosts);
-      setPosts(postsData);
+        setUserPreferences({
+          mainCategoryCounts: mainCategoryPreferences,
+          subCategoryCounts: subCategoryPreferences,
+          thirdCategoryCounts: thirdCategoryPreferences,
+        });
+        setUserPreferencesLoaded(true);
+        console.log("Datos enviados con el localStorage");
+      }
     } catch (error) {
-      console.error('Error fetching posts:', error);
-    } finally {
-      setIsLoading(false);
+      console.error("Error al obtener las preferencias de usuario:", error);
     }
   };
 
   useEffect(() => {
+    getUserPreferences();
+  }, [user]);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.user || null);
+        } else if (response.status === 401) {
+          setUser(null);
+          console.log("no logged");
+        }
+      } catch (error) {
+        console.error("Error al verificar la sesión:", error);
+      }
+    };
+
+    checkSession();
+  }, [router.pathname]);
+
+  const fetchPosts = async () => {
+    if (!hasLocation || !userPreferencesLoaded) {
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setIsFetching(true);
+
+      const convertKeysToSingleQuotes = (preferences) => {
+        const convertedPreferences = {};
+        for (const key in preferences) {
+          const convertedKey = key.replace(/"/g, "'");
+          convertedPreferences[convertedKey] = preferences[key];
+        }
+        return convertedPreferences;
+      };
+
+      const filterParams = new URLSearchParams({
+        mainCategory: categoryFilter?.mainCategory || "",
+        subCategory: categoryFilter?.subCategory || "",
+        thirdCategory: categoryFilter?.thirdCategory || "",
+        searchTerm: searchTerm || "",
+        page: currentPage,
+        pageSize,
+        latitude,
+        longitude,
+        radius,
+        mainCategoryPreferences: JSON.stringify(
+          convertKeysToSingleQuotes(userPreferences.mainCategoryCounts)
+        ),
+        subCategoryPreferences: JSON.stringify(
+          convertKeysToSingleQuotes(userPreferences.subCategoryCounts)
+        ),
+        thirdCategoryPreferences: JSON.stringify(
+          convertKeysToSingleQuotes(userPreferences.thirdCategoryCounts)
+        ),
+      });
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?${filterParams}`
+      );
+      const { posts: postsData, totalPosts } = await response.json();
+
+      if (currentPage === 1) {
+        dispatch(setPosts(postsData));
+      } else {
+        dispatch(setPosts([...posts, ...postsData]));
+      }
+
+      setTotalPosts(totalPosts);
+      setHasMorePosts(postsData.length > 0);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    } finally {
+      setIsFetching(false);
+      setIsLoading(false);
+      setIsFetchingMore(false);
+    }
+    closeModal();
+  };
+
+  useEffect(() => {
+    if (searchTerm) {
+      setSelectedCategory("");
+      setSelectedSubcategory("");
+      setSelectedThirdCategory("");
+    }
+  }, [searchTerm]);  
+
+  useEffect(() => {
+    dispatch(setPosts([]));
+    setTotalPosts(0);
+    setHasMorePosts(false);
+    setCurrentPage(1);
+  }, [searchTerm, categoryFilter, latitude, longitude, radius]);
+
+  useEffect(() => {
+    if (latitude !== null && longitude !== null) {
+      setHasLocation(true);
+    }
+  }, [latitude, longitude]);
+
+  useEffect(() => {
     fetchPosts();
-  }, [locationFilter, userIdFilter, searchTerm, categoryFilter, currentPage, pageSize]);
+  }, [
+    searchTerm,
+    categoryFilter,
+    currentPage,
+    pageSize,
+    hasLocation,
+    latitude,
+    longitude,
+    radius,
+    userPreferences,
+    userPreferencesLoaded,
+  ]);
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop =
+        (document.documentElement && document.documentElement.scrollTop) ||
+        document.body.scrollTop;
+      const scrollHeight =
+        (document.documentElement && document.documentElement.scrollHeight) ||
+        document.body.scrollHeight;
+      const clientHeight =
+        document.documentElement.clientHeight || window.innerHeight;
+      const scrolledToBottom =
+        Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+      const scrolledToTop = scrollTop === 0;
 
-  const totalPages = Math.ceil(totalPosts / pageSize);
-  const showEllipsis = totalPages > maxPagesToShow;
+      if (
+        scrolledToBottom &&
+        hasMorePosts &&
+        !isLoading &&
+        !isFetching &&
+        !isFetchingMore
+      ) {
+        setIsFetchingMore(true);
+        setCurrentPage((prevPage) => prevPage + 1);
+      }
 
-  const renderPagination = () => {
-    const pages = [];
+      if (scrolledToTop && !isLoading && !isFetching && !isFetchingMore) {
+        setHasMorePosts(false);
+      }
+    };
 
-    // Rango de páginas a mostrar
-    const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+    window.addEventListener("scroll", handleScroll);
 
-    // Botón "..."
-    if (showEllipsis && endPage < totalPages) {
-      pages.push(
-        <button key={0} className="btn btn-link" disabled>
-          ...
-        </button>
-      );
-    }
-
-    // Páginas
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(
-        <button
-          key={i}
-          className={`btn btn-success m-1${i === currentPage ? " active" : ""}`}
-          onClick={() => handlePageChange(i)}
-        >
-          {i}
-        </button>
-      );
-    }
-
-    return pages;
-  };
-
-  const renderPrevButton = () => {
-    if (currentPage > 1) {
-      return (
-        <button
-          className="btn btn-success m-1"
-          onClick={() => handlePageChange(currentPage - 1)}
-        >
-          {"<"}
-        </button>
-      );
-    }
-
-    return null;
-  };
-
-  const renderNextButton = () => {
-    if (currentPage < totalPages) {
-      return (
-        <button
-          className="btn btn-success m-1"
-          onClick={() => handlePageChange(currentPage + 1)}
-        >
-          {">"}
-        </button>
-      );
-    }
-
-    return null;
-  };
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [hasMorePosts, isLoading, isFetching, isFetchingMore]);
 
   const Placeholder = () => (
     <div className="col mx-auto">
-      <ContentLoader speed={2} width="100%" height={450} viewBox="0 0 260 450" backgroundColor="#f3f3f3" foregroundColor="#ecebeb">
+      <ContentLoader
+        speed={2}
+        width="100%"
+        height={450}
+        viewBox="0 0 260 450"
+        backgroundColor="#f3f3f3"
+        foregroundColor="#ecebeb"
+      >
         <rect x="0" y="0" rx="10" ry="10" width="260" height="310" />
         <rect x="0" y="330" rx="3" ry="3" width="260" height="20" />
         <rect x="0" y="360" rx="3" ry="3" width="260" height="20" />
@@ -126,117 +270,173 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
     </div>
   );
 
-  const openModal = (user) => {
-    setSelectedUser(user);
+  const openModal = (postId) => {
+    setPostId(postId);
     setShowModal(true);
   };
 
   const closeModal = () => {
-    setSelectedUser(null);
+    setPostId(null);
     setShowModal(false);
   };
 
-  return (
-    <div className="container">
-      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 pb-5">
-        {!isLoading ? (
-          posts.length > 0 ? (
-            posts.map((post) => {
-              // Calcular la reputación del usuario
-              const userReputation = 5 - (0.3 * post.createdBy.reports.length);
+  const handleMainCategoryChange = (mainCategory) => {
+    setCategoryFilter((prevFilter) => ({
+      ...prevFilter,
+      mainCategory,
+    }));
+  };
 
-              return (
-                <div key={post._id} className="col">
-                  <div className="card post rounded-5">
-                    {post.photos && post.photos.length > 0 && (
-                      <div
-                        id={`carousel-${post._id}`}
-                        className="carousel slide"
-                        data-bs-ride="carousel"
-                        style={{ height: "200px", overflow: "hidden" }}
-                      >
-                        <div className="carousel-inner">
-                          {post.photos.map((photos, index) => (
-                            <div
-                              className={`carousel-item ${index === 0 ? "active" : ""}`}
-                              key={index}
-                            >
-                              <img
-                                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`}
-                                className="d-block w-100"
-                                alt={`Slide ${index}`}
-                                loading="lazy"
-                              />
-                            </div>
-                          ))}
+  const handleSubcategoryChange = (subcategory) => {
+    setCategoryFilter((prevFilter) => ({
+      ...prevFilter,
+      subCategory: subcategory,
+    }));
+  };
+
+  const handleThirdCategoryChange = (thirdCategory) => {
+    setCategoryFilter((prevFilter) => ({
+      ...prevFilter,
+      thirdCategory,
+    }));
+  };
+
+  return (
+    <div>
+      <div className="text-center">
+        <PostCategory
+          onMainCategoryChange={handleMainCategoryChange}
+          onSubcategoryChange={handleSubcategoryChange}
+          onThirdCategoryChange={handleThirdCategoryChange}
+          initialMainCategory={categoryFilter.mainCategory}
+          initialSubcategory={categoryFilter.subCategory}
+          initialThirdCategory={categoryFilter.thirdCategory}
+        />
+      </div>
+      <div className="text-start m-2">
+        <PostsLocation
+          onLatitudeChange={setLatitude}
+          onLongitudeChange={setLongitude}
+          onRadiusChange={setRadius}
+        />
+      </div>
+      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-6 pe-2 ps-2">
+        {posts.map((post) => {
+          const userReputation = 5 - 0.3 * post.createdBy.reports.length;
+          let photoIndex = 0;
+          return (
+            <div
+              key={post._id}
+              className="col post-card want-rounded d-flex align-items-stretch"
+            >
+              <div className="card want-rounded divhover w-100">
+                {post.photos && post.photos.length > 0 && (
+                  <div
+                    id={`carousel-${post._id}`}
+                    className="carousel slide want-rounded me-2 ms-2 mt-3 img-post"
+                    data-bs-ride="carousel"
+                    style={{ height: "200px", overflow: "hidden" }}
+                  >
+                    <div
+                      className="carousel-inner"
+                      onClick={() => openModal(post._id)}
+                    >
+                      {post.photos.map((photo, index) => (
+                        <div
+                          className={`carousel-item ${
+                            index === 0 ? "active" : ""
+                          }`}
+                          key={index}
+                        >
+                          <img
+                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
+                            className="d-block w-100"
+                            alt={`Image ${index}`}
+                            loading="lazy"
+                            onClick={() => openModal(post._id)}
+                          />
                         </div>
+                      ))}
+                    </div>
+                    {post.photos.length > 1 && (
+                      <>
                         <button
-                          className="carousel-control-prev"
+                          className="carousel-control-prev custom-slider-button ms-1"
                           type="button"
                           data-bs-target={`#carousel-${post._id}`}
                           data-bs-slide="prev"
-                          style={{ bottom: "40px" }} // Posición inferior del botón prev
+                          style={{ bottom: "40px" }}
+                          disabled={photoIndex === 0}
+                          onClick={() => {
+                            photoIndex--;
+                          }}
                         >
-                          <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                          <span className="visually-hidden">Previous</span>
+                          <i className="bi bi-chevron-left"></i>
                         </button>
                         <button
-                          className="carousel-control-next"
+                          className="carousel-control-next custom-slider-button me-1"
                           type="button"
                           data-bs-target={`#carousel-${post._id}`}
                           data-bs-slide="next"
-                          style={{ bottom: "40px" }} // Posición inferior del botón next
+                          style={{ bottom: "40px" }}
+                          disabled={photoIndex === post.photos.length - 1}
+                          onClick={() => {
+                            photoIndex++;
+                          }}
                         >
-                          <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                          <span className="visually-hidden">Next</span>
+                          <i className="bi bi-chevron-right"></i>
                         </button>
-                      </div>
+                      </>
                     )}
-                    <div className="card-body">
-                      <h5 className="card-title post-title mb-2" onClick={() => router.push(`/post/${post._id}`)}>
-                        <a style={{ color: "inherit", textDecoration: "none" }}>
-                          {post.title}
-                        </a>
-                      </h5>
-                      <h5 className="text-success" onClick={() => router.push(`/post/${post._id}`)}>
-                        ${post.price.toLocaleString()}
-                      </h5>
-                      <p className="card-text post-text mb-2" onClick={() => router.push(`/post/${post._id}`)}>
-                        {post.description.length > 100 ? post.description.substring(0, 100) + "..." : post.description}
-                      </p>
-                    </div>
-                    <div className="card-footer text-center" onClick={() => openModal(post.createdBy)} style={{ cursor: "pointer" }}>
-                      <div className="d-flex align-items-center justify-content-center">
-                        <img
-                          src={
-                            post.createdBy.photo
-                              ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
-                              : "/icons/person-circle.svg"
-                          }
-                          alt=""
-                          className="createdBy-photo p-1"
-                        />
-                        <div className="ms-2">
-                          <small className="text-muted text-center">
-                            {post.createdBy.firstName}
-                          </small>
-                          <div className="d-flex align-items-center">
-                            <i className="bi bi-star-fill me-1"></i>
-                            <small className="text-muted">{userReputation.toFixed(1)}</small>
-                          </div>
-                        </div>
+                  </div>
+                )}
+                <div className="card-body p-0 m-2">
+                  <div className="generic-button mb-2 want-rounded">
+                  <h3
+                    className="text-price"
+                    onClick={() => openModal(post._id)}
+                  >
+                    ${post.price.toLocaleString()}
+                  </h3>
+                  <h5
+                    className="card-title post-title p-1"
+                    onClick={() => openModal(post._id)}
+                  >
+                    {post.title}
+                  </h5>
+                  </div>
+                  <div
+                    className="d-flex generic-button mb-2 generic-button want-rounded"
+                    onClick={() => openModal(post.createdBy._id)}
+                  >
+                    <img
+                      src={
+                        post.createdBy.photo
+                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
+                          : "/icons/person-circle.svg"
+                      }
+                      alt=""
+                      className="createdBy-photo p-1"
+                    />
+                    <div className="ms-2">
+                      <small className="text-muted">
+                        {post.createdBy.firstName}
+                      </small>
+                      <div className="d-flex">
+                        <i className="bi bi-star-fill me-1"></i>
+                        <small className="text-muted">
+                          {userReputation.toFixed(1)}
+                        </small>
                       </div>
                     </div>
                   </div>
                 </div>
-              );
-            })
-          ) : (
-            <div className="col-md-12">
-              <p>There are no posts with those filters. Please try something else.</p>
+              </div>
             </div>
-          )
-        ) : (
+          );
+        })}
+
+        {isLoading && (
           <>
             <Placeholder />
             <Placeholder />
@@ -252,18 +452,19 @@ const PostsList = ({ locationFilter, userIdFilter, searchTerm, categoryFilter, c
             <Placeholder />
           </>
         )}
+
+        {!hasMorePosts && !isLoading && !isFetchingMore && (
+          <div className="col-md-12">
+            <p>No more posts available.</p>
+          </div>
+        )}
       </div>
 
-      <div className="pagination justify-content-center">
-        {renderPrevButton()}
-        {renderPagination()}
-        {renderNextButton()}
-      </div>
-
-      <UserModal
-        selectedUser={selectedUser}
+      <PostDetailsModal
+        postId={postId}
         showModal={showModal}
         closeModal={closeModal}
+        applyCategoryFilter={handleCategoryFilter}
       />
     </div>
   );

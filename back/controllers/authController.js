@@ -1,34 +1,39 @@
-const bcrypt = require('bcrypt');
-const { default: mongoose } = require('mongoose');
-const User = require('../models/user');
-const postController = require('./postController');
-const db = require('../config/database');
-const fs = require('fs');
-const path = require('path');
-const nodemailer = require('nodemailer');
-const { promisify } = require('util');
-const Notification = require('../models/notification');
-const Post = require('../models/post');
-const Offer = require('../models/offer');
+const bcrypt = require("bcrypt");
+const { default: mongoose } = require("mongoose");
+const User = require("../models/user");
+const postController = require("./postController");
+const db = require("../config/database");
+const fs = require("fs");
+const path = require("path");
+const nodemailer = require("nodemailer");
+const { promisify } = require("util");
+const Notification = require("../models/notification");
+const Post = require("../models/post");
+const Offer = require("../models/offer");
 
 exports.register = async (req, res, next) => {
   try {
-    const User = mongoose.model('User');
+    const User = mongoose.model("User");
 
-    const { email, password, firstName, lastName, phone, birthdate } = req.body;
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      phone,
+      birthdate,
+      verificationCode,
+    } = req.body;
 
     // Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(409).send('User already exists');
+      return res.status(409).send("User already exists");
     }
 
     // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
-    // Generate verification token
-    const token = await (await bcrypt.hash(Date.now().toString(), 10)).replace(/\//g, "n");
 
     // Create user
     const user = new User({
@@ -38,9 +43,15 @@ exports.register = async (req, res, next) => {
       lastName,
       phone,
       birthdate,
-      verificationToken: token,
-      verificationTokenExpires: Date.now() + 1800000,
     });
+
+    // Generate verification token
+    const token = generateVerificationCode(); // Generate a random 6-digit verification code
+
+    // Assign verification code and expiration time to the user
+    user.verificationCode = token;
+    user.verificationCodeExpires = Date.now() + 1800000; // Verification code expires in 30 minutes
+
     await user.save();
 
     // Send verification email
@@ -59,29 +70,29 @@ exports.resendVerification = async (req, res, next) => {
   try {
     const { email } = req.body;
 
-    // Check if user exists
+    // Verificar si el usuario existe
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).send('User with that email does not exist');
+      return res.status(400).send("User with that email does not exist");
     }
 
-    // Check if user is already verified
+    // Verificar si el usuario ya está verificado
     if (user.isVerified) {
-      return res.status(400).send('User is already verified');
+      return res.status(400).send("User is already verified");
     }
 
-    // Generate new verification token
-    const token = await (await bcrypt.hash(Date.now().toString(), 10)).replace(/\//g, "n");
+    // Generar un nuevo código de verificación
+    const code = generateVerificationCode(); // Generar un nuevo código de verificación aleatorio de 6 dígitos
 
-    // Store new verification token and expiration time in user document
-    user.verificationToken = token;
-    user.verificationTokenExpires = Date.now() + 1800000; // Set new expiration time
+    // Almacenar el nuevo código de verificación y el tiempo de expiración en el documento del usuario
+    user.verificationCode = code;
+    user.verificationCodeExpires = Date.now() + 1800000; // Establecer un nuevo tiempo de expiración
     await user.save();
 
-    // Send verification email with the new token
-    await sendVerificationEmail(email, token);
+    // Enviar el correo electrónico de verificación con el nuevo código
+    await sendVerificationEmail(email, code);
 
-    res.status(200).send('Verification email resent');
+    res.status(200).send("Verification code resent");
   } catch (err) {
     next(err);
   }
@@ -89,60 +100,83 @@ exports.resendVerification = async (req, res, next) => {
 
 exports.verifyUser = async (req, res, next) => {
   try {
-    const { token } = req.params;
+    const { verificationCode } = req.body;
 
-    const user = await User.findOne({ verificationToken: token, verificationTokenExpires: { $gt: Date.now() } });
+    const user = await User.findOne({
+      verificationCode,
+      verificationCodeExpires: { $gt: Date.now() },
+    });
     if (!user) {
-      return res.status(400).send('Invalid verification token');
+      return res.status(400).send("Invalid verification code");
     }
 
-    if (user.verificationTokenExpires <= Date.now()) {
-      // Check if the user has requested a new token
-      const newToken = await User.findOne({
-        email: user.email,
-        verificationTokenExpires: { $gt: Date.now() },
-      });
-
-      // If a new token is found, return an error
-      if (newToken) {
-        return res.status(400).send('A new token has been requested. Please use the new token.');
-      } else {
-        return res.status(410).send('Expired verification token');
-      }
+    if (user.verificationCodeExpires <= Date.now()) {
+      return res.status(410).send("Expired verification code");
     }
 
     if (user.isVerified) {
-      return res.status(409).send('Already verified');
+      return res.status(409).send("Already verified");
     }
 
     user.isVerified = true;
-    user.verificationToken = undefined;
-    user.verificationTokenExpires = undefined;
+    user.verificationCode = undefined;
+    user.verificationCodeExpires = undefined;
     await user.save();
 
-    res.status(200).send('User successfully verified');
+    res.status(200).send("User successfully verified");
   } catch (err) {
     next(err);
   }
 };
 
+const generateVerificationCode = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString(); // Generate a random 6-digit verification code
+};
+
+const sendVerificationEmail = async (email, verificationCode) => {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "wanttests@gmail.com",
+      pass: "hgdxskaqpsunouin",
+    },
+  });
+
+  const mailOptions = {
+    from: `Want code ${verificationCode} | Verification <wanttests@gmail.com>`,
+    to: email,
+    subject: "Verify Your Account",
+    html: `
+    <p>You are one step away from verifying your account on Want. If you want to proceed, enter the following verification code:</p>
+    <h2>${verificationCode}</h2>
+  `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Verification email sent");
+  } catch (err) {
+    console.error("Error sending verification email:", err);
+  }
+};
+
+
 exports.login = async (req, res, next) => {
   try {
-    const User = mongoose.model('User');
-
+    const User = mongoose.model("User");
 
     const { email, password } = req.body;
 
     // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).send('Invalid email or password');
+      return res.status(401).send("Invalid email or password");
     }
 
     // Check password
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      return res.status(401).send('Invalid email or password');
+      return res.status(401).send("Invalid email or password");
     }
 
     // Store user data in session
@@ -158,7 +192,7 @@ exports.isLoggedIn = (req, res, next) => {
   if (req.session.userId) {
     next();
   } else {
-    res.status(401).send('Unauthorized');
+    res.status(401).send("Unauthorized");
   }
 };
 
@@ -166,7 +200,7 @@ exports.logout = async (req, res, next) => {
   try {
     if (req.session) {
       await req.session.destroy();
-      res.clearCookie('connect.sid');
+      res.clearCookie("connect.sid");
     }
     res.sendStatus(200);
   } catch (err) {
@@ -177,22 +211,22 @@ exports.logout = async (req, res, next) => {
 exports.sendResetPasswordEmail = async ({ email, token }) => {
   // create reusable transporter object using the default SMTP transport
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: "gmail",
     auth: {
       user: "wanttests@gmail.com",
-      pass: "hgdxskaqpsunouin"
+      pass: "hgdxskaqpsunouin",
     },
   });
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: 'Want | Security <wanttests@gmail.com>', // sender address
+    from: "Want | Security <wanttests@gmail.com>", // sender address
     to: email, // list of receivers
-    subject: 'Reset Your Password', // Subject line
+    subject: "Reset Your Password", // Subject line
     html: `
     <p>You have requested to reset your password on Want. You can do so by following the link below:</p>
     <a href="https://want.com.co/recoveryPassword/${token}">Reset Password</a>
     <p>If you did not request a password reset, please ignore this email and your password will not be changed.</p>
-  `
+  `,
   });
 
   //console.log('Message sent: %s', info.messageId);
@@ -205,11 +239,13 @@ exports.forgotPassword = async (req, res, next) => {
     // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).send('User with that email does not exist');
+      return res.status(400).send("User with that email does not exist");
     }
 
     // Generate reset password token
-    const token = await (await bcrypt.hash(Date.now().toString(), 10)).replace(/\//g, "n");
+    const token = await (
+      await bcrypt.hash(Date.now().toString(), 10)
+    ).replace(/\//g, "n");
 
     // Store reset password token and expiration date in user document
     user.resetPasswordToken = token;
@@ -219,7 +255,7 @@ exports.forgotPassword = async (req, res, next) => {
     // Send password reset email
     await this.sendResetPasswordEmail({ email, token });
 
-    res.status(200).send('Password reset email sent');
+    res.status(200).send("Password reset email sent");
   } catch (err) {
     next(err);
   }
@@ -231,9 +267,12 @@ exports.resetPassword = async (req, res, next) => {
     const { password } = req.body;
 
     // Find user by reset password token and check if token is not expired
-    const user = await User.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() } });
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
     if (!user) {
-      return res.status(400).send('Invalid or expired password reset token');
+      return res.status(400).send("Invalid or expired password reset token");
     }
 
     // Hash new password
@@ -246,7 +285,7 @@ exports.resetPassword = async (req, res, next) => {
     user.resetPasswordExpires = undefined;
     await user.save();
 
-    res.status(200).send('Password successfully reset');
+    res.status(200).send("Password successfully reset");
   } catch (err) {
     next(err);
   }
@@ -254,20 +293,20 @@ exports.resetPassword = async (req, res, next) => {
 
 exports.changePassword = async (req, res, next) => {
   try {
-    const User = mongoose.model('User');
+    const User = mongoose.model("User");
     const { currentPassword, newPassword } = req.body;
 
     // Get the user from the session
     const user = await User.findById(req.session.userId);
 
     if (!user) {
-      return res.status(401).send('Unauthorized');
+      return res.status(401).send("Unauthorized");
     }
 
     // Check if the current password is correct
     const passwordMatch = await bcrypt.compare(currentPassword, user.password);
     if (!passwordMatch) {
-      return res.status(400).send('Incorrect current password');
+      return res.status(400).send("Incorrect current password");
     }
 
     // Hash the new password
@@ -278,7 +317,7 @@ exports.changePassword = async (req, res, next) => {
     user.password = hashedPassword;
     await user.save();
 
-    res.status(200).send('Password successfully changed');
+    res.status(200).send("Password successfully changed");
   } catch (err) {
     next(err);
   }
@@ -298,45 +337,18 @@ exports.checkBlocked = async (req, res) => {
       const user = await User.findById(req.session.userId);
       if (user) {
         if (user.isBlocked) {
-          res.status(403).json({ error: 'User is blocked' });
+          res.status(403).json({ error: "User is blocked" });
         } else {
-          res.status(200).json({ message: 'User is not blocked' });
+          res.status(200).json({ message: "User is not blocked" });
         }
       } else {
-        res.status(404).json({ error: 'User not found' });
+        res.status(404).json({ error: "User not found" });
       }
     } else {
-      res.status(401).json({ error: 'Unauthorized' });
+      res.status(401).json({ error: "Unauthorized" });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
-  }
-};
-
-const sendVerificationEmail = async (email, verificationToken) => {
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: "wanttests@gmail.com",
-      pass: "hgdxskaqpsunouin"
-    },
-  });
-
-  const mailOptions = {
-    from: 'Want | Verification <wanttests@gmail.com>',
-    to: email,
-    subject: 'Verify Your Account',
-    html: `
-    <p>You are one step away from verifying your account on Want. If you want to proceed, click on the following link:</p>
-    <a href="https://want.com.co/verify-email/${verificationToken}">Verify Email Address</a>
-  `,
-  };
-
-  try {
-    await transporter.sendMail(mailOptions);
-    console.log('Verification email sent');
-  } catch (err) {
-    console.error('Error sending verification email:', err);
   }
 };
 
@@ -346,15 +358,15 @@ exports.checkVerified = async (req, res) => {
       const user = await User.findById(req.session.userId);
       if (user) {
         if (user.isVerified) {
-          res.status(200).json({ message: 'User is verified' });
+          res.status(200).json({ message: "User is verified" });
         } else {
-          res.status(403).json({ error: 'User is not verified' });
+          res.status(403).json({ error: "User is not verified" });
         }
       } else {
-        res.status(404).json({ error: 'User not found' });
+        res.status(404).json({ error: "User not found" });
       }
     } else {
-      res.status(401).json({ error: 'Unauthorized' });
+      res.status(401).json({ error: "Unauthorized" });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -377,7 +389,6 @@ exports.isUserVerified = async (userId) => {
 };
 
 const deleteUserData = async (userId) => {
-
   // Buscar al usuario por el ID
   const user = await User.findById(userId);
   if (!user) {
@@ -390,12 +401,14 @@ const deleteUserData = async (userId) => {
   for (const post of posts) {
     if (post.photos) {
       for (const photo of post.photos) {
-        if (typeof photo === 'string') {
+        if (typeof photo === "string") {
           try {
-            const imagePath = path.join(__dirname, '..', photo);
+            const imagePath = path.join(__dirname, "..", photo);
             fs.unlinkSync(imagePath);
           } catch (err) {
-            console.error(`Error deleting image for post ${post._id}: ${err.message}`);
+            console.error(
+              `Error deleting image for post ${post._id}: ${err.message}`
+            );
           }
         }
       }
@@ -408,10 +421,12 @@ const deleteUserData = async (userId) => {
     if (offer.photos) {
       for (const photo of offer.photos) {
         try {
-          const imagePath = path.join(__dirname, '..', photo);
+          const imagePath = path.join(__dirname, "..", photo);
           fs.unlinkSync(imagePath);
         } catch (err) {
-          console.error(`Error deleting image for offer ${offer._id}: ${err.message}`);
+          console.error(
+            `Error deleting image for offer ${offer._id}: ${err.message}`
+          );
         }
       }
     }
@@ -420,10 +435,12 @@ const deleteUserData = async (userId) => {
   // Eliminar la foto del perfil del usuario
   if (user.photo) {
     try {
-      const imagePath = path.join(__dirname, '..', user.photo);
+      const imagePath = path.join(__dirname, "..", user.photo);
       fs.unlinkSync(imagePath);
     } catch (err) {
-      console.error(`Error deleting profile image for user ${user._id}: ${err.message}`);
+      console.error(
+        `Error deleting profile image for user ${user._id}: ${err.message}`
+      );
     }
   }
 
@@ -450,10 +467,12 @@ const deleteProfilePhoto = async (userId) => {
     // Eliminar la foto del perfil del usuario
     if (user.photo) {
       try {
-        const imagePath = path.join(__dirname, '..', user.photo);
+        const imagePath = path.join(__dirname, "..", user.photo);
         fs.unlinkSync(imagePath);
       } catch (err) {
-        console.error(`Error deleting profile image for user ${user._id}: ${err.message}`);
+        console.error(
+          `Error deleting profile image for user ${user._id}: ${err.message}`
+        );
       }
     }
   } catch (err) {
@@ -466,7 +485,7 @@ exports.deleteAccount = async (req, res, next) => {
     const user = await User.findById(req.session.userId);
 
     if (!user) {
-      return res.status(404).send('User not found');
+      return res.status(404).send("User not found");
     }
 
     // Marcar la cuenta como pendiente de eliminación
@@ -488,9 +507,9 @@ exports.deletionPass = async (userId) => {
     // Eliminar al usuario
     await User.deleteOne({ _id: userId });
 
-    console.log('Deletion process completed');
+    console.log("Deletion process completed");
   } catch (err) {
-    console.error('Error deleting user data:', err);
+    console.error("Error deleting user data:", err);
   }
 };
 
@@ -504,7 +523,7 @@ exports.checkPendingDeletion = async (req, res) => {
         res.status(200).json({ pendingDeletion: false });
       }
     } else {
-      res.status(401).json({ error: 'Unauthorized' });
+      res.status(401).json({ error: "Unauthorized" });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -516,14 +535,14 @@ exports.cancelDeletionProcess = async (req, res, next) => {
     const user = await User.findById(req.session.userId);
 
     if (!user) {
-      return res.status(404).send('User not found');
+      return res.status(404).send("User not found");
     }
 
     user.isDeleted = false;
     user.putUpForElimination = undefined;
     await user.save();
 
-    res.status(200).send('Deletion process cancelled');
+    res.status(200).send("Deletion process cancelled");
   } catch (err) {
     next(err);
   }

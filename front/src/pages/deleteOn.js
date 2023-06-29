@@ -1,9 +1,11 @@
 import { useRouter } from 'next/router';
 import { validations } from '@/utils/validations';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const DeleteOn = () => {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const handleContinueDeletion = () => {
     window.location.href = '/logout'; // Redireccionar directamente a la página de Logout
@@ -34,15 +36,15 @@ const DeleteOn = () => {
   };  
 
   return (
-    <div className="container">
+    <div className="">
       <div className="card my-4">
         <div className="card-body">
-          <h2>Your account is in the process of being deleted.</h2>
-          <button className="btn btn-primary me-3" onClick={handleContinueDeletion}>
-            Continue with my deletion process
+          <h2>{t('deleteOn.deletionProcessTitle')}</h2>
+          <button className="want-button me-3" onClick={handleContinueDeletion}>
+            {t('deleteOn.continueDeletionProcess')}
           </button>
-          <button className="btn btn-danger" onClick={handleCancelDeletion}>
-            Cancel my deletion process
+          <button className="btn-danger" onClick={handleCancelDeletion}>
+            {t('deleteOn.cancelDeletionProcess')}
           </button>
         </div>
       </div>

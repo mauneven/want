@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import DetailsModal from '@/components/offer/DetailsModal';
 import ReportOfferModal from '@/components/report/ReportOfferModal';
 import { validations } from '@/utils/validations';
+import { useTranslation } from 'react-i18next';
+import GoBackButton from '@/components/reusable/GoBackButton';
 
 export default function ReceivedOffers() {
   const [offers, setOffers] = useState([]);
@@ -12,6 +14,7 @@ export default function ReceivedOffers() {
   const router = useRouter();
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedOffer, setSelectedOffer] = useState(null);
+  const { t } = useTranslation();
 
   const [selectedPost, setSelectedPost] = useState(null);
 
@@ -94,36 +97,6 @@ export default function ReceivedOffers() {
     fetchReceivedOffers();
   }, []);
 
-  useEffect(() => {
-    const fetchReceivedOffers = async () => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/received`, {
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const offersData = await response.json();
-
-        // Ordenar las ofertas por fecha de creación descendente
-        offersData.sort(compareOffersByDate);
-
-        const postsWithOffers = offersData.reduce((result, offer) => {
-          const postId = offer.post._id;
-          if (!result[postId]) {
-            result[postId] = {
-              post: offer.post,
-              offers: [],
-            };
-          }
-          result[postId].offers.push(offer);
-          return result;
-        }, {});
-        setOffers(postsWithOffers);
-      }
-    };
-
-    fetchReceivedOffers();
-  }, []);
-
   const handleDeleteOffer = async () => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/${selectedOfferId}`, {
@@ -173,27 +146,28 @@ export default function ReceivedOffers() {
       />
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Delete this offer</Modal.Title>
+          <Modal.Title>{t('receivedOffers.deleteOfferTitle')}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Sure you Want to delete this offer?, that's permanent</Modal.Body>
+        <Modal.Body>{t('receivedOffers.deleteOfferConfirmation')}</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={handleDeleteOffer}>
-            Delete
-          </Button>
+          <button onClick={() => setShowModal(false)}>
+            {t('receivedOffers.cancel')}
+          </button>
+          <button onClick={handleDeleteOffer}>
+            {t('receivedOffers.delete')}
+          </button>
         </Modal.Footer>
       </Modal>
       <div className="container">
-        <h1 className='my-4'>Received offers</h1>
+        <h1 className='my-4'>{t('receivedOffers.yourOffers')}</h1>
+        <GoBackButton/>
         <div className="row">
           <div className="col-md-3">
-            <h3 className='mb-4'>Your posts</h3>
+            <h3 className='mb-4'>{t('receivedOffers.yourPosts')}</h3>
             {Object.values(offers).map((postWithOffers) => (
               <button
                 key={postWithOffers.post._id}
-                className={`list-group-item-action mt-3 mb-3 btn ${selectedPost === postWithOffers.post._id ? "post-received-selected" : "post-received"}`}
+                className={`list-group-item-action mt-3 mb-3 ${selectedPost === postWithOffers.post._id ? "post-received-selected" : "post-received"}`}
                 onClick={() => handlePostSelect(postWithOffers.post._id)}
               >
                 <h5 className=''>{postWithOffers.post.title.substring(0, 30)}</h5>
@@ -203,15 +177,15 @@ export default function ReceivedOffers() {
           <div className="col-md-1 d-none d-md-block">
             <div className="separator h-100"></div>
           </div>
-          <div className="col-md-8 border-secondary">
-            <h3 className='mb-4'>Offers</h3>
+          <div className="col-md-8 -secondary">
+            <h3 className='mb-4'>{t('receivedOffers.offers')}</h3>
             <div className="row">
               {selectedPost && offers[selectedPost].offers
                 .slice()
                 .sort(compareOffersByDate)
                 .map((offer) => (
                   <div key={offer._id} className="col-12 col-md-6">
-                    <div className="card post rounded-5 mb-4">
+                    <div className="card post want-rounded mb-4">
                       <div>
                         <div className="card-body d-flex flex-column">
                           <div className="card-body d-flex flex-row align-items-center">
@@ -226,7 +200,7 @@ export default function ReceivedOffers() {
                             <div className="d-flex flex-column flex-grow-1">
                               <div>
                                 <h4 className="card-title">{offer.title}</h4>
-                                <span className="text-success h5">
+                                <span className="want-color h5">
                                   $ {offer.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                 </span>
                                 <p className="card-text">{offer.description}</p>
@@ -235,18 +209,16 @@ export default function ReceivedOffers() {
                           </div>
                           <div className="card-buttons-container d-flex flex-column justify-content-end mt-auto">
                             <button
-                              className="btn btn-success mb-2"
+                              className="want-button mb-2"
                               onClick={() => handleShowDetailsModal(offer)}
                             >
-                              View details
-                              <i className="bi bi-eye ms-2"></i>
+                              {t('receivedOffers.viewDetails')} <i className="bi bi-eye ms-2"></i>
                             </button>
                             <button
-                              className="btn btn-secondary mb-2"
+                              className="generic-button mb-2"
                               onClick={() => handleShowModal(offer._id)}
                             >
-                              Delete
-                              <i className="bi bi-trash3 ms-2"></i>
+                              {t('receivedOffers.delete')} <i className="bi bi-trash3 ms-2"></i>
                             </button>
                             <ReportOfferModal offerId={offer._id} onReport={handleReportOffer} />
                           </div>
@@ -262,4 +234,3 @@ export default function ReceivedOffers() {
     </>
   );
 };
-

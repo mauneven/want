@@ -1,0 +1,43 @@
+.slider-container {
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+    &::-webkit-scrollbar {
+      /* WebKit */
+      width: 0;
+      height: 0;
+    }
+  }
+  
+  .close-button-categories {
+    margin-left: 4px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+  }
+  
+  .animate__animated {
+    animation-duration: 0.5s;
+  }
+  
+  .animate__bounceIn {
+    animation-name: animate__bounceIn;
+  }
+  
+  @keyframes animate__bounceIn {
+    0% {
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  .bi {
+    cursor: pointer;
+  }
+  

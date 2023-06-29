@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Modal, Badge } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const router = useRouter();
+  const { t } = useTranslation();
   const [unreadNotifications, setUnreadNotifications] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -100,10 +102,10 @@ export default function Notifications() {
 
   return (
     <>
-      <div className='notification-icon align-items-center' onClick={handleModalOpen}>
-        <i className="bi bi-bell fs-24"></i>
+      <div className='divhover d-flex' onClick={handleModalOpen}>
+        <i className="bi bi-bell fs-3"></i>
         {unreadNotifications.length > 0 && (
-          <Badge pill bg="danger" className="position-absolute" style={{ top: -5, right: -10 }}>
+          <Badge pill bg="danger" className="position-absolute">
             {unreadNotifications.length}
           </Badge>
         )}
@@ -111,7 +113,7 @@ export default function Notifications() {
 
       <Modal centered show={showModal} onHide={() => setShowModal(false)} className='modal-lg'>
         <Modal.Header closeButton>
-          <Modal.Title>Notifications</Modal.Title>
+          <Modal.Title>{t('notifications.title')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {notifications.length > 0 ? (
@@ -122,18 +124,18 @@ export default function Notifications() {
                   handleNotificationClick(notification._id);
                   setShowModal(false);
                 }}
-                className={`notification-item ${!notification.isRead ? 'bg-primary text-white' : ''}`}
+                className={`notification-item ${!notification.isRead ? 'bg-success text-white' : ''}`}
               >
                 {notification.content}
               </div>
             ))
           ) : (
-            <div className="notification-item">Empty</div>
+            <div className="notification-item">{t('notifications.empty')}</div>
           )}
         </Modal.Body>
         <Modal.Footer>
           <button
-            className="btn btn-success rounded-5"
+            className=" want-button want-rounded"
             onClick={markAllNotificationsAsRead}
             disabled={isLoading}
           >
@@ -144,11 +146,11 @@ export default function Notifications() {
                 aria-hidden="true"
               ></span>
             )}
-            {isLoading ? 'Marking as read...' : 'Mark all as read'}
+            {isLoading ? t('notifications.markingRead') : t('notifications.markAllRead')}
           </button>
         </Modal.Footer>
 
       </Modal>
     </>
   );
-};
+}

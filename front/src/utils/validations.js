@@ -23,7 +23,7 @@ export const validations = async (router) => {
     });
   
     if (!verifiedResponse.ok) {
-      router.push('/is-not-verified');
+      router.push('/verify');
       return;
     }
   

@@ -1,26 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container } from 'react-bootstrap';
-import MegaMenu from '@/components/navigation/Navbar';
-import Footer from '@/components/footer/Footer';
+import React, { useState, useEffect, Suspense } from "react";
+import MegaMenu from "@/components/navigation/Navbar";
+import { LanguageProvider } from "@/components/language/LanguageProvider";
+import { Provider } from "react-redux";
+import store from "@/store/store";
+import Footer from "@/components/footer/Footer";
+import i18n from "../../i18n";
+import "../../node_modules/leaflet/dist/leaflet.css";
+
+import "../../public/css/app.css";
+import "../../public/css/categories.css";
+import "../../public/css/navbar.css";
+import "../../public/css/mobile-menu.css";
+import "../../public/css/posts.css";
+import "../../public/css/modals.css";
+import "../../public/css/login.css";
+import "../../public/css/notifications.css";
+import "../../public/css/postById.css";
+import "../../public/css/receivedOffers.css";
+import "../../public/css/footer.css";
+import "../../public/css/post-category.css"
+import MobileMenu from "@/components/navigation/MobileMenu";
 
 export default function MyApp({ Component, pageProps }) {
+  const [hasMounted, setHasMounted] = useState(false);
+
   const [locationFilter, setLocationFilter] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
 
   const isMobileDevice = () => {
     return (
-      typeof window.orientation !== 'undefined' ||
-      navigator.userAgent.indexOf('IEMobile') !== -1
+      typeof window.orientation !== "undefined" ||
+      navigator.userAgent.indexOf("IEMobile") !== -1
     );
   };
 
   const handleLocationFilterChange = (filter) => {
     setLocationFilter(filter);
-    localStorage.setItem('locationFilter', JSON.stringify(filter));
+    localStorage.setItem("locationFilter", JSON.stringify(filter));
   };
 
   const handleSearchTermChange = (newSearchTerm) => {
@@ -33,42 +52,72 @@ export default function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     setIsMobile(isMobileDevice());
+    setHasMounted(true); // indicamos que la aplicación se ha montado
   }, []);
 
+  
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 1000);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1000);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    const checkLocalStorage = () => {
+      const savedLanguage = localStorage.getItem("selectedLanguage");
+      if (savedLanguage) {
+        i18n.changeLanguage(savedLanguage);
+      }
+    };
+
+    checkLocalStorage();
+  }, []);
+
+  if (!hasMounted) {
+    return null;
+  }
+
   return (
-    <div>
-      <header className="sticky-top">
-        <MegaMenu
-          onLocationFilterChange={handleLocationFilterChange}
-          onSearchTermChange={handleSearchTermChange}
-          onCategoryFilterChange={handleCategoryFilterChange}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        />
-        <link rel="stylesheet" href="/css/navbar.css" />
-      </header>
+    <LanguageProvider>
+      <div className="container-fluid">
+        <header className="sticky-top">
+          <MegaMenu
+            onSearchTermChange={handleSearchTermChange}
+            onCategoryFilterChange={handleCategoryFilterChange}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        </header>
 
-      <Container className="containerboy">
-        <Component
-          {...pageProps}
-          locationFilter={locationFilter}
-          searchTerm={searchTerm}
-          categoryFilter={categoryFilter}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        />
-        <link rel="stylesheet" href="/css/posts.css" />
-        <link rel="stylesheet" href="/css/modals.css" />
-        <link rel="stylesheet" href="/css/login.css" />
-        <link rel="stylesheet" href="/css/notifications.css" />
-        <link rel="stylesheet" href="/css/postById.css" />
-        <link rel="stylesheet" href="/css/receivedOffers.css" />
-      </Container>
+        <div className="">
+          <Provider store={store}>
+            <Suspense fallback="Loading...">
+              <Component
+                {...pageProps}
+                locationFilter={locationFilter}
+                searchTerm={searchTerm}
+                categoryFilter={categoryFilter}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+              />
+            </Suspense>
+          </Provider>
+        </div>
 
-      <footer>
-        <Footer />
-        <link rel="stylesheet" href="/css/footer.css" />
-      </footer>
-    </div>
+        <footer>
+          <div className="want-container">
+            {isMobile? (
+              <MobileMenu/>
+            ) : <Footer/>}
+            
+          </div>
+        </footer>
+      </div>
+    </LanguageProvider>
   );
 }

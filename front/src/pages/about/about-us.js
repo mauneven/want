@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import { Container, Row, Col } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 const vision = "Our vision is to create a platform that allows users to post their needs and find offers from other users in a safe and reliable environment. We want to facilitate negotiations between users and create a trusted community where everyone can benefit from the exchange of goods and services."
 const mission = "Our mission is to build a user-friendly platform that connects people who need something with people who can offer something. We want to make it easy for users to post their needs and find offers from others while providing a secure and reliable environment for negotiations. We aim to create a platform that benefits all involved and fosters collaboration and mutual support."

@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const Logout = () => {
+  const { t } = useTranslation();
+
   useEffect(() => {
     const logout = async () => {
       try {
@@ -26,7 +29,7 @@ const Logout = () => {
 
   return (
     <div className="container">
-      <h1>See you soon...</h1>  
+      <h1>{t('logoutPage.message')}</h1>
     </div>
   );
 };

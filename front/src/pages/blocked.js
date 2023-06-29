@@ -1,16 +1,15 @@
-// pages/blocked.js
-
 import React from 'react';
 import { Container } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 const Blocked = () => {
+  const { t } = useTranslation();
+
   return (
     <Container>
-      <h1>You have been banned</h1>
-      <p>Your account has been blocked due to multiple reports.</p>
-      <p>
-      If you think this is a mistake, please contact support.
-      </p>
+      <h1>{t('blocked.title')}</h1>
+      <p>{t('blocked.description')}</p>
+      <p>{t('blocked.contactSupport')}</p>
     </Container>
   );
 };

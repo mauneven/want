@@ -1,0 +1,936 @@
+
+{
+  "navbar": {
+  "home": "Accueil",
+  "wantSomething": "Créer une publication",
+  "selectCategory": "Sélectionnez une catégorie",
+  "searchPlaceholder": "Les gens veulent...",
+  "myPosts": "Publications",
+  "sentOffers": "Envoyées",
+  "receivedOffers": "Reçues",
+  "myProfile": "Profil",
+  "logout": "Déconnexion",
+  "login": "Se connecter",
+  "menu": "Menu"
+  },
+  "createPost": {
+  "title": "Créez une publication sur ce que vous voulez",
+  "titleLabel": "Attribuez un titre à ce que vous voulez*",
+  "descriptionLabel": "Décrivez en détail ce que vous voulez*",
+  "priceLabel": "Combien seriez-vous prêt à payer pour ce que vous voulez*",
+  "priceText": "Prix : {{price}}",
+  "categoriesLabel": "Organisez ou définissez en 3 catégories ce que vous voulez*",
+  "locationLabel": "Fournissez une localisation approximative de l'endroit où vous voulez cela*",
+  "photosLabel": "Téléchargez jusqu'à 4 photos de ce que vous voulez*",
+  "missingFieldsError": "Veuillez remplir tous les champs obligatoires :\n{{fields}}",
+  "createPostButton": "Créer une publication"
+  },
+  "createOffer": {
+  "title": "Titre de l'offre",
+  "description": "Description de l'offre"
+  },
+  "wantSomething": {
+  "title": "Titre de la publication",
+  "description": "Description de la publication"
+  },
+  "postDetails": {
+  "makeAnOffer": "Faire une offre",
+  "publishedIn": "Publié dans"
+  },
+  "myPosts": {
+  "deletePostTitle": "Supprimer cette publication",
+  "deletePostConfirmation": "Êtes-vous sûr(e) ?",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "yourPosts": "Vos publications",
+  "edit": "Modifier"
+  },
+  "editProfile": {
+  "checkEditProfile": "Vérifiez et modifiez votre profil",
+  "firstName": "Prénom",
+  "lastName": "Nom",
+  "phone": "Téléphone",
+  "birthdate": "Date de naissance",
+  "changeProfilePhoto": "Changer la photo de profil",
+  "invalidImageFileType": "Le fichier doit être une image JPG, JPEG ou PNG.",
+  "imageFileSizeExceeded": "La taille du fichier doit être inférieure à 50 Mo.",
+  "cancel": "Annuler",
+  "update": "Mettre à jour",
+  "changePassword": "Changer le mot de passe",
+  "deleteAccount": "Supprimer le compte",
+  "deleteAccountConfirmation": "Êtes-vous sûr(e) de vouloir mettre votre compte en file d'attente de suppression ? Votre compte sera supprimé dans 30 jours.",
+  "deleteAccountError": "Erreur lors de la suppression du compte",
+  "updateUserError": "Erreur lors de la mise à jour de l'utilisateur",
+  "updateUserPhotoError": "Erreur lors de la mise à jour de la photo de l'utilisateur"
+  },
+  "sentOffers": {
+  "deleteOfferTitle": "Supprimer l'offre",
+  "deleteOfferConfirmation": "Êtes-vous sûr(e) ?",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "yourOffers": "Vos offres envoyées",
+  "price": "Prix",
+  "viewDetails": "Voir les détails"
+  },
+  "receivedOffers": {
+  "deleteOfferTitle": "Supprimer cette offre",
+  "deleteOfferConfirmation": "Êtes-vous sûr(e) de vouloir supprimer cette offre ? Cette action est définitive.",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "yourOffers": "Vos offres reçues",
+  "yourPosts": "Vos publications",
+  "offers": "Offres",
+  "viewDetails": "Voir les détails"
+  },
+  "changePassword": {
+  "title": "Changer le mot de passe",
+  "currentPasswordLabel": "Ancien mot de passe",
+  "newPasswordLabel": "Nouveau mot de passe",
+  "confirmNewPasswordLabel": "Confirmer le nouveau mot de passe",
+  "passwordsMismatch": "Les mots de passe ne correspondent pas",
+  "changePasswordButton": "Changer mon mot de passe",
+  "passwordChanged": "Mot de passe modifié avec succès",
+  "error": "Erreur : Impossible de changer le mot de passe"
+  },
+  "languageSelector": {
+  "chooseLanguage": "Choisir la langue",
+  "selectLanguage": "Sélectionner la langue",
+  "languageSelectionDescription": "Choisissez la langue que vous préférez pour l'interface de Want. Veuillez noter que cette sélection n'affectera que l'interface de Want et non la langue du contenu généré par les utilisateurs. Veuillez noter que cette fonctionnalité est encore en développement et que les traductions et les éléments de l'interface utilisateur sont toujours en cours de révision pour garantir précision et qualité.",
+  "english": "Anglais",
+  "spanish": "Espagnol",
+  "french": "Français"
+  },
+  "passwordRecovery": {
+  "title": "Récupération du mot de passe",
+  "emailLabel": "Votre adresse e-mail",
+  "submitButton": "Envoyer une demande de récupération",
+  "emailSent": "Un e-mail a été envoyé pour récupérer votre compte",
+  "emailError": "Erreur : Impossible d'envoyer l'e-mail de récupération"
+  },
+  "postsLocation": {
+  "selectLocation": "Sélectionner une localisation",
+  "searchLocation": "Rechercher votre localisation...",
+  "currentLocation": "Localisation actuelle",
+  "allowLocationAccess": "Autorisez l'accès à votre localisation pour voir les publications à proximité. Si vous ne souhaitez pas autoriser l'accès à votre localisation, saisissez la localisation où vous souhaitez voir les publications.",
+  "selectRadius": "Sélectionner un rayon (km) :",
+  "everywhere": "Partout BETA",
+  "useCurrentLocation": "Utiliser ma localisation actuelle"
+  },
+  "reportOfferModal": {
+  "report": "Signaler",
+  "reportOffer": "Signaler cette offre",
+  "describe": "Décrivez pourquoi vous signalez cette offre",
+  "sendReport": "Envoyer le rapport"
+  },
+  "reportPostModal": {
+  "reportPost": "Signaler cette publication",
+  "describe": "Décrivez pourquoi vous signalez cette publication",
+  "sendReport": "Envoyer le rapport"
+  },
+  "verificationPage": {
+  "title": "Vérification",
+  "enterVerificationCodeMessage": "Entrez le code de vérification",
+  "verificationCodeLabel": "Code de vérification",
+  "verificationCodePlaceholder": "Entrez le code de vérification",
+  "resendVerificationButton": "Renvoyer le code de vérification",
+  "verifyButton": "Vérifier",
+  "invalidTokenErrorMessage": "Erreur : Jeton de vérification invalide",
+  "incorrectCode": "Code de vérification incorrect",
+  "resendVerificationErrorMessage": "Erreur lors de la réexpédition du code de vérification",
+  "verificationCodeResentMessage": "Code de vérification renvoyé"
+  },
+  "logoutPage": {
+  "message": "À bientôt !"
+  },
+  "goBackButton": {
+  "homeButton": "Retourner à l'accueil"
+  },
+  "login": {
+  "loginTitle": "Se connecter",
+  "signupTitle": "S'inscrire",
+  "emailLabel": "Adresse e-mail :",
+  "emailPlaceholder": "votreadresse@example.com",
+  "passwordLabel": "Mot de passe :",
+  "passwordPlaceholder": "votre mot de passe",
+  "confirmPasswordLabel": "Confirmer le mot de passe :",
+  "confirmPasswordPlaceholder": "confirmez votre mot de passe",
+  "firstNameLabel": "Prénom :",
+  "lastNameLabel": "Nom :",
+  "phoneLabel": "Numéro de téléphone :",
+  "birthdateLabel": "Date de naissance :",
+  "noAccountText": "Vous n'avez pas de compte ?",
+  "haveAccountText": "Vous avez déjà un compte ?",
+  "signupLink": "S'inscrire",
+  "loginLink": "Se connecter",
+  "loginButton": "Se connecter",
+  "signupButton": "S'inscrire",
+  "ageValidationMessage": "Vous devez avoir au moins 14 ans pour créer un compte.",
+  "forgotPasswordLink": "J'ai oublié mon mot de passe, aidez-moi",
+  "invalidCredentialsErrorMessage": "Adresse e-mail ou mot de passe incorrects.",
+  "passwordValidationErrorMessage": "Les mots de passe doivent comporter au moins une majuscule, un chiffre et être composés de 8 caractères.",
+  "passwordMatchErrorMessage": "Les mots de passe ne correspondent pas"
+  },
+  "footer": {
+  "wantTitle": "Want",
+  "aboutUs": "À propos de nous",
+  "data": "Données",
+  "contact": "Contact",
+  "subscriptionsTitle": "Abonnements",
+  "wantPlus": "Want+",
+  "wantAI": "Want avec IA",
+  "limitations": "Limitations",
+  "legalTitle": "Légal",
+  "privacy": "Confidentialité",
+  "termsAndConditions": "Conditions générales",
+  "helpTitle": "Aide",
+  "howToUseWant": "Comment utiliser Want",
+  "support": "Support",
+  "howTo": "Comment...",
+  "allRightsReserved": "Tous droits réservés."
+  },
+  "deleteOn": {
+  "deletionProcessTitle": "Votre compte est en cours de suppression.",
+  "continueDeletionProcess": "Continuer le processus de suppression",
+  "cancelDeletionProcess": "Annuler le processus de suppression"
+  },
+  "isNotVerified": {
+  "title": "Nous y sommes presque !",
+  "description": "Vous devez vérifier votre compte pour que nous sachions que c'est vous. Nous avons envoyé un e-mail avec un lien pour vérifier votre compte.",
+  "homepageLink": "En attendant, vous pouvez revenir à la page d'accueil"
+  },
+  "custom404": {
+  "title": "Oups, cette page n'est pas pour vous",
+  "description": "Désolé, la page que vous recherchez n'existe pas.",
+  "homeLink": "Aller à la page d'accueil"
+  },
+  "blocked": {
+  "title": "Vous avez été bloqué",
+  "description": "Votre compte a été bloqué en raison de plusieurs signalements.",
+  "contactSupport": "Si vous pensez qu'il s'agit d'une erreur, veuillez contacter le support."
+  },
+  "verifyEmail": {
+  "title": "Vérification de l'e-mail",
+  "successMessage": "Votre adresse e-mail a été vérifiée avec succès. Vous pouvez maintenant publier.",
+  "alreadyConfirmedMessage": "Votre adresse e-mail a déjà été confirmée.",
+  "expiredLinkMessage": "Votre lien de validation a expiré. Veuillez demander un nouveau lien.",
+  "errorMessage": "Une erreur s'est produite lors de la vérification de votre adresse e-mail.",
+  "resendSuccessMessage": "Un nouvel e-mail de vérification a été envoyé. Veuillez vérifier votre boîte de réception.",
+  "resendErrorMessage": "Une erreur s'est produite lors de la réexpédition de l'e-mail de vérification.",
+  "emailPlaceholder": "Adresse e-mail",
+  "resendButton": "Demander un nouveau lien de vérification"
+  },
+  "createOfferModal": {
+  "creatingOfferFor": "Création d'une offre pour ",
+  "paymentAmount": "Paiement jusqu'à ",
+  "doYourBestOffer": "Faites votre meilleure offre",
+  "offerTitle": "Titre de l'offre*",
+  "offerDescription": "Décrivez votre offre*",
+  "phoneContact": "Si vous le souhaitez, incluez votre numéro WhatsApp ou votre numéro de téléphone pour un contact direct",
+  "chooseCountryCode": "Choisissez un code de pays",
+  "phoneNumber": "Numéro de téléphone",
+  "otherContact": "Y a-t-il un autre moyen par lequel cette personne peut vous contacter ?",
+  "offerPrice": "Prix de l'offre*",
+  "priceLabel": "Prix : ",
+  "uploadPhotos": "Téléchargez des photos*",
+  "creating": "Création en cours...",
+  "createOffer": "Créer une offre"
+  },
+  "detailsModal": {
+  "offerForPost": "Offre pour votre publication {{title}}",
+  "offerBy": "Offert par",
+  "otherWaysToContact": "Autres façons de contacter {{firstName}} : {{contact}}",
+  "closeButton": "Fermer"
+  },
+  "resetPassword": {
+  "resetPasswordTitle": "Réinitialiser le mot de passe",
+  "newPasswordLabel": "Nouveau mot de passe",
+  "confirmNewPasswordLabel": "Confirmer le nouveau mot de passe",
+  "resetPasswordButton": "Réinitialiser le mot de passe",
+  "passwordMismatch": "Les mots de passe ne correspondent pas",
+  "passwordResetSuccess": "Mot de passe réinitialisé avec succès",
+  "passwordResetError": "Erreur : Impossible de réinitialiser le mot de passe"
+  },
+  "notifications": {
+  "title": "Notifications",
+  "empty": "Vide",
+  "markAllRead": "Marquer tout comme lu",
+  "markingRead": "Marquage en cours..."
+  },
+  "categories": {
+    "selectMainCategory": "1 | catégorie générale",
+    "selectSubCategory": "2 |  sous-catégorie",
+    "selectThirdCategory": "3 | catégorie spécifique",
+    "1": {
+      "name": "Technologie",
+      "subcategories": {
+        "1.1": {
+          "name": "Composants informatiques",
+          "thirdCategories": {
+            "1.1.1": {
+              "name": "Cartes graphiques"
+            },
+            "1.1.2": {
+              "name": "RAM"
+            },
+            "1.1.3": {
+              "name": "Cartes mères"
+            },
+            "1.1.4": {
+              "name": "SSD"
+            },
+            "1.1.5": {
+              "name": "Disques durs"
+            },
+            "1.1.6": {
+              "name": "Bloc d'alimentation"
+            },
+            "1.1.7": {
+              "name": "Boîtiers d'ordinateur"
+            }
+          }
+        },
+        "1.2": {
+          "name": "Smartphones",
+          "thirdCategories": {
+            "1.2.1": {
+              "name": "Apple / iPhone"
+            },
+            "1.2.2": {
+              "name": "Samsung"
+            },
+            "1.2.3": {
+              "name": "Google"
+            },
+            "1.2.4": {
+              "name": "OnePlus"
+            },
+            "1.2.5": {
+              "name": "Xiaomi"
+            },
+            "1.2.6": {
+              "name": "Huawei"
+            }
+          }
+        },
+        "1.3": {
+          "name": "Électronique",
+          "thirdCategories": {
+            "1.3.1": {
+              "name": "Téléviseurs"
+            },
+            "1.3.2": {
+              "name": "Ordinateurs portables"
+            },
+            "1.3.3": {
+              "name": "Appareils photo"
+            },
+            "1.3.4": {
+              "name": "Écouteurs"
+            },
+            "1.3.5": {
+              "name": "Enceintes"
+            },
+            "1.3.6": {
+              "name": "Montres intelligentes"
+            }
+          }
+        },
+        "1.4": {
+          "name": "Appareils électroménagers",
+          "thirdCategories": {
+            "1.4.1": {
+              "name": "Réfrigérateurs"
+            },
+            "1.4.2": {
+              "name": "Machines à laver"
+            },
+            "1.4.3": {
+              "name": "Fours"
+            },
+            "1.4.4": {
+              "name": "Aspirateurs"
+            },
+            "1.4.5": {
+              "name": "Climatiseurs"
+            },
+            "1.4.6": {
+              "name": "Micro-ondes"
+            }
+          }
+        }
+      }
+    },
+    "2": {
+      "name": "Véhicules",
+      "subcategories": {
+        "2.1": {
+          "name": "Voitures",
+          "thirdCategories": {
+            "2.1.1": {
+              "name": "Berlines"
+            },
+            "2.1.2": {
+              "name": "VUS"
+            },
+            "2.1.3": {
+              "name": "Hayons"
+            },
+            "2.1.4": {
+              "name": "Camions"
+            },
+            "2.1.5": {
+              "name": "Voitures de sport"
+            },
+            "2.1.6": {
+              "name": "Voitures électriques"
+            },
+            "2.1.7": {
+              "name": "Décapotables"
+            },
+            "2.1.8": {
+              "name": "Coupés"
+            },
+            "2.1.9": {
+              "name": "Fourgonnettes"
+            }
+          }
+        },
+        "2.2": {
+          "name": "Motos",
+          "thirdCategories": {
+            "2.2.1": {
+              "name": "Motos sportives"
+            },
+            "2.2.2": {
+              "name": "Motos de croisière"
+            },
+            "2.2.3": {
+              "name": "Motos tout-terrain"
+            },
+            "2.2.4": {
+              "name": "Scooters"
+            },
+            "2.2.5": {
+              "name": "Motos de tourisme"
+            },
+            "2.2.6": {
+              "name": "Mobylettes"
+            }
+          }
+        },
+        "2.3": {
+          "name": "Bateaux",
+          "thirdCategories": {
+            "2.3.1": {
+              "name": "Voiliers"
+            },
+            "2.3.2": {
+              "name": "Bateaux à moteur"
+            },
+            "2.3.3": {
+              "name": "Yachts"
+            },
+            "2.3.4": {
+              "name": "Bateaux de pêche"
+            },
+            "2.3.5": {
+              "name": "Jet Skis"
+            },
+            "2.3.6": {
+              "name": "Canoës/Kayaks"
+            }
+          }
+        }
+      }
+    },
+    "3": {
+      "name": "Vêtements",
+      "subcategories": {
+        "3.1": {
+          "name": "Chemises",
+          "thirdCategories": {
+            "3.1.1": {
+              "name": "Chemises boutonnées"
+            },
+            "3.1.2": {
+              "name": "T-shirts"
+            },
+            "3.1.3": {
+              "name": "Polos"
+            },
+            "3.1.4": {
+              "name": "Chemises à manches longues"
+            }
+          }
+        },
+        "3.2": {
+          "name": "Pantalons",
+          "thirdCategories": {
+            "3.2.1": {
+              "name": "Jeans"
+            },
+            "3.2.2": {
+              "name": "Chinos"
+            },
+            "3.2.3": {
+              "name": "Pantalons cargo"
+            },
+            "3.2.4": {
+              "name": "Shorts"
+            }
+          }
+        },
+        "3.3": {
+          "name": "Robes",
+          "thirdCategories": {
+            "3.3.1": {
+              "name": "Robes de cocktail"
+            },
+            "3.3.2": {
+              "name": "Robes longues"
+            },
+            "3.3.3": {
+              "name": "Robes d'été"
+            },
+            "3.3.4": {
+              "name": "Robes de soirée"
+            }
+          }
+        },
+        "3.4": {
+          "name": "Chaussures",
+          "thirdCategories": {
+            "3.4.1": {
+              "name": "Baskets"
+            },
+            "3.4.2": {
+              "name": "Bottes"
+            },
+            "3.4.3": {
+              "name": "Chaussures plates"
+            },
+            "3.4.4": {
+              "name": "Talons"
+            }
+          }
+        }
+      }
+    },
+    "4": {
+      "name": "Maison",
+      "subcategories": {
+        "4.1": {
+          "name": "Mobilier",
+          "thirdCategories": {
+            "4.1.1": {
+              "name": "Canapés"
+            },
+            "4.1.2": {
+              "name": "Tables"
+            },
+            "4.1.3": {
+              "name": "Chaises"
+            },
+            "4.1.4": {
+              "name": "Lits"
+            },
+            "4.1.5": {
+              "name": "Armoires"
+            },
+            "4.1.6": {
+              "name": "Bureaux"
+            }
+          }
+        },
+        "4.2": {
+          "name": "Électroménagers de cuisine",
+          "thirdCategories": {
+            "4.2.1": {
+              "name": "Réfrigérateurs"
+            },
+            "4.2.2": {
+              "name": "Cuisinières"
+            },
+            "4.2.3": {
+              "name": "Micro-ondes"
+            },
+            "4.2.4": {
+              "name": "Lave-vaisselle"
+            },
+            "4.2.5": {
+              "name": "Machines à café"
+            },
+            "4.2.6": {
+              "name": "Mixeurs"
+            }
+          }
+        },
+        "4.3": {
+          "name": "Décoration intérieure",
+          "thirdCategories": {
+            "4.3.1": {
+              "name": "Art mural"
+            },
+            "4.3.2": {
+              "name": "Rideaux"
+            },
+            "4.3.3": {
+              "name": "Tapis"
+            },
+            "4.3.4": {
+              "name": "Coussins décoratifs"
+            },
+            "4.3.5": {
+              "name": "Bougies"
+            },
+            "4.3.6": {
+              "name": "Vases"
+            }
+          }
+        },
+        "4.4": {
+          "name": "Améliorations résidentielles",
+          "thirdCategories": {
+            "4.4.1": {
+              "name": "Outils"
+            },
+            "4.4.2": {
+              "name": "Peinture"
+            },
+            "4.4.3": {
+              "name": "Éclairage"
+            },
+            "4.4.4": {
+              "name": "Plomberie"
+            },
+            "4.4.5": {
+              "name": "Électricité"
+            },
+            "4.4.6": {
+              "name": "Revêtements de sol"
+            }
+          }
+        }
+      }
+    },
+    "5": {
+      "name": "Outils",
+      "subcategories": {
+        "5.1": {
+          "name": "Outils électriques",
+          "thirdCategories": {
+            "5.1.1": {
+              "name": "Perceuses"
+            },
+            "5.1.2": {
+              "name": "Scies"
+            },
+            "5.1.3": {
+              "name": "Ponceuses"
+            },
+            "5.1.4": {
+              "name": "Meuleuses"
+            },
+            "5.1.5": {
+              "name": "Machines à souder"
+            },
+            "5.1.6": {
+              "name": "Compresseurs d'air"
+            }
+          }
+        },
+        "5.2": {
+          "name": "Outils à main",
+          "thirdCategories": {
+            "5.2.1": {
+              "name": "Marteaux"
+            },
+            "5.2.2": {
+              "name": "Tournevis"
+            },
+            "5.2.3": {
+              "name": "Pinces"
+            },
+            "5.2.4": {
+              "name": "Clés"
+            },
+            "5.2.5": {
+              "name": "Ensembles de douilles"
+            },
+            "5.2.6": {
+              "name": "Couteaux"
+            }
+          }
+        },
+        "5.3": {
+          "name": "Outils de jardinage",
+          "thirdCategories": {
+            "5.3.1": {
+              "name": "Tondeuses à gazon"
+            },
+            "5.3.2": {
+              "name": "Taille-haies"
+            },
+            "5.3.3": {
+              "name": "Sécateurs"
+            },
+            "5.3.4": {
+              "name": "Souffleurs de feuilles"
+            },
+            "5.3.5": {
+              "name": "Tuyaux d'arrosage"
+            },
+            "5.3.6": {
+              "name": "Arroseurs"
+            }
+          }
+        }
+      }
+    },
+    "6": {
+      "name": "Services",
+      "subcategories": {
+        "6.1": {
+          "name": "Services à domicile",
+          "thirdCategories": {
+            "6.1.1": {
+              "name": "Services de nettoyage"
+            },
+            "6.1.2": {
+              "name": "Services de plomberie"
+            },
+            "6.1.3": {
+              "name": "Services électriques"
+            },
+            "6.1.4": {
+              "name": "Services d'aménagement paysager"
+            },
+            "6.1.5": {
+              "name": "Services de déménagement"
+            },
+            "6.1.6": {
+              "name": "Services de peinture"
+            }
+          }
+        },
+        "6.2": {
+          "name": "Services personnels",
+          "thirdCategories": {
+            "6.2.1": {
+              "name": "Services de beauté"
+            },
+            "6.2.2": {
+              "name": "Services de remise en forme"
+            },
+            "6.2.3": {
+              "name": "Services de tutorat"
+            },
+            "6.2.4": {
+              "name": "Services de photographie"
+            },
+            "6.2.5": {
+              "name": "Services de planification d'événements"
+            },
+            "6.2.6": {
+              "name": "Services de massage"
+            }
+          }
+        },
+        "6.3": {
+          "name": "Services professionnels",
+          "thirdCategories": {
+            "6.3.1": {
+              "name": "Services juridiques"
+            },
+            "6.3.2": {
+              "name": "Services de comptabilité"
+            },
+            "6.3.3": {
+              "name": "Services informatiques"
+            },
+            "6.3.4": {
+              "name": "Services de marketing"
+            },
+            "6.3.5": {
+              "name": "Services de conseil"
+            },
+            "6.3.6": {
+              "name": "Services financiers"
+            }
+          }
+        }
+      }
+    },
+    "7": {
+      "name": "Éducation",
+      "subcategories": {
+        "7.1": {
+          "name": "Tutorat",
+          "thirdCategories": {
+            "7.1.1": {
+              "name": "Tutorat en mathématiques"
+            },
+            "7.1.2": {
+              "name": "Tutorat en langues"
+            },
+            "7.1.3": {
+              "name": "Tutorat en sciences"
+            },
+            "7.1.4": {
+              "name": "Tutorat en musique"
+            },
+            "7.1.5": {
+              "name": "Tutorat en préparation aux examens"
+            },
+            "7.1.6": {
+              "name": "Tutorat en art"
+            }
+          }
+        },
+        "7.2": {
+          "name": "Cours en ligne",
+          "thirdCategories": {
+            "7.2.1": {
+              "name": "Cours de programmation"
+            },
+            "7.2.2": {
+              "name": "Cours de commerce"
+            },
+            "7.2.3": {
+              "name": "Cours de marketing"
+            },
+            "7.2.4": {
+              "name": "Cours de langues"
+            },
+            "7.2.5": {
+              "name": "Cours de photographie"
+            },
+            "7.2.6": {
+              "name": "Cours de cuisine"
+            }
+          }
+        },
+        "7.3": {
+          "name": "Jouets éducatifs",
+          "thirdCategories": {
+            "7.3.1": {
+              "name": "Puzzles"
+            },
+            "7.3.2": {
+              "name": "Blocs de construction"
+            },
+            "7.3.3": {
+              "name": "Kits scientifiques"
+            },
+            "7.3.4": {
+              "name": "Matériel artistique"
+            },
+            "7.3.5": {
+              "name": "Instruments de musique"
+            },
+            "7.3.6": {
+              "name": "Jeux éducatifs"
+            }
+          }
+        },
+        "7.4": {
+          "name": "Manuels scolaires",
+          "thirdCategories": {
+            "7.4.1": {
+              "name": "Manuels de mathématiques"
+            },
+            "7.4.2": {
+              "name": "Manuels de sciences"
+            },
+            "7.4.3": {
+              "name": "Manuels de littérature"
+            },
+            "7.4.4": {
+              "name": "Manuels d'histoire"
+            },
+            "7.4.5": {
+              "name": "Manuels d'art"
+            },
+            "7.4.6": {
+              "name": "Manuels de commerce"
+            }
+          }
+        }
+      }
+    },
+    "8": {
+      "name": "Machines lourdes",
+      "subcategories": {
+        "8.1": {
+          "name": "Machines de construction",
+          "thirdCategories": {
+            "8.1.1": {
+              "name": "Excavatrices"
+            },
+            "8.1.2": {
+              "name": "Bulldozers"
+            },
+            "8.1.3": {
+              "name": "Grues"
+            },
+            "8.1.4": {
+              "name": "Chargeuses"
+            },
+            "8.1.5": {
+              "name": "Camions-bennes"
+            },
+            "8.1.6": {
+              "name": "Malaxeurs à béton"
+            }
+          }
+        },
+        "8.2": {
+          "name": "Machines agricoles",
+          "thirdCategories": {
+            "8.2.1": {
+              "name": "Tracteurs"
+            },
+            "8.2.2": {
+              "name": "Moissonneuses"
+            },
+            "8.2.3": {
+              "name": "Semeuses"
+            },
+            "8.2.4": {
+              "name": "Pulvérisateurs"
+            },
+            "8.2.5": {
+              "name": "Presses à balles"
+            },
+            "8.2.6": {
+              "name": "Tondeuses"
+            }
+          }
+        },
+        "8.3": {
+          "name": "Machines forestières",
+          "thirdCategories": {
+            "8.3.1": {
+              "name": "Moissonneuses"
+            },
+            "8.3.2": {
+              "name": "Porteurs"
+            },
+            "8.3.3": {
+              "name": "Broyeurs"
+            },
+            "8.3.4": {
+              "name": "Meuleuses"
+            },
+            "8.3.5": {
+              "name": "Débusqueuses"
+            },
+            "8.3.6": {
+              "name": "Déchiqueteuses"
+            }
+          }
+        }
+      }
+    }
+  }
+}

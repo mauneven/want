@@ -1,9 +1,9 @@
-// components/ReportPostModal.js
-
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 const ReportPostModal = ({ postId, onReport }) => {
+  const { t } = useTranslation();
   const [show, setShow] = useState(false);
   const [description, setDescription] = useState('');
 
@@ -19,18 +19,18 @@ const ReportPostModal = ({ postId, onReport }) => {
 
   return (
     <>
-      <Button type='none' variant="rounded-circle" onClick={handleShow}>
-      <i className="bi bi-flag"></i>
-      </Button>
+      <button type='none' onClick={handleShow}>
+        <i className="bi bi-flag"></i>
+      </button>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Report this post</Modal.Title>
+          <Modal.Title>{t('reportPostModal.reportPost')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
             <Form.Group>
-              <Form.Label>Describe why you're reporting this post</Form.Label>
+              <Form.Label>{t('reportPostModal.describe')}</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
@@ -39,9 +39,9 @@ const ReportPostModal = ({ postId, onReport }) => {
                 required
               />
             </Form.Group>
-            <Button variant="primary" type="submit">
-              Send report
-            </Button>
+            <button type="submit">
+              {t('reportPostModal.sendReport')}
+            </button>
           </Form>
         </Modal.Body>
       </Modal>

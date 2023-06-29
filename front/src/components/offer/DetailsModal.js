@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import UserModal from "../user/UserModal";
+import { useTranslation } from 'react-i18next';
 
 const DetailsModal = ({ show, onHide, offer }) => {
   if (!offer) return null;
@@ -14,6 +15,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [selectedUser, setSelectedUser] = useState(null);
   const [showUserModal, setShowUserModal] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (offer.photos && offer.photos.length > 0) {
@@ -87,7 +89,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
     <>
       <Modal show={show} onHide={onHide} dialogClassName="modal-xl">
         <Modal.Header closeButton>
-          <Modal.Title>Offer for your post {offer.post.title}</Modal.Title>
+          <Modal.Title>{t('detailsModal.offerForPost', { title: offer.post.title })}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="row">
@@ -140,14 +142,14 @@ const DetailsModal = ({ show, onHide, offer }) => {
               )}
               <h2 className='mt-2'>{offer.title}</h2>
               <p>
-                <span className="text-success h3">
+                <span className="want-color h3">
                   $ {offer.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 </span>
               </p>
               <p>{offer.description}</p>
               <p className='mb-2'>
-                Offer by{' '}
-                <span className="text-success" style={{ cursor: 'pointer' }} onClick={() => openUserModal(offer.createdBy)}>
+                {t('detailsModal.offerBy')}{' '}
+                <span className="want-color" style={{ cursor: 'pointer' }} onClick={() => openUserModal(offer.createdBy)}>
                   {offer.createdBy.firstName} {offer.createdBy.lastName}
                 </span>
               </p>
@@ -155,7 +157,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
                 <>
                 <div>
                   <button
-                    className="btn rounded-5 btn-success mt-2 mb-2"
+                    className="btn want-rounded want-button mt-2 mb-2"
                     onClick={() => window.open(`https://wa.me/${offer.countryCode}${offer.phoneNumber}`, '_blank')}
                   >
                     <i className="bi bi-whatsapp mt-2"></i>{`+${offer.countryCode} ${offer.phoneNumber}`}
@@ -163,14 +165,14 @@ const DetailsModal = ({ show, onHide, offer }) => {
                   </div>
                   <div>
                   <button
-                    className="btn-primary btn rounded-5 mt-2 mb-2"
+                    className="want-button btn want-rounded mt-2 mb-2"
                     onClick={() => window.open(`tel:+${offer.countryCode}${offer.phoneNumber}`, '_blank')}
                   >
                     <i className="bi bi-telephone-forward"></i> {`+${offer.countryCode} ${offer.phoneNumber}`}
                   </button>
                   </div>
                   <p>
-                    Other ways to contact {offer.createdBy.firstName}: {offer.contact}
+                    {t('detailsModal.otherWaysToContact', { firstName: offer.createdBy.firstName, contact: offer.contact })}
                   </p>
                 </>
               )}
@@ -178,8 +180,8 @@ const DetailsModal = ({ show, onHide, offer }) => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <button className="btn btn-secondary" onClick={onHide}>
-            Close
+          <button className="generic-button" onClick={onHide}>
+            {t('detailsModal.closeButton')}
           </button>
         </Modal.Footer>
       </Modal>

@@ -87,7 +87,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
           <li className={`page-item m-1 ${currentPage === 1 ? "disabled" : ""}`}>
             <button
               onClick={() => handlePageChange(currentPage - 1)}
-              className="btn btn-success"
+              className="want-button"
               disabled={currentPage === 1}
             >
               {"<"}
@@ -97,7 +97,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
             <li key={number} className="page-item m-1">
               <button
                 onClick={() => handlePageChange(number)}
-                className={`btn btn-success ${number === currentPage ? "active" : ""}`}
+                className={`want-button ${number === currentPage ? "active" : ""}`}
               >
                 {number}
               </button>
@@ -106,7 +106,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
           <li className={`page-item m-1 ${currentPage === Math.ceil(totalPosts / pageSize) ? "disabled" : ""}`}>
             <button
               onClick={() => handlePageChange(currentPage + 1)}
-              className="btn btn-success"
+              className="want-button"
               disabled={currentPage === Math.ceil(totalPosts / pageSize)}
             >
               {">"}
@@ -128,7 +128,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
 
               return (
                 <div key={relatedPost._id} className="col">
-                  <div className="card post rounded-5">
+                  <div className="card post want-rounded">
                     <button className="rounded-circle btn-save" title="Save">
                       <i className="bi bi-heart"></i>
                     </button>
@@ -184,7 +184,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
                     )}
                     <div className="card-body">
                       <h5 className="card-title post-title mb-2" onClick={() => router.push(`/post/${relatedPost._id}`)}>{relatedPost.title}</h5>
-                      <h5 className="text-success" onClick={() => router.push(`/post/${relatedPost._id}`)}>
+                      <h5 className="want-color" onClick={() => router.push(`/post/${relatedPost._id}`)}>
                         ${relatedPost.price.toLocaleString()}
                       </h5>
                       <p className="card-text post-text mb-2" onClick={() => router.push(`/post/${relatedPost._id}`)}>
@@ -208,7 +208,7 @@ const RelatedPosts = ({ locationFilter, categoryFilter, post }) => {
                         className="createdBy-photo p-1"
                       />
                       <small className="text-muted text-center">
-                        {relatedPost.createdBy.firstName} | <i class="bi bi-star-fill"></i> {userReputation.toFixed(1)}
+                        {relatedPost.createdBy.firstName} | <i className="bi bi-star-fill"></i> {userReputation.toFixed(1)}
                       </small>
                     </div>
                   </div>

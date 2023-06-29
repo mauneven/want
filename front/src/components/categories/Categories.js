@@ -1,6 +1,6 @@
-// PostCategory.js
 import React, { useState, useEffect } from 'react';
 import categoriesData from '../../data/categories.json';
+import { useTranslation } from 'react-i18next';
 
 export default function PostCategory({
   onMainCategoryChange,
@@ -11,42 +11,54 @@ export default function PostCategory({
   initialThirdCategory = '',
   isRequired = false
 }) {
-  const [selectedCategory, setSelectedCategory] = useState(
-    categoriesData.categories.find((category) => category.name === initialMainCategory) || null
-  );
+  const { t } = useTranslation();
+
+  const [selectedCategory, setSelectedCategory] = useState(initialMainCategory);
   const [selectedSubcategory, setSelectedSubcategory] = useState(initialSubcategory);
-  const [selectedThirdCategory, setSelectedThirdCategory] = useState(initialThirdCategory);
+  const [selectedThirdCategory, setSelectedThirdCategory] = useState('');
+
+  const [subcategoryOptions, setSubcategoryOptions] = useState([]);
+  const [thirdCategoryOptions, setThirdCategoryOptions] = useState([]);
 
   useEffect(() => {
-    const category = categoriesData.categories.find((cat) => cat.name === initialMainCategory) || null;
-    setSelectedCategory(category);
-
-    const subcategory = category?.subcategories.find((subcat) => subcat.name === initialSubcategory) || null;
-    setSelectedSubcategory(subcategory?.name || '');
+    setSelectedCategory(initialMainCategory);
+    setSelectedSubcategory(initialSubcategory);
     setSelectedThirdCategory(initialThirdCategory);
+  }, [initialMainCategory, initialSubcategory, initialThirdCategory]);
 
-    if (onMainCategoryChange) {
-      onMainCategoryChange(category?.name || '');
+  useEffect(() => {
+    if (selectedCategory) {
+      const category = categoriesData.find((cat) => cat.id === selectedCategory);
+      setSubcategoryOptions(category ? category.subcategories : []);
+      setSelectedSubcategory(initialSubcategory !== '' ? initialSubcategory : '');
+      setSelectedThirdCategory('');
+    } else {
+      setSubcategoryOptions([]);
+      setSelectedSubcategory('');
+      setSelectedThirdCategory('');
     }
+  }, [selectedCategory]);  
 
-    if (onSubcategoryChange) {
-      onSubcategoryChange(subcategory?.name || '');
+  useEffect(() => {
+    if (selectedSubcategory) {
+      const category = categoriesData.find((cat) => cat.id === selectedCategory);
+      const subcategory = category.subcategories.find((subcat) => subcat.id === selectedSubcategory);
+      setThirdCategoryOptions(subcategory ? subcategory.thirdCategories : []);
+      setSelectedThirdCategory(initialThirdCategory !== '' ? initialThirdCategory : '');
+    } else {
+      setThirdCategoryOptions([]);
+      setSelectedThirdCategory('');
     }
-
-    if (onThirdCategoryChange) {
-      onThirdCategoryChange(initialThirdCategory);
-    }
-  }, [initialMainCategory, initialSubcategory, initialThirdCategory, onMainCategoryChange, onSubcategoryChange, onThirdCategoryChange]);
+  }, [selectedSubcategory]);  
 
   const handleCategoryChange = (event) => {
-    const categoryId = parseInt(event.target.value);
-    const category = categoriesData.categories.find((cat) => cat.id === categoryId);
+    const category = event.target.value;
     setSelectedCategory(category);
     setSelectedSubcategory('');
     setSelectedThirdCategory('');
 
     if (onMainCategoryChange) {
-      onMainCategoryChange(category?.name || '');
+      onMainCategoryChange(category);
     }
 
     if (onSubcategoryChange) {
@@ -56,20 +68,24 @@ export default function PostCategory({
     if (onThirdCategoryChange) {
       onThirdCategoryChange('');
     }
+
+    const selectedCategoryData = categoriesData.find((cat) => cat.id === category);
+    setSubcategoryOptions(selectedCategoryData ? selectedCategoryData.subcategories : []);
   };
 
   const handleSubcategoryChange = (event) => {
     const subcategory = event.target.value;
     setSelectedSubcategory(subcategory);
-    setSelectedThirdCategory('');
 
     if (onSubcategoryChange) {
       onSubcategoryChange(subcategory);
     }
 
-    if (onThirdCategoryChange) {
-      onThirdCategoryChange('');
-    }
+    const category = categoriesData.find((cat) => cat.id === selectedCategory);
+    const selectedSubcategoryData = category.subcategories.find((subcat) => subcat.id === subcategory);
+    setThirdCategoryOptions(selectedSubcategoryData ? selectedSubcategoryData.thirdCategories : []);
+
+    setSelectedThirdCategory('');
   };
 
   const handleThirdCategoryChange = (event) => {
@@ -81,73 +97,67 @@ export default function PostCategory({
     }
   };
 
-  const categoryOptions = categoriesData.categories.map((category) => (
-    <option key={category.id} value={category.id}>
-      {category.name}
-    </option>
-  ));
+  const getCategoryTranslation = (categoryId) => {
+    return t(`categories.${categoryId}.name`);
+  };
 
-  const subcategoryOptions = selectedCategory ? (
-    selectedCategory.subcategories.map((subcategory) => (
-      <option key={subcategory.id} value={subcategory.name}>
-        {subcategory.name}
-      </option>
-    ))
-  ) : (
-    <option value="">Select a subcategory</option>
-  );
+  const getSubcategoryTranslation = (categoryId, subcategoryId) => {
+    return t(`categories.${categoryId}.subcategories.${subcategoryId}.name`);
+  };
 
-  const thirdCategoryOptions = selectedSubcategory && selectedCategory ? (
-    selectedCategory.subcategories
-      .find((subcategory) => subcategory.name === selectedSubcategory)
-      ?.thirdCategories.map((thirdCategory, index) => (
-        <option key={index} value={thirdCategory.name}>
-          {thirdCategory.name}
-        </option>
-      ))
-  ) : (
-    <option value="">Select a third category</option>
-  );
+  const getThirdCategoryTranslation = (categoryId, subcategoryId, thirdCategoryId) => {
+    return t(`categories.${categoryId}.subcategories.${subcategoryId}.thirdCategories.${thirdCategoryId}.name`);
+  };
 
   return (
     <div className="d-flex flex-wrap align-items-center">
       <select
         id="category-select"
-        className="form-select me-4"
-        value={selectedCategory?.id}
+        className="form-select mt-2 want-rounded"
+        value={selectedCategory}
         onChange={handleCategoryChange}
         required={isRequired}
       >
-        <option value="">Select a category</option>
-        {categoryOptions}
+        <option value="">{t('categories.selectMainCategory')}</option>
+        {categoriesData.map((category) => (
+          <option key={category.id} value={category.id}>
+            {getCategoryTranslation(category.id)}
+          </option>
+        ))}
       </select>
 
       {selectedCategory && (
-        <>
-          <select
-            id="subcategory-select"
-            className="form-select mt-2"
-            value={selectedSubcategory}
-            onChange={handleSubcategoryChange}
-            required={isRequired}
-          >
-            <option value="">Select a subcategory</option>
-            {subcategoryOptions}
-          </select>
+        <select
+          id="subcategory-select"
+          className="form-select mt-2 want-rounded"
+          value={selectedSubcategory || initialSubcategory}
+          onChange={handleSubcategoryChange}
+          required={isRequired}
+        >
+          <option value="">{t('categories.selectSubCategory')}</option>
+          {subcategoryOptions.map((subcategory) => (
+            <option key={subcategory.id} value={subcategory.id}>
+              {getSubcategoryTranslation(selectedCategory, subcategory.id)}
+            </option>
+          ))}
+        </select>
+      )}
 
-          {selectedSubcategory && (
-            <select
-              id="thirdcategory-select"
-              className="form-select mt-2"
-              value={selectedThirdCategory}
-              onChange={handleThirdCategoryChange}
-              required={isRequired}
-            >
-              <option value="">Select a third category</option>
-              {thirdCategoryOptions}
-            </select>
-          )}
-        </>
+      {selectedSubcategory && (
+        <select
+          id="thirdcategory-select"
+          className="form-select mt-2 want-rounded"
+          value={selectedThirdCategory}
+          onChange={handleThirdCategoryChange}
+          required={isRequired}
+        >
+          <option value="">{t('categories.selectThirdCategory')}</option>
+          {thirdCategoryOptions.map((thirdCategory) => (
+            <option key={thirdCategory.id} value={thirdCategory.id}>
+              {getThirdCategoryTranslation(selectedCategory, selectedSubcategory, thirdCategory.id)}
+            </option>
+          ))}
+        </select>
       )}
     </div>
   );

@@ -1,16 +1,17 @@
-// pages/myPosts.js
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Modal, Button } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import { validations } from '@/utils/validations';
-
+import { useTranslation } from 'react-i18next';
+import GoBackButton from '@/components/reusable/GoBackButton';
 
 export default function MyPosts() {
   const [posts, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
   const router = useRouter();
+  const { t } = useTranslation();
 
   useEffect(() => {
     validations(router); 
@@ -56,105 +57,147 @@ export default function MyPosts() {
     <>
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Delete this post</Modal.Title>
+          <Modal.Title>{t('myPosts.deletePostTitle')}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>You sure?</Modal.Body>
+        <Modal.Body>{t('myPosts.deletePostConfirmation')}</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={handleDeletePost}>
-            Delete
-          </Button>
+          <button onClick={() => setShowModal(false)}>
+            {t('myPosts.cancel')}
+          </button>
+          <button onClick={handleDeletePost}>
+            {t('myPosts.delete')}
+          </button>
         </Modal.Footer>
       </Modal>
       <div className="container">
-        <h1 className='my-4'>Your posts</h1>
+        <h1 className='my-4'>{t('myPosts.yourPosts')}</h1>
+        <GoBackButton/>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
-          {posts.map((post) => (
-            <div key={post._id} className="col">
-              <div className="card post rounded-5">
+        {posts.map((post) => {
+          const userReputation = 5 - 0.3 * post.createdBy.reports.length;
+          let photoIndex = 0;
+          return (
+            <div key={post._id} className="col post-card want-rounded">
+              <div className="card want-rounded divhover">
                 {post.photos && post.photos.length > 0 && (
                   <div
                     id={`carousel-${post._id}`}
-                    className="carousel slide"
+                    className="carousel slide want-rounded me-2 ms-2 mt-3 img-post"
                     data-bs-ride="carousel"
                     style={{ height: "200px", overflow: "hidden" }}
                   >
-                    <div className="carousel-inner">
-                      {post.photos.map((photos, index) => {
-                        console.log("Image URL:", `${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`);
-                        return (
-                          <div
-                            className={`carousel-item ${index === 0 ? "active" : ""}`}
-                            key={index}
-                          >
-                            <img
-                              src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photos}`}
-                              className="d-block w-100"
-                              alt={`Slide ${index}`}
-                            />
-                          </div>
-                        );
-                      })}
+                    <div
+                      className="carousel-inner "
+                      onClick={() => router.push(`/post/${post._id}`)}
+                    >
+                      {post.photos.map((photo, index) => (
+                        <div
+                          className={`carousel-item ${
+                            index === 0 ? "active" : ""
+                          }`}
+                          key={index}
+                        >
+                          <img
+                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
+                            className="d-block w-100"
+                            alt={`Image ${index}`}
+                            loading="lazy"
+                            onClick={() => router.push(`/post/${post._id}`)}
+                          />
+                        </div>
+                      ))}
                     </div>
-                    <button
-                      className="carousel-control-prev"
-                      type="button"
-                      data-bs-target={`#carousel-${post._id}`}
-                      data-bs-slide="prev"
-                    >
-                      <span
-                        className="carousel-control-prev-icon"
-                        aria-hidden="true"
-                      ></span>
-                      <span className="visually-hidden">Previous</span>
-                    </button>
-                    <button
-                      className="carousel-control-next"
-                      type="button"
-                      data-bs-target={`#carousel-${post._id}`}
-                      data-bs-slide="next"
-                    >
-                      <span
-                        className="carousel-control-next-icon"
-                        aria-hidden="true"
-                      ></span>
-                      <span className="visually-hidden">Next</span>
-                    </button>
+                    {post.photos.length > 1 && (
+                      <>
+                        <button
+                          className="carousel-control-prev custom-slider-button ms-1"
+                          type="button"
+                          data-bs-target={`#carousel-${post._id}`}
+                          data-bs-slide="prev"
+                          style={{ bottom: "40px" }}
+                          disabled={photoIndex === 0}
+                          onClick={() => {
+                            photoIndex--;
+                          }}
+                        >
+                          <i className="bi bi-chevron-left"></i>
+                        </button>
+                        <button
+                          className="carousel-control-next custom-slider-button me-1"
+                          type="button"
+                          data-bs-target={`#carousel-${post._id}`}
+                          data-bs-slide="next"
+                          style={{ bottom: "40px" }}
+                          disabled={photoIndex === post.photos.length - 1}
+                          onClick={() => {
+                            photoIndex++;
+                          }}
+                        >
+                          <i className="bi bi-chevron-right"></i>
+                        </button>
+                      </>
+                    )}
                   </div>
                 )}
                 <div className="card-body">
-                  <h5 className="card-title post-title mb-2">{post.title}
-                  </h5>
-                  <h5 className="text-success">
+                  <h4
+                    className="card-title post-title"
+                    onClick={() => router.push(`/post/${post._id}`)}
+                  >
+                    {post.title}
+                  </h4>
+                  <h3
+                    className="text-price"
+                    onClick={() => router.push(`/post/${post._id}`)}
+                  >
                     ${post.price.toLocaleString()}
-                  </h5>
-                  <p className="card-text post-text mb-2">
-                    {post.description.length > 100
-                      ? post.description.substring(0, 100) + "..."
-                      : post.description}
-                  </p>
-                </div>
-                <div className="card-footer">
+                  </h3>
+                  <div
+                    className="d-flex"
+                    onClick={() => openModal(post.createdBy)}
+                  >
+                    <img
+                      src={
+                        post.createdBy.photo
+                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
+                          : "/icons/person-circle.svg"
+                      }
+                      alt=""
+                      className="createdBy-photo p-1"
+                    />
+                    <div className="ms-2">
+                      <small className="text-muted ">
+                        {post.createdBy.firstName}
+                      </small>
+                      <div className="d-flex">
+                        <i className="bi bi-star-fill me-1"></i>
+                        <small className="text-muted">
+                          {userReputation.toFixed(1)}
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="m-4 text-center">
                   <button
-                    className="btn btn-outline-danger btn-sm"
+                    className="btn-outline-danger btn-sm"
                     onClick={() => {
                       setSelectedPostId(post._id);
                       setShowModal(true);
                     }}
                   >
-                    <i className="bi bi-trash-fill">Delete</i>
+                    <i className="bi bi-trash-fill"></i>{t('myPosts.delete')}
                   </button>
                   <Link href={`/editPost/${post._id}`}>
-                    <button className="ms-2 text-decoration-none btn btn-outline-success btn-sm">
-                      <i className="bi bi-pencil-fill">Edit</i>
+                    <button className="ms-2 text-decoration-none btn-outline-success btn-sm">
+                      <i className="bi bi-pencil-fill"></i>{t('myPosts.edit')}
                     </button>
                   </Link>
                 </div>
+                </div>
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
       </div>
     </>

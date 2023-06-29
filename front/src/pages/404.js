@@ -1,13 +1,16 @@
 import React from 'react';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 
 const Custom404 = () => {
+  const { t } = useTranslation();
+
   return (
-    <div>
-      <h1>Ups, this page ins't for you</h1>
-      <p>Sorry, the page you are looking for does not exist.</p>
-      <Link href="/">
-        <h1>Go home</h1>
+    <div className=' text-center p-5'>
+      <h1>{t('custom404.title')}</h1>
+      <p>{t('custom404.description')}</p>
+      <Link className='want-button want-rounded' href="/">
+        <h1>{t('custom404.homeLink')}</h1>
       </Link>
     </div>
   );

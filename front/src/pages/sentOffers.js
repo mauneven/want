@@ -1,17 +1,19 @@
-// pages/myOffers.js
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Modal, Button } from 'react-bootstrap';
 import DetailsModal from '@/components/offer/DetailsModal';
 import { validations } from '@/utils/validations';
+import { useTranslation } from 'react-i18next';
+import GoBackButton from '@/components/reusable/GoBackButton';
 
-export default function sentOffers() {
+export default function SentOffers() {
   const [offers, setOffers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedOfferId, setSelectedOfferId] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
   const router = useRouter();
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const { t } = useTranslation();
 
   const handleShowDetailsModal = (offer) => {
     setSelectedOffer(offer);
@@ -71,24 +73,25 @@ export default function sentOffers() {
       />
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Delete offer</Modal.Title>
+          <Modal.Title>{t('sentOffers.deleteOfferTitle')}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>You're sure?</Modal.Body>
+        <Modal.Body>{t('sentOffers.deleteOfferConfirmation')}</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={handleDeleteOffer}>
-            Delete
-          </Button>
+          <button onClick={() => setShowModal(false)}>
+            {t('sentOffers.cancel')}
+          </button>
+          <button onClick={handleDeleteOffer}>
+            {t('sentOffers.delete')}
+          </button>
         </Modal.Footer>
       </Modal>
       <div className="container">
-        <h1 className='my-4'>Offers you have done</h1>
+        <h1 className='my-4'>{t('sentOffers.yourOffers')}</h1>
+        <GoBackButton/>
         <div className="row">
           {offers.map((offer) => (
             <div key={offer._id} className="col-12 col-md-6">
-              <div className="card post rounded-5 mb-4">
+              <div className="card post want-rounded mb-4">
                 <div>
                   <div className="card-body d-flex flex-column">
                     <div className="card-body d-flex flex-row align-items-center">
@@ -104,23 +107,23 @@ export default function sentOffers() {
                         <div>
                           <h5 className="card-title">{offer.title}</h5>
                           <p className="card-text">{offer.description}</p>
-                          <p className="card-text">Price: ${offer.price}</p>
+                          <p className="card-text">{t('sentOffers.price')}: ${offer.price}</p>
                         </div>
                       </div>
                     </div>
                     <div className="card-buttons-container d-flex flex-column justify-content-end mt-auto">
                       <button
-                        className="btn btn-success mb-2"
+                        className="want-button mb-2"
                         onClick={() => handleShowDetailsModal(offer)}
                       >
-                        View details
+                        {t('sentOffers.viewDetails')}
                         <i className="bi bi-eye ms-2"></i>
                       </button>
                       <button
-                        className="btn btn-secondary mb-2"
+                        className="generic-button mb-2"
                         onClick={() => handleShowModal(offer._id)}
                       >
-                        Delete
+                        {t('sentOffers.delete')}
                         <i className="bi bi-trash3 ms-2"></i>
                       </button>
                     </div>

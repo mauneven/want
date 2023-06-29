@@ -1,0 +1,10 @@
+.navbar-hidden {
+    display: none;
+  }
+
+.mobile-menu-text{
+    color: var(--color-generic);
+    font-size: 10px;
+    margin: 0;
+}
+  

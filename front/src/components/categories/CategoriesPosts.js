@@ -68,9 +68,10 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
 
   return (
     <>
-      <Button variant="" onClick={handleShow} className="nav-item">
-        {displayCategory}
-      </Button>
+      <button onClick={handleShow} className="bg-white">
+      <i className="bi bi-tags fs-4"></i>
+      <p className='m-0 small'>Categories</p>
+      </button>
 
       <Modal
         show={show || isShown}
@@ -92,15 +93,15 @@ export default function CategoriesModal({ isShown, onHide, onCategorySelected, b
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="dark rounded-5" onClick={handleSeeAllCategories}>
+          <button  onClick={handleSeeAllCategories}>
             See all categories
-          </Button>
-          <Button variant="secondary rounded-5" onClick={handleClose}>
+          </button>
+          <button onClick={handleClose}>
             Cancel
-          </Button>
-          <Button variant="success rounded-5" onClick={handleAccept}>
+          </button>
+          <button onClick={handleAccept}>
             Accept
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </>
