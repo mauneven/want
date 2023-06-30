@@ -15,19 +15,12 @@ import LanguageSelector from "../language/LanguageSelector";
 
 export default function MegaMenu({
   onSearchTermChange,
-  onCategoryFilterChange,
-  currentPage,
   setCurrentPage,
 }) {
   const { t } = useTranslation();
 
   const [user, setUser] = useState(null);
-  const [isLogged, setIsLogged] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [activeSubcategory, setActiveSubcategory] = useState("");
-  const [selectedSubcategory, setSelectedSubcategory] = useState("");
-  const [selectedThirdCategory, setSelectedThirdCategory] = useState("");
   const [isMobile, setIsMobile] = useState(false);
 
   const router = useRouter();
@@ -41,42 +34,20 @@ export default function MegaMenu({
 
   const handleLogoClick = () => {
     clearSearchBar();
-    setSelectedCategory("");
-    setSelectedSubcategory("");
-    setSelectedThirdCategory("");
     onSearchTermChange("");
     setCurrentPage(1);
-    onCategoryFilterChange({
-      mainCategory: "",
-      subCategory: "",
-      thirdCategory: "",
-    });
     router.push("/");
   };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    setSelectedCategory("");
-    setSelectedSubcategory("");
-    setSelectedThirdCategory("");
     setCurrentPage(1);
     onSearchTermChange("");
-    onCategoryFilterChange({
-      mainCategory: "",
-      subCategory: "",
-      thirdCategory: "",
-    });
     const newSearchTerm = e.target.search.value;
     setSearchTerm(newSearchTerm);
     onSearchTermChange(newSearchTerm);
     router.push("/");
-  };  
-
-  useEffect(() => {
-    setSelectedCategory("");
-    setSelectedSubcategory("");
-    setSelectedThirdCategory("");
-  }, [searchTerm]);  
+  }; 
 
   useEffect(() => {
     const checkSession = async () => {

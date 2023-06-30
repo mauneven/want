@@ -1,12 +1,9 @@
 import React, { useState, useEffect, Suspense } from "react";
 import MegaMenu from "@/components/navigation/Navbar";
 import { LanguageProvider } from "@/components/language/LanguageProvider";
-import { Provider } from "react-redux";
-import store from "@/store/store";
 import Footer from "@/components/footer/Footer";
 import i18n from "../../i18n";
 import "../../node_modules/leaflet/dist/leaflet.css";
-
 import "../../public/css/app.css";
 import "../../public/css/categories.css";
 import "../../public/css/navbar.css";
@@ -95,7 +92,6 @@ export default function MyApp({ Component, pageProps }) {
         </header>
 
         <div className="">
-          <Provider store={store}>
             <Suspense fallback="Loading...">
               <Component
                 {...pageProps}
@@ -106,7 +102,6 @@ export default function MyApp({ Component, pageProps }) {
                 setCurrentPage={setCurrentPage}
               />
             </Suspense>
-          </Provider>
         </div>
 
         <footer>

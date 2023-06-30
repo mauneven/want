@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
 import ContentLoader from "react-content-loader";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
-import { setPosts } from "@/actions/postsActions";
 import PostsLocation from "../locations/Posts/";
 import PostCategory from "../categories/PostCategory";
 import PostDetailsModal from "./PostDetailsModal";
+import Link from "next/link";
 
 const PostsList = ({ searchTerm }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [pageSize, setPageSize] = useState(8);
   const [totalPosts, setTotalPosts] = useState(0);
-  const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [postId, setPostId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,10 +22,9 @@ const PostsList = ({ searchTerm }) => {
   const [hasLocation, setHasLocation] = useState(false);
   const [userPreferences, setUserPreferences] = useState({});
   const [userPreferencesLoaded, setUserPreferencesLoaded] = useState(false);
-  const [user, setUser] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState({});
-  const dispatch = useDispatch();
-  const posts = useSelector((state) => state.posts.posts);
+  const [user, setUser] = useState(null);
+  const [posts, setPosts] = useState([]);
 
   const router = useRouter();
 
@@ -116,7 +113,7 @@ const PostsList = ({ searchTerm }) => {
     checkSession();
   }, [router.pathname]);
 
-  const fetchPosts = async () => {
+  const fetchPosts = async (resetPosts) => {
     if (!hasLocation || !userPreferencesLoaded) {
       return;
     }
@@ -139,7 +136,7 @@ const PostsList = ({ searchTerm }) => {
         subCategory: categoryFilter?.subCategory || "",
         thirdCategory: categoryFilter?.thirdCategory || "",
         searchTerm: searchTerm || "",
-        page: currentPage,
+        page: resetPosts ? 1 : currentPage,
         pageSize,
         latitude,
         longitude,
@@ -160,10 +157,15 @@ const PostsList = ({ searchTerm }) => {
       );
       const { posts: postsData, totalPosts } = await response.json();
 
-      if (currentPage === 1) {
-        dispatch(setPosts(postsData));
+      if (resetPosts) {
+        setPosts(postsData);
+        localStorage.setItem("cachedPosts", JSON.stringify(postsData));
       } else {
-        dispatch(setPosts([...posts, ...postsData]));
+        setPosts((prevPosts) => [...prevPosts, ...postsData]);
+        localStorage.setItem(
+          "cachedPosts",
+          JSON.stringify([...posts, ...postsData])
+        );
       }
 
       setTotalPosts(totalPosts);
@@ -179,33 +181,22 @@ const PostsList = ({ searchTerm }) => {
   };
 
   useEffect(() => {
-    if (searchTerm) {
-      setSelectedCategory("");
-      setSelectedSubcategory("");
-      setSelectedThirdCategory("");
-    }
-  }, [searchTerm]);  
-
-  useEffect(() => {
-    dispatch(setPosts([]));
-    setTotalPosts(0);
-    setHasMorePosts(false);
-    setCurrentPage(1);
-  }, [searchTerm, categoryFilter, latitude, longitude, radius]);
-
-  useEffect(() => {
     if (latitude !== null && longitude !== null) {
       setHasLocation(true);
     }
   }, [latitude, longitude]);
 
   useEffect(() => {
-    fetchPosts();
+    const cachedPosts = localStorage.getItem("cachedPosts");
+    if (cachedPosts) {
+      setPosts(JSON.parse(cachedPosts));
+      setIsLoading(false);
+    } else {
+      fetchPosts(true);
+    }
   }, [
-    searchTerm,
     categoryFilter,
-    currentPage,
-    pageSize,
+    searchTerm,
     hasLocation,
     latitude,
     longitude,
@@ -236,7 +227,6 @@ const PostsList = ({ searchTerm }) => {
         !isFetchingMore
       ) {
         setIsFetchingMore(true);
-        setCurrentPage((prevPage) => prevPage + 1);
       }
 
       if (scrolledToTop && !isLoading && !isFetching && !isFetchingMore) {
@@ -251,24 +241,38 @@ const PostsList = ({ searchTerm }) => {
     };
   }, [hasMorePosts, isLoading, isFetching, isFetchingMore]);
 
-  const Placeholder = () => (
-    <div className="col mx-auto">
-      <ContentLoader
-        speed={2}
-        width="100%"
-        height={450}
-        viewBox="0 0 260 450"
-        backgroundColor="#f3f3f3"
-        foregroundColor="#ecebeb"
-      >
-        <rect x="0" y="0" rx="10" ry="10" width="260" height="310" />
-        <rect x="0" y="330" rx="3" ry="3" width="260" height="20" />
-        <rect x="0" y="360" rx="3" ry="3" width="260" height="20" />
-        <rect x="0" y="390" rx="3" ry="3" width="260" height="20" />
-        <rect x="0" y="420" rx="3" ry="3" width="260" height="20" />
-      </ContentLoader>
-    </div>
-  );
+  useEffect(() => {
+    const updateLocalStorage = () => {
+      localStorage.setItem(
+        "mainCategoryPreferences",
+        JSON.stringify(userPreferences.mainCategoryCounts)
+      );
+      localStorage.setItem(
+        "subCategoryPreferences",
+        JSON.stringify(userPreferences.subCategoryCounts)
+      );
+      localStorage.setItem(
+        "thirdCategoryPreferences",
+        JSON.stringify(userPreferences.thirdCategoryCounts)
+      );
+    };
+
+    updateLocalStorage();
+  }, [userPreferences]);
+
+  useEffect(() => {
+    if (isFetchingMore && !isLoading && !isFetching && hasMorePosts) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
+  }, [isFetchingMore, isLoading, isFetching, hasMorePosts]);
+
+  useEffect(() => {
+    fetchPosts(false);
+  }, [currentPage]);
+
+  useEffect(() => {
+    fetchPosts(true);
+  }, [categoryFilter, searchTerm]);
 
   const openModal = (postId) => {
     setPostId(postId);
@@ -300,6 +304,18 @@ const PostsList = ({ searchTerm }) => {
       thirdCategory,
     }));
   };
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem("cachedPosts");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   return (
     <div>
@@ -337,9 +353,9 @@ const PostsList = ({ searchTerm }) => {
                     data-bs-ride="carousel"
                     style={{ height: "200px", overflow: "hidden" }}
                   >
-                    <div
+                    <Link
+                      href={`post/${post._id}`}
                       className="carousel-inner"
-                      onClick={() => openModal(post._id)}
                     >
                       {post.photos.map((photo, index) => (
                         <div
@@ -348,16 +364,17 @@ const PostsList = ({ searchTerm }) => {
                           }`}
                           key={index}
                         >
+                          <Link href={`post/${post._id}`}>
                           <img
                             src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
                             className="d-block w-100"
                             alt={`Image ${index}`}
                             loading="lazy"
-                            onClick={() => openModal(post._id)}
                           />
+                          </Link>
                         </div>
                       ))}
-                    </div>
+                    </Link>
                     {post.photos.length > 1 && (
                       <>
                         <button
@@ -390,20 +407,20 @@ const PostsList = ({ searchTerm }) => {
                     )}
                   </div>
                 )}
+                <Link href={`post/${post._id}`}>
                 <div className="card-body p-0 m-2">
                   <div className="generic-button mb-2 want-rounded">
-                  <h3
-                    className="text-price"
-                    onClick={() => openModal(post._id)}
-                  >
-                    ${post.price.toLocaleString()}
-                  </h3>
-                  <h5
-                    className="card-title post-title p-1"
-                    onClick={() => openModal(post._id)}
-                  >
-                    {post.title}
-                  </h5>
+                    <h3
+                      className="text-price"
+                      
+                    >
+                      ${post.price.toLocaleString()}
+                    </h3>
+                    <h5
+                      className="card-title post-title p-1"
+                    >
+                      {post.title}
+                    </h5>
                   </div>
                   <div
                     className="d-flex generic-button mb-2 generic-button want-rounded"
@@ -431,6 +448,7 @@ const PostsList = ({ searchTerm }) => {
                     </div>
                   </div>
                 </div>
+                </Link>
               </div>
             </div>
           );
@@ -438,18 +456,7 @@ const PostsList = ({ searchTerm }) => {
 
         {isLoading && (
           <>
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
+            <ContentLoader /* your content loader configuration */ />
           </>
         )}
 

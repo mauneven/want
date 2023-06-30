@@ -1,36 +1,57 @@
-import React from "react";
-import PostsList from "@/components/posts/PostsList";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import PostsList from "@/components/posts/PostsList";
 
-const IndexPage = ({ locationFilter, searchTerm, categoryFilter, currentPage, setCurrentPage }) => {
-
+const IndexPage = () => {
   const router = useRouter();
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   useEffect(() => {
-    const checkPendingDeletionStatus = async () => {
-      const deletionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-pending-deletion`, {
-        credentials: 'include',
-      });
-  
-      const deletionData = await deletionResponse.json();
-      if (deletionData.pendingDeletion) {
-        router.push('/deleteOn');
+    const handleRouteChange = () => {
+      // Guardar la posición de desplazamiento actual antes de cambiar de página
+      sessionStorage.setItem("scrollPosition", window.scrollY.toString());
+    };
+
+    const handlePopState = () => {
+      // Restaurar la posición de desplazamiento al retroceder en el historial de navegación
+      const savedScrollPosition = parseInt(sessionStorage.getItem("scrollPosition"), 10);
+      if (!isNaN(savedScrollPosition)) {
+        setScrollPosition(savedScrollPosition);
       }
     };
-  
-    checkPendingDeletionStatus();
-  }, []);  
+
+    router.events.on("routeChangeStart", handleRouteChange);
+    window.addEventListener("popstate", handlePopState);
+
+    // Restaurar la posición de desplazamiento al cargar la página
+    const savedScrollPosition = parseInt(sessionStorage.getItem("scrollPosition"), 10);
+    if (!isNaN(savedScrollPosition)) {
+      setScrollPosition(savedScrollPosition);
+    }
+
+    // Restaurar scroll instantáneamente sin animación
+    document.documentElement.style.scrollBehavior = "auto";
+    window.scrollTo(0, scrollPosition);
+
+    // Restaurar el comportamiento de desplazamiento suave después de 50ms
+    setTimeout(() => {
+      document.documentElement.style.scrollBehavior = "smooth";
+    }, 50);
+
+    return () => {
+      router.events.off("routeChangeStart", handleRouteChange);
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [router.events]);
+
+  useEffect(() => {
+    // Desplazarse a la posición guardada al cargar la página o cambiar la posición de desplazamiento
+    window.scrollTo(0, scrollPosition);
+  }, [scrollPosition]);
 
   return (
-    <div className="">
-      <PostsList
-        locationFilter={locationFilter}
-        searchTerm={searchTerm}
-        categoryFilter={categoryFilter}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-      />
+    <div>
+      <PostsList />
     </div>
   );
 };

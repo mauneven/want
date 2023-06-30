@@ -15,4 +15,5 @@ module.exports = withBundleAnalyzer({
   devServer: {
     hot: true,
   },
+  scrollRestoration: true,
 });
