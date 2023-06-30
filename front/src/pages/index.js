@@ -1,20 +1,33 @@
+// index.js
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import PostsList from "@/components/posts/PostsList";
 
-const IndexPage = () => {
+const IndexPage = ({
+  mainCategory,
+  subcategory,
+  thirdCategory,
+  onMainCategoryChange,
+  onSubcategoryChange,
+  onThirdCategoryChange,
+  searchTerm,
+  onSearchTermChange,
+  keepCategories,
+  onKeepCategoriesChange,
+}) => {
   const router = useRouter();
   const [scrollPosition, setScrollPosition] = useState(0);
 
   useEffect(() => {
     const handleRouteChange = () => {
-      // Guardar la posición de desplazamiento actual antes de cambiar de página
       sessionStorage.setItem("scrollPosition", window.scrollY.toString());
     };
 
     const handlePopState = () => {
-      // Restaurar la posición de desplazamiento al retroceder en el historial de navegación
-      const savedScrollPosition = parseInt(sessionStorage.getItem("scrollPosition"), 10);
+      const savedScrollPosition = parseInt(
+        sessionStorage.getItem("scrollPosition"),
+        10
+      );
       if (!isNaN(savedScrollPosition)) {
         setScrollPosition(savedScrollPosition);
       }
@@ -23,17 +36,17 @@ const IndexPage = () => {
     router.events.on("routeChangeStart", handleRouteChange);
     window.addEventListener("popstate", handlePopState);
 
-    // Restaurar la posición de desplazamiento al cargar la página
-    const savedScrollPosition = parseInt(sessionStorage.getItem("scrollPosition"), 10);
+    const savedScrollPosition = parseInt(
+      sessionStorage.getItem("scrollPosition"),
+      10
+    );
     if (!isNaN(savedScrollPosition)) {
       setScrollPosition(savedScrollPosition);
     }
 
-    // Restaurar scroll instantáneamente sin animación
     document.documentElement.style.scrollBehavior = "auto";
     window.scrollTo(0, scrollPosition);
 
-    // Restaurar el comportamiento de desplazamiento suave después de 50ms
     setTimeout(() => {
       document.documentElement.style.scrollBehavior = "smooth";
     }, 50);
@@ -45,13 +58,27 @@ const IndexPage = () => {
   }, [router.events]);
 
   useEffect(() => {
-    // Desplazarse a la posición guardada al cargar la página o cambiar la posición de desplazamiento
     window.scrollTo(0, scrollPosition);
   }, [scrollPosition]);
 
   return (
     <div>
-      <PostsList />
+      <div>
+        <p>Main Category: {mainCategory}</p>
+        <p>Subcategory: {subcategory}</p>
+        <p>Third Category: {thirdCategory}</p>
+        <p>Search Term: {searchTerm}</p>
+        <p>Keep Categories: {keepCategories ? "true" : "false"}</p>
+      </div>
+      <PostsList
+        searchTerm={searchTerm}
+        onMainCategoryChange={onMainCategoryChange}
+        onSubcategoryChange={onSubcategoryChange}
+        onThirdCategoryChange={onThirdCategoryChange}
+        onSearchTermChange={onSearchTermChange}
+        onKeepCategoriesChange={onKeepCategoriesChange}
+        keepCategories={keepCategories}
+      />
     </div>
   );
 };

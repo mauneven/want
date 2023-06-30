@@ -3,15 +3,18 @@ import ContentLoader from "react-content-loader";
 import { useRouter } from "next/router";
 import PostsLocation from "../locations/Posts/";
 import PostCategory from "../categories/PostCategory";
-import PostDetailsModal from "./PostDetailsModal";
 import Link from "next/link";
 
-const PostsList = ({ searchTerm }) => {
+const PostsList = ({
+  searchTerm,
+  onMainCategoryChange,
+  onSubcategoryChange,
+  onThirdCategoryChange,
+  keepCategories,
+}) => {
   const [isLoading, setIsLoading] = useState(true);
   const [pageSize, setPageSize] = useState(8);
   const [totalPosts, setTotalPosts] = useState(0);
-  const [showModal, setShowModal] = useState(false);
-  const [postId, setPostId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMorePosts, setHasMorePosts] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
@@ -28,6 +31,27 @@ const PostsList = ({ searchTerm }) => {
 
   const router = useRouter();
 
+  const handleMainCategoryChange = (mainCategory) => {
+    setCategoryFilter((prevFilter) => ({
+      ...prevFilter,
+      mainCategory,
+    }));
+  };
+
+  const handleSubcategoryChange = (subcategory) => {
+    setCategoryFilter((prevFilter) => ({
+      ...prevFilter,
+      subCategory: subcategory,
+    }));
+  };
+
+  const handleThirdCategoryChange = (thirdCategory) => {
+    setCategoryFilter((prevFilter) => ({
+      ...prevFilter,
+      thirdCategory,
+    }));
+  };
+
   const handleLatitudeChange = (lat) => {
     setLatitude(lat);
   };
@@ -42,11 +66,6 @@ const PostsList = ({ searchTerm }) => {
       setRadius(selectedRadius);
       onRadiusChange(selectedRadius);
     }
-  };
-
-  const handleCategoryFilter = (categoryFilter) => {
-    setCategoryFilter(categoryFilter);
-    setCurrentPage(1);
   };
 
   const getUserPreferences = async () => {
@@ -131,10 +150,32 @@ const PostsList = ({ searchTerm }) => {
         return convertedPreferences;
       };
 
+      let mainCategoryFilter = "";
+      let subCategoryFilter = "";
+      let thirdCategoryFilter = "";
+
+      if (searchTerm) {
+        if (keepCategories) {
+          mainCategoryFilter = categoryFilter?.mainCategory || "";
+          subCategoryFilter = categoryFilter?.subCategory || "";
+          thirdCategoryFilter = categoryFilter?.thirdCategory || "";
+        } else {
+          mainCategoryFilter = keepCategories ? categoryFilter?.mainCategory || "" : "";
+          subCategoryFilter = keepCategories ? categoryFilter?.subCategory || "" : "";
+          thirdCategoryFilter = keepCategories ? categoryFilter?.thirdCategory || "" : "";
+        }
+      } else {
+        mainCategoryFilter = categoryFilter?.mainCategory || "";
+        subCategoryFilter = categoryFilter?.subCategory || "";
+        thirdCategoryFilter = categoryFilter?.thirdCategory || "";
+      }
+
+      console.log(keepCategories);
+
       const filterParams = new URLSearchParams({
-        mainCategory: categoryFilter?.mainCategory || "",
-        subCategory: categoryFilter?.subCategory || "",
-        thirdCategory: categoryFilter?.thirdCategory || "",
+        mainCategory: mainCategoryFilter,
+        subCategory: subCategoryFilter,
+        thirdCategory: thirdCategoryFilter,
         searchTerm: searchTerm || "",
         page: resetPosts ? 1 : currentPage,
         pageSize,
@@ -177,7 +218,6 @@ const PostsList = ({ searchTerm }) => {
       setIsLoading(false);
       setIsFetchingMore(false);
     }
-    closeModal();
   };
 
   useEffect(() => {
@@ -274,37 +314,6 @@ const PostsList = ({ searchTerm }) => {
     fetchPosts(true);
   }, [categoryFilter, searchTerm]);
 
-  const openModal = (postId) => {
-    setPostId(postId);
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setPostId(null);
-    setShowModal(false);
-  };
-
-  const handleMainCategoryChange = (mainCategory) => {
-    setCategoryFilter((prevFilter) => ({
-      ...prevFilter,
-      mainCategory,
-    }));
-  };
-
-  const handleSubcategoryChange = (subcategory) => {
-    setCategoryFilter((prevFilter) => ({
-      ...prevFilter,
-      subCategory: subcategory,
-    }));
-  };
-
-  const handleThirdCategoryChange = (thirdCategory) => {
-    setCategoryFilter((prevFilter) => ({
-      ...prevFilter,
-      thirdCategory,
-    }));
-  };
-
   useEffect(() => {
     const handleBeforeUnload = () => {
       localStorage.removeItem("cachedPosts");
@@ -316,6 +325,12 @@ const PostsList = ({ searchTerm }) => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
+
+  useEffect(() => {
+    onMainCategoryChange(categoryFilter.mainCategory);
+    onSubcategoryChange(categoryFilter.subCategory);
+    onThirdCategoryChange(categoryFilter.thirdCategory);
+  }, [categoryFilter]);
 
   return (
     <div>
@@ -353,10 +368,7 @@ const PostsList = ({ searchTerm }) => {
                     data-bs-ride="carousel"
                     style={{ height: "200px", overflow: "hidden" }}
                   >
-                    <Link
-                      href={`post/${post._id}`}
-                      className="carousel-inner"
-                    >
+                    <Link href={`post/${post._id}`} className="carousel-inner">
                       {post.photos.map((photo, index) => (
                         <div
                           className={`carousel-item ${
@@ -365,12 +377,12 @@ const PostsList = ({ searchTerm }) => {
                           key={index}
                         >
                           <Link href={`post/${post._id}`}>
-                          <img
-                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
-                            className="d-block w-100"
-                            alt={`Image ${index}`}
-                            loading="lazy"
-                          />
+                            <img
+                              src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
+                              className="d-block w-100"
+                              alt={`Image ${index}`}
+                              loading="lazy"
+                            />
                           </Link>
                         </div>
                       ))}
@@ -408,57 +420,45 @@ const PostsList = ({ searchTerm }) => {
                   </div>
                 )}
                 <Link href={`post/${post._id}`}>
-                <div className="card-body p-0 m-2">
-                  <div className="generic-button mb-2 want-rounded">
-                    <h3
-                      className="text-price"
-                      
-                    >
-                      ${post.price.toLocaleString()}
-                    </h3>
-                    <h5
-                      className="card-title post-title p-1"
-                    >
-                      {post.title}
-                    </h5>
-                  </div>
-                  <div
-                    className="d-flex generic-button mb-2 generic-button want-rounded"
-                    onClick={() => openModal(post.createdBy._id)}
-                  >
-                    <img
-                      src={
-                        post.createdBy.photo
-                          ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
-                          : "/icons/person-circle.svg"
-                      }
-                      alt=""
-                      className="createdBy-photo p-1"
-                    />
-                    <div className="ms-2">
-                      <small className="text-muted">
-                        {post.createdBy.firstName}
-                      </small>
-                      <div className="d-flex">
-                        <i className="bi bi-star-fill me-1"></i>
+                  <div className="card-body p-0 m-2">
+                    <div className="generic-button mb-2 want-rounded">
+                      <h3 className="text-price">
+                        ${post.price.toLocaleString()}
+                      </h3>
+                      <h5 className="card-title post-title p-1">
+                        {post.title}
+                      </h5>
+                    </div>
+                    <div className="d-flex generic-button mb-2 generic-button want-rounded">
+                      <img
+                        src={
+                          post.createdBy.photo
+                            ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
+                            : "/icons/person-circle.svg"
+                        }
+                        alt=""
+                        className="createdBy-photo p-1"
+                      />
+                      <div className="ms-2">
                         <small className="text-muted">
-                          {userReputation.toFixed(1)}
+                          {post.createdBy.firstName}
                         </small>
+                        <div className="d-flex">
+                          <i className="bi bi-star-fill me-1"></i>
+                          <small className="text-muted">
+                            {userReputation.toFixed(1)}
+                          </small>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
                 </Link>
               </div>
             </div>
           );
         })}
 
-        {isLoading && (
-          <>
-            <ContentLoader /* your content loader configuration */ />
-          </>
-        )}
+        {isLoading && <ContentLoader />}
 
         {!hasMorePosts && !isLoading && !isFetchingMore && (
           <div className="col-md-12">
@@ -466,13 +466,6 @@ const PostsList = ({ searchTerm }) => {
           </div>
         )}
       </div>
-
-      <PostDetailsModal
-        postId={postId}
-        showModal={showModal}
-        closeModal={closeModal}
-        applyCategoryFilter={handleCategoryFilter}
-      />
     </div>
   );
 };

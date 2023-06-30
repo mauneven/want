@@ -1,3 +1,4 @@
+// _app.js
 import React, { useState, useEffect, Suspense } from "react";
 import MegaMenu from "@/components/navigation/Navbar";
 import { LanguageProvider } from "@/components/language/LanguageProvider";
@@ -15,17 +16,17 @@ import "../../public/css/notifications.css";
 import "../../public/css/postById.css";
 import "../../public/css/receivedOffers.css";
 import "../../public/css/footer.css";
-import "../../public/css/post-category.css"
+import "../../public/css/post-category.css";
 import MobileMenu from "@/components/navigation/MobileMenu";
 
 export default function MyApp({ Component, pageProps }) {
   const [hasMounted, setHasMounted] = useState(false);
-
-  const [locationFilter, setLocationFilter] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
+  const [mainCategory, setMainCategory] = useState("");
+  const [subcategory, setSubcategory] = useState("");
+  const [thirdCategory, setThirdCategory] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [keepCategories, setKeepCategories] = useState();
 
   const isMobileDevice = () => {
     return (
@@ -34,25 +35,11 @@ export default function MyApp({ Component, pageProps }) {
     );
   };
 
-  const handleLocationFilterChange = (filter) => {
-    setLocationFilter(filter);
-    localStorage.setItem("locationFilter", JSON.stringify(filter));
-  };
-
-  const handleSearchTermChange = (newSearchTerm) => {
-    setSearchTerm(newSearchTerm);
-  };
-
-  const handleCategoryFilterChange = (filter) => {
-    setCategoryFilter(filter);
-  };
-
   useEffect(() => {
     setIsMobile(isMobileDevice());
     setHasMounted(true); // indicamos que la aplicación se ha montado
   }, []);
 
-  
   useEffect(() => {
     setIsMobile(window.innerWidth < 1000);
     const handleResize = () => {
@@ -84,32 +71,41 @@ export default function MyApp({ Component, pageProps }) {
       <div className="container-fluid">
         <header className="sticky-top">
           <MegaMenu
-            onSearchTermChange={handleSearchTermChange}
-            onCategoryFilterChange={handleCategoryFilterChange}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
+            mainCategory={mainCategory}
+            subcategory={subcategory}
+            thirdCategory={thirdCategory}
+            onCategoryChange={setMainCategory}
+            searchTerm={searchTerm}
+            onSearchTermChange={setSearchTerm}
+            keepCategories={keepCategories}
+            onKeepCategoriesChange={setKeepCategories}
+            setMainCategory={setMainCategory}
+            setSubcategory={setSubcategory}
+            setThirdCategory={setThirdCategory}
           />
         </header>
 
         <div className="">
-            <Suspense fallback="Loading...">
-              <Component
-                {...pageProps}
-                locationFilter={locationFilter}
-                searchTerm={searchTerm}
-                categoryFilter={categoryFilter}
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-              />
-            </Suspense>
+          <Suspense fallback="Loading...">
+            <Component
+              {...pageProps}
+              mainCategory={mainCategory}
+              subcategory={subcategory}
+              thirdCategory={thirdCategory}
+              onMainCategoryChange={setMainCategory}
+              onSubcategoryChange={setSubcategory}
+              onThirdCategoryChange={setThirdCategory}
+              searchTerm={searchTerm}
+              onSearchTermChange={setSearchTerm}
+              keepCategories={keepCategories}
+              onKeepCategoriesChange={setKeepCategories}
+            />
+          </Suspense>
         </div>
 
         <footer>
           <div className="want-container">
-            {isMobile? (
-              <MobileMenu/>
-            ) : <Footer/>}
-            
+            {isMobile ? <MobileMenu /> : <Footer />}
           </div>
         </footer>
       </div>

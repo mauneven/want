@@ -1,26 +1,31 @@
+// megamenu.js
 import { useState, useEffect } from "react";
-import {
-  Container,
-  Navbar,
-  Nav,
-  NavDropdown,
-  Form,
-  FormControl,
-  Button,
-} from "react-bootstrap";
+import { Navbar, Nav, NavDropdown, Form, FormControl } from "react-bootstrap";
 import { useRouter } from "next/router";
 import Notifications from "../notifications/Notifications";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "../language/LanguageSelector";
 
 export default function MegaMenu({
+  mainCategory,
+  subcategory,
+  thirdCategory,
+  onCategoryChange,
+  searchTerm,
   onSearchTermChange,
-  setCurrentPage,
+  keepCategories,
+  onKeepCategoriesChange,
+  setMainCategory,
+  setSubcategory,
+  setThirdCategory
 }) {
   const { t } = useTranslation();
-
+  const clearCategories = () => {
+    setMainCategory("");
+    setSubcategory("");
+    setThirdCategory("");
+  };
   const [user, setUser] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
   const [isMobile, setIsMobile] = useState(false);
 
   const router = useRouter();
@@ -33,21 +38,17 @@ export default function MegaMenu({
   };
 
   const handleLogoClick = () => {
-    clearSearchBar();
-    onSearchTermChange("");
-    setCurrentPage(1);
+    onSearchTermChange("")
     router.push("/");
+    clearCategories();
   };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    setCurrentPage(1);
-    onSearchTermChange("");
     const newSearchTerm = e.target.search.value;
-    setSearchTerm(newSearchTerm);
     onSearchTermChange(newSearchTerm);
     router.push("/");
-  }; 
+  };
 
   useEffect(() => {
     const checkSession = async () => {
@@ -86,6 +87,24 @@ export default function MegaMenu({
     };
   }, []);
 
+  const getCategoryText = () => {
+    if (thirdCategory) {
+      return t(
+        `categories.${mainCategory}.subcategories.${subcategory}.thirdCategories.${thirdCategory}.name`
+      );
+    } else if (subcategory) {
+      return t(`categories.${mainCategory}.subcategories.${subcategory}.name`);
+    } else if (mainCategory) {
+      return t(`categories.${mainCategory}.name`);
+    } else {
+      return "";
+    }
+  };
+
+  const handleKeepCategoriesChange = (e) => {
+    onKeepCategoriesChange(e.target.checked);
+  };
+
   return (
     <>
       <Navbar className="nav-borders w-100">
@@ -96,7 +115,7 @@ export default function MegaMenu({
               className="divhover d-flex align-items-center m-0 p-0 col-3 justify-content-center"
             >
               <div className="fs-1 want-color d-flex  m-0 w-100 h-100 align-items-center want-color">
-                Want <p className="small fs-5 m-2 p-1 want-border"> βeta V2</p>
+                Want <p className="small fs-5 m-2 p-1 want-border">Beta</p>
               </div>
             </Navbar.Brand>
           ) : null}
@@ -105,6 +124,23 @@ export default function MegaMenu({
               className="d-flex m-0 w-100 p-1 want-rounded text-center align-items-center justify-content-center generic-button"
               onSubmit={handleSearchSubmit}
             >
+              {getCategoryText() && (
+                <div className="form-check d-flex align-items-center mr-2">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    value={keepCategories}
+                    onChange={handleKeepCategoriesChange}
+                    id="keepCategoriesCheckbox"
+                  />
+                  <label
+                    className="form-check-label small"
+                    htmlFor="keepCategoriesCheckbox"
+                  >
+                    {getCategoryText()}
+                  </label>
+                </div>
+              )}
               <FormControl
                 type="search"
                 placeholder={t("navbar.searchPlaceholder")}
@@ -112,10 +148,7 @@ export default function MegaMenu({
                 aria-label="Search"
                 name="search"
               />
-              <button
-                type="submit"
-                className=" search-btn  m-1"
-              >
+              <button type="submit" className="search-btn m-1">
                 <i className="bi bi-search"></i>
               </button>
             </Form>
@@ -135,7 +168,11 @@ export default function MegaMenu({
                 </>
               )}
               <LanguageSelector />
-              {user ? <div className="d-flex align-items-center justify-content-center"><Notifications /></div>  : null}
+              {user ? (
+                <div className="d-flex align-items-center justify-content-center">
+                  <Notifications />
+                </div>
+              ) : null}
               {!isMobile && (
                 <>
                   {user ? (
