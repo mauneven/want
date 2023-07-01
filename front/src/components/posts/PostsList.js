@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ContentLoader from "react-content-loader";
 import { useRouter } from "next/router";
 import PostsLocation from "../locations/Posts/";
@@ -11,6 +11,7 @@ const PostsList = ({
   onSubcategoryChange,
   onThirdCategoryChange,
   keepCategories,
+  onSearchTermChange,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [pageSize, setPageSize] = useState(8);
@@ -30,12 +31,14 @@ const PostsList = ({
   const [posts, setPosts] = useState([]);
 
   const router = useRouter();
+  const containerRef = useRef(null);
 
   const handleMainCategoryChange = (mainCategory) => {
     setCategoryFilter((prevFilter) => ({
       ...prevFilter,
       mainCategory,
     }));
+    onSearchTermChange(""); // Clear searchTerm when changing main category
   };
 
   const handleSubcategoryChange = (subcategory) => {
@@ -43,6 +46,7 @@ const PostsList = ({
       ...prevFilter,
       subCategory: subcategory,
     }));
+    onSearchTermChange(""); // Clear searchTerm when changing subcategory
   };
 
   const handleThirdCategoryChange = (thirdCategory) => {
@@ -50,6 +54,7 @@ const PostsList = ({
       ...prevFilter,
       thirdCategory,
     }));
+    onSearchTermChange(""); // Clear searchTerm when changing third category
   };
 
   const handleLatitudeChange = (lat) => {
@@ -160,9 +165,15 @@ const PostsList = ({
           subCategoryFilter = categoryFilter?.subCategory || "";
           thirdCategoryFilter = categoryFilter?.thirdCategory || "";
         } else {
-          mainCategoryFilter = keepCategories ? categoryFilter?.mainCategory || "" : "";
-          subCategoryFilter = keepCategories ? categoryFilter?.subCategory || "" : "";
-          thirdCategoryFilter = keepCategories ? categoryFilter?.thirdCategory || "" : "";
+          mainCategoryFilter = keepCategories
+            ? categoryFilter?.mainCategory || ""
+            : "";
+          subCategoryFilter = keepCategories
+            ? categoryFilter?.subCategory || ""
+            : "";
+          thirdCategoryFilter = keepCategories
+            ? categoryFilter?.thirdCategory || ""
+            : "";
         }
       } else {
         mainCategoryFilter = categoryFilter?.mainCategory || "";
@@ -332,6 +343,37 @@ const PostsList = ({
     onThirdCategoryChange(categoryFilter.thirdCategory);
   }, [categoryFilter]);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (
+          entry.isIntersecting &&
+          hasMorePosts &&
+          !isLoading &&
+          !isFetching &&
+          !isFetchingMore
+        ) {
+          setIsFetchingMore(true);
+        }
+      },
+      {
+        root: null,
+        rootMargin: "0px",
+        threshold: 1.0,
+      }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+    };
+  }, [hasMorePosts, isLoading, isFetching, isFetchingMore]);
+
   return (
     <div>
       <div className="text-center">
@@ -342,6 +384,9 @@ const PostsList = ({
           initialMainCategory={categoryFilter.mainCategory}
           initialSubcategory={categoryFilter.subCategory}
           initialThirdCategory={categoryFilter.thirdCategory}
+          onSearchTermChange={onSearchTermChange}
+          searchTerm={searchTerm}
+          keepCategories={keepCategories}
         />
       </div>
       <div className="text-start m-2">
@@ -351,7 +396,10 @@ const PostsList = ({
           onRadiusChange={setRadius}
         />
       </div>
-      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-6 pe-2 ps-2">
+      <div
+        className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-6 pe-2 ps-2"
+        ref={containerRef}
+      >
         {posts.map((post) => {
           const userReputation = 5 - 0.3 * post.createdBy.reports.length;
           let photoIndex = 0;

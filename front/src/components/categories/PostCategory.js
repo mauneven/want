@@ -9,7 +9,9 @@ export default function PostCategory({
   initialMainCategory = "",
   initialSubcategory = "",
   initialThirdCategory = "",
-  isRequired = false,
+  onSearchTermChange,
+  searchTerm,
+  keepCategories,
 }) {
   const { t } = useTranslation();
 
@@ -23,6 +25,22 @@ export default function PostCategory({
   const [userPreferencesLoaded, setUserPreferencesLoaded] = useState(false);
   const [showLeftScroll, setShowLeftScroll] = useState(false);
   const [showRightScroll, setShowRightScroll] = useState(false);
+
+  const clearAllCategories = () => {
+    setSelectedCategory("");
+    setSelectedSubcategory("");
+    setSelectedThirdCategory("");
+    if (onMainCategoryChange) {
+      onMainCategoryChange("");
+    }
+    if (onSubcategoryChange) {
+      onSubcategoryChange("");
+    }
+    if (onThirdCategoryChange) {
+      onThirdCategoryChange("");
+    }
+  };
+  
 
   const getUserPreferences = async () => {
     try {
@@ -215,6 +233,29 @@ export default function PostCategory({
     handleScroll();
   }, [selectedCategory, selectedSubcategory, selectedThirdCategory]);
 
+  useEffect(() => {
+    if (selectedCategory || selectedSubcategory || selectedThirdCategory) {
+      if (!keepCategories && searchTerm !== "") {
+        if (onSearchTermChange) {
+          onSearchTermChange("");
+        }
+        clearAllCategories(); // Restablecer todas las categorías seleccionadas
+      }
+    }
+  }, [selectedCategory, selectedSubcategory, selectedThirdCategory, searchTerm, keepCategories, onSearchTermChange]);  
+  
+  useEffect(() => {
+    setSelectedCategory(initialMainCategory);
+    setSelectedSubcategory(initialSubcategory);
+    setSelectedThirdCategory(initialThirdCategory);
+  }, [initialMainCategory, initialSubcategory, initialThirdCategory, searchTerm, keepCategories]);  
+
+  useEffect(() => {
+    return () => {
+      setUserPreferencesLoaded(false);
+    };
+  }, []);
+
   return (
     <div className="d-flex">
       <div className="col-auto d-flex align-items-center justify-content-center">
@@ -243,6 +284,7 @@ export default function PostCategory({
                     ? "inline-block"
                     : "none",
                 }}
+                disabled={searchTerm && !keepCategories}
               >
                 <div className="d-flex justify-content-center align-items-center">
                   <div>{getCategoryTranslation(category.id)}</div>
@@ -282,6 +324,7 @@ export default function PostCategory({
                         ? "inline-block"
                         : "none",
                     }}
+                    disabled={searchTerm && !keepCategories}
                   >
                     <div className="d-flex justify-content-center align-items-center">
                       <div>
@@ -333,6 +376,7 @@ export default function PostCategory({
                         ? "inline-block"
                         : "none",
                     }}
+                    disabled={searchTerm && !keepCategories}
                   >
                     <div className="d-flex justify-content-center align-items-center">
                       <div>
@@ -359,7 +403,7 @@ export default function PostCategory({
           </div>
         </div>
       </div>
-      <div className="col-auto d-flex justify-content-center align-items-center">
+      <div className="col-auto d-flex align-items-center justify-content-center">
         {showRightScroll && (
           <i className="bi bi-arrow-right fs-1" onClick={scrollRight}></i>
         )}

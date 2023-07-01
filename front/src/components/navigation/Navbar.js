@@ -1,4 +1,3 @@
-// megamenu.js
 import { useState, useEffect } from "react";
 import { Navbar, Nav, NavDropdown, Form, FormControl } from "react-bootstrap";
 import { useRouter } from "next/router";
@@ -38,7 +37,8 @@ export default function MegaMenu({
   };
 
   const handleLogoClick = () => {
-    onSearchTermChange("")
+    onKeepCategoriesChange(false);
+    onSearchTermChange("=");
     router.push("/");
     clearCategories();
   };
@@ -100,6 +100,10 @@ export default function MegaMenu({
       return "";
     }
   };
+
+  useEffect(() => {
+    clearSearchBar();
+  }, [getCategoryText()]);
 
   const handleKeepCategoriesChange = (e) => {
     onKeepCategoriesChange(e.target.checked);
