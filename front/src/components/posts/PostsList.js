@@ -28,6 +28,7 @@ const PostsList = ({
   const [userPreferencesLoaded, setUserPreferencesLoaded] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState({});
   const [user, setUser] = useState(null);
+  const [initialCategoryFilter, setInitialCategoryFilter] = useState({});
   const [posts, setPosts] = useState([]);
 
   const router = useRouter();
@@ -365,7 +366,7 @@ const PostsList = ({
   }, [hasMorePosts, isLoading, isFetching, isFetchingMore]);
 
   useEffect(() => {
-    if (searchTerm) {
+    if (searchTerm && !keepCategories) {
       onMainCategoryChange("");
       onSubcategoryChange("");
       onThirdCategoryChange("");
