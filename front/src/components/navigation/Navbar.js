@@ -1,3 +1,4 @@
+// MegaMenu.js
 import { useState, useEffect } from "react";
 import { Navbar, Nav, NavDropdown, Form, FormControl } from "react-bootstrap";
 import { useRouter } from "next/router";
@@ -16,7 +17,9 @@ export default function MegaMenu({
   onKeepCategoriesChange,
   setMainCategory,
   setSubcategory,
-  setThirdCategory
+  setThirdCategory,
+  resetAll, // Nueva prop resetAll
+  onResetAll
 }) {
   const { t } = useTranslation();
   const [user, setUser] = useState(null);
@@ -32,8 +35,7 @@ export default function MegaMenu({
   };
 
   const handleLogoClick = () => {
-    onKeepCategoriesChange(false);
-    onSearchTermChange("");
+    onResetAll(true); // Resetear todas las categorías
     router.push("/");
   };
 

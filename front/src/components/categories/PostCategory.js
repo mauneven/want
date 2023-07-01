@@ -12,6 +12,7 @@ export default function PostCategory({
   onSearchTermChange,
   searchTerm,
   keepCategories,
+  resetAll,
 }) {
   const { t } = useTranslation();
 
@@ -200,6 +201,12 @@ export default function PostCategory({
       setSelectedThirdCategory("");
     }
   }, [searchTerm, keepCategories]);
+
+  useEffect(() => {
+    if (resetAll) {
+      clearAllCategories();
+    }
+  }, [resetAll]);
 
   return (
     <div className="d-flex">

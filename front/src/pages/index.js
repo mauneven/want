@@ -14,6 +14,8 @@ const IndexPage = ({
   onSearchTermChange,
   keepCategories,
   onKeepCategoriesChange,
+  resetAll,
+  onResetAll,
 }) => {
   const router = useRouter();
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -69,6 +71,7 @@ const IndexPage = ({
         <p>Third Category: {thirdCategory}</p>
         <p>Search Term: {searchTerm}</p>
         <p>Keep Categories: {keepCategories ? "true" : "false"}</p>
+        <p>Reset All: {resetAll ? "true" : "false"}</p>
       </div>
       <PostsList
         searchTerm={searchTerm}
@@ -78,6 +81,8 @@ const IndexPage = ({
         onSearchTermChange={onSearchTermChange}
         onKeepCategoriesChange={onKeepCategoriesChange}
         keepCategories={keepCategories}
+        onResetAll={onResetAll}
+        resetAll={resetAll}
       />
     </div>
   );

@@ -12,6 +12,8 @@ const PostsList = ({
   onThirdCategoryChange,
   keepCategories,
   onSearchTermChange,
+  onResetAll,
+  resetAll,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [pageSize, setPageSize] = useState(12);
@@ -173,6 +175,16 @@ const PostsList = ({
         thirdCategoryFilter = categoryFilter?.thirdCategory || "";
       }
 
+      if (resetAll) {
+        mainCategoryFilter = "";
+        subCategoryFilter = "";
+        thirdCategoryFilter = "";
+        setCurrentPage(1); // Agregar esta línea
+        resetPosts; // Agregar punto y coma aquí
+        onResetAll(false);
+        setCategoryFilter("")
+      }
+
       const filterParams = new URLSearchParams({
         mainCategory: mainCategoryFilter,
         subCategory: subCategoryFilter,
@@ -245,6 +257,7 @@ const PostsList = ({
     radius,
     userPreferences,
     userPreferencesLoaded,
+    resetAll
   ]);
 
   useEffect(() => {
@@ -315,6 +328,12 @@ const PostsList = ({
   useEffect(() => {
     fetchPosts(true);
   }, [categoryFilter, searchTerm, keepCategories]);
+  
+  useEffect(() => {
+    if (resetAll) {
+      fetchPosts(true);
+    }
+  }, [resetAll]);  
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -386,6 +405,7 @@ const PostsList = ({
           onSearchTermChange={onSearchTermChange}
           searchTerm={searchTerm}
           keepCategories={keepCategories}
+          resetAll={resetAll}
         />
       </div>
       <div className="text-start m-2">

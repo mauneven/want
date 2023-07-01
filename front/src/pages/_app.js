@@ -26,7 +26,8 @@ export default function MyApp({ Component, pageProps }) {
   const [subcategory, setSubcategory] = useState("");
   const [thirdCategory, setThirdCategory] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [keepCategories, setKeepCategories] = useState();
+  const [keepCategories, setKeepCategories] = useState(false);
+  const [resetAll, setResetAll] = useState(true);
 
   const isMobileDevice = () => {
     return (
@@ -37,7 +38,7 @@ export default function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     setIsMobile(isMobileDevice());
-    setHasMounted(true); // indicamos que la aplicación se ha montado
+    setHasMounted(true);
   }, []);
 
   useEffect(() => {
@@ -82,6 +83,8 @@ export default function MyApp({ Component, pageProps }) {
             setMainCategory={setMainCategory}
             setSubcategory={setSubcategory}
             setThirdCategory={setThirdCategory}
+            onResetAll={setResetAll}
+            resetAll={resetAll}
           />
         </header>
 
@@ -99,6 +102,8 @@ export default function MyApp({ Component, pageProps }) {
               onSearchTermChange={setSearchTerm}
               keepCategories={keepCategories}
               onKeepCategoriesChange={setKeepCategories}
+              onResetAll={setResetAll}
+              resetAll={resetAll}
             />
           </Suspense>
         </div>
