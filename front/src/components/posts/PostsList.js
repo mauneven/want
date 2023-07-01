@@ -32,7 +32,6 @@ const PostsList = ({
 
   const router = useRouter();
   const containerRef = useRef(null);
-  const searchTermRef = useRef(searchTerm);
 
   const handleMainCategoryChange = (mainCategory) => {
     setCategoryFilter((prevFilter) => ({
@@ -157,16 +156,16 @@ const PostsList = ({
       let subCategoryFilter = "";
       let thirdCategoryFilter = "";
 
-      if (searchTermRef.current) {
-        mainCategoryFilter = keepCategories
-          ? categoryFilter?.mainCategory || ""
-          : "";
-        subCategoryFilter = keepCategories
-          ? categoryFilter?.subCategory || ""
-          : "";
-        thirdCategoryFilter = keepCategories
-          ? categoryFilter?.thirdCategory || ""
-          : "";
+      if (searchTerm) {
+        if (keepCategories) {
+          mainCategoryFilter = categoryFilter?.mainCategory || "";
+          subCategoryFilter = categoryFilter?.subCategory || "";
+          thirdCategoryFilter = categoryFilter?.thirdCategory || "";
+        } else {
+          mainCategoryFilter = "";
+          subCategoryFilter = "";
+          thirdCategoryFilter = "";
+        }
       } else {
         mainCategoryFilter = categoryFilter?.mainCategory || "";
         subCategoryFilter = categoryFilter?.subCategory || "";
@@ -177,7 +176,7 @@ const PostsList = ({
         mainCategory: mainCategoryFilter,
         subCategory: subCategoryFilter,
         thirdCategory: thirdCategoryFilter,
-        searchTerm: searchTermRef.current || "",
+        searchTerm: searchTerm || "",
         page: resetPosts ? 1 : currentPage,
         pageSize,
         latitude,
@@ -238,6 +237,7 @@ const PostsList = ({
     }
   }, [
     categoryFilter,
+    searchTerm,
     hasLocation,
     latitude,
     longitude,
@@ -313,7 +313,7 @@ const PostsList = ({
 
   useEffect(() => {
     fetchPosts(true);
-  }, [categoryFilter, keepCategories]);
+  }, [categoryFilter, searchTerm, keepCategories]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -332,12 +332,6 @@ const PostsList = ({
     onSubcategoryChange(categoryFilter.subCategory);
     onThirdCategoryChange(categoryFilter.thirdCategory);
   }, [categoryFilter]);
-
-  useEffect(() => {
-    if (searchTerm !== searchTermRef.current) {
-      searchTermRef.current = searchTerm;
-    }
-  }, [searchTerm]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -369,6 +363,14 @@ const PostsList = ({
       }
     };
   }, [hasMorePosts, isLoading, isFetching, isFetchingMore]);
+
+  useEffect(() => {
+    if (searchTerm) {
+      onMainCategoryChange("");
+      onSubcategoryChange("");
+      onThirdCategoryChange("");
+    }
+  }, [searchTerm]);
 
   return (
     <div>

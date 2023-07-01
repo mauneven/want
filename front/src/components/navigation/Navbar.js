@@ -19,11 +19,6 @@ export default function MegaMenu({
   setThirdCategory
 }) {
   const { t } = useTranslation();
-  const clearCategories = () => {
-    setMainCategory("");
-    setSubcategory("");
-    setThirdCategory("");
-  };
   const [user, setUser] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
 
