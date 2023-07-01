@@ -208,9 +208,7 @@ const PostsList = ({
         ),
       });
 
-      const fetchPostsLog = `Fetching posts... ${resetPosts ? "(Reset)" : ""}`;
-      console.log(fetchPostsLog);
-
+      console.log("Fetching posts...");
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?${filterParams}`
       );
