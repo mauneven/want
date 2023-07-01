@@ -14,7 +14,7 @@ const PostsList = ({
   onSearchTermChange,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [pageSize, setPageSize] = useState(8);
+  const [pageSize, setPageSize] = useState(12);
   const [totalPosts, setTotalPosts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMorePosts, setHasMorePosts] = useState(false);
@@ -32,13 +32,13 @@ const PostsList = ({
 
   const router = useRouter();
   const containerRef = useRef(null);
+  const searchTermRef = useRef(searchTerm);
 
   const handleMainCategoryChange = (mainCategory) => {
     setCategoryFilter((prevFilter) => ({
       ...prevFilter,
       mainCategory,
     }));
-    onSearchTermChange(""); // Clear searchTerm when changing main category
   };
 
   const handleSubcategoryChange = (subcategory) => {
@@ -46,7 +46,6 @@ const PostsList = ({
       ...prevFilter,
       subCategory: subcategory,
     }));
-    onSearchTermChange(""); // Clear searchTerm when changing subcategory
   };
 
   const handleThirdCategoryChange = (thirdCategory) => {
@@ -54,7 +53,6 @@ const PostsList = ({
       ...prevFilter,
       thirdCategory,
     }));
-    onSearchTermChange(""); // Clear searchTerm when changing third category
   };
 
   const handleLatitudeChange = (lat) => {
@@ -95,9 +93,9 @@ const PostsList = ({
           JSON.parse(localStorage.getItem("thirdCategoryPreferences")) || {};
 
         setUserPreferences({
-          mainCategoryCounts: mainCategoryPreferences,
-          subCategoryCounts: subCategoryPreferences,
-          thirdCategoryCounts: thirdCategoryPreferences,
+          mainCategoryCounts: mainCategoryPreferences || {},
+          subCategoryCounts: subCategoryPreferences || {},
+          thirdCategoryCounts: thirdCategoryPreferences || {},
         });
         setUserPreferencesLoaded(true);
         console.log("Datos enviados con el localStorage");
@@ -159,35 +157,27 @@ const PostsList = ({
       let subCategoryFilter = "";
       let thirdCategoryFilter = "";
 
-      if (searchTerm) {
-        if (keepCategories) {
-          mainCategoryFilter = categoryFilter?.mainCategory || "";
-          subCategoryFilter = categoryFilter?.subCategory || "";
-          thirdCategoryFilter = categoryFilter?.thirdCategory || "";
-        } else {
-          mainCategoryFilter = keepCategories
-            ? categoryFilter?.mainCategory || ""
-            : "";
-          subCategoryFilter = keepCategories
-            ? categoryFilter?.subCategory || ""
-            : "";
-          thirdCategoryFilter = keepCategories
-            ? categoryFilter?.thirdCategory || ""
-            : "";
-        }
+      if (searchTermRef.current) {
+        mainCategoryFilter = keepCategories
+          ? categoryFilter?.mainCategory || ""
+          : "";
+        subCategoryFilter = keepCategories
+          ? categoryFilter?.subCategory || ""
+          : "";
+        thirdCategoryFilter = keepCategories
+          ? categoryFilter?.thirdCategory || ""
+          : "";
       } else {
         mainCategoryFilter = categoryFilter?.mainCategory || "";
         subCategoryFilter = categoryFilter?.subCategory || "";
         thirdCategoryFilter = categoryFilter?.thirdCategory || "";
       }
 
-      console.log(keepCategories);
-
       const filterParams = new URLSearchParams({
         mainCategory: mainCategoryFilter,
         subCategory: subCategoryFilter,
         thirdCategory: thirdCategoryFilter,
-        searchTerm: searchTerm || "",
+        searchTerm: searchTermRef.current || "",
         page: resetPosts ? 1 : currentPage,
         pageSize,
         latitude,
@@ -204,6 +194,7 @@ const PostsList = ({
         ),
       });
 
+      console.log("Fetching posts...");
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?${filterParams}`
       );
@@ -213,11 +204,11 @@ const PostsList = ({
         setPosts(postsData);
         localStorage.setItem("cachedPosts", JSON.stringify(postsData));
       } else {
-        setPosts((prevPosts) => [...prevPosts, ...postsData]);
-        localStorage.setItem(
-          "cachedPosts",
-          JSON.stringify([...posts, ...postsData])
-        );
+        setPosts((prevPosts) => {
+          const updatedPosts = [...prevPosts, ...postsData];
+          localStorage.setItem("cachedPosts", JSON.stringify(updatedPosts));
+          return updatedPosts;
+        });
       }
 
       setTotalPosts(totalPosts);
@@ -243,11 +234,10 @@ const PostsList = ({
       setPosts(JSON.parse(cachedPosts));
       setIsLoading(false);
     } else {
-      fetchPosts(true);
+      fetchPosts(false);
     }
   }, [
     categoryFilter,
-    searchTerm,
     hasLocation,
     latitude,
     longitude,
@@ -323,7 +313,7 @@ const PostsList = ({
 
   useEffect(() => {
     fetchPosts(true);
-  }, [categoryFilter, searchTerm]);
+  }, [categoryFilter, keepCategories]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -342,6 +332,12 @@ const PostsList = ({
     onSubcategoryChange(categoryFilter.subCategory);
     onThirdCategoryChange(categoryFilter.thirdCategory);
   }, [categoryFilter]);
+
+  useEffect(() => {
+    if (searchTerm !== searchTermRef.current) {
+      searchTermRef.current = searchTerm;
+    }
+  }, [searchTerm]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

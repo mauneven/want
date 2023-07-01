@@ -38,9 +38,8 @@ export default function MegaMenu({
 
   const handleLogoClick = () => {
     onKeepCategoriesChange(false);
-    onSearchTermChange("=");
+    onSearchTermChange("");
     router.push("/");
-    clearCategories();
   };
 
   const handleSearchSubmit = (e) => {
