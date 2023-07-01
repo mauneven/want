@@ -179,10 +179,12 @@ const PostsList = ({
         mainCategoryFilter = "";
         subCategoryFilter = "";
         thirdCategoryFilter = "";
-        setCurrentPage(1); // Agregar esta línea
-        resetPosts; // Agregar punto y coma aquí
+        setCurrentPage(1);
+        resetPosts = true; // Set resetPosts to true here
+        setCategoryFilter({}); // Clear category filter
+        searchTerm = "";
         onResetAll(false);
-        setCategoryFilter("")
+        onSearchTermChange("");
       }
 
       const filterParams = new URLSearchParams({
@@ -206,7 +208,9 @@ const PostsList = ({
         ),
       });
 
-      console.log("Fetching posts...");
+      const fetchPostsLog = `Fetching posts... ${resetPosts ? "(Reset)" : ""}`;
+      console.log(fetchPostsLog);
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?${filterParams}`
       );
@@ -257,7 +261,7 @@ const PostsList = ({
     radius,
     userPreferences,
     userPreferencesLoaded,
-    resetAll
+    resetAll,
   ]);
 
   useEffect(() => {
@@ -328,12 +332,12 @@ const PostsList = ({
   useEffect(() => {
     fetchPosts(true);
   }, [categoryFilter, searchTerm, keepCategories]);
-  
+
   useEffect(() => {
     if (resetAll) {
       fetchPosts(true);
     }
-  }, [resetAll]);  
+  }, [resetAll]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {

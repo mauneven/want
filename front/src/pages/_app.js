@@ -27,7 +27,7 @@ export default function MyApp({ Component, pageProps }) {
   const [thirdCategory, setThirdCategory] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [keepCategories, setKeepCategories] = useState(false);
-  const [resetAll, setResetAll] = useState(true);
+  const [resetAll, setResetAll] = useState();
 
   const isMobileDevice = () => {
     return (

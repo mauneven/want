@@ -41,6 +41,9 @@ export default function MegaMenu({
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
+    setMainCategory("");
+    setSubcategory("");
+    setThirdCategory("");
     const newSearchTerm = e.target.search.value;
     onSearchTermChange(newSearchTerm);
     router.push("/");
@@ -96,10 +99,6 @@ export default function MegaMenu({
       return "";
     }
   };
-
-  useEffect(() => {
-    clearSearchBar();
-  }, [getCategoryText()]);
 
   const handleKeepCategoriesChange = (e) => {
     onKeepCategoriesChange(e.target.checked);
