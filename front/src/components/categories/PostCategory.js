@@ -17,8 +17,10 @@ export default function PostCategory({
   const { t } = useTranslation();
 
   const [selectedCategory, setSelectedCategory] = useState(initialMainCategory);
-  const [selectedSubcategory, setSelectedSubcategory] = useState(initialSubcategory);
-  const [selectedThirdCategory, setSelectedThirdCategory] = useState(initialThirdCategory);
+  const [selectedSubcategory, setSelectedSubcategory] =
+    useState(initialSubcategory);
+  const [selectedThirdCategory, setSelectedThirdCategory] =
+    useState(initialThirdCategory);
   const [searchPerformed, setSearchPerformed] = useState(false);
   const contentRef = useRef(null);
   const [showLeftScroll, setShowLeftScroll] = useState(false);
@@ -49,7 +51,8 @@ export default function PostCategory({
       if (onSearchTermChange) {
         onSearchTermChange("");
       }
-    } else { // no es culpable
+    } else {
+      // no es culpable
       setSelectedCategory(category);
       setSelectedSubcategory("");
       setSelectedThirdCategory("");
@@ -81,7 +84,8 @@ export default function PostCategory({
       if (onSearchTermChange) {
         onSearchTermChange("");
       }
-    } else { // no es culpable
+    } else {
+      // no es culpable
       setSelectedSubcategory(subcategory);
       setSelectedThirdCategory("");
       if (onSubcategoryChange) {
@@ -124,7 +128,11 @@ export default function PostCategory({
     return t(`categories.${categoryId}.subcategories.${subcategoryId}.name`);
   };
 
-  const getThirdCategoryTranslation = (categoryId, subcategoryId, thirdCategoryId) => {
+  const getThirdCategoryTranslation = (
+    categoryId,
+    subcategoryId,
+    thirdCategoryId
+  ) => {
     return t(
       `categories.${categoryId}.subcategories.${subcategoryId}.thirdCategories.${thirdCategoryId}.name`
     );
@@ -218,7 +226,11 @@ export default function PostCategory({
         )}
       </div>
       <div className="col" style={{ overflowX: "hidden" }}>
-        <div className="slider-container" ref={contentRef} onScroll={handleScroll}>
+        <div
+          className="slider-container"
+          ref={contentRef}
+          onScroll={handleScroll}
+        >
           <div className="d-flex" style={{ whiteSpace: "nowrap" }}>
             {categoriesData.map((category) => (
               <button
@@ -229,17 +241,25 @@ export default function PostCategory({
                     ? "want-button"
                     : searchPerformed && !keepCategories
                     ? "generic-button"
-                    : ""
+                    : "generic-button"
                 }`}
                 onClick={() => {
                   handleButtonClick(category.id, "", "");
                   handleCategoryChange(category.id);
                 }}
                 style={{
-                  display: isSubcategoryVisible(category) ? "inline-block" : "none",
+                  display: isSubcategoryVisible(category)
+                    ? "inline-block"
+                    : "none",
                 }}
               >
                 {getCategoryTranslation(category.id)}
+                {selectedCategory && (
+                  <>
+                    {" "}
+                    <i className="bi bi-x-circle"></i>
+                  </>
+                )}
               </button>
             ))}
 
@@ -255,17 +275,28 @@ export default function PostCategory({
                         ? "want-button"
                         : searchPerformed && !keepCategories
                         ? "generic-button"
-                        : ""
+                        : "generic-button"
                     }`}
                     onClick={() => {
                       handleButtonClick(selectedCategory, subcategory.id, "");
                       handleSubcategoryChange(subcategory.id);
                     }}
                     style={{
-                      display: isThirdCategoryVisible(subcategory) ? "inline-block" : "none",
+                      display: isThirdCategoryVisible(subcategory)
+                        ? "inline-block"
+                        : "none",
                     }}
                   >
-                    {getSubcategoryTranslation(selectedCategory, subcategory.id)}
+                    {getSubcategoryTranslation(
+                      selectedCategory,
+                      subcategory.id
+                    )}
+                    {selectedSubcategory && (
+                      <>
+                        {" "}
+                        <i className="bi bi-x-circle"></i>
+                      </>
+                    )}
                   </button>
                 ))}
 
@@ -282,7 +313,7 @@ export default function PostCategory({
                         ? "want-button"
                         : searchPerformed && !keepCategories
                         ? "generic-button"
-                        : ""
+                        : "generic-button"
                     }`}
                     onClick={() => {
                       handleButtonClick(
@@ -302,6 +333,11 @@ export default function PostCategory({
                       selectedCategory,
                       selectedSubcategory,
                       thirdCategory.id
+                    )}
+                    {selectedThirdCategory && (
+                      <>
+                        <i className="bi bi-x-circle"></i>
+                      </>
                     )}
                   </button>
                 ))}

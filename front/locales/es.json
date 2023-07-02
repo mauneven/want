@@ -111,9 +111,11 @@
     "searchLocation": "Buscar tu ubicación...",
     "currentLocation": "Ubicación actual",
     "allowLocationAccess": "Permite el acceso a tu ubicación para ver publicaciones cercanas. Si no deseas permitir el acceso a tu ubicación, ingresa la ubicación donde deseas ver las publicaciones.",
-    "selectRadius": "Seleccionar radio (km):",
+    "selectRadius": "Radio (km)",
     "everywhere": "En todas partes *BETA*",
-    "useCurrentLocation": "Usar mi ubicación actual"
+    "useCurrentLocation": "Usar mi ubicación actual",
+    "apply": "Aplicar",
+    "cancel" : "Cancelar"
   },
   "reportOfferModal": {
     "report": "Reportar",

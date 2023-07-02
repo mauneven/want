@@ -112,9 +112,11 @@
   "searchLocation": "Rechercher votre localisation...",
   "currentLocation": "Localisation actuelle",
   "allowLocationAccess": "Autorisez l'accès à votre localisation pour voir les publications à proximité. Si vous ne souhaitez pas autoriser l'accès à votre localisation, saisissez la localisation où vous souhaitez voir les publications.",
-  "selectRadius": "Sélectionner un rayon (km) :",
+  "selectRadius": "Rayon (km)",
   "everywhere": "Partout BETA",
-  "useCurrentLocation": "Utiliser ma localisation actuelle"
+  "useCurrentLocation": "Utiliser ma localisation actuelle",
+  "apply": "Appliquer",
+  "cancel" : "Annuler"
   },
   "reportOfferModal": {
   "report": "Signaler",

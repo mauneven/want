@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
-
 import { Form, Modal, Button } from 'react-bootstrap';
 import { Icon } from 'leaflet';
 import { useTranslation } from 'react-i18next';
 
-const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) => {
+const PostsLocation = ({
+  onLatitudeChange,
+  onLongitudeChange,
+  onRadiusChange
+}) => {
   const { t } = useTranslation();
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
@@ -18,6 +21,8 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
   const radiusOptions = [1, 2, 5, 10, 20, 30, 50, 80, 100, 10000000000]; // Opciones de radio en km
   const [locationName, setLocationName] = useState(null); // Nombre de la ubicación
   const [zoomLevel, setZoomLevel] = useState(13); // Nivel de zoom predeterminado: 13
+  const [isDataChanged, setIsDataChanged] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const storedRadius = localStorage.getItem('radius');
@@ -109,8 +114,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
     const { lat, lng } = event.target.getLatLng();
     setLatitude(lat);
     setLongitude(lng);
-    onLatitudeChange(lat);
-    onLongitudeChange(lng);
+    setIsDataChanged(true);
   };
 
   const handleSearchChange = (event) => {
@@ -129,9 +133,8 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
         setSearchQuery('');
         setSearchResults([]);
         mapRef.current.setView([parseFloat(lat), parseFloat(lon)], zoomLevel);
-        onLatitudeChange(parseFloat(lat));
-        onLongitudeChange(parseFloat(lon));
         fetchLocationName(parseFloat(lat), parseFloat(lon));
+        setIsDataChanged(true);
       }
     } catch (error) {
       console.log('esperando datos de openstreetmap');
@@ -152,8 +155,6 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
             const { city } = data.address;
             setLatitude(lat);
             setLongitude(lng);
-            onLatitudeChange(lat);
-            onLongitudeChange(lng);
             setLocationDetected(true);
             if (city) {
               setSearchQuery(city);
@@ -162,6 +163,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
             localStorage.setItem('latitude', lat);
             localStorage.setItem('longitude', lng);
             localStorage.setItem('radius', radius.toString());
+            setIsDataChanged(true);
           } catch (error) {
             console.error(error);
           }
@@ -178,7 +180,6 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
   const handleRadiusChange = (event) => {
     const selectedRadius = parseInt(event.target.value);
     setRadius(selectedRadius);
-    onRadiusChange(selectedRadius);
     localStorage.setItem('radius', selectedRadius.toString());
 
     // Ajustar el nivel de zoom según el radio seleccionado
@@ -207,6 +208,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
     localStorage.setItem('zoomLevel', zoomLevel.toString());
 
     mapRef.current.setView([latitude, longitude], zoomLevel);
+    setIsDataChanged(true);
   };
 
   const handleKeyDown = (event) => {
@@ -216,7 +218,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
   };
 
   const handleLocationSelection = async () => {
-    setIsLoading(true);
+    setIsSubmitting(true);
 
     // Aquí puedes realizar las acciones que deseas realizar al seleccionar la ubicación
     // y enviar los datos de longitud, latitud y radio.
@@ -232,6 +234,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
 
     // Cerrar el modal después de seleccionar la ubicación
     closeModal();
+    setIsSubmitting(false);
   };
 
   const mapRef = useRef(null);
@@ -278,6 +281,8 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
 
   const closeModal = () => {
     setShowModal(false);
+    setSearchQuery('');
+    setSearchResults([]);
   };
 
   return (
@@ -287,7 +292,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
         {locationName ? `${locationName} · ${radius} km` : t('postsLocation.selectLocation')}
       </button>
 
-      <Modal show={showModal} onHide={closeModal} size="lg">
+      <Modal show={showModal} onHide={closeModal} size="xl" className='p-0'>
         <Modal.Header closeButton>
           <Modal.Title>{t('postsLocation.selectLocation')}</Modal.Title>
         </Modal.Header>
@@ -376,7 +381,11 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
           <Form.Label>{t('postsLocation.selectRadius')}</Form.Label>
           <Form>
             <Form.Group controlId="radiusSelect">
-              <Form.Control as="select" value={radius} onChange={handleRadiusChange}>
+              <Form.Control
+                as="select"
+                value={radius}
+                onChange={handleRadiusChange}
+              >
                 <option value={5}>5 km</option>
                 <option value={10}>10 km</option>
                 <option value={15}>15 km</option>
@@ -389,8 +398,25 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
               </Form.Control>
             </Form.Group>
           </Form>
-          <button className="want-button" onClick={handleLocationDetection}>
+          <button
+            className="want-button"
+            onClick={handleLocationDetection}
+            disabled={isSubmitting}
+          >
             {t('postsLocation.useCurrentLocation')}
+            <i className="bi bi-geo-fill m-2"></i>
+          </button>
+          <button className='generic-button' >
+          {t('postsLocation.cancel')}
+          <i className="bi bi-x-circle-fill m-2"></i>
+          </button>
+          <button
+            className="generic-button"
+            onClick={handleLocationSelection}
+            disabled={!isDataChanged || isSubmitting}
+          >
+            {t('postsLocation.apply')}
+            <i className="bi bi-check-circle-fill m-2"></i>
           </button>
         </Modal.Footer>
       </Modal>

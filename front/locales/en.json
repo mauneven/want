@@ -112,9 +112,11 @@
   "searchLocation": "Search your location...",
   "currentLocation": "Current location",
   "allowLocationAccess": "Allow access to your location to view nearby posts. If you do not want to allow access to your location, enter the location where you want to view the posts.",
-  "selectRadius": "Select radius (km):",
+  "selectRadius": "Radius (km)",
   "everywhere": "Everywhere BETA",
-  "useCurrentLocation": "Use my current location"
+  "useCurrentLocation": "Use my current location",
+  "apply": "Apply",
+  "cancel" : "Cancel"
   },
   "reportOfferModal": {
   "report": "Report",

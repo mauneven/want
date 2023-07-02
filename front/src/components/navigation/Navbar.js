@@ -118,7 +118,16 @@ export default function MegaMenu({
                 Want <p className="small fs-5 m-2 p-1 want-border">Beta</p>
               </div>
             </Navbar.Brand>
-          ) : null}
+          ) : (
+            <Navbar.Brand
+            onClick={handleLogoClick}
+            className="divhover d-flex align-items-center m-0 p-0 col-3 justify-content-center"
+          >
+            <div className="fs-1 want-color d-flex  m-0 w-100 h-100 align-items-center want-color">
+              <p className="small text-small m-0 p-1 want-border">Beta</p>
+            </div>
+          </Navbar.Brand>
+          )}
           <div className="w-100 d-flex justify-content-center align-items-center">
             <Form
               className="d-flex m-0 w-100 p-1 want-rounded text-center align-items-center justify-content-center generic-button"

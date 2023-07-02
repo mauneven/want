@@ -4,6 +4,9 @@ import { useRouter } from "next/router";
 import PostsLocation from "../locations/Posts/";
 import PostCategory from "../categories/PostCategory";
 import Link from "next/link";
+import { useCheckSession, useGetUserPreferences } from "@/utils/userEffects";
+import fetchPosts from "./postsList/PostsListsUtilities";
+import PostCard from "./postsList/PostCard";
 
 const PostsList = ({
   searchTerm,
@@ -26,12 +29,12 @@ const PostsList = ({
   const [longitude, setLongitude] = useState(null);
   const [radius, setRadius] = useState(10);
   const [hasLocation, setHasLocation] = useState(false);
-  const [userPreferences, setUserPreferences] = useState({});
-  const [userPreferencesLoaded, setUserPreferencesLoaded] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState({});
-  const [user, setUser] = useState(null);
   const [initialCategoryFilter, setInitialCategoryFilter] = useState({});
   const [posts, setPosts] = useState([]);
+  const user = useCheckSession();
+  const { userPreferences, userPreferencesLoaded } =
+    useGetUserPreferences(user);
 
   const router = useRouter();
   const containerRef = useRef(null);
@@ -70,191 +73,36 @@ const PostsList = ({
     setCurrentPage(1);
   };
 
-  const handleRadiusChange = (event) => {
-    if (event && event.target && event.target.value) {
-      const selectedRadius = parseInt(event.target.value);
+  const handleRadiusChange = (selectedRadius) => {
       setRadius(selectedRadius);
-      onRadiusChange(selectedRadius);
-    }
     setCurrentPage(1);
   };
 
   useEffect(() => {
     if (resetAll) {
-      localStorage.removeItem("cachedPosts"); // Eliminar el caché de los posts
-      setPosts([]); // Limpiar la lista de posts
-      setHasMorePosts(false); // Restablecer el indicador de si hay más posts
+      localStorage.removeItem("cachedPosts");
+      setPosts([]);
+      setHasMorePosts(false);
       onSearchTermChange("");
-      setCurrentPage(1); // Restablecer la página actual
-      setIsFetchingMore(false); // Restablecer el indicador de si se está obteniendo más posts
-      setIsLoading(true); // Establecer isLoading en true para mostrar el indicador de carga
+      setCurrentPage(1);
+      setIsFetchingMore(false);
+      setIsLoading(true);
 
       const timer = setTimeout(() => {
-        forceUpdate(); // Forzar la actualización del componente
-        setIsLoading(false); // Establecer isLoading en false para ocultar el indicador de carga
-        onResetAll(false); // Restablecer el valor de resetAll a false
+        forceUpdate();
+        setIsLoading(false);
+        onResetAll(false);
       }, 1);
 
       return () => clearTimeout(timer);
     }
   }, [resetAll, onResetAll]);
 
-  const getUserPreferences = async () => {
-    try {
-      if (user) {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/preferences`,
-          {
-            credentials: "include",
-          }
-        );
-        const data = await response.json();
-        setUserPreferences(data);
-        setUserPreferencesLoaded(true);
-        console.log("Datos enviados con el usuario");
-      } else {
-        const mainCategoryPreferences =
-          JSON.parse(localStorage.getItem("mainCategoryPreferences")) || {};
-        const subCategoryPreferences =
-          JSON.parse(localStorage.getItem("subCategoryPreferences")) || {};
-        const thirdCategoryPreferences =
-          JSON.parse(localStorage.getItem("thirdCategoryPreferences")) || {};
-
-        setUserPreferences({
-          mainCategoryCounts: mainCategoryPreferences || {},
-          subCategoryCounts: subCategoryPreferences || {},
-          thirdCategoryCounts: thirdCategoryPreferences || {},
-        });
-        setUserPreferencesLoaded(true);
-        console.log("Datos enviados con el localStorage");
-      }
-    } catch (error) {
-      console.error("Error al obtener las preferencias de usuario:", error);
-    }
-  };
-
-  const fetchPosts = async (resetPosts) => {
-    if (!hasLocation) {
-      return;
-    }
-  
-    try {
-      setIsLoading(true);
-      setIsFetching(true);
-  
-      const convertKeysToSingleQuotes = (preferences) => {
-        const convertedPreferences = {};
-        for (const key in preferences) {
-          const convertedKey = key.replace(/"/g, "'");
-          convertedPreferences[convertedKey] = preferences[key];
-        }
-        return convertedPreferences;
-      };
-  
-      let mainCategoryFilter = "";
-      let subCategoryFilter = "";
-      let thirdCategoryFilter = "";
-  
-      if (searchTerm) {
-        if (keepCategories) {
-          mainCategoryFilter = categoryFilter?.mainCategory || "";
-          subCategoryFilter = categoryFilter?.subCategory || "";
-          thirdCategoryFilter = categoryFilter?.thirdCategory || "";
-        } else {
-          mainCategoryFilter = "";
-          subCategoryFilter = "";
-          thirdCategoryFilter = "";
-        }
-      } else {
-        mainCategoryFilter = categoryFilter?.mainCategory || "";
-        subCategoryFilter = categoryFilter?.subCategory || "";
-        thirdCategoryFilter = categoryFilter?.thirdCategory || "";
-      }
-  
-      const filterParams = new URLSearchParams({
-        mainCategory: mainCategoryFilter,
-        subCategory: subCategoryFilter,
-        thirdCategory: thirdCategoryFilter,
-        searchTerm: searchTerm || "",
-        page: resetPosts ? 1 : currentPage,
-        pageSize,
-        latitude,
-        longitude,
-        radius,
-        mainCategoryPreferences: JSON.stringify(
-          convertKeysToSingleQuotes(userPreferences.mainCategoryCounts)
-        ),
-        subCategoryPreferences: JSON.stringify(
-          convertKeysToSingleQuotes(userPreferences.subCategoryCounts)
-        ),
-        thirdCategoryPreferences: JSON.stringify(
-          convertKeysToSingleQuotes(userPreferences.thirdCategoryCounts)
-        ),
-      });
-  
-      console.log("Fetching posts...");
-  
-      if (resetPosts) {
-        setPosts([]); // Eliminar los posts antiguos
-      }
-  
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?${filterParams}`
-      );
-      const { posts: postsData, totalPosts } = await response.json();
-
-      setPosts((prevPosts) => {
-        const updatedPosts = resetPosts ? postsData : [...prevPosts, ...postsData.filter((post) => !prevPosts.some((prevPost) => prevPost._id === post._id))];
-        localStorage.setItem("cachedPosts", JSON.stringify(updatedPosts));
-        return updatedPosts;
-      });
-  
-      setTotalPosts(totalPosts);
-      setHasMorePosts(postsData.length > 0);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    } finally {
-      setIsFetching(false);
-      setIsLoading(false);
-      setIsFetchingMore(false);
-    }
-  };  
-
   useEffect(() => {
-    getUserPreferences();
-  }, [user]);
-
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data.user || null);
-        } else if (response.status === 401) {
-          setUser(null);
-          console.log("no logged");
-        }
-      } catch (error) {
-        console.error("error session:", error);
-      }
-    };
-
-    checkSession();
-  }, [router.pathname]);
-
-  useEffect(() => {
-    if (latitude !== null && longitude !== null) {
+    if (latitude !== null && longitude !== null && radius !== null) {
       setHasLocation(true);
     }
-  }, [latitude, longitude]);
+  }, [latitude, longitude, radius]);
 
   useEffect(() => {
     const cachedPosts = localStorage.getItem("cachedPosts");
@@ -262,9 +110,26 @@ const PostsList = ({
       setPosts(JSON.parse(cachedPosts));
       setIsLoading(false);
     } else {
-      fetchPosts(false);
+      fetchPosts(false, {
+        hasLocation,
+        searchTerm,
+        keepCategories,
+        categoryFilter,
+        userPreferences,
+        currentPage,
+        pageSize,
+        latitude,
+        longitude,
+        radius,
+        setPosts,
+        setTotalPosts,
+        setHasMorePosts,
+        setIsFetching,
+        setIsLoading,
+        setIsFetchingMore,
+      });
     }
-  }, [userPreferences, currentPage]);  
+  }, [userPreferences, currentPage, latitude, longitude, radius]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -328,12 +193,29 @@ const PostsList = ({
   }, [isFetchingMore, isLoading, isFetching, hasMorePosts]);
 
   useEffect(() => {
-    fetchPosts(true);
+    fetchPosts(true, {
+      hasLocation,
+      searchTerm,
+      keepCategories,
+      categoryFilter,
+      userPreferences,
+      currentPage,
+      pageSize,
+      latitude,
+      longitude,
+      radius,
+      setPosts,
+      setTotalPosts,
+      setHasMorePosts,
+      setIsFetching,
+      setIsLoading,
+      setIsFetchingMore,
+    });
     if (searchTerm) {
       setPosts([]);
       setCurrentPage(1);
     }
-  }, [categoryFilter, searchTerm, keepCategories]);
+  }, [categoryFilter, searchTerm, keepCategories, latitude, longitude, radius]);
 
   useEffect(() => {
     onMainCategoryChange(categoryFilter.mainCategory);
@@ -342,35 +224,13 @@ const PostsList = ({
   }, [categoryFilter]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (
-          entry.isIntersecting &&
-          hasMorePosts &&
-          !isLoading &&
-          !isFetching &&
-          !isFetchingMore
-        ) {
-          setIsFetchingMore(true);
-        }
-      },
-      {
-        root: null,
-        rootMargin: "0px",
-        threshold: 1.0,
-      }
-    );
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
+    const lastPage = Math.ceil(totalPosts / pageSize);
+    if (currentPage === lastPage) {
+      setHasMorePosts(posts.length === pageSize);
+    } else {
+      setHasMorePosts(true);
     }
-
-    return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
-      }
-    };
-  }, [hasMorePosts, isLoading, isFetching, isFetchingMore]);
+  }, [posts, currentPage, totalPosts, pageSize]);
 
   return (
     <div>
@@ -388,120 +248,27 @@ const PostsList = ({
           resetAll={resetAll}
         />
       </div>
-      <div className="text-start m-2">
+      <div className="text-start m-2 d-flex">
         <PostsLocation
           onLatitudeChange={handleLatitudeChange}
           onLongitudeChange={handleLongitudeChange}
-          onRadiusChange={handleRadiusChange}
+          onRadiusChange={handleRadiusChange} // Agregar esta línea para pasar la función onRadiusChange como prop
         />
       </div>
       <div
-        className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-6 pe-2 ps-2"
+        className="row row-cols-1 row-cols row-cols-lg-3 row-cols-xl-6"
         ref={containerRef}
       >
         {posts.map((post) => {
           const userReputation = 5 - 0.3 * post.createdBy.reports.length;
           let photoIndex = 0;
           return (
-            <div
+            <PostCard
               key={post._id}
-              className="col post-card want-rounded d-flex align-items-stretch"
-            >
-              <div className="card want-rounded divhover w-100">
-                {post.photos && post.photos.length > 0 && (
-                  <div
-                    id={`carousel-${post._id}`}
-                    className="carousel slide want-rounded me-2 ms-2 mt-3 img-post"
-                    data-bs-ride="carousel"
-                    style={{ height: "200px", overflow: "hidden" }}
-                  >
-                    <Link href={`post/${post._id}`} className="carousel-inner">
-                      {post.photos.map((photo, index) => (
-                        <div
-                          className={`carousel-item ${
-                            index === 0 ? "active" : ""
-                          }`}
-                          key={index}
-                        >
-                          <Link href={`post/${post._id}`}>
-                            <img
-                              src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
-                              className="d-block w-100"
-                              alt={`Image ${index}`}
-                              loading="lazy"
-                            />
-                          </Link>
-                        </div>
-                      ))}
-                    </Link>
-                    {post.photos.length > 1 && (
-                      <>
-                        <button
-                          className="carousel-control-prev custom-slider-button ms-1"
-                          type="button"
-                          data-bs-target={`#carousel-${post._id}`}
-                          data-bs-slide="prev"
-                          style={{ bottom: "40px" }}
-                          disabled={photoIndex === 0}
-                          onClick={() => {
-                            photoIndex--;
-                          }}
-                        >
-                          <i className="bi bi-chevron-left"></i>
-                        </button>
-                        <button
-                          className="carousel-control-next custom-slider-button me-1"
-                          type="button"
-                          data-bs-target={`#carousel-${post._id}`}
-                          data-bs-slide="next"
-                          style={{ bottom: "40px" }}
-                          disabled={photoIndex === post.photos.length - 1}
-                          onClick={() => {
-                            photoIndex++;
-                          }}
-                        >
-                          <i className="bi bi-chevron-right"></i>
-                        </button>
-                      </>
-                    )}
-                  </div>
-                )}
-                <Link href={`post/${post._id}`}>
-                  <div className="card-body p-0 m-2">
-                    <div className="generic-button mb-2 want-rounded">
-                      <h3 className="text-price">
-                        ${post.price.toLocaleString()}
-                      </h3>
-                      <h5 className="card-title post-title p-1">
-                        {post.title}
-                      </h5>
-                      <div className="d-flex generic-button generic-button want-rounded">
-                        <img
-                          src={
-                            post.createdBy.photo
-                              ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
-                              : "/icons/person-circle.svg"
-                          }
-                          alt=""
-                          className="createdBy-photo p-1"
-                        />
-                        <div className="ms-2">
-                          <small className="text-muted">
-                            {post.createdBy.firstName}
-                          </small>
-                          <div className="d-flex">
-                            <i className="bi bi-star-fill me-1"></i>
-                            <small className="text-muted">
-                              {userReputation.toFixed(1)}
-                            </small>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            </div>
+              post={post}
+              userReputation={userReputation}
+              photoIndex={photoIndex}
+            />
           );
         })}
 
