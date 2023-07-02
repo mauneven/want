@@ -202,7 +202,7 @@ const PostsList = ({
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?${filterParams}`
       );
       const { posts: postsData, totalPosts } = await response.json();
-  
+
       setPosts((prevPosts) => {
         const updatedPosts = resetPosts ? postsData : [...prevPosts, ...postsData.filter((post) => !prevPosts.some((prevPost) => prevPost._id === post._id))];
         localStorage.setItem("cachedPosts", JSON.stringify(updatedPosts));
@@ -328,18 +328,11 @@ const PostsList = ({
   }, [isFetchingMore, isLoading, isFetching, hasMorePosts]);
 
   useEffect(() => {
-    if (searchTerm) {
-      localStorage.removeItem("cachedPosts");
-      setPosts([]);
-      setCurrentPage(1);
-    }
-  }, [searchTerm]);  
-
-  useEffect(() => {
     fetchPosts(true);
     if (searchTerm) {
       localStorage.removeItem("cachedPosts");
       setPosts([]);
+      setCurrentPage(1);
     }
   }, [categoryFilter, searchTerm, keepCategories]);
 
