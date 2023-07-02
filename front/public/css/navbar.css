@@ -34,7 +34,6 @@ body::-webkit-scrollbar-track {
 }
 
 .search-btn {
-  border-radius: 100px;
   background-color: var(--color-primary);
   color: white;
   font-weight: 100px;

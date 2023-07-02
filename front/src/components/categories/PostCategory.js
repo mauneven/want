@@ -24,12 +24,14 @@ export default function PostCategory({
   const [showLeftScroll, setShowLeftScroll] = useState(false);
   const [showRightScroll, setShowRightScroll] = useState(false);
 
+  // este no es culpable
   const clearAllCategories = () => {
     setSelectedCategory("");
     setSelectedSubcategory("");
     setSelectedThirdCategory("");
   };
 
+  // no es culpable
   const handleCategoryChange = (category) => {
     if (selectedCategory === category) {
       setSelectedCategory("");
@@ -47,7 +49,7 @@ export default function PostCategory({
       if (onSearchTermChange) {
         onSearchTermChange("");
       }
-    } else {
+    } else { // no es culpable
       setSelectedCategory(category);
       setSelectedSubcategory("");
       setSelectedThirdCategory("");
@@ -65,7 +67,7 @@ export default function PostCategory({
       }
     }
   };
-
+  // no es culpable
   const handleSubcategoryChange = (subcategory) => {
     if (selectedSubcategory === subcategory) {
       setSelectedSubcategory("");
@@ -79,7 +81,7 @@ export default function PostCategory({
       if (onSearchTermChange) {
         onSearchTermChange("");
       }
-    } else {
+    } else { // no es culpable
       setSelectedSubcategory(subcategory);
       setSelectedThirdCategory("");
       if (onSubcategoryChange) {
@@ -93,7 +95,7 @@ export default function PostCategory({
       }
     }
   };
-
+  // no es culpable
   const handleThirdCategoryChange = (thirdCategory) => {
     if (selectedThirdCategory === thirdCategory) {
       setSelectedThirdCategory("");

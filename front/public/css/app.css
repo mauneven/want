@@ -1,14 +1,14 @@
 :root {
-  --color-primary: #459cff; /* Define la variable de color */
-  --color-background-primary: #e1efff;
-  --color-background-generic: #e1efff;
+  --color-primary: #aa7d1a; /* Define la variable de color */
+  --color-background-primary: #ffeee1;
+  --color-background-generic: #ffece1;
   --color-generic: #444444;
 }
 
 button{
   background-color: var(--color-background-primary);
   border: 0;
-  border-radius: 25px;
+  border-radius: 7px;
 }
 
 body {
@@ -30,7 +30,7 @@ p h1 h2 h3 h4 h5 {
 
 .want-border{
   border: 1px solid var(--color-primary);
-  border-radius: 9px;
+  border-radius: 7px;
 }
 
 .generic-button{
@@ -41,7 +41,7 @@ p h1 h2 h3 h4 h5 {
 }
 
 .want-rounded{
-  border-radius: 25px;
+  border-radius: 7px;
 }
 
 .want-color{

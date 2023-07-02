@@ -35,6 +35,7 @@ export default function MegaMenu({
   };
 
   const handleLogoClick = () => {
+    clearSearchBar();
     onResetAll(true);
     router.push("/");
   };
@@ -126,7 +127,7 @@ export default function MegaMenu({
               {getCategoryText() && (
                 <div className="form-check d-flex align-items-center mr-2">
                   <input
-                    className="form-check-input"
+                    className="form-check-input "
                     type="checkbox"
                     value={keepCategories}
                     onChange={handleKeepCategoriesChange}
@@ -147,7 +148,7 @@ export default function MegaMenu({
                 aria-label="Search"
                 name="search"
               />
-              <button type="submit" className="search-btn m-1">
+              <button type="submit" className="search-btn want-rounded m-1">
                 <i className="bi bi-search"></i>
               </button>
             </Form>

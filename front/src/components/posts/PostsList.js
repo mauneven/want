@@ -73,6 +73,26 @@ const PostsList = ({
     }
   };
 
+  useEffect(() => {
+    if (resetAll) {
+      localStorage.removeItem("cachedPosts"); // Eliminar el caché de los posts
+      setPosts([]); // Limpiar la lista de posts
+      setHasMorePosts(false); // Restablecer el indicador de si hay más posts
+      onSearchTermChange("");
+      setCurrentPage(1); // Restablecer la página actual
+      setIsFetchingMore(false); // Restablecer el indicador de si se está obteniendo más posts
+      setIsLoading(true); // Establecer isLoading en true para mostrar el indicador de carga
+
+      const timer = setTimeout(() => {
+        forceUpdate(); // Forzar la actualización del componente
+        setIsLoading(false); // Establecer isLoading en false para ocultar el indicador de carga
+        onResetAll(false); // Restablecer el valor de resetAll a false
+      }, 1);
+
+      return () => clearTimeout(timer);
+    }
+  }, [resetAll, onResetAll]);
+
   const getUserPreferences = async () => {
     try {
       if (user) {
@@ -143,19 +163,6 @@ const PostsList = ({
         mainCategoryFilter = categoryFilter?.mainCategory || "";
         subCategoryFilter = categoryFilter?.subCategory || "";
         thirdCategoryFilter = categoryFilter?.thirdCategory || "";
-      }
-
-      if (resetAll) {
-        searchTerm = "";
-        keepCategories = false;
-        mainCategoryFilter = "";
-        subCategoryFilter = "";
-        thirdCategoryFilter = "";
-        onSearchTermChange("");
-        setCategoryFilter("");
-        setCurrentPage(1);
-        resetPosts = true;
-        onResetAll(false);
       }
 
       const filterParams = new URLSearchParams({
@@ -230,7 +237,7 @@ const PostsList = ({
           console.log("no logged");
         }
       } catch (error) {
-        console.error("Error al verificar la sesión:", error);
+        console.error("error session:", error);
       }
     };
 
@@ -260,7 +267,6 @@ const PostsList = ({
     radius,
     userPreferences,
     userPreferencesLoaded,
-    resetAll,
   ]);
 
   useEffect(() => {
@@ -333,12 +339,6 @@ const PostsList = ({
   }, [categoryFilter, searchTerm, keepCategories]);
 
   useEffect(() => {
-    if (resetAll) {
-      fetchPosts(true);
-    }
-  }, [resetAll]);
-
-  useEffect(() => {
     const handleBeforeUnload = () => {
       localStorage.removeItem("cachedPosts");
     };
@@ -386,14 +386,6 @@ const PostsList = ({
       }
     };
   }, [hasMorePosts, isLoading, isFetching, isFetchingMore]);
-
-  useEffect(() => {
-    if (searchTerm && !keepCategories) {
-      onMainCategoryChange("");
-      onSubcategoryChange("");
-      onThirdCategoryChange("");
-    }
-  }, [searchTerm]);
 
   return (
     <div>
