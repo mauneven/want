@@ -134,7 +134,7 @@ const PostsList = ({
   };
 
   const fetchPosts = async (resetPosts) => {
-    if (!hasLocation || !userPreferencesLoaded) {
+    if (!hasLocation) {
       return;
     }
   
@@ -264,7 +264,7 @@ const PostsList = ({
     } else {
       fetchPosts(false);
     }
-  }, [categoryFilter, searchTerm, hasLocation, latitude, longitude, radius, userPreferences, userPreferencesLoaded, currentPage]);  
+  }, [userPreferences, currentPage]);  
 
   useEffect(() => {
     const handleScroll = () => {
@@ -330,23 +330,10 @@ const PostsList = ({
   useEffect(() => {
     fetchPosts(true);
     if (searchTerm) {
-      localStorage.removeItem("cachedPosts");
       setPosts([]);
       setCurrentPage(1);
     }
   }, [categoryFilter, searchTerm, keepCategories]);
-
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      localStorage.removeItem("cachedPosts");
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
 
   useEffect(() => {
     onMainCategoryChange(categoryFilter.mainCategory);
