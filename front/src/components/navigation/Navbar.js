@@ -18,7 +18,7 @@ export default function MegaMenu({
   setMainCategory,
   setSubcategory,
   setThirdCategory,
-  resetAll, // Nueva prop resetAll
+  resetAll,
   onResetAll
 }) {
   const { t } = useTranslation();
@@ -35,7 +35,7 @@ export default function MegaMenu({
   };
 
   const handleLogoClick = () => {
-    onResetAll(true); // Resetear todas las categorías
+    onResetAll(true);
     router.push("/");
   };
 

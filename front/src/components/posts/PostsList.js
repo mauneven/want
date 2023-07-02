@@ -176,15 +176,16 @@ const PostsList = ({
       }
 
       if (resetAll) {
+        searchTerm = "";
+        keepCategories = false;
         mainCategoryFilter = "";
         subCategoryFilter = "";
         thirdCategoryFilter = "";
+        setCategoryFilter("");
         setCurrentPage(1);
-        resetPosts = true; // Set resetPosts to true here
-        setCategoryFilter({}); // Clear category filter
-        searchTerm = "";
+        resetPosts = true;
         onResetAll(false);
-        onSearchTermChange("");
+        
       }
 
       const filterParams = new URLSearchParams({
