@@ -1,5 +1,5 @@
 // index.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import PostsList from "@/components/posts/PostsList";
 
@@ -19,6 +19,7 @@ const IndexPage = ({
 }) => {
   const router = useRouter();
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [key, setKey] = useState(0);
 
   useEffect(() => {
     const handleRouteChange = () => {
@@ -63,17 +64,21 @@ const IndexPage = ({
     window.scrollTo(0, scrollPosition);
   }, [scrollPosition]);
 
+  const handleResetAll = useCallback(() => {
+    setKey((prevKey) => prevKey + 1);
+    onResetAll(false);
+  }, [onResetAll]);
+
+  useEffect(() => {
+    if (resetAll) {
+      handleResetAll();
+    }
+  }, [resetAll, handleResetAll]);
+
   return (
     <div>
-      <div>
-        <p>Main Category: {mainCategory}</p>
-        <p>Subcategory: {subcategory}</p>
-        <p>Third Category: {thirdCategory}</p>
-        <p>Search Term: {searchTerm}</p>
-        <p>Keep Categories: {keepCategories ? "true" : "false"}</p>
-        <p>Reset All: {resetAll ? "true" : "false"}</p>
-      </div>
       <PostsList
+        key={key}
         searchTerm={searchTerm}
         onMainCategoryChange={onMainCategoryChange}
         onSubcategoryChange={onSubcategoryChange}
@@ -81,7 +86,7 @@ const IndexPage = ({
         onSearchTermChange={onSearchTermChange}
         onKeepCategoriesChange={onKeepCategoriesChange}
         keepCategories={keepCategories}
-        onResetAll={onResetAll}
+        onResetAll={handleResetAll}
         resetAll={resetAll}
       />
     </div>
