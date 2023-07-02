@@ -107,36 +107,6 @@ const PostsList = ({
     }
   };
 
-  useEffect(() => {
-    getUserPreferences();
-  }, [user]);
-
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data.user || null);
-        } else if (response.status === 401) {
-          setUser(null);
-          console.log("no logged");
-        }
-      } catch (error) {
-        console.error("Error al verificar la sesión:", error);
-      }
-    };
-
-    checkSession();
-  }, [router.pathname]);
-
   const fetchPosts = async (resetPosts) => {
     if (!hasLocation || !userPreferencesLoaded) {
       return;
@@ -186,7 +156,6 @@ const PostsList = ({
         setCurrentPage(1);
         resetPosts = true;
         onResetAll(false);
-        
       }
 
       const filterParams = new URLSearchParams({
@@ -237,6 +206,36 @@ const PostsList = ({
       setIsFetchingMore(false);
     }
   };
+
+  useEffect(() => {
+    getUserPreferences();
+  }, [user]);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.user || null);
+        } else if (response.status === 401) {
+          setUser(null);
+          console.log("no logged");
+        }
+      } catch (error) {
+        console.error("Error al verificar la sesión:", error);
+      }
+    };
+
+    checkSession();
+  }, [router.pathname]);
 
   useEffect(() => {
     if (latitude !== null && longitude !== null) {
