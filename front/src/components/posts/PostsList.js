@@ -41,6 +41,7 @@ const PostsList = ({
       ...prevFilter,
       mainCategory,
     }));
+    setCurrentPage(1);
   };
 
   const handleSubcategoryChange = (subcategory) => {
@@ -48,6 +49,7 @@ const PostsList = ({
       ...prevFilter,
       subCategory: subcategory,
     }));
+    setCurrentPage(1);
   };
 
   const handleThirdCategoryChange = (thirdCategory) => {
@@ -55,6 +57,7 @@ const PostsList = ({
       ...prevFilter,
       thirdCategory,
     }));
+    setCurrentPage(1);
   };
 
   const handleLatitudeChange = (lat) => {
@@ -134,11 +137,11 @@ const PostsList = ({
     if (!hasLocation || !userPreferencesLoaded) {
       return;
     }
-
+  
     try {
       setIsLoading(true);
       setIsFetching(true);
-
+  
       const convertKeysToSingleQuotes = (preferences) => {
         const convertedPreferences = {};
         for (const key in preferences) {
@@ -147,11 +150,11 @@ const PostsList = ({
         }
         return convertedPreferences;
       };
-
+  
       let mainCategoryFilter = "";
       let subCategoryFilter = "";
       let thirdCategoryFilter = "";
-
+  
       if (searchTerm) {
         if (keepCategories) {
           mainCategoryFilter = categoryFilter?.mainCategory || "";
@@ -167,7 +170,7 @@ const PostsList = ({
         subCategoryFilter = categoryFilter?.subCategory || "";
         thirdCategoryFilter = categoryFilter?.thirdCategory || "";
       }
-
+  
       const filterParams = new URLSearchParams({
         mainCategory: mainCategoryFilter,
         subCategory: subCategoryFilter,
@@ -188,24 +191,24 @@ const PostsList = ({
           convertKeysToSingleQuotes(userPreferences.thirdCategoryCounts)
         ),
       });
-
+  
       console.log("Fetching posts...");
+  
+      if (resetPosts) {
+        setPosts([]); // Eliminar los posts antiguos
+      }
+  
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts?${filterParams}`
       );
       const { posts: postsData, totalPosts } = await response.json();
-
-      if (resetPosts) {
-        setPosts(postsData);
-        localStorage.setItem("cachedPosts", JSON.stringify(postsData));
-      } else {
-        setPosts((prevPosts) => {
-          const updatedPosts = [...prevPosts, ...postsData];
-          localStorage.setItem("cachedPosts", JSON.stringify(updatedPosts));
-          return updatedPosts;
-        });
-      }
-
+  
+      setPosts((prevPosts) => {
+        const updatedPosts = resetPosts ? postsData : [...prevPosts, ...postsData.filter((post) => !prevPosts.some((prevPost) => prevPost._id === post._id))];
+        localStorage.setItem("cachedPosts", JSON.stringify(updatedPosts));
+        return updatedPosts;
+      });
+  
       setTotalPosts(totalPosts);
       setHasMorePosts(postsData.length > 0);
     } catch (error) {
@@ -215,9 +218,7 @@ const PostsList = ({
       setIsLoading(false);
       setIsFetchingMore(false);
     }
-  };
-
-  
+  };  
 
   useEffect(() => {
     getUserPreferences();
@@ -257,22 +258,13 @@ const PostsList = ({
 
   useEffect(() => {
     const cachedPosts = localStorage.getItem("cachedPosts");
-    if (cachedPosts) {
+    if (cachedPosts && currentPage === 1) {
       setPosts(JSON.parse(cachedPosts));
       setIsLoading(false);
     } else {
       fetchPosts(false);
     }
-  }, [
-    categoryFilter,
-    searchTerm,
-    hasLocation,
-    latitude,
-    longitude,
-    radius,
-    userPreferences,
-    userPreferencesLoaded,
-  ]);
+  }, [categoryFilter, searchTerm, hasLocation, latitude, longitude, radius, userPreferences, userPreferencesLoaded, currentPage]);  
 
   useEffect(() => {
     const handleScroll = () => {
@@ -336,12 +328,19 @@ const PostsList = ({
   }, [isFetchingMore, isLoading, isFetching, hasMorePosts]);
 
   useEffect(() => {
-    fetchPosts(false);
-  }, [currentPage]);
+    if (searchTerm) {
+      localStorage.removeItem("cachedPosts");
+      setPosts([]);
+      setCurrentPage(1);
+    }
+  }, [searchTerm]);  
 
   useEffect(() => {
-    setCurrentPage(1);
     fetchPosts(true);
+    if (searchTerm) {
+      localStorage.removeItem("cachedPosts");
+      setPosts([]);
+    }
   }, [categoryFilter, searchTerm, keepCategories]);
 
   useEffect(() => {
@@ -411,9 +410,9 @@ const PostsList = ({
       </div>
       <div className="text-start m-2">
         <PostsLocation
-          onLatitudeChange={setLatitude}
-          onLongitudeChange={setLongitude}
-          onRadiusChange={setRadius}
+          onLatitudeChange={handleLatitudeChange}
+          onLongitudeChange={handleLongitudeChange}
+          onRadiusChange={handleRadiusChange}
         />
       </div>
       <div
@@ -496,26 +495,26 @@ const PostsList = ({
                       <h5 className="card-title post-title p-1">
                         {post.title}
                       </h5>
-                    </div>
-                    <div className="d-flex generic-button mb-2 generic-button want-rounded">
-                      <img
-                        src={
-                          post.createdBy.photo
-                            ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
-                            : "/icons/person-circle.svg"
-                        }
-                        alt=""
-                        className="createdBy-photo p-1"
-                      />
-                      <div className="ms-2">
-                        <small className="text-muted">
-                          {post.createdBy.firstName}
-                        </small>
-                        <div className="d-flex">
-                          <i className="bi bi-star-fill me-1"></i>
+                      <div className="d-flex generic-button generic-button want-rounded">
+                        <img
+                          src={
+                            post.createdBy.photo
+                              ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${post.createdBy.photo}`
+                              : "/icons/person-circle.svg"
+                          }
+                          alt=""
+                          className="createdBy-photo p-1"
+                        />
+                        <div className="ms-2">
                           <small className="text-muted">
-                            {userReputation.toFixed(1)}
+                            {post.createdBy.firstName}
                           </small>
+                          <div className="d-flex">
+                            <i className="bi bi-star-fill me-1"></i>
+                            <small className="text-muted">
+                              {userReputation.toFixed(1)}
+                            </small>
+                          </div>
                         </div>
                       </div>
                     </div>
