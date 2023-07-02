@@ -181,6 +181,7 @@ const PostsList = ({
         mainCategoryFilter = "";
         subCategoryFilter = "";
         thirdCategoryFilter = "";
+        onSearchTermChange("");
         setCategoryFilter("");
         setCurrentPage(1);
         resetPosts = true;
