@@ -59,10 +59,12 @@ const PostsList = ({
 
   const handleLatitudeChange = (lat) => {
     setLatitude(lat);
+    setCurrentPage(1);
   };
 
   const handleLongitudeChange = (lng) => {
     setLongitude(lng);
+    setCurrentPage(1);
   };
 
   const handleRadiusChange = (event) => {
@@ -71,6 +73,7 @@ const PostsList = ({
       setRadius(selectedRadius);
       onRadiusChange(selectedRadius);
     }
+    setCurrentPage(1);
   };
 
   useEffect(() => {
@@ -214,6 +217,8 @@ const PostsList = ({
     }
   };
 
+  
+
   useEffect(() => {
     getUserPreferences();
   }, [user]);
@@ -335,6 +340,7 @@ const PostsList = ({
   }, [currentPage]);
 
   useEffect(() => {
+    setCurrentPage(1);
     fetchPosts(true);
   }, [categoryFilter, searchTerm, keepCategories]);
 
