@@ -50,13 +50,14 @@ const PostsList = ({
   const handleMainCategoryChange = (mainCategory) => {
     setCategoryFilter((prevFilter) => ({
       ...prevFilter,
-      mainCategory,
+      mainCategory: mainCategory,
     }));
-    if (onDetailsCategoryChange) {
+    if (detailsCategory) {
       onDetailsCategoryChange(detailsCategory);
+      localStorage.removeItem("cachedPosts");
+
+      fetchPosts
     }
-    localStorage.removeItem("cachedPosts");
-    setPosts([]);
     setHasMorePosts(false);
     onSearchTermChange("");
     setCurrentPage(1);
@@ -266,12 +267,6 @@ const PostsList = ({
   return (
     <div>
       <div className="text-center">
-        d-main {detailsCategory}
-        d-sub {detailsSubcategory}
-        d-third {detailsThirdCategory}
-        do-main {onDetailsCategoryChange}
-        do-sub {onDetailsSubcategoryChange}
-        do - third {onDetailsThirdCategoryChange}
         <PostCategory
           onMainCategoryChange={handleMainCategoryChange}
           onSubcategoryChange={handleSubcategoryChange}

@@ -82,7 +82,6 @@ const IndexPage = ({
 
   return (
     <div>
-      <p>deta: {detailsSubcategory}</p>
       <PostsList
         key={key}
         searchTerm={searchTerm}

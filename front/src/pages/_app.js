@@ -93,7 +93,6 @@ export default function MyApp({ Component, pageProps }) {
 
         <div className="">
           <Suspense fallback="Loading...">
-            <p>this is {detailsCategory}</p>
             <Component
               {...pageProps}
               onDetailsCategoryChange={setDetailsCategory}
