@@ -11,7 +11,8 @@
   "myProfile": "Profil",
   "logout": "Déconnexion",
   "login": "Se connecter",
-  "menu": "Menu"
+  "menu": "Menu",
+  "onlyon": "Uniquement sur"
   },
   "createPost": {
   "title": "Créez une publication sur ce que vous voulez",

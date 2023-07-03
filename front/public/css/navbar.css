@@ -27,6 +27,10 @@ body::-webkit-scrollbar-track {
   background-color: transparent;
 }
 
+.text-categories-navbar{
+  font-size: 15px;
+}
+
 .search-bar-input:focus {
   border: 0;
   box-shadow: none;
@@ -63,6 +67,13 @@ body::-webkit-scrollbar-track {
   text-align: center;
   align-items: center;
   margin-right: 10px;
+}
+
+.mobile-logo-beta{
+  font-size: 9px;
+  position: absolute;
+  top: 5px;
+  left: 80px;
 }
 
 .createdBy-photo {
@@ -128,6 +139,10 @@ body::-webkit-scrollbar-track {
   flex: 0 0 auto;
   white-space: nowrap;
   margin-right: 10px;
+}
+
+.desktop-logo{
+  max-height: 40px;
 }
 
 .slider-button {
@@ -196,7 +211,19 @@ body::-webkit-scrollbar-track {
 }
 
 @media (max-width: 576px) {
-
+  .mobile-logo{
+    max-width: 400px;
+  }
+  .want-logo-mobile{
+    font-size: 15px;
+  }
+  .text-categories-navbar{
+    font-size: 7px;
+  }
+  .mobile-logo-beta{
+    top: 5px;
+    left: 51px;
+  }
 }
 
 @media (max-width: 360px) {
@@ -205,14 +232,12 @@ body::-webkit-scrollbar-track {
   }
 }
 
-@media (max-width: 325px) {
-  .search-bar-navbar {
-    max-width: 140px;
-    padding: 0;
-    margin: 0;
+@media (max-width: 346px) {
+  .mobile-logo-beta{
+    top: 10px;
+    left: 30px;
   }
-  .want-logo {
-    margin: 0;
-    padding: 0;
+  .mobile-logo{
+    font-size: 18px!important;
   }
 }

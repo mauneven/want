@@ -10,7 +10,8 @@
     "myProfile": "Perfil",
     "logout": "Cerrar sesión",
     "login": "Iniciar sesión",
-    "menu": "Menú"
+    "menu": "Menú",
+    "onlyon": "Solo en"
   },
   "createPost": {
     "title": "Crea una publicación sobre lo que quieres",

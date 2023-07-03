@@ -11,7 +11,8 @@
   "myProfile": "Profile",
   "logout": "Logout",
   "login": "Login",
-  "menu": "Menu"
+  "menu": "Menu",
+  "onlyon": "Only on"
   },
   "createPost": {
   "title": "Create a post about what you want",

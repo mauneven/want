@@ -399,14 +399,14 @@ const PostsLocation = ({
             </Form.Group>
           </Form>
           <button
-            className="want-button"
+            className="generic-button"
             onClick={handleLocationDetection}
             disabled={isSubmitting}
           >
             {t('postsLocation.useCurrentLocation')}
             <i className="bi bi-geo-fill m-2"></i>
           </button>
-          <button className='generic-button' >
+          <button className='generic-button' onClick={closeModal} >
           {t('postsLocation.cancel')}
           <i className="bi bi-x-circle-fill m-2"></i>
           </button>

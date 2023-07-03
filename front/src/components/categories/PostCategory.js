@@ -39,7 +39,7 @@ export default function PostCategory({
     onDetailsSubcategoryChange(subcategory);
     onDetailsThirdCategoryChange(thirdCategory);
   };
-  
+
   useEffect(() => {
     handleDetailsCategoryChange(detailsCategory, detailsSubcategory, detailsThirdCategory);
   }, [detailsCategory, detailsSubcategory, detailsThirdCategory]);
@@ -52,17 +52,9 @@ export default function PostCategory({
 
   const handleCategoryChange = (category) => {
     if (selectedCategory === category) {
-      setSelectedCategory("");
-      setSelectedSubcategory("");
-      setSelectedThirdCategory("");
+      clearAllCategories();
       if (onMainCategoryChange) {
         onMainCategoryChange("");
-      }
-      if (onSubcategoryChange) {
-        onSubcategoryChange("");
-      }
-      if (onThirdCategoryChange) {
-        onThirdCategoryChange("");
       }
       if (onSearchTermChange) {
         onSearchTermChange("");
@@ -73,12 +65,6 @@ export default function PostCategory({
       setSelectedThirdCategory("");
       if (onMainCategoryChange) {
         onMainCategoryChange(category);
-      }
-      if (onSubcategoryChange) {
-        onSubcategoryChange("");
-      }
-      if (onThirdCategoryChange) {
-        onThirdCategoryChange("");
       }
       if (onSearchTermChange) {
         onSearchTermChange("");
@@ -93,9 +79,6 @@ export default function PostCategory({
       if (onSubcategoryChange) {
         onSubcategoryChange("");
       }
-      if (onThirdCategoryChange) {
-        onThirdCategoryChange("");
-      }
       if (onSearchTermChange) {
         onSearchTermChange("");
       }
@@ -104,9 +87,6 @@ export default function PostCategory({
       setSelectedThirdCategory("");
       if (onSubcategoryChange) {
         onSubcategoryChange(subcategory);
-      }
-      if (onThirdCategoryChange) {
-        onThirdCategoryChange("");
       }
       if (onSearchTermChange) {
         onSearchTermChange("");
@@ -220,9 +200,7 @@ export default function PostCategory({
   useEffect(() => {
     if (searchTerm && !keepCategories) {
       setSearchPerformed(true);
-      setSelectedCategory("");
-      setSelectedSubcategory("");
-      setSelectedThirdCategory("");
+      clearAllCategories();
     }
   }, [searchTerm, keepCategories]);
 
@@ -237,6 +215,55 @@ export default function PostCategory({
       handleButtonClick(detailsCategory, detailsSubcategory, detailsThirdCategory);
     }
   }, [detailsCategory, detailsSubcategory, detailsThirdCategory]);
+
+  useEffect(() => {
+    const handleUnload = () => {
+      localStorage.removeItem("mainCategory");
+      localStorage.removeItem("subcategory");
+      localStorage.removeItem("thirdCategory");
+    };
+
+    window.addEventListener("beforeunload", handleUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Leer las categorías seleccionadas desde el localStorage
+    const storedMainCategory = localStorage.getItem("mainCategory");
+    const storedSubcategory = localStorage.getItem("subcategory");
+    const storedThirdCategory = localStorage.getItem("thirdCategory");
+
+    if (storedMainCategory) {
+      setSelectedCategory(storedMainCategory);
+    }
+    if (storedSubcategory) {
+      setSelectedSubcategory(storedSubcategory);
+    }
+    if (storedThirdCategory) {
+      setSelectedThirdCategory(storedThirdCategory);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (resetAll) {
+      localStorage.removeItem("mainCategory");
+      localStorage.removeItem("subcategory");
+      localStorage.removeItem("thirdCategory");
+      setSelectedCategory("");
+      setSelectedSubcategory("");
+      setSelectedThirdCategory("");
+    }
+  }, [resetAll]);
+
+  useEffect(() => {
+    // Guardar las categorías seleccionadas en el localStorage
+    localStorage.setItem("mainCategory", selectedCategory);
+    localStorage.setItem("subcategory", selectedSubcategory);
+    localStorage.setItem("thirdCategory", selectedThirdCategory);
+  }, [selectedCategory, selectedSubcategory, selectedThirdCategory]);
 
   return (
     <div className="d-flex">

@@ -385,7 +385,7 @@ const PostDetails = ({
             </div>
             <div className="mt-3">
               <button
-                className="want-rounded btn-offer"
+                className="want-rounded want-button "
                 onClick={() => router.push(`/createOffer?postId=${id}`)}
               >
                 {t("postDetails.makeAnOffer")}

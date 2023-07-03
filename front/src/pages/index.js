@@ -82,6 +82,7 @@ const IndexPage = ({
 
   return (
     <div>
+      <p>searchterm {searchTerm}</p>
       <PostsList
         key={key}
         searchTerm={searchTerm}

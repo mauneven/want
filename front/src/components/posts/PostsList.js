@@ -48,6 +48,23 @@ const PostsList = ({
   const containerRef = useRef(null);
 
   useEffect(() => {
+    const handleUnload = () => {
+      localStorage.removeItem("cachedPosts");
+    };
+
+    window.addEventListener("beforeunload", handleUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log(searchTerm);
+    // your code that depends on searchTerm
+ }, [searchTerm]); 
+
+  useEffect(() => {
     return () => {
       onDetailsCategoryChange("");
       onDetailsSubcategoryChange("");
@@ -279,6 +296,7 @@ const PostsList = ({
   return (
     <div>
       <div className="text-center">
+        <p>search {searchTerm}</p>
         <PostCategory
           onMainCategoryChange={handleMainCategoryChange}
           onSubcategoryChange={handleSubcategoryChange}

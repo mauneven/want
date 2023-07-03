@@ -40,12 +40,22 @@ export default function MegaMenu({
     router.push("/");
   };
 
-  const handleSearchSubmit = (e) => {
+  const handleSearchSubmit = async (e) => {
     e.preventDefault();
     const newSearchTerm = e.target.search.value;
     onSearchTermChange(newSearchTerm);
-    router.push("/");
-  };
+  
+    if (router.pathname !== "/") {
+      router.push("/");
+    }
+  
+    // Esperar 1 segundo (1000 milisegundos) antes de realizar la búsqueda
+    setTimeout(() => {
+      e.preventDefault();
+      const newSearchTerm = e.target.search.value;
+      onSearchTermChange(newSearchTerm);
+    }, 100);
+  };  
 
   useEffect(() => {
     const checkSession = async () => {
@@ -111,11 +121,10 @@ export default function MegaMenu({
         <div className="d-flex w-100">
           {!isMobile ? (
             <Navbar.Brand
-              onClick={handleLogoClick}
-              className="divhover d-flex align-items-center m-0 p-0 col-3 justify-content-center"
+              className="d-flex align-items-center m-0 p-0 col-3 justify-content-center"
             >
-              <div className="fs-1 want-color d-flex  m-0 w-100 h-100 align-items-center want-color">
-                Want <p className="small fs-5 m-2 p-1 want-border">Beta</p>
+              <div className="fs-1 want-color d-flex  m-0 w-100 d-flex">
+               <p className="desktop-logo align-items-center justify-content-center want-color m-0 divhover" onClick={handleLogoClick}>Want</p> <p className="fs-5 m-2 p-1 want-border desktop-logo divhover align-items-center justify-content-center" onClick={handleLogoClick}>Beta</p>
               </div>
             </Navbar.Brand>
           ) : (
@@ -123,8 +132,8 @@ export default function MegaMenu({
             onClick={handleLogoClick}
             className="divhover d-flex align-items-center m-0 p-0 col-3 justify-content-center"
           >
-            <div className="fs-1 want-color d-flex  m-0 w-100 h-100 align-items-center want-color">
-              <p className="small text-small m-0 p-1 want-border">Beta</p>
+            <div className="fs-1 want-color d-flex  m-0 w-100 h-100 align-items-center want-color mobile-logo">
+              Want<p className="small text-small m-0 p-1 mobile-logo-beta">BETA</p>
             </div>
           </Navbar.Brand>
           )}
@@ -143,10 +152,10 @@ export default function MegaMenu({
                     id="keepCategoriesCheckbox"
                   />
                   <label
-                    className="form-check-label small"
+                    className="form-check-label d-flex text-categories-navbar"
                     htmlFor="keepCategoriesCheckbox"
                   >
-                    {getCategoryText()}
+                   {t("navbar.onlyon")} {getCategoryText()}
                   </label>
                 </div>
               )}
