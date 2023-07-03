@@ -22,6 +22,9 @@ import MobileMenu from "@/components/navigation/MobileMenu";
 export default function MyApp({ Component, pageProps }) {
   const [hasMounted, setHasMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [detailsCategory, setDetailsCategory] = useState("");
+  const [detailsSubcategory, setDetailsSubcategory] = useState("");
+  const [detailsThirdCategory, setDetailsThirdCategory] = useState("");
   const [mainCategory, setMainCategory] = useState("");
   const [subcategory, setSubcategory] = useState("");
   const [thirdCategory, setThirdCategory] = useState("");
@@ -90,8 +93,15 @@ export default function MyApp({ Component, pageProps }) {
 
         <div className="">
           <Suspense fallback="Loading...">
+            <p>this is {detailsCategory}</p>
             <Component
               {...pageProps}
+              onDetailsCategoryChange={setDetailsCategory}
+              onDetailsSubcategoryChange={setDetailsSubcategory}
+              onDetailsThirdCategoryChange={setDetailsThirdCategory}
+              detailsCategory={detailsCategory}
+              detailsSubcategory={detailsSubcategory}
+              detailsThirdCategory={detailsThirdCategory}
               mainCategory={mainCategory}
               subcategory={subcategory}
               thirdCategory={thirdCategory}

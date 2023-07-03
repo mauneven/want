@@ -1,9 +1,14 @@
-// index.js
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import PostsList from "@/components/posts/PostsList";
 
 const IndexPage = ({
+  detailsCategory,
+  detailsSubcategory,
+  detailsThirdCategory,
+  onDetailsCategoryChange,
+  onDetailsSubcategoryChange,
+  onDetailsThirdCategoryChange,
   mainCategory,
   subcategory,
   thirdCategory,
@@ -77,9 +82,16 @@ const IndexPage = ({
 
   return (
     <div>
+      <p>deta: {detailsSubcategory}</p>
       <PostsList
         key={key}
         searchTerm={searchTerm}
+        detailsCategory={detailsCategory}
+        detailsSubcategory={detailsSubcategory}
+        detailsThirdCategory={detailsThirdCategory}
+        onDetailsCategoryChange={onDetailsCategoryChange}
+        onDetailsSubcategoryChange={onDetailsSubcategoryChange}
+        onDetailsThirdCategoryChange={onDetailsThirdCategoryChange}
         onMainCategoryChange={onMainCategoryChange}
         onSubcategoryChange={onSubcategoryChange}
         onThirdCategoryChange={onThirdCategoryChange}

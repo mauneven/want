@@ -13,10 +13,19 @@ const PostsList = ({
   onMainCategoryChange,
   onSubcategoryChange,
   onThirdCategoryChange,
+  onDetailsCategoryChange,
+  onDetailsSubcategoryChange,
+  onDetailsThirdCategoryChange,
+  detailsCategory,
+  detailsSubcategory,
+  detailsThirdCategory,
   keepCategories,
   onSearchTermChange,
   onResetAll,
   resetAll,
+  mainCategory,
+  subcategory,
+  thirdCategory,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [pageSize, setPageSize] = useState(12);
@@ -30,7 +39,6 @@ const PostsList = ({
   const [radius, setRadius] = useState(10);
   const [hasLocation, setHasLocation] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState({});
-  const [initialCategoryFilter, setInitialCategoryFilter] = useState({});
   const [posts, setPosts] = useState([]);
   const user = useCheckSession();
   const { userPreferences, userPreferencesLoaded } =
@@ -44,7 +52,16 @@ const PostsList = ({
       ...prevFilter,
       mainCategory,
     }));
+    if (onDetailsCategoryChange) {
+      onDetailsCategoryChange(detailsCategory);
+    }
+    localStorage.removeItem("cachedPosts");
+    setPosts([]);
+    setHasMorePosts(false);
+    onSearchTermChange("");
     setCurrentPage(1);
+    setIsFetchingMore(false);
+    setIsLoading(true);
   };
 
   const handleSubcategoryChange = (subcategory) => {
@@ -52,6 +69,9 @@ const PostsList = ({
       ...prevFilter,
       subCategory: subcategory,
     }));
+    if (onDetailsSubcategoryChange) {
+      onDetailsSubcategoryChange(detailsSubcategory);
+    }
     setCurrentPage(1);
   };
 
@@ -60,6 +80,9 @@ const PostsList = ({
       ...prevFilter,
       thirdCategory,
     }));
+    if (onDetailsThirdCategoryChange) {
+      onDetailsThirdCategoryChange(detailsThirdCategory);
+    }
     setCurrentPage(1);
   };
 
@@ -74,7 +97,7 @@ const PostsList = ({
   };
 
   const handleRadiusChange = (selectedRadius) => {
-      setRadius(selectedRadius);
+    setRadius(selectedRadius);
     setCurrentPage(1);
   };
 
@@ -87,9 +110,11 @@ const PostsList = ({
       setCurrentPage(1);
       setIsFetchingMore(false);
       setIsLoading(true);
+      onDetailsCategoryChange("");
+      onDetailsSubcategoryChange("");
+      onDetailsThirdCategoryChange("");
 
       const timer = setTimeout(() => {
-        forceUpdate();
         setIsLoading(false);
         onResetAll(false);
       }, 1);
@@ -121,6 +146,9 @@ const PostsList = ({
         latitude,
         longitude,
         radius,
+        detailsCategory,
+        detailsSubcategory,
+        detailsThirdCategory,
         setPosts,
         setTotalPosts,
         setHasMorePosts,
@@ -129,7 +157,7 @@ const PostsList = ({
         setIsFetchingMore,
       });
     }
-  }, [userPreferences, currentPage, latitude, longitude, radius]);
+  }, [userPreferences, currentPage, latitude, longitude, radius,  detailsCategory, detailsSubcategory, detailsThirdCategory]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -204,6 +232,9 @@ const PostsList = ({
       latitude,
       longitude,
       radius,
+      detailsCategory,
+      detailsSubcategory,
+      detailsThirdCategory,
       setPosts,
       setTotalPosts,
       setHasMorePosts,
@@ -215,7 +246,7 @@ const PostsList = ({
       setPosts([]);
       setCurrentPage(1);
     }
-  }, [categoryFilter, searchTerm, keepCategories, latitude, longitude, radius]);
+  }, [categoryFilter, searchTerm, keepCategories, latitude, longitude, radius,  detailsCategory, detailsSubcategory, detailsThirdCategory]);
 
   useEffect(() => {
     onMainCategoryChange(categoryFilter.mainCategory);
@@ -235,24 +266,33 @@ const PostsList = ({
   return (
     <div>
       <div className="text-center">
+        d-main {detailsCategory}
+        d-sub {detailsSubcategory}
+        d-third {detailsThirdCategory}
+        do-main {onDetailsCategoryChange}
+        do-sub {onDetailsSubcategoryChange}
+        do - third {onDetailsThirdCategoryChange}
         <PostCategory
           onMainCategoryChange={handleMainCategoryChange}
           onSubcategoryChange={handleSubcategoryChange}
           onThirdCategoryChange={handleThirdCategoryChange}
-          initialMainCategory={categoryFilter.mainCategory}
-          initialSubcategory={categoryFilter.subCategory}
-          initialThirdCategory={categoryFilter.thirdCategory}
+          initialMainCategory={detailsCategory}
+          initialSubcategory={detailsSubcategory}
+          initialThirdCategory={detailsThirdCategory}
           onSearchTermChange={onSearchTermChange}
           searchTerm={searchTerm}
           keepCategories={keepCategories}
           resetAll={resetAll}
+          detailsCategory={detailsCategory}
+          detailsThirdCategory={detailsThirdCategory}
+          detailsSubcategory={detailsSubcategory}
         />
       </div>
       <div className="text-start m-2 d-flex">
         <PostsLocation
           onLatitudeChange={handleLatitudeChange}
           onLongitudeChange={handleLongitudeChange}
-          onRadiusChange={handleRadiusChange} // Agregar esta línea para pasar la función onRadiusChange como prop
+          onRadiusChange={handleRadiusChange}
         />
       </div>
       <div

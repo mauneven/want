@@ -13,27 +13,43 @@ export default function PostCategory({
   searchTerm,
   keepCategories,
   resetAll,
+  detailsCategory,
+  detailsSubcategory,
+  detailsThirdCategory,
 }) {
   const { t } = useTranslation();
 
-  const [selectedCategory, setSelectedCategory] = useState(initialMainCategory);
-  const [selectedSubcategory, setSelectedSubcategory] =
-    useState(initialSubcategory);
-  const [selectedThirdCategory, setSelectedThirdCategory] =
-    useState(initialThirdCategory);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
+  const [selectedThirdCategory, setSelectedThirdCategory] = useState("");
   const [searchPerformed, setSearchPerformed] = useState(false);
   const contentRef = useRef(null);
   const [showLeftScroll, setShowLeftScroll] = useState(false);
   const [showRightScroll, setShowRightScroll] = useState(false);
 
-  // este no es culpable
+  const handleDetailsCategoryChange = (category, subcategory, thirdCategory) => {
+    handleButtonClick(category, subcategory, thirdCategory);
+    handleCategoryChange(category);
+    handleSubcategoryChange(subcategory);
+    handleThirdCategoryChange(thirdCategory);
+  };
+
+  const handleDetailsChange = (category, subcategory, thirdCategory) => {
+    onDetailsCategoryChange(category);
+    onDetailsSubcategoryChange(subcategory);
+    onDetailsThirdCategoryChange(thirdCategory);
+  };
+  
+  useEffect(() => {
+    handleDetailsCategoryChange(detailsCategory, detailsSubcategory, detailsThirdCategory);
+  }, [detailsCategory, detailsSubcategory, detailsThirdCategory]);
+
   const clearAllCategories = () => {
     setSelectedCategory("");
     setSelectedSubcategory("");
     setSelectedThirdCategory("");
   };
 
-  // no es culpable
   const handleCategoryChange = (category) => {
     if (selectedCategory === category) {
       setSelectedCategory("");
@@ -52,7 +68,6 @@ export default function PostCategory({
         onSearchTermChange("");
       }
     } else {
-      // no es culpable
       setSelectedCategory(category);
       setSelectedSubcategory("");
       setSelectedThirdCategory("");
@@ -70,7 +85,7 @@ export default function PostCategory({
       }
     }
   };
-  // no es culpable
+
   const handleSubcategoryChange = (subcategory) => {
     if (selectedSubcategory === subcategory) {
       setSelectedSubcategory("");
@@ -85,7 +100,6 @@ export default function PostCategory({
         onSearchTermChange("");
       }
     } else {
-      // no es culpable
       setSelectedSubcategory(subcategory);
       setSelectedThirdCategory("");
       if (onSubcategoryChange) {
@@ -99,7 +113,7 @@ export default function PostCategory({
       }
     }
   };
-  // no es culpable
+
   const handleThirdCategoryChange = (thirdCategory) => {
     if (selectedThirdCategory === thirdCategory) {
       setSelectedThirdCategory("");
@@ -217,6 +231,12 @@ export default function PostCategory({
       clearAllCategories();
     }
   }, [resetAll]);
+
+  useEffect(() => {
+    if (detailsCategory && detailsSubcategory && detailsThirdCategory) {
+      handleButtonClick(detailsCategory, detailsSubcategory, detailsThirdCategory);
+    }
+  }, [detailsCategory, detailsSubcategory, detailsThirdCategory]);
 
   return (
     <div className="d-flex">

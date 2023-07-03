@@ -1,7 +1,7 @@
 :root {
-  --color-primary: #aa7d1a; /* Define la variable de color */
-  --color-background-primary: #ffeee1;
-  --color-background-generic: #ffece1;
+  --color-primary: #550b98; /* Define la variable de color */
+  --color-background-primary: #eee7f5;
+  --color-background-generic: #eee7f5;
   --color-generic: #444444;
 }
 
@@ -54,7 +54,6 @@ p h1 h2 h3 h4 h5 {
   color: var(--color-primary);
   font-weight: 400;
   padding: 7px;
-  border: 0;
 }
 
 .close-modal-button {
