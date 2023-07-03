@@ -7,7 +7,7 @@ const PostCard = ({ post, userReputation, photoIndex }) => {
       key={post._id}
       className="col post-card want-rounded d-flex align-items-stretch p-3"
     >
-      <div className="card want-rounded divhover w-100 animate__animated animate__fadeIn">
+      <div className="card want-rounded divhover w-100">
         {post.photos && post.photos.length > 0 && (
           <div
             id={`carousel-${post._id}`}

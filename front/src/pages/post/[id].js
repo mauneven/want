@@ -45,6 +45,7 @@ const PostDetails = ({
     router.push("/");
   };
 
+
   useEffect(() => {
     const checkSession = async () => {
       const response = await fetch(

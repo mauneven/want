@@ -47,22 +47,25 @@ const PostsList = ({
   const router = useRouter();
   const containerRef = useRef(null);
 
+  useEffect(() => {
+    return () => {
+      onDetailsCategoryChange("");
+      onDetailsSubcategoryChange("");
+      onDetailsThirdCategoryChange("");
+    };
+  }, []);  
+
   const handleMainCategoryChange = (mainCategory) => {
     setCategoryFilter((prevFilter) => ({
       ...prevFilter,
       mainCategory: mainCategory,
     }));
-    if (detailsCategory) {
-      onDetailsCategoryChange(detailsCategory);
-      localStorage.removeItem("cachedPosts");
 
-      fetchPosts
+    if(detailsCategory != ""){
+      localStorage.removeItem("cachedPosts");
     }
-    setHasMorePosts(false);
-    onSearchTermChange("");
+    
     setCurrentPage(1);
-    setIsFetchingMore(false);
-    setIsLoading(true);
   };
 
   const handleSubcategoryChange = (subcategory) => {
@@ -132,6 +135,7 @@ const PostsList = ({
 
   useEffect(() => {
     const cachedPosts = localStorage.getItem("cachedPosts");
+
     if (cachedPosts && currentPage === 1) {
       setPosts(JSON.parse(cachedPosts));
       setIsLoading(false);
@@ -263,6 +267,14 @@ const PostsList = ({
       setHasMorePosts(true);
     }
   }, [posts, currentPage, totalPosts, pageSize]);
+
+  useEffect(() => {
+    return () => {
+      onDetailsCategoryChange("");
+      onDetailsSubcategoryChange("");
+      onDetailsThirdCategoryChange("");
+    };
+  }, []);
 
   return (
     <div>
