@@ -40,6 +40,7 @@ const PostsList = ({
   const [hasLocation, setHasLocation] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState({});
   const [posts, setPosts] = useState([]);
+  const [isInitialFetchDone, setIsInitialFetchDone] = useState(false); // Variable de estado para indicar si la petición inicial ya se ha realizado
   const user = useCheckSession();
   const { userPreferences, userPreferencesLoaded } =
     useGetUserPreferences(user);
@@ -61,8 +62,8 @@ const PostsList = ({
 
   useEffect(() => {
     console.log(searchTerm);
-    // your code that depends on searchTerm
- }, [searchTerm]); 
+    // tu código que depende de searchTerm
+  }, [searchTerm]);
 
   useEffect(() => {
     return () => {
@@ -70,7 +71,7 @@ const PostsList = ({
       onDetailsSubcategoryChange("");
       onDetailsThirdCategoryChange("");
     };
-  }, []);  
+  }, []);
 
   const handleMainCategoryChange = (mainCategory) => {
     setCategoryFilter((prevFilter) => ({
@@ -78,10 +79,10 @@ const PostsList = ({
       mainCategory: mainCategory,
     }));
 
-    if(detailsCategory != ""){
+    if (detailsCategory !== "") {
       localStorage.removeItem("cachedPosts");
     }
-    
+
     setCurrentPage(1);
   };
 
@@ -124,6 +125,7 @@ const PostsList = ({
 
   useEffect(() => {
     if (resetAll) {
+      onResetAll(false);
       localStorage.removeItem("cachedPosts");
       setPosts([]);
       setHasMorePosts(false);
@@ -152,11 +154,12 @@ const PostsList = ({
 
   useEffect(() => {
     const cachedPosts = localStorage.getItem("cachedPosts");
-
+  
     if (cachedPosts && currentPage === 1) {
       setPosts(JSON.parse(cachedPosts));
       setIsLoading(false);
-    } else {
+      setIsInitialFetchDone(true);
+    } else if (latitude !== null && longitude !== null && radius !== null) {
       fetchPosts(false, {
         hasLocation,
         searchTerm,
@@ -177,9 +180,11 @@ const PostsList = ({
         setIsFetching,
         setIsLoading,
         setIsFetchingMore,
+      }).then(() => {
+        setIsInitialFetchDone(true);
       });
     }
-  }, [userPreferences, currentPage, latitude, longitude, radius,  detailsCategory, detailsSubcategory, detailsThirdCategory]);
+  }, [userPreferences, currentPage, latitude, longitude, radius, detailsCategory, detailsSubcategory, detailsThirdCategory]);  
 
   useEffect(() => {
     const handleScroll = () => {
@@ -243,32 +248,37 @@ const PostsList = ({
   }, [isFetchingMore, isLoading, isFetching, hasMorePosts]);
 
   useEffect(() => {
-    fetchPosts(true, {
-      hasLocation,
-      searchTerm,
-      keepCategories,
-      categoryFilter,
-      userPreferences,
-      currentPage,
-      pageSize,
-      latitude,
-      longitude,
-      radius,
-      detailsCategory,
-      detailsSubcategory,
-      detailsThirdCategory,
-      setPosts,
-      setTotalPosts,
-      setHasMorePosts,
-      setIsFetching,
-      setIsLoading,
-      setIsFetchingMore,
-    });
     if (searchTerm) {
       setPosts([]);
       setCurrentPage(1);
     }
-  }, [categoryFilter, searchTerm, keepCategories, latitude, longitude, radius,  detailsCategory, detailsSubcategory, detailsThirdCategory]);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (isInitialFetchDone) { // Verificar si la petición inicial ya se ha realizado antes de hacer la petición adicional
+      fetchPosts(true, {
+        hasLocation,
+        searchTerm,
+        keepCategories,
+        categoryFilter,
+        userPreferences,
+        currentPage,
+        pageSize,
+        latitude,
+        longitude,
+        radius,
+        detailsCategory,
+        detailsSubcategory,
+        detailsThirdCategory,
+        setPosts,
+        setTotalPosts,
+        setHasMorePosts,
+        setIsFetching,
+        setIsLoading,
+        setIsFetchingMore,
+      });
+    }
+  }, [isInitialFetchDone, categoryFilter, searchTerm, keepCategories, latitude, longitude, radius, detailsCategory, detailsSubcategory, detailsThirdCategory]);
 
   useEffect(() => {
     onMainCategoryChange(categoryFilter.mainCategory);

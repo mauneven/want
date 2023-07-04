@@ -50,6 +50,7 @@ export default function MegaMenu({
   
       // Esperar 1 segundo (1000 milisegundos) antes de realizar la búsqueda
       setTimeout(() => {
+        onSearchTermChange(newSearchTerm);
         if (!updatedKeepCategories) {
           setMainCategory("");
           setSubcategory("");
@@ -60,7 +61,7 @@ export default function MegaMenu({
           setSubcategory("");
           setThirdCategory("");
         }
-      }, 1000);
+      }, 10);
     }
   };
 
