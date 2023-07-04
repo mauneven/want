@@ -142,7 +142,7 @@ const CreatePostLocation = ({ onLatitudeChange, onLongitudeChange }) => {
         <Form.Group controlId="searchForm">
           <Form.Control
             type="text"
-            placeholder="Busca tu ciudad aqui..."
+            placeholder=""
             value={searchQuery}
             className='want-rounded'
             onChange={handleSearchChange}
