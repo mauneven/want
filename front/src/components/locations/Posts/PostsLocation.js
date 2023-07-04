@@ -21,8 +21,9 @@ const PostsLocation = ({
   const radiusOptions = [1, 2, 5, 10, 20, 30, 50, 80, 100, 10000000000]; // Opciones de radio en km
   const [locationName, setLocationName] = useState(null); // Nombre de la ubicación
   const [zoomLevel, setZoomLevel] = useState(13); // Nivel de zoom predeterminado: 13
-  const [isDataChanged, setIsDataChanged] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const prevLatitude = useRef(null);
+  const prevLongitude = useRef(null);
 
   useEffect(() => {
     const storedRadius = localStorage.getItem('radius');
@@ -114,7 +115,6 @@ const PostsLocation = ({
     const { lat, lng } = event.target.getLatLng();
     setLatitude(lat);
     setLongitude(lng);
-    setIsDataChanged(true);
   };
 
   const handleSearchChange = (event) => {
@@ -134,7 +134,6 @@ const PostsLocation = ({
         setSearchResults([]);
         mapRef.current.setView([parseFloat(lat), parseFloat(lon)], zoomLevel);
         fetchLocationName(parseFloat(lat), parseFloat(lon));
-        setIsDataChanged(true);
       }
     } catch (error) {
       console.log('esperando datos de openstreetmap');
@@ -163,7 +162,6 @@ const PostsLocation = ({
             localStorage.setItem('latitude', lat);
             localStorage.setItem('longitude', lng);
             localStorage.setItem('radius', radius.toString());
-            setIsDataChanged(true);
           } catch (error) {
             console.error(error);
           }
@@ -208,7 +206,6 @@ const PostsLocation = ({
     localStorage.setItem('zoomLevel', zoomLevel.toString());
 
     mapRef.current.setView([latitude, longitude], zoomLevel);
-    setIsDataChanged(true);
   };
 
   const handleKeyDown = (event) => {
@@ -218,8 +215,6 @@ const PostsLocation = ({
   };
 
   const handleLocationSelection = async () => {
-    setIsSubmitting(true);
-
     // Aquí puedes realizar las acciones que deseas realizar al seleccionar la ubicación
     // y enviar los datos de longitud, latitud y radio.
     // Por ejemplo:
@@ -234,7 +229,6 @@ const PostsLocation = ({
 
     // Cerrar el modal después de seleccionar la ubicación
     closeModal();
-    setIsSubmitting(false);
   };
 
   const mapRef = useRef(null);
@@ -264,8 +258,10 @@ const PostsLocation = ({
       }
     };
 
-    if (latitude && longitude) {
+    if (latitude !== prevLatitude.current || longitude !== prevLongitude.current) {
       fetchLocationName();
+      prevLatitude.current = latitude;
+      prevLongitude.current = longitude;
     }
   }, [latitude, longitude]);
 
@@ -401,7 +397,6 @@ const PostsLocation = ({
           <button
             className="generic-button"
             onClick={handleLocationDetection}
-            disabled={isSubmitting}
           >
             {t('postsLocation.useCurrentLocation')}
             <i className="bi bi-geo-fill m-2"></i>
@@ -413,7 +408,6 @@ const PostsLocation = ({
           <button
             className="generic-button"
             onClick={handleLocationSelection}
-            disabled={!isDataChanged || isSubmitting}
           >
             {t('postsLocation.apply')}
             <i className="bi bi-check-circle-fill m-2"></i>

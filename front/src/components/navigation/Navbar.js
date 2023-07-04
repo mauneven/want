@@ -43,22 +43,25 @@ export default function MegaMenu({
 
   const handleSearchSubmit = async (e) => {
     e.preventDefault();
-    const newSearchTerm = e.target.search.value;
-    onSearchTermChange(newSearchTerm);
-    router.push("/");
-
-    // Esperar 1 segundo (1000 milisegundos) antes de realizar la búsqueda
-    setTimeout(() => {
-      e.preventDefault();
-      const newSearchTerm = e.target.search.value;
+    const newSearchTerm = e.target.search.value.trim(); // Eliminar espacios en blanco al inicio y final
+    if (newSearchTerm !== "") {
       onSearchTermChange(newSearchTerm);
-
-      if (!updatedKeepCategories) {
-        setMainCategory("");
-        setSubcategory("");
-        setThirdCategory("");
-      }
-    }, 100);
+      router.push("/");
+  
+      // Esperar 1 segundo (1000 milisegundos) antes de realizar la búsqueda
+      setTimeout(() => {
+        if (!updatedKeepCategories) {
+          setMainCategory("");
+          setSubcategory("");
+          setThirdCategory("");
+        }
+        if (keepCategories !== true) {
+          setMainCategory("");
+          setSubcategory("");
+          setThirdCategory("");
+        }
+      }, 1000);
+    }
   };
 
   useEffect(() => {
