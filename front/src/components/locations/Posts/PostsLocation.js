@@ -315,7 +315,7 @@ const PostsLocation = ({
           </Form>
           {searchResults.length > 0 && (
             <div className="mt-2  want-rounded results-map">
-              <ul className="p-3" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+              <ul className="p-3 post-title" style={{ maxHeight: '300px', overflowY: 'auto' }}>
                 {searchResults.map((result, index) => (
                   <li
                     className="divhover dropdown-item"

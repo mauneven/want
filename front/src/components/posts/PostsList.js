@@ -154,7 +154,7 @@ const PostsList = ({
 
   useEffect(() => {
     const cachedPosts = localStorage.getItem("cachedPosts");
-  
+
     if (cachedPosts && currentPage === 1) {
       setPosts(JSON.parse(cachedPosts));
       setIsLoading(false);
@@ -184,7 +184,16 @@ const PostsList = ({
         setIsInitialFetchDone(true);
       });
     }
-  }, [userPreferences, currentPage, latitude, longitude, radius, detailsCategory, detailsSubcategory, detailsThirdCategory]);  
+  }, [
+    userPreferences,
+    currentPage,
+    latitude,
+    longitude,
+    radius,
+    detailsCategory,
+    detailsSubcategory,
+    detailsThirdCategory,
+  ]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -215,10 +224,46 @@ const PostsList = ({
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    const handleTouchMove = () => {
+      const scrollTop =
+        (document.documentElement && document.documentElement.scrollTop) ||
+        document.body.scrollTop;
+      const scrollHeight =
+        (document.documentElement && document.documentElement.scrollHeight) ||
+        document.body.scrollHeight;
+      const clientHeight =
+        document.documentElement.clientHeight || window.innerHeight;
+      const scrolledToBottom =
+        Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+      const scrolledToTop = scrollTop === 0;
+
+      if (
+        scrolledToBottom &&
+        hasMorePosts &&
+        !isLoading &&
+        !isFetching &&
+        !isFetchingMore
+      ) {
+        setIsFetchingMore(true);
+      }
+
+      if (scrolledToTop && !isLoading && !isFetching && !isFetchingMore) {
+        setHasMorePosts(false);
+      }
+    };
+
+    const handleScrollOrTouchMove = () => {
+      if ("ontouchstart" in window) {
+        handleTouchMove();
+      } else {
+        handleScroll();
+      }
+    };
+
+    window.addEventListener("scroll", handleScrollOrTouchMove);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleScrollOrTouchMove);
     };
   }, [hasMorePosts, isLoading, isFetching, isFetchingMore]);
 
@@ -255,7 +300,8 @@ const PostsList = ({
   }, [searchTerm]);
 
   useEffect(() => {
-    if (isInitialFetchDone) { // Verificar si la petición inicial ya se ha realizado antes de hacer la petición adicional
+    if (isInitialFetchDone) {
+      // Verificar si la petición inicial ya se ha realizado antes de hacer la petición adicional
       fetchPosts(true, {
         hasLocation,
         searchTerm,
@@ -278,7 +324,18 @@ const PostsList = ({
         setIsFetchingMore,
       });
     }
-  }, [isInitialFetchDone, categoryFilter, searchTerm, keepCategories, latitude, longitude, radius, detailsCategory, detailsSubcategory, detailsThirdCategory]);
+  }, [
+    isInitialFetchDone,
+    categoryFilter,
+    searchTerm,
+    keepCategories,
+    latitude,
+    longitude,
+    radius,
+    detailsCategory,
+    detailsSubcategory,
+    detailsThirdCategory,
+  ]);
 
   useEffect(() => {
     onMainCategoryChange(categoryFilter.mainCategory);
@@ -310,9 +367,9 @@ const PostsList = ({
           onMainCategoryChange={handleMainCategoryChange}
           onSubcategoryChange={handleSubcategoryChange}
           onThirdCategoryChange={handleThirdCategoryChange}
-          initialMainCategory={detailsCategory}
-          initialSubcategory={detailsSubcategory}
-          initialThirdCategory={detailsThirdCategory}
+          onDetailsCategoryChange={onDetailsCategoryChange}
+          onDetailsSubcategoryChange={onDetailsSubcategoryChange}
+          onDetailsThirdCategoryChange={onDetailsThirdCategoryChange}
           onSearchTermChange={onSearchTermChange}
           searchTerm={searchTerm}
           keepCategories={keepCategories}

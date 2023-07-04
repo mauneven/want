@@ -225,7 +225,7 @@ const EditPost = () => {
     <div className="mt-3 mb-3">
       <h3 className="text-center mb-4">Edit the post of what you Want</h3>
       <div className="">
-        <div className="form-container container">
+        <div className="container">
           <form onSubmit={handleSubmit} className="">
             <div className="mb-3">
               <label htmlFor="title" className="form-label">

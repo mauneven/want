@@ -9,6 +9,9 @@ export default function PostCategory({
   initialMainCategory = "",
   initialSubcategory = "",
   initialThirdCategory = "",
+  onDetailsCategoryChange,
+  onDetailsSubcategoryChange,
+  onDetailsThirdCategoryChange,
   onSearchTermChange,
   searchTerm,
   keepCategories,
@@ -55,6 +58,11 @@ export default function PostCategory({
       clearAllCategories();
       if (onMainCategoryChange) {
         onMainCategoryChange("");
+        onSubcategoryChange("");
+        onThirdCategoryChange("");
+        onDetailsCategoryChange("");
+        onDetailsSubcategoryChange("");
+        onDetailsThirdCategoryChange("");
       }
       if (onSearchTermChange) {
         onSearchTermChange("");
@@ -78,6 +86,7 @@ export default function PostCategory({
       setSelectedThirdCategory("");
       if (onSubcategoryChange) {
         onSubcategoryChange("");
+        onThirdCategoryChange("");
       }
       if (onSearchTermChange) {
         onSearchTermChange("");
@@ -245,6 +254,12 @@ export default function PostCategory({
     if (storedThirdCategory) {
       setSelectedThirdCategory(storedThirdCategory);
     }
+
+    if(detailsCategory){
+      setSelectedCategory(detailsCategory);
+      setSelectedSubcategory(detailsSubcategory);
+      setSelectedThirdCategory(detailsThirdCategory);
+    }
   }, []);
 
   useEffect(() => {
@@ -263,6 +278,13 @@ export default function PostCategory({
     localStorage.setItem("mainCategory", selectedCategory);
     localStorage.setItem("subcategory", selectedSubcategory);
     localStorage.setItem("thirdCategory", selectedThirdCategory);
+
+    if(detailsSubcategory === ""){
+      localStorage.setItem("mainCategory", detailsCategory || "");
+      localStorage.setItem("mainCategory", detailsSubcategory || "");
+      localStorage.setItem("mainCategory", detailsThirdCategory || "");
+    }
+
   }, [selectedCategory, selectedSubcategory, selectedThirdCategory]);
 
   return (
