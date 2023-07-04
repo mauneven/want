@@ -24,6 +24,7 @@ export default function MegaMenu({
   const { t } = useTranslation();
   const [user, setUser] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [updatedKeepCategories, setUpdatedKeepCategories] = useState(keepCategories);
 
   const router = useRouter();
 
@@ -44,21 +45,21 @@ export default function MegaMenu({
     e.preventDefault();
     const newSearchTerm = e.target.search.value;
     onSearchTermChange(newSearchTerm);
-      router.push("/");
-  
+    router.push("/");
+
     // Esperar 1 segundo (1000 milisegundos) antes de realizar la búsqueda
     setTimeout(() => {
       e.preventDefault();
       const newSearchTerm = e.target.search.value;
       onSearchTermChange(newSearchTerm);
 
-    if (keepCategories != true){
-      setMainCategory("");
-      setSubcategory("");
-      setThirdCategory(""); 
-    }
+      if (!updatedKeepCategories) {
+        setMainCategory("");
+        setSubcategory("");
+        setThirdCategory("");
+      }
     }, 100);
-  };  
+  };
 
   useEffect(() => {
     const checkSession = async () => {
@@ -115,8 +116,14 @@ export default function MegaMenu({
   }, [getCategoryText()]);
 
   const handleKeepCategoriesChange = (e) => {
-    onKeepCategoriesChange(e.target.checked);
+    setUpdatedKeepCategories(e.target.checked);
   };
+
+  useEffect(() => {
+    if (searchTerm) {
+      onKeepCategoriesChange(updatedKeepCategories);
+    }
+  }, [searchTerm]);
 
   return (
     <>
@@ -127,18 +134,18 @@ export default function MegaMenu({
               className="d-flex align-items-center m-0 p-0 col-3 justify-content-center"
             >
               <div className="fs-1 want-color d-flex  m-0 w-100 d-flex">
-               <p className="desktop-logo align-items-center justify-content-center want-color m-0 divhover" onClick={handleLogoClick}>Want</p> <p className="fs-5 m-2 p-1 want-border desktop-logo divhover align-items-center justify-content-center" onClick={handleLogoClick}>Beta</p>
+                <p className="desktop-logo align-items-center justify-content-center want-color m-0 divhover" onClick={handleLogoClick}>Want</p> <p className="fs-5 m-2 p-1 want-border desktop-logo divhover align-items-center justify-content-center" onClick={handleLogoClick}>Beta</p>
               </div>
             </Navbar.Brand>
           ) : (
             <Navbar.Brand
-            onClick={handleLogoClick}
-            className="divhover d-flex align-items-center m-0 p-0 col-3 justify-content-center"
-          >
-            <div className="fs-1 want-color d-flex  m-0 w-100 h-100 align-items-center want-color mobile-logo">
-              Want<p className="small text-small m-0 p-1 mobile-logo-beta">BETA</p>
-            </div>
-          </Navbar.Brand>
+              onClick={handleLogoClick}
+              className="divhover d-flex align-items-center m-0 p-0 col-3 justify-content-center"
+            >
+              <div className="fs-1 want-color d-flex  m-0 w-100 h-100 align-items-center want-color mobile-logo">
+                Want<p className="small text-small m-0 p-1 mobile-logo-beta">BETA</p>
+              </div>
+            </Navbar.Brand>
           )}
           <div className="w-100 d-flex justify-content-center align-items-center">
             <Form
@@ -150,7 +157,7 @@ export default function MegaMenu({
                   <input
                     className="form-check-input "
                     type="checkbox"
-                    value={keepCategories}
+                    value={updatedKeepCategories}
                     onChange={handleKeepCategoriesChange}
                     id="keepCategoriesCheckbox"
                   />
@@ -158,7 +165,7 @@ export default function MegaMenu({
                     className="form-check-label d-flex text-categories-navbar"
                     htmlFor="keepCategoriesCheckbox"
                   >
-                   {t("navbar.onlyon")} {getCategoryText()}
+                    {t("navbar.onlyon")} {getCategoryText()}
                   </label>
                 </div>
               )}
