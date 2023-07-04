@@ -167,7 +167,7 @@ export default function ReceivedOffers() {
             {Object.values(offers).map((postWithOffers) => (
               <button
                 key={postWithOffers.post._id}
-                className={`list-group-item-action mt-3 mb-3 ${selectedPost === postWithOffers.post._id ? "post-received-selected" : "post-received"}`}
+                className={`list-group-item-action mt-3 mb-3 ${selectedPost === postWithOffers.post._id ? "want-button p-4 post-title" : "generic-button p-4 post-title"}`}
                 onClick={() => handlePostSelect(postWithOffers.post._id)}
               >
                 <h5 className=''>{postWithOffers.post.title.substring(0, 30)}</h5>
@@ -198,12 +198,12 @@ export default function ReceivedOffers() {
                               />
                             )}
                             <div className="d-flex flex-column flex-grow-1">
-                              <div>
-                                <h4 className="card-title">{offer.title}</h4>
-                                <span className="want-color h5">
+                              <div className=' post-preview-details'>
+                                <h4 className=" post-title">{offer.title}</h4>
+                                <span className="want-color">
                                   $ {offer.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                 </span>
-                                <p className="card-text">{offer.description}</p>
+                                <p className="card-text post-title">{offer.description}</p>
                               </div>
                             </div>
                           </div>

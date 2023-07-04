@@ -19,7 +19,7 @@ const ReportOfferModal = ({ offerId, onReport }) => {
 
   return (
     <>
-      <button onClick={handleShow}>
+      <button onClick={handleShow} className='border p-1 border-danger btn-danger btn'>
         {t('reportOfferModal.report')}
         <i className="bi bi-flag ms-2"></i>
       </button>

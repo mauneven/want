@@ -238,7 +238,7 @@
     "createOffer": "Crear oferta"
   },
   "detailsModal": {
-    "offerForPost": "Oferta para tu publicación {{title}}",
+    "offerForPost": "Oferta para {{title}}",
     "offerBy": "Ofrecido por",
     "otherWaysToContact": "Otras formas de contactar a {{firstName}}: {{contact}}",
     "closeButton": "Cerrar"

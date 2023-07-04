@@ -239,7 +239,7 @@
   "createOffer": "Create offer"
   },
   "detailsModal": {
-  "offerForPost": "Offer for your post {{title}}",
+  "offerForPost": "Offer for {{title}}",
   "offerBy": "Offered by",
   "otherWaysToContact": "Other ways to contact {{firstName}}: {{contact}}",
   "closeButton": "Close"
