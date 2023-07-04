@@ -21,9 +21,6 @@ const fetchPosts = async (resetPosts, {
   setIsLoading,
   setIsFetchingMore,
 }) => {
-  if (!hasLocation) {
-    return;
-  }
 
   try {
     setIsLoading(true);

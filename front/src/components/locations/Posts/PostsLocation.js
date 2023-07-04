@@ -22,9 +22,6 @@ const PostsLocation = ({
   const [locationName, setLocationName] = useState(null); // Nombre de la ubicación
   const [zoomLevel, setZoomLevel] = useState(13); // Nivel de zoom predeterminado: 13
 
-  const prevLatitude = useRef(null);
-  const prevLongitude = useRef(null);
-
   useEffect(() => {
     const storedRadius = localStorage.getItem('radius');
     if (storedRadius) {
@@ -54,24 +51,6 @@ const PostsLocation = ({
       onRadiusChange(parseInt(storedRadius));
       setLocationName(storedLocationName);
       setZoomLevel(parseInt(storedZoomLevel));
-    } else if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          setLatitude(lat);
-          setLongitude(lng);
-          onLatitudeChange(lat);
-          onLongitudeChange(lng);
-          setLocationDetected(true);
-          fetchLocationName(lat, lng);
-        },
-        (error) => {
-          console.log('esperando datos de openstreetmap');
-        }
-      );
-    } else {
-      console.error('Geolocation is not supported by this browser.');
     }
   }, []);
 
@@ -142,34 +121,47 @@ const PostsLocation = ({
 
   const handleLocationDetection = async () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          try {
-            const response = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
-            );
-            const data = await response.json();
-            const { city } = data.address;
-            setLatitude(lat);
-            setLongitude(lng);
-            setLocationDetected(true);
-            if (city) {
-              setSearchQuery(city);
+      const storedLatitude = localStorage.getItem('latitude');
+      const storedLongitude = localStorage.getItem('longitude');
+      if (storedLatitude && storedLongitude) {
+        setLatitude(parseFloat(storedLatitude));
+        setLongitude(parseFloat(storedLongitude));
+        onLatitudeChange(parseFloat(storedLatitude));
+        onLongitudeChange(parseFloat(storedLongitude));
+        setLocationDetected(true);
+        fetchLocationName(parseFloat(storedLatitude), parseFloat(storedLongitude));
+      } else {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            try {
+              const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
+              );
+              const data = await response.json();
+              const { city } = data.address;
+              setLatitude(lat);
+              setLongitude(lng);
+              onLatitudeChange(lat);
+              onLongitudeChange(lng);
+              setLocationDetected(true);
+              if (city) {
+                setSearchQuery(city);
+              }
+              fetchLocationName(lat, lng);
+              localStorage.setItem('latitude', lat.toString());
+              localStorage.setItem('longitude', lng.toString());
+              localStorage.setItem('radius', radius.toString());
+            } catch (error) {
+              console.error(error);
             }
-            fetchLocationName(lat, lng);
-            localStorage.setItem('latitude', lat);
-            localStorage.setItem('longitude', lng);
-            localStorage.setItem('radius', radius.toString());
-          } catch (error) {
+          },
+          (error) => {
             console.error(error);
           }
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
+        );
+      }
     } else {
       console.error('Geolocation is not supported by this browser.');
     }
@@ -205,7 +197,9 @@ const PostsLocation = ({
     setZoomLevel(zoomLevel);
     localStorage.setItem('zoomLevel', zoomLevel.toString());
 
-    mapRef.current.setView([latitude, longitude], zoomLevel);
+    if (latitude && longitude) {
+      mapRef.current.setView([latitude, longitude], zoomLevel);
+    }
   };
 
   const handleKeyDown = (event) => {
@@ -214,20 +208,15 @@ const PostsLocation = ({
     }
   };
 
-  const handleLocationSelection = async () => {
-    // Aquí puedes realizar las acciones que deseas realizar al seleccionar la ubicación
-    // y enviar los datos de longitud, latitud y radio.
-    // Por ejemplo:
+  const handleLocationSelection = () => {
     onLatitudeChange(latitude);
     onLongitudeChange(longitude);
     onRadiusChange(radius);
 
-    // Guardar la ubicación en localStorage
     localStorage.setItem('latitude', latitude.toString());
     localStorage.setItem('longitude', longitude.toString());
     localStorage.setItem('radius', radius.toString());
 
-    // Cerrar el modal después de seleccionar la ubicación
     closeModal();
   };
 
@@ -258,10 +247,8 @@ const PostsLocation = ({
       }
     };
 
-    if (latitude !== prevLatitude.current || longitude !== prevLongitude.current) {
+    if (latitude && longitude) {
       fetchLocationName();
-      prevLatitude.current = latitude;
-      prevLongitude.current = longitude;
     }
   }, [latitude, longitude]);
 
@@ -269,7 +256,7 @@ const PostsLocation = ({
     if (latitude && longitude && mapRef.current) {
       mapRef.current.setView([latitude, longitude], zoomLevel);
     }
-  }, [latitude, longitude]);
+  }, [latitude, longitude, zoomLevel]);
 
   const openModal = () => {
     setShowModal(true);
@@ -402,8 +389,8 @@ const PostsLocation = ({
             <i className="bi bi-geo-fill m-2"></i>
           </button>
           <button className='generic-button' onClick={closeModal} >
-          {t('postsLocation.cancel')}
-          <i className="bi bi-x-circle-fill m-2"></i>
+            {t('postsLocation.cancel')}
+            <i className="bi bi-x-circle-fill m-2"></i>
           </button>
           <button
             className="generic-button"
