@@ -61,7 +61,7 @@ export default function MegaMenu({
           setSubcategory("");
           setThirdCategory("");
         }
-      }, 10);
+      }, 40);
     }
   };
 

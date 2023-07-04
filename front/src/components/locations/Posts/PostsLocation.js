@@ -51,27 +51,65 @@ const PostsLocation = ({
       onRadiusChange(parseInt(storedRadius));
       setLocationName(storedLocationName);
       setZoomLevel(parseInt(storedZoomLevel));
-    } else if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          setLatitude(lat);
-          setLongitude(lng);
-          onLatitudeChange(lat);
-          onLongitudeChange(lng);
-          setLocationDetected(true);
-          fetchLocationName(lat, lng);
-          saveLocationToLocalStorage(lat, lng);
-        },
-        (error) => {
-          console.log('esperando datos de openstreetmap');
-        }
-      );
     } else {
-      console.error('Geolocation is not supported by this browser.');
+      fetchLocation();
     }
   }, []);
+
+  const fetchLocation = () => {
+    const fetchExactLocation = async () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            setLatitude(lat);
+            setLongitude(lng);
+            onLatitudeChange(lat);
+            onLongitudeChange(lng);
+            setLocationDetected(true);
+            fetchLocationName(lat, lng);
+            saveLocationToLocalStorage(lat, lng);
+          },
+          (error) => {
+            console.log('esperando datos de openstreetmap');
+          }
+        );
+      } else {
+        console.error('Geolocation is not supported by this browser.');
+      }
+    };
+
+    const fetchReferenceLocation = async () => {
+      try {
+        const response = await fetch('https://ipapi.co/json');
+        const data = await response.json();
+        const lat = parseFloat(data.latitude);
+        const lng = parseFloat(data.longitude);
+        setLatitude(lat);
+        setLongitude(lng);
+        onLatitudeChange(lat);
+        onLongitudeChange(lng);
+        setLocationDetected(true);
+        fetchLocationName(lat, lng);
+        saveLocationToLocalStorage(lat, lng);
+      } catch (error) {
+        console.log('esperando datos de no-ipapi');
+      }
+    };
+
+    if (navigator.permissions) {
+      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+        if (result.state === 'granted') {
+          fetchExactLocation();
+        } else {
+          fetchReferenceLocation();
+        }
+      });
+    } else {
+      fetchReferenceLocation();
+    }
+  };
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -147,37 +185,7 @@ const PostsLocation = ({
   };
 
   const handleLocationDetection = async () => {
-    if (navigator.geolocation) {
-      const successCallback = async (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        try {
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
-          );
-          const data = await response.json();
-          const { city } = data.address;
-          setLatitude(lat);
-          setLongitude(lng);
-          setLocationDetected(true);
-          if (city) {
-            setSearchQuery(city);
-          }
-          fetchLocationName(lat, lng);
-          saveLocationToLocalStorage(lat, lng);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-
-      const errorCallback = (error) => {
-        console.error(error);
-      };
-
-      navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-    } else {
-      console.error('Geolocation is not supported by this browser.');
-    }
+    fetchLocation();
   };
 
   const handleRadiusChange = (event) => {
