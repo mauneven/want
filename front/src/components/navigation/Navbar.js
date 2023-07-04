@@ -44,16 +44,19 @@ export default function MegaMenu({
     e.preventDefault();
     const newSearchTerm = e.target.search.value;
     onSearchTermChange(newSearchTerm);
-  
-    if (router.pathname !== "/") {
       router.push("/");
-    }
   
     // Esperar 1 segundo (1000 milisegundos) antes de realizar la búsqueda
     setTimeout(() => {
       e.preventDefault();
       const newSearchTerm = e.target.search.value;
       onSearchTermChange(newSearchTerm);
+
+    if (keepCategories != true){
+      setMainCategory("");
+      setSubcategory("");
+      setThirdCategory(""); 
+    }
     }, 100);
   };  
 
@@ -139,7 +142,7 @@ export default function MegaMenu({
           )}
           <div className="w-100 d-flex justify-content-center align-items-center">
             <Form
-              className="d-flex m-0 w-100 p-1 want-rounded text-center align-items-center justify-content-center generic-button"
+              className="d-flex m-0 w-100 p-1 border want-rounded text-center align-items-center justify-content-center generic-button"
               onSubmit={handleSearchSubmit}
             >
               {getCategoryText() && (
@@ -179,7 +182,7 @@ export default function MegaMenu({
                     className="nav-item"
                     onClick={() => router.push("/createPost")}
                   >
-                    <button className="want-button want-rounded align-items-center">
+                    <button className="want-button border-selected want-rounded align-items-center">
                       {t("navbar.wantSomething")}
                     </button>
                   </Nav.Link>

@@ -176,15 +176,14 @@ const PostDetails = ({
     setShowModal(false);
   };
 
-  const openUserModal = (user) => {
-    closeModal();
-    setSelectedUser(user);
-    setShowUserModal(true);
-  };
-
   const closeUserModal = () => {
     setSelectedUser(null);
     setShowUserModal(false);
+  };
+
+  const openUserModal = (user) => {
+    setSelectedUser(user);
+    setShowUserModal(true);
   };
 
   useEffect(() => {

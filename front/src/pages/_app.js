@@ -93,6 +93,7 @@ export default function MyApp({ Component, pageProps }) {
 
         <div className="">
           <Suspense fallback="Loading...">
+            <div className="want-container">
             <Component
               {...pageProps}
               onDetailsCategoryChange={setDetailsCategory}
@@ -114,6 +115,7 @@ export default function MyApp({ Component, pageProps }) {
               onResetAll={setResetAll}
               resetAll={resetAll}
             />
+            </div>
           </Suspense>
         </div>
 

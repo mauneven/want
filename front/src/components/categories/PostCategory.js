@@ -285,10 +285,10 @@ export default function PostCategory({
                 id={category.id}
                 className={`want-rounded m-2 ${
                   selectedCategory === category.id
-                    ? "want-button"
+                    ? "want-button border-selected"
                     : searchPerformed && !keepCategories
-                    ? "generic-button"
-                    : "generic-button"
+                    ? "generic-button border"
+                    : "generic-button border"
                 }`}
                 onClick={() => {
                   handleButtonClick(category.id, "", "");
@@ -319,10 +319,10 @@ export default function PostCategory({
                     id={`${selectedCategory}_${subcategory.id}`}
                     className={`want-rounded m-2 ${
                       selectedSubcategory === subcategory.id
-                        ? "want-button"
+                        ? "want-button border-selected"
                         : searchPerformed && !keepCategories
-                        ? "generic-button"
-                        : "generic-button"
+                        ? "generic-button border"
+                        : "generic-button border"
                     }`}
                     onClick={() => {
                       handleButtonClick(selectedCategory, subcategory.id, "");
@@ -357,10 +357,10 @@ export default function PostCategory({
                     id={`${selectedCategory}_${selectedSubcategory}_${thirdCategory.id}`}
                     className={`want-rounded m-2 ${
                       selectedThirdCategory === thirdCategory.id
-                        ? "want-button"
+                        ? "want-button border-selected"
                         : searchPerformed && !keepCategories
-                        ? "generic-button"
-                        : "generic-button"
+                        ? "generic-button border"
+                        : "generic-button border"
                     }`}
                     onClick={() => {
                       handleButtonClick(

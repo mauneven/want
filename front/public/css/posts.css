@@ -5,19 +5,19 @@
 }
 
 .text-price{
-  color: var(--color-primary);
+  color: var(--color-generic);
   font-weight: 600;
 }
 
 .img-post{
-  border-radius: 7px 7px 0 0;
+  border-radius: 7px 7px 7px 7px;
 }
 
 .post-card-contain{
   border-radius: 0 0 7px 7px;
 }
 
-.card:hover{
+.posts-card:hover{
   box-shadow: 0px 6px 15px 0px rgba(0, 0, 0, 0.267);
   transition: 150ms;
 }
@@ -189,5 +189,10 @@
 .card:hover .custom-slider-button {
   display: block;
   transition: 500ms;
+}
+
+.post-price{
+  color: black;
+  font-weight: 600;
 }
 

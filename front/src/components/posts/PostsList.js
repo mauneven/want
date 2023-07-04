@@ -296,7 +296,6 @@ const PostsList = ({
   return (
     <div>
       <div className="text-center">
-        <p>search {searchTerm}</p>
         <PostCategory
           onMainCategoryChange={handleMainCategoryChange}
           onSubcategoryChange={handleSubcategoryChange}

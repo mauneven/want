@@ -8,7 +8,7 @@ const PostCard = ({ post, userReputation, photoIndex }) => {
       className="col post-card want-rounded d-flex align-items-stretch p-3"
     >
       <div className="card want-rounded divhover w-100">
-        {post.photos && post.photos.length > 0 && (
+        {post.photos && post.photos.length > 0 ? (
           <div
             id={`carousel-${post._id}`}
             className="carousel slide want-rounded  img-post"
@@ -25,7 +25,7 @@ const PostCard = ({ post, userReputation, photoIndex }) => {
                     <img
                       src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
                       className="d-block w-100"
-                      alt={`Image ${index}`}
+                      alt={post.title}
                       loading="lazy"
                     />
                   </Link>
@@ -63,13 +63,19 @@ const PostCard = ({ post, userReputation, photoIndex }) => {
               </>
             )}
           </div>
+        ) : (
+          <div className="border img-post d-flex w-100 h-100">
+            <h4 className="w-100 h-100 p-3 text-center">{post.title}</h4>
+          </div>
         )}
-        <Link href={`post/${post._id}`}>
-          <div className="card-body p-0 m-0">
-            <div className="generic-button post-card-contain">
-              <h3 className="text-price m-0 post-title">${post.price.toLocaleString()}</h3>
-              <h5 className="card-title post-title p-1">{post.title}</h5>
-              <div className="d-flex generic-button generic-button want-rounded p-0">
+        <Link href={`post/${post._id}`} className="post-details">
+          <div className="want-color-generic">
+            <div className="">
+              <h3 className="post-price mt-3">
+                ${post.price.toLocaleString()}
+              </h3>
+              <h5 className="p-1 post-title">{post.title}</h5>
+              <div className="d-flex want-rounded p-0">
                 <img
                   src={
                     post.createdBy.photo
@@ -80,10 +86,14 @@ const PostCard = ({ post, userReputation, photoIndex }) => {
                   className="createdBy-photo p-1"
                 />
                 <div className="ms-2">
-                  <small className="text-muted">{post.createdBy.firstName}</small>
+                  <small className="text-muted">
+                    {post.createdBy.firstName}
+                  </small>
                   <div className="d-flex">
                     <i className="bi bi-star-fill me-1"></i>
-                    <small className="text-muted">{userReputation.toFixed(1)}</small>
+                    <small className="text-muted">
+                      {userReputation.toFixed(1)}
+                    </small>
                   </div>
                 </div>
               </div>

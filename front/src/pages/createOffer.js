@@ -4,6 +4,7 @@ import WordsFilter from '@/badWordsFilter/WordsFilter';
 import { Button, Modal } from 'react-bootstrap';
 import { validations } from '@/utils/validations';
 import { countries } from '../data/countries.json';
+import GoBackButton from '@/components/reusable/GoBackButton';
 
 const CreateOffer = () => {
   const router = useRouter();
@@ -189,7 +190,8 @@ const CreateOffer = () => {
   }
 
   return (
-    <div className="mt-4 mb-4">
+    <div className="container mt-4 mb-4">
+      <GoBackButton/>
       <h1 className="mt-3 text-center">Creating an offer for "{post.title}"</h1>
       <h2 className="mt-3 text-center">Payment of ${Number(post.price).toLocaleString()}</h2>
       <h4 className="mt-3 text-center want-color">Do your best offer</h4>
@@ -211,7 +213,7 @@ const CreateOffer = () => {
           </button>
         </Modal.Footer>
       </Modal>
-      <div className="container form-container">
+      <div className="">
         <div className=" p-0">
           <form onSubmit={handleSubmit} className="container">
             <div className="mb-3">
@@ -341,7 +343,7 @@ const CreateOffer = () => {
             <div className="mb-3">
               <button
                 type="submit"
-                className="want-button want-rounded"
+                className="want-button want-rounded border-selected"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? 'Creating...' : 'Create Offer'}

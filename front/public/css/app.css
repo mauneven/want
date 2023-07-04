@@ -1,7 +1,7 @@
 :root {
-  --color-primary: #550b98; /* Define la variable de color */
-  --color-background-primary: #eee7f5;
-  --color-background-generic: #eee7f5;
+  --color-primary: #38bd76; /* Define la variable de color */
+  --color-background-primary: #dfffed;
+  --color-background-generic: #ffffff;
   --color-generic: #444444;
 }
 
@@ -12,12 +12,12 @@ button{
 }
 
 body {
-  color: var(--color-generic);
-  font-weight: 400;
+  color: var(--color-generic)!important;
+  font-weight: 600;
 }
 
-p h1 h2 h3 h4 h5 {
-  color: #ffffff;
+.post-details:hover{
+  color: var(--color-generic);
 }
 
 .want-container {
@@ -26,6 +26,10 @@ p h1 h2 h3 h4 h5 {
   background-color: white;
   height: 100;
   width: 100%;
+}
+
+.border-selected{
+  border: 1px solid var(--color-primary);
 }
 
 .want-border{
@@ -37,7 +41,7 @@ p h1 h2 h3 h4 h5 {
   color: var(--color-generic);
   background-color: var(--color-background-generic);
   padding: 10px;
-  border: 0;
+  border: 1px solid rgba(0, 0, 0, 0.164);
 }
 
 .want-rounded{
@@ -54,6 +58,7 @@ p h1 h2 h3 h4 h5 {
   color: var(--color-primary);
   font-weight: 400;
   padding: 7px;
+  border: 1px solid var(--color-primary);
 }
 
 .close-modal-button {

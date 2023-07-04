@@ -287,7 +287,7 @@ const PostsLocation = ({
 
   return (
     <>
-      <button onClick={openModal} className="want-button">
+      <button onClick={openModal} className="generic-button border">
         <i className="bi bi-geo-alt-fill"></i>
         {locationName ? `${locationName} · ${radius} km` : t('postsLocation.selectLocation')}
       </button>

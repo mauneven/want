@@ -283,7 +283,7 @@ const CreatePost = () => {
           {error && <div className="alert alert-danger">{error}</div>}
           <button
             type="button"
-            className="want-button want-rounded mt-2"
+            className="want-button want-rounded mt-2 border-selected "
             disabled={loading}
             onClick={handleCreatePost}
           >
