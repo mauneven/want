@@ -152,9 +152,9 @@ const CreatePostLocation = ({ onLatitudeChange, onLongitudeChange }) => {
       </Form>
       {searchResults.length > 0 && (
         <div className='mt-2  want-rounded results-map'>
-          <ul className='p-3'>
+          <ul className='p-0 geo-results '>
             {searchResults.map((result, index) => (
-              <li className='divhover dropdown-item' key={index} onClick={() => handleSearchSelect(result)}>
+              <li className='divhover dropdown-item pt-2 ps-0' key={index} onClick={() => handleSearchSelect(result)}>
                 <i className="bi bi-geo-alt p-2"></i>{result}
               </li>
             ))}

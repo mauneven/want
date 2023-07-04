@@ -4,7 +4,10 @@ import { useRouter } from "next/router";
 import PostsLocation from "../locations/Posts/";
 import PostCategory from "../categories/PostCategory";
 import Link from "next/link";
-import { useCheckSession, useGetUserPreferences } from "@/utils/userEffects";
+import {
+  useCheckSession,
+  useGetUserPreferences
+} from "@/utils/userEffects";
 import fetchPosts from "./postsList/PostsListsUtilities";
 import PostCard from "./postsList/PostCard";
 
@@ -154,7 +157,7 @@ const PostsList = ({
 
   useEffect(() => {
     const cachedPosts = localStorage.getItem("cachedPosts");
-  
+
     if (cachedPosts && currentPage === 1) {
       setPosts(JSON.parse(cachedPosts));
       setIsLoading(false);
@@ -184,7 +187,7 @@ const PostsList = ({
         setIsInitialFetchDone(true);
       });
     }
-  }, [userPreferences, currentPage, latitude, longitude, radius, detailsCategory, detailsSubcategory, detailsThirdCategory]);  
+  }, [userPreferences, currentPage, latitude, longitude, radius, detailsCategory, detailsSubcategory, detailsThirdCategory]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -215,10 +218,46 @@ const PostsList = ({
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    const handleTouchMove = () => {
+      const scrollTop =
+        (document.documentElement && document.documentElement.scrollTop) ||
+        document.body.scrollTop;
+      const scrollHeight =
+        (document.documentElement && document.documentElement.scrollHeight) ||
+        document.body.scrollHeight;
+      const clientHeight =
+        document.documentElement.clientHeight || window.innerHeight;
+      const scrolledToBottom =
+        Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+      const scrolledToTop = scrollTop === 0;
+
+      if (
+        scrolledToBottom &&
+        hasMorePosts &&
+        !isLoading &&
+        !isFetching &&
+        !isFetchingMore
+      ) {
+        setIsFetchingMore(true);
+      }
+
+      if (scrolledToTop && !isLoading && !isFetching && !isFetchingMore) {
+        setHasMorePosts(false);
+      }
+    };
+
+    const handleScrollOrTouchMove = () => {
+      if ("ontouchstart" in window) {
+        handleTouchMove();
+      } else {
+        handleScroll();
+      }
+    };
+
+    window.addEventListener("scroll", handleScrollOrTouchMove);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleScrollOrTouchMove);
     };
   }, [hasMorePosts, isLoading, isFetching, isFetchingMore]);
 

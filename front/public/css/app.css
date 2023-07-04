@@ -72,6 +72,13 @@ body {
   width: 50px;
 }
 
+.geo-results{
+  max-height: 220px!important;
+  margin: 0 auto!important;
+  overflow: hidden!important;
+  white-space: nowrap!important;
+}
+
 @media (max-width: 766px) {
   .want-container {
     padding-left: 0em;

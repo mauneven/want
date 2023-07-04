@@ -82,7 +82,7 @@ const EditPostLocation = ({ latitude, longitude, onLatitudeChange, onLongitudeCh
   }, [latitude, longitude]);
 
   return (
-    <div>
+    <div className=''>
       <Form>
         <Form.Group controlId="searchForm">
           <Form.Control
@@ -96,10 +96,10 @@ const EditPostLocation = ({ latitude, longitude, onLatitudeChange, onLongitudeCh
         </Form.Group>
       </Form>
       {searchResults.length > 0 && (
-        <div className='mt-2  want-rounded results-map'>
-          <ul className='p-3'>
+        <div className=' want-rounded geo-results '>
+          <ul className='p-0 geo-results'>
             {searchResults.map((result, index) => (
-              <li className='divhover dropdown-item' key={index} onClick={() => handleSearchSelect(result)}>
+              <li className='divhover dropdown-item pt-2 ps-0' key={index} onClick={() => handleSearchSelect(result)}>
                 <i className="bi bi-geo-alt p-2"></i>{result}
               </li>
             ))}
