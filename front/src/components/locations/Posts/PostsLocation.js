@@ -51,6 +51,25 @@ const PostsLocation = ({
       onRadiusChange(parseInt(storedRadius));
       setLocationName(storedLocationName);
       setZoomLevel(parseInt(storedZoomLevel));
+    } else if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          setLatitude(lat);
+          setLongitude(lng);
+          onLatitudeChange(lat);
+          onLongitudeChange(lng);
+          setLocationDetected(true);
+          fetchLocationName(lat, lng);
+          saveLocationToLocalStorage(lat, lng);
+        },
+        (error) => {
+          console.log('esperando datos de openstreetmap');
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser.');
     }
   }, []);
 
@@ -90,6 +109,13 @@ const PostsLocation = ({
     }
   };
 
+  const saveLocationToLocalStorage = (lat, lng) => {
+    localStorage.setItem('latitude', lat.toString());
+    localStorage.setItem('longitude', lng.toString());
+    localStorage.setItem('radius', radius.toString());
+    localStorage.setItem('zoomLevel', zoomLevel.toString());
+  };
+
   const handleLocationChange = (event) => {
     const { lat, lng } = event.target.getLatLng();
     setLatitude(lat);
@@ -113,6 +139,7 @@ const PostsLocation = ({
         setSearchResults([]);
         mapRef.current.setView([parseFloat(lat), parseFloat(lon)], zoomLevel);
         fetchLocationName(parseFloat(lat), parseFloat(lon));
+        saveLocationToLocalStorage(parseFloat(lat), parseFloat(lon));
       }
     } catch (error) {
       console.log('esperando datos de openstreetmap');
@@ -121,47 +148,33 @@ const PostsLocation = ({
 
   const handleLocationDetection = async () => {
     if (navigator.geolocation) {
-      const storedLatitude = localStorage.getItem('latitude');
-      const storedLongitude = localStorage.getItem('longitude');
-      if (storedLatitude && storedLongitude) {
-        setLatitude(parseFloat(storedLatitude));
-        setLongitude(parseFloat(storedLongitude));
-        onLatitudeChange(parseFloat(storedLatitude));
-        onLongitudeChange(parseFloat(storedLongitude));
-        setLocationDetected(true);
-        fetchLocationName(parseFloat(storedLatitude), parseFloat(storedLongitude));
-      } else {
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-            try {
-              const response = await fetch(
-                `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
-              );
-              const data = await response.json();
-              const { city } = data.address;
-              setLatitude(lat);
-              setLongitude(lng);
-              onLatitudeChange(lat);
-              onLongitudeChange(lng);
-              setLocationDetected(true);
-              if (city) {
-                setSearchQuery(city);
-              }
-              fetchLocationName(lat, lng);
-              localStorage.setItem('latitude', lat.toString());
-              localStorage.setItem('longitude', lng.toString());
-              localStorage.setItem('radius', radius.toString());
-            } catch (error) {
-              console.error(error);
-            }
-          },
-          (error) => {
-            console.error(error);
+      const successCallback = async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
+          );
+          const data = await response.json();
+          const { city } = data.address;
+          setLatitude(lat);
+          setLongitude(lng);
+          setLocationDetected(true);
+          if (city) {
+            setSearchQuery(city);
           }
-        );
-      }
+          fetchLocationName(lat, lng);
+          saveLocationToLocalStorage(lat, lng);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      const errorCallback = (error) => {
+        console.error(error);
+      };
+
+      navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
     } else {
       console.error('Geolocation is not supported by this browser.');
     }
@@ -172,7 +185,6 @@ const PostsLocation = ({
     setRadius(selectedRadius);
     localStorage.setItem('radius', selectedRadius.toString());
 
-    // Ajustar el nivel de zoom según el radio seleccionado
     let zoomLevel = 13; // Valor predeterminado de zoom
     if (selectedRadius === 1) {
       zoomLevel = 14;
@@ -216,6 +228,7 @@ const PostsLocation = ({
     localStorage.setItem('latitude', latitude.toString());
     localStorage.setItem('longitude', longitude.toString());
     localStorage.setItem('radius', radius.toString());
+    localStorage.setItem('zoomLevel', zoomLevel.toString());
 
     closeModal();
   };
@@ -389,8 +402,8 @@ const PostsLocation = ({
             <i className="bi bi-geo-fill m-2"></i>
           </button>
           <button className='generic-button' onClick={closeModal} >
-            {t('postsLocation.cancel')}
-            <i className="bi bi-x-circle-fill m-2"></i>
+          {t('postsLocation.cancel')}
+          <i className="bi bi-x-circle-fill m-2"></i>
           </button>
           <button
             className="generic-button"

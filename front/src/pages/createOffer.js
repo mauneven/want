@@ -5,11 +5,12 @@ import { Button, Modal } from 'react-bootstrap';
 import { validations } from '@/utils/validations';
 import { countries } from '../data/countries.json';
 import GoBackButton from '@/components/reusable/GoBackButton';
+import { useTranslation } from 'react-i18next';
 
 const CreateOffer = () => {
   const router = useRouter();
   const { postId } = router.query;
-
+  const { t } = useTranslation();
   const [post, setPost] = useState(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -192,19 +193,19 @@ const CreateOffer = () => {
   return (
     <div className="container mt-4 mb-4">
       <GoBackButton/>
-      <h1 className="mt-3 text-center">Creating an offer for "{post.title}"</h1>
-      <h2 className="mt-3 text-center">Payment of ${Number(post.price).toLocaleString()}</h2>
-      <h4 className="mt-3 text-center want-color">Do your best offer</h4>
+      <h1 className="mt-3 text-center">{t('createOffer.creatingOfferFor')} "{post.title}"</h1>
+      <h2 className="mt-3 text-center">{t('createOffer.paymentAmount')} ${Number(post.price).toLocaleString()}</h2>
+      <h4 className="mt-3 text-center want-color">{t('createOffer.doYourBestOffer')}</h4>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Info about when you create an offer</Modal.Title>
+          <Modal.Title>{t('createOffer.createOffer')}</Modal.Title>
         </Modal.Header>
         <Modal.Body className="p-0">
           <ul className="list-group list-group-flush">
-            <li className="list-group-item">1. Your offer will be sent immediately but will be available only for the lifetime of the post (30 days max).</li>
-            <li className="list-group-item">2. If the post you are offering on is removed, then your offer will also be removed.</li>
-            <li className="list-group-item">3. You are free to delete the offer, but not to edit it.</li>
-            <li className="list-group-item">4. If you decide to delete the offer manually, then it will also be deleted for the person you send it to.</li>
+            <li className="list-group-item">1. {t('createOffer.offerLifetime')}</li>
+            <li className="list-group-item">2. {t('createOffer.offerRemoved')}</li>
+            <li className="list-group-item">3. {t('createOffer.offerDelete')}</li>
+            <li className="list-group-item">4. {t('createOffer.offerDeleteManually')}</li>
           </ul>
         </Modal.Body>
         <Modal.Footer>
@@ -218,7 +219,7 @@ const CreateOffer = () => {
           <form onSubmit={handleSubmit} className="container">
             <div className="mb-3">
               <label htmlFor="title" className="form-label">
-                Offer title*
+                {t('createOffer.offerTitle')}
               </label>
               <input
                 type="text"
@@ -231,7 +232,7 @@ const CreateOffer = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="description" className="form-label">
-                Describe your offer*
+                {t('createOffer.offerDescription')}
               </label>
               <textarea
                 className="form-control"
@@ -243,7 +244,7 @@ const CreateOffer = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="phone-country" className="form-label">
-                If you want put your WhatsApp and phone for direct contact
+                {t('createOffer.phoneContact')}
               </label>
               <div className="input-group">
                 <select
@@ -252,7 +253,7 @@ const CreateOffer = () => {
                   value={selectedCountryCode}
                   onChange={handleCountryChange}
                 >
-                  <option value="">Choose a country code</option>
+                  <option value="">{t('createOffer.chooseCountryCode')}</option>
                   {countries.map((country) => (
                     <option key={country.id} value={country.phoneCode}>
                       {`${country.name} +${country.phoneCode}`}
@@ -262,7 +263,7 @@ const CreateOffer = () => {
                 <input
                   type="text"
                   className="form-control no-spinners"
-                  placeholder="Phone number"
+                  placeholder={t('createOffer.phoneNumber')}
                   value={phoneNumber}
                   onChange={handlePhoneNumberChange}
                   onKeyPress={handleKeyPress}
@@ -271,7 +272,7 @@ const CreateOffer = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="contact" className="form-label">
-                Is there any other way this person can contact you?
+                {t('createOffer.otherContact')}
               </label>
               <input
                 type="text"
@@ -283,7 +284,7 @@ const CreateOffer = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="price" className="form-label">
-                Price you offer*
+                {t('createOffer.offerPrice')}
               </label>
               <input
                 type="text"
@@ -294,11 +295,11 @@ const CreateOffer = () => {
                 onKeyPress={handleKeyPress}
                 required
               />
-              {price ? <small className="form-text text-muted">Price: {Number(price).toLocaleString()}</small> : null}
+              {price ? <small className="form-text text-muted">{t('createOffer.priceLabel')} {Number(price).toLocaleString()}</small> : null}
             </div>
             <div className="mb-3">
               <label htmlFor="photo" className="form-label">
-                Upload photos*
+                {t('createOffer.uploadPhotos')}
               </label>
               <div className="row row-cols-xl-2">
                 {[1, 2, 3, 4].map((index) => (
@@ -320,13 +321,13 @@ const CreateOffer = () => {
                         </label>
                       )}
                       {photos[index - 1] && (
-                      <button
-                      className="btn-light circle btn-sm delete-photo"
-                      onClick={() => handleDeletePhoto(index - 1)}
-                      type="button"
-                    >
-                      <i className="bi bi-trash fs-5"></i>
-                    </button>
+                        <button
+                          className="btn-light circle btn-sm delete-photo"
+                          onClick={() => handleDeletePhoto(index - 1)}
+                          type="button"
+                        >
+                          <i className="bi bi-trash fs-5"></i>
+                        </button>
                       )}
                       <input
                         type="file"
@@ -346,7 +347,7 @@ const CreateOffer = () => {
                 className="want-button want-rounded border-selected"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Creating...' : 'Create Offer'}
+                {isSubmitting ? t('createOffer.creating') : t('createOffer.createOffer')}
               </button>
             </div>
           </form>

@@ -42,6 +42,7 @@ body {
   background-color: var(--color-background-generic);
   padding: 10px;
   border: 1px solid rgba(0, 0, 0, 0.164);
+  font-weight: 600;
 }
 
 .want-rounded{
@@ -56,9 +57,9 @@ body {
 .want-button {
   background-color: var(--color-background-primary)!important;
   color: var(--color-primary);
-  font-weight: 400;
   padding: 7px;
   border: 1px solid var(--color-primary);
+  font-weight: 600;
 }
 
 .close-modal-button {

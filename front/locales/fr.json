@@ -24,11 +24,11 @@
   "locationLabel": "Fournissez une localisation approximative de l'endroit où vous voulez cela*",
   "photosLabel": "Téléchargez jusqu'à 4 photos de ce que vous voulez*",
   "missingFieldsError": "Veuillez remplir tous les champs obligatoires :\n{{fields}}",
-  "createPostButton": "Créer une publication"
-  },
-  "createOffer": {
-  "title": "Titre de l'offre",
-  "description": "Description de l'offre"
+  "createPostButton": "Créer une publication",
+  "titleField": "Titre*",
+  "descriptionField": "Description*",
+  "categoriesField": "Catégories*",
+  "priceField": "Prix*"
   },
   "wantSomething": {
   "title": "Titre de la publication",
@@ -112,7 +112,7 @@
   "selectLocation": "Sélectionner une localisation",
   "searchLocation": "Rechercher votre localisation...",
   "currentLocation": "Localisation actuelle",
-  "allowLocationAccess": "Autorisez l'accès à votre localisation pour voir les publications à proximité. Si vous ne souhaitez pas autoriser l'accès à votre localisation, saisissez la localisation où vous souhaitez voir les publications.",
+  "allowLocationAccess": "Autorisez Want à accéder à votre emplacement pour une meilleure expérience. Si vous ne souhaitez pas autoriser l'accès à votre emplacement, vous pouvez toujours choisir votre ville préférée dans le champ ci-dessus.",
   "selectRadius": "Rayon (km)",
   "everywhere": "Partout BETA",
   "useCurrentLocation": "Utiliser ma localisation actuelle",
@@ -222,7 +222,7 @@
   "emailPlaceholder": "Adresse e-mail",
   "resendButton": "Demander un nouveau lien de vérification"
   },
-  "createOfferModal": {
+  "createOffer": {
   "creatingOfferFor": "Création d'une offre pour ",
   "paymentAmount": "Paiement jusqu'à ",
   "doYourBestOffer": "Faites votre meilleure offre",

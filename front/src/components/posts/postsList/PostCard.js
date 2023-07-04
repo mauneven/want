@@ -1,7 +1,11 @@
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const PostCard = ({ post, userReputation, photoIndex }) => {
+
+  const router = useRouter();
+
   return (
     <div
       key={post._id}
@@ -64,7 +68,7 @@ const PostCard = ({ post, userReputation, photoIndex }) => {
             )}
           </div>
         ) : (
-          <div className="border img-post d-flex w-100 h-100">
+          <div className="border img-post d-flex w-100 h-100" onClick={() => router.push(`post/${post._id}`)}>
             <h4 className="w-100 h-100 p-3 text-center">{post.title}</h4>
           </div>
         )}
