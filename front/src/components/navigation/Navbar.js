@@ -1,34 +1,30 @@
+// MegaMenu.js
 import { useState, useEffect } from "react";
-import {
-  Container,
-  Navbar,
-  Nav,
-  NavDropdown,
-  Form,
-  FormControl,
-  Button,
-} from "react-bootstrap";
+import { Navbar, Nav, NavDropdown, Form, FormControl } from "react-bootstrap";
 import { useRouter } from "next/router";
 import Notifications from "../notifications/Notifications";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "../language/LanguageSelector";
 
 export default function MegaMenu({
+  mainCategory,
+  subcategory,
+  thirdCategory,
+  onCategoryChange,
+  searchTerm,
   onSearchTermChange,
-  onCategoryFilterChange,
-  currentPage,
-  setCurrentPage,
+  keepCategories,
+  onKeepCategoriesChange,
+  setMainCategory,
+  setSubcategory,
+  setThirdCategory,
+  resetAll,
+  onResetAll
 }) {
   const { t } = useTranslation();
-
   const [user, setUser] = useState(null);
-  const [isLogged, setIsLogged] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [activeSubcategory, setActiveSubcategory] = useState("");
-  const [selectedSubcategory, setSelectedSubcategory] = useState("");
-  const [selectedThirdCategory, setSelectedThirdCategory] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+  const [updatedKeepCategories, setUpdatedKeepCategories] = useState(keepCategories);
 
   const router = useRouter();
 
@@ -41,42 +37,33 @@ export default function MegaMenu({
 
   const handleLogoClick = () => {
     clearSearchBar();
-    setSelectedCategory("");
-    setSelectedSubcategory("");
-    setSelectedThirdCategory("");
-    onSearchTermChange("");
-    setCurrentPage(1);
-    onCategoryFilterChange({
-      mainCategory: "",
-      subCategory: "",
-      thirdCategory: "",
-    });
+    onResetAll(true);
     router.push("/");
   };
 
-  const handleSearchSubmit = (e) => {
+  const handleSearchSubmit = async (e) => {
     e.preventDefault();
-    setSelectedCategory("");
-    setSelectedSubcategory("");
-    setSelectedThirdCategory("");
-    setCurrentPage(1);
-    onSearchTermChange("");
-    onCategoryFilterChange({
-      mainCategory: "",
-      subCategory: "",
-      thirdCategory: "",
-    });
-    const newSearchTerm = e.target.search.value;
-    setSearchTerm(newSearchTerm);
-    onSearchTermChange(newSearchTerm);
-    router.push("/");
-  };  
-
-  useEffect(() => {
-    setSelectedCategory("");
-    setSelectedSubcategory("");
-    setSelectedThirdCategory("");
-  }, [searchTerm]);  
+    const newSearchTerm = e.target.search.value.trim(); // Eliminar espacios en blanco al inicio y final
+    if (newSearchTerm !== "") {
+      onSearchTermChange(newSearchTerm);
+      router.push("/");
+  
+      // Esperar 1 segundo (1000 milisegundos) antes de realizar la búsqueda
+      setTimeout(() => {
+        onSearchTermChange(newSearchTerm);
+        if (!updatedKeepCategories) {
+          setMainCategory("");
+          setSubcategory("");
+          setThirdCategory("");
+        }
+        if (keepCategories !== true) {
+          setMainCategory("");
+          setSubcategory("");
+          setThirdCategory("");
+        }
+      }, 40);
+    }
+  };
 
   useEffect(() => {
     const checkSession = async () => {
@@ -115,25 +102,77 @@ export default function MegaMenu({
     };
   }, []);
 
+  const getCategoryText = () => {
+    if (thirdCategory) {
+      return t(
+        `categories.${mainCategory}.subcategories.${subcategory}.thirdCategories.${thirdCategory}.name`
+      );
+    } else if (subcategory) {
+      return t(`categories.${mainCategory}.subcategories.${subcategory}.name`);
+    } else if (mainCategory) {
+      return t(`categories.${mainCategory}.name`);
+    } else {
+      return "";
+    }
+  };
+
+  useEffect(() => {
+  }, [getCategoryText()]);
+
+  const handleKeepCategoriesChange = (e) => {
+    setUpdatedKeepCategories(e.target.checked);
+  };
+
+  useEffect(() => {
+    if (searchTerm) {
+      onKeepCategoriesChange(updatedKeepCategories);
+    }
+  }, [searchTerm]);
+
   return (
     <>
       <Navbar className="nav-borders w-100">
         <div className="d-flex w-100">
           {!isMobile ? (
             <Navbar.Brand
+              className="d-flex align-items-center m-0 p-0 col-3 justify-content-center"
+            >
+              <div className="fs-1 want-color d-flex  m-0 w-100 d-flex">
+                <p className="desktop-logo align-items-center justify-content-center want-color m-0 divhover" onClick={handleLogoClick}>Want</p> <p className="fs-5 m-2 p-1 want-border desktop-logo divhover align-items-center justify-content-center" onClick={handleLogoClick}>Beta</p>
+              </div>
+            </Navbar.Brand>
+          ) : (
+            <Navbar.Brand
               onClick={handleLogoClick}
               className="divhover d-flex align-items-center m-0 p-0 col-3 justify-content-center"
             >
-              <div className="fs-1 want-color d-flex  m-0 w-100 h-100 align-items-center want-color">
-                Want <p className="small fs-5 m-2 p-1 want-border"> βeta V2</p>
+              <div className="fs-1 want-color d-flex  m-0 w-100 h-100 align-items-center want-color mobile-logo">
+                Want<p className="small text-small m-0 p-1 mobile-logo-beta">BETA</p>
               </div>
             </Navbar.Brand>
-          ) : null}
+          )}
           <div className="w-100 d-flex justify-content-center align-items-center">
             <Form
-              className="d-flex m-0 w-100 p-1 want-rounded text-center align-items-center justify-content-center generic-button"
+              className="d-flex m-0 w-100 p-1 border want-rounded text-center align-items-center justify-content-center generic-button"
               onSubmit={handleSearchSubmit}
             >
+              {getCategoryText() && (
+                <div className="form-check d-flex align-items-center mr-2">
+                  <input
+                    className="form-check-input "
+                    type="checkbox"
+                    value={updatedKeepCategories}
+                    onChange={handleKeepCategoriesChange}
+                    id="keepCategoriesCheckbox"
+                  />
+                  <label
+                    className="form-check-label d-flex text-categories-navbar"
+                    htmlFor="keepCategoriesCheckbox"
+                  >
+                    {t("navbar.onlyon")} {getCategoryText()}
+                  </label>
+                </div>
+              )}
               <FormControl
                 type="search"
                 placeholder={t("navbar.searchPlaceholder")}
@@ -141,10 +180,7 @@ export default function MegaMenu({
                 aria-label="Search"
                 name="search"
               />
-              <button
-                type="submit"
-                className=" search-btn  m-1"
-              >
+              <button type="submit" className="search-btn want-rounded m-1">
                 <i className="bi bi-search"></i>
               </button>
             </Form>
@@ -157,14 +193,18 @@ export default function MegaMenu({
                     className="nav-item"
                     onClick={() => router.push("/createPost")}
                   >
-                    <button className="want-button want-rounded align-items-center">
+                    <button className="want-button border-selected want-rounded align-items-center">
                       {t("navbar.wantSomething")}
                     </button>
                   </Nav.Link>
                 </>
               )}
               <LanguageSelector />
-              {user ? <div className="d-flex align-items-center justify-content-center"><Notifications /></div>  : null}
+              {user ? (
+                <div className="d-flex align-items-center justify-content-center">
+                  <Notifications />
+                </div>
+              ) : null}
               {!isMobile && (
                 <>
                   {user ? (

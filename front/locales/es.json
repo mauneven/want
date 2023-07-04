@@ -10,7 +10,8 @@
     "myProfile": "Perfil",
     "logout": "Cerrar sesión",
     "login": "Iniciar sesión",
-    "menu": "Menú"
+    "menu": "Menú",
+    "onlyon": "Solo en"
   },
   "createPost": {
     "title": "Crea una publicación sobre lo que quieres",
@@ -22,11 +23,11 @@
     "locationLabel": "Proporciona una ubicación aproximada de donde quieres esto*",
     "photosLabel": "Sube hasta 4 fotos de lo que quieres*",
     "missingFieldsError": "Por favor completa todos los campos obligatorios:\n{{fields}}",
-    "createPostButton": "Crear post"
-  },
-  "createOffer": {
-    "title": "Título de la oferta",
-    "description": "Descripción de la oferta"
+    "createPostButton": "Crear post",
+    "titleField": "Título*",
+    "descriptionField": "Descripción*",
+    "categoriesField": "Categorías*",
+    "priceField": "Precio*"
   },
   "wantSomething": {
     "title": "Título de la publicación",
@@ -110,10 +111,12 @@
     "selectLocation": "Seleccionar ubicación",
     "searchLocation": "Buscar tu ubicación...",
     "currentLocation": "Ubicación actual",
-    "allowLocationAccess": "Permite el acceso a tu ubicación para ver publicaciones cercanas. Si no deseas permitir el acceso a tu ubicación, ingresa la ubicación donde deseas ver las publicaciones.",
-    "selectRadius": "Seleccionar radio (km):",
+    "allowLocationAccess": "Permite que Want acceda a tu ubicación para tener una mejor experiencia. Si no deseas permitir el acceso a tu ubicación, siempre puedes elegir tu ciudad de preferencia en el campo de arriba.",
+    "selectRadius": "Radio (km)",
     "everywhere": "En todas partes *BETA*",
-    "useCurrentLocation": "Usar mi ubicación actual"
+    "useCurrentLocation": "Usar mi ubicación actual",
+    "apply": "Aplicar",
+    "cancel" : "Cancelar"
   },
   "reportOfferModal": {
     "report": "Reportar",
@@ -218,7 +221,7 @@
     "emailPlaceholder": "Correo electrónico",
     "resendButton": "Solicitar nuevo enlace de verificación"
   },
-  "createOfferModal": {
+  "createOffer": {
     "creatingOfferFor": "Creando una oferta para ",
     "paymentAmount": "Pago de hasta ",
     "doYourBestOffer": "Haz tu mejor oferta",
@@ -235,7 +238,7 @@
     "createOffer": "Crear oferta"
   },
   "detailsModal": {
-    "offerForPost": "Oferta para tu publicación {{title}}",
+    "offerForPost": "Oferta para {{title}}",
     "offerBy": "Ofrecido por",
     "otherWaysToContact": "Otras formas de contactar a {{firstName}}: {{contact}}",
     "closeButton": "Cerrar"

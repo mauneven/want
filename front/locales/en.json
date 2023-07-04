@@ -11,7 +11,8 @@
   "myProfile": "Profile",
   "logout": "Logout",
   "login": "Login",
-  "menu": "Menu"
+  "menu": "Menu",
+  "onlyon": "Only on"
   },
   "createPost": {
   "title": "Create a post about what you want",
@@ -23,11 +24,11 @@
   "locationLabel": "Provide an approximate location of where you want this*",
   "photosLabel": "Upload up to 4 photos of what you want*",
   "missingFieldsError": "Please complete all required fields:\n{{fields}}",
-  "createPostButton": "Create post"
-  },
-  "createOffer": {
-  "title": "Offer Title",
-  "description": "Offer Description"
+  "createPostButton": "Create post",
+  "titleField": "Title*",
+  "descriptionField": "Description*",
+  "categoriesField": "Categories*",
+  "priceField": "Price*"
   },
   "wantSomething": {
   "title": "Post Title",
@@ -111,10 +112,12 @@
   "selectLocation": "Select location",
   "searchLocation": "Search your location...",
   "currentLocation": "Current location",
-  "allowLocationAccess": "Allow access to your location to view nearby posts. If you do not want to allow access to your location, enter the location where you want to view the posts.",
-  "selectRadius": "Select radius (km):",
+  "allowLocationAccess": "Allow Want to access your location for a better experience. If you don't want to grant access to your location, you can always choose your preferred city in the field above.",
+  "selectRadius": "Radius (km)",
   "everywhere": "Everywhere BETA",
-  "useCurrentLocation": "Use my current location"
+  "useCurrentLocation": "Use my current location",
+  "apply": "Apply",
+  "cancel" : "Cancel"
   },
   "reportOfferModal": {
   "report": "Report",
@@ -219,7 +222,7 @@
   "emailPlaceholder": "Email",
   "resendButton": "Request new verification link"
   },
-  "createOfferModal": {
+  "createOffer": {
   "creatingOfferFor": "Creating an offer for ",
   "paymentAmount": "Payment up to ",
   "doYourBestOffer": "Do your best offer",
@@ -236,7 +239,7 @@
   "createOffer": "Create offer"
   },
   "detailsModal": {
-  "offerForPost": "Offer for your post {{title}}",
+  "offerForPost": "Offer for {{title}}",
   "offerBy": "Offered by",
   "otherWaysToContact": "Other ways to contact {{firstName}}: {{contact}}",
   "closeButton": "Close"

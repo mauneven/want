@@ -45,7 +45,7 @@ export default function LanguageSelector() {
   return (
     <div className="nav-item nav-link">
       <button
-        className="want-rounded align-items-center nav-item want-button "
+        className="want-rounded align-items-center nav-item border-selected want-button "
         onClick={() => setShowModal(true)}
       >
         {selectedLanguage ? selectedLanguage.toUpperCase() : ""}

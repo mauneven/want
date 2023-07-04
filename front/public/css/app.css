@@ -1,23 +1,23 @@
 :root {
-  --color-primary: #459cff; /* Define la variable de color */
-  --color-background-primary: #e1efff;
-  --color-background-generic: #e1efff;
+  --color-primary: #38bd76; /* Define la variable de color */
+  --color-background-primary: #dfffed;
+  --color-background-generic: #ffffff;
   --color-generic: #444444;
 }
 
 button{
   background-color: var(--color-background-primary);
   border: 0;
-  border-radius: 25px;
+  border-radius: 7px;
 }
 
 body {
-  color: var(--color-generic);
-  font-weight: 400;
+  color: var(--color-generic)!important;
+  font-weight: 600;
 }
 
-p h1 h2 h3 h4 h5 {
-  color: #ffffff;
+.post-details:hover{
+  color: var(--color-generic);
 }
 
 .want-container {
@@ -28,20 +28,25 @@ p h1 h2 h3 h4 h5 {
   width: 100%;
 }
 
+.border-selected{
+  border: 1px solid var(--color-primary);
+}
+
 .want-border{
   border: 1px solid var(--color-primary);
-  border-radius: 9px;
+  border-radius: 7px;
 }
 
 .generic-button{
   color: var(--color-generic);
   background-color: var(--color-background-generic);
   padding: 10px;
-  border: 0;
+  border: 1px solid rgba(0, 0, 0, 0.164);
+  font-weight: 600;
 }
 
 .want-rounded{
-  border-radius: 25px;
+  border-radius: 7px;
 }
 
 .want-color{
@@ -52,9 +57,9 @@ p h1 h2 h3 h4 h5 {
 .want-button {
   background-color: var(--color-background-primary)!important;
   color: var(--color-primary);
-  font-weight: 400;
   padding: 7px;
-  border: 0;
+  border: 1px solid var(--color-primary);
+  font-weight: 600;
 }
 
 .close-modal-button {

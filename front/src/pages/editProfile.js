@@ -232,7 +232,7 @@ const EditProfile = () => {
           </form>
         </div>
       </div>
-      <div className="my-5 card p-3  -secondary want-rounded">
+      <div className="my-5 card p-3  btn-secondary want-rounded">
         <h3 className="text">{t('navbar.logout')}</h3>
         <Link href="/logout">
           <button className="generic-button want-rounded">{t('navbar.logout')}</button>
@@ -241,12 +241,12 @@ const EditProfile = () => {
       <div className="my-5 card p-3   want-rounded">
         <h3 className="want-color">{t('editProfile.changePassword')}</h3>
         <Link href="/changePassword">
-          <button className="want-button want-rounded">{t('editProfile.changePassword')}</button>
+          <button className="generic-button want-rounded">{t('editProfile.changePassword')}</button>
         </Link>
       </div>
-      <div className="my-5  -danger want-rounded p-3">
+      <div className="my-5  btn-danger want-rounded p-3">
         <h3 className="text-danger">{t('editProfile.deleteAccount')}</h3>
-        <button className="btn-danger want-rounded" onClick={handleDeleteAccount}>
+        <button className="btn-danger-outlined btn border want-rounded" onClick={handleDeleteAccount}>
           {t('editProfile.deleteAccount')}
         </button>
       </div>

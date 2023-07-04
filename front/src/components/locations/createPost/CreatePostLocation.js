@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-
+import { useTranslation } from 'react-i18next';
 import { Form, Dropdown } from 'react-bootstrap';
 import { Icon } from 'leaflet';
 
 const CreatePostLocation = ({ onLatitudeChange, onLongitudeChange }) => {
+  const { t } = useTranslation();
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -182,7 +183,7 @@ const CreatePostLocation = ({ onLatitudeChange, onLongitudeChange }) => {
           </MapContainer>
           </div>
         ) : (
-          <div><p className='want-color'>Permite a Want el acceso a tu ubicacion para poder ubicar donde quieres lo que vas a publicar, si no quieres permitir el acceso a tu ubicacion escribe arriba la ciudad donde lo necesitas</p></div>
+          <div><p className='want-color'>{t('postsLocation.allowLocationAccess')}</p></div>
         )}
       </div>
     </div>

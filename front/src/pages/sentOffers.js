@@ -103,11 +103,11 @@ export default function SentOffers() {
                           style={{ objectFit: "cover", width: "100px", height: "100px" }}
                         />
                       )}
-                      <div className="d-flex flex-column flex-grow-1">
+                      <div className="d-flex flex-column flex-grow-1 post-title">
                         <div>
-                          <h5 className="card-title">{offer.title}</h5>
-                          <p className="card-text">{offer.description}</p>
-                          <p className="card-text">{t('sentOffers.price')}: ${offer.price}</p>
+                          <h5 className="card-title post-title">{offer.title}</h5>
+                          <p className="card-text post-title">{offer.description}</p>
+                          <p className="card-text post-title">{t('sentOffers.price')}: ${offer.price}</p>
                         </div>
                       </div>
                     </div>

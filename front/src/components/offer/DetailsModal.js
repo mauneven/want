@@ -87,7 +87,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
 
   return (
     <>
-      <Modal show={show} onHide={onHide} dialogClassName="modal-xl">
+      <Modal show={show} onHide={onHide} dialogClassName="modal-xl" className='p-0'>
         <Modal.Header closeButton>
           <Modal.Title>{t('detailsModal.offerForPost', { title: offer.post.title })}</Modal.Title>
         </Modal.Header>

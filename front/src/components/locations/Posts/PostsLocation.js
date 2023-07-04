@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
-
 import { Form, Modal, Button } from 'react-bootstrap';
 import { Icon } from 'leaflet';
 import { useTranslation } from 'react-i18next';
 
-const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) => {
+const PostsLocation = ({
+  onLatitudeChange,
+  onLongitudeChange,
+  onRadiusChange
+}) => {
   const { t } = useTranslation();
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
@@ -48,26 +51,65 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
       onRadiusChange(parseInt(storedRadius));
       setLocationName(storedLocationName);
       setZoomLevel(parseInt(storedZoomLevel));
-    } else if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          setLatitude(lat);
-          setLongitude(lng);
-          onLatitudeChange(lat);
-          onLongitudeChange(lng);
-          setLocationDetected(true);
-          fetchLocationName(lat, lng);
-        },
-        (error) => {
-          console.log('esperando datos de openstreetmap');
-        }
-      );
     } else {
-      console.error('Geolocation is not supported by this browser.');
+      fetchLocation();
     }
   }, []);
+
+  const fetchLocation = () => {
+    const fetchExactLocation = async () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            setLatitude(lat);
+            setLongitude(lng);
+            onLatitudeChange(lat);
+            onLongitudeChange(lng);
+            setLocationDetected(true);
+            fetchLocationName(lat, lng);
+            saveLocationToLocalStorage(lat, lng);
+          },
+          (error) => {
+            console.log('esperando datos de openstreetmap');
+          }
+        );
+      } else {
+        console.error('Geolocation is not supported by this browser.');
+      }
+    };
+
+    const fetchReferenceLocation = async () => {
+      try {
+        const response = await fetch('https://ipapi.co/json');
+        const data = await response.json();
+        const lat = parseFloat(data.latitude);
+        const lng = parseFloat(data.longitude);
+        setLatitude(lat);
+        setLongitude(lng);
+        onLatitudeChange(lat);
+        onLongitudeChange(lng);
+        setLocationDetected(true);
+        fetchLocationName(lat, lng);
+        saveLocationToLocalStorage(lat, lng);
+      } catch (error) {
+        console.log('esperando datos de no-ipapi');
+      }
+    };
+
+    if (navigator.permissions) {
+      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+        if (result.state === 'granted') {
+          fetchExactLocation();
+        } else {
+          fetchReferenceLocation();
+        }
+      });
+    } else {
+      fetchReferenceLocation();
+    }
+  };
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -105,12 +147,17 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
     }
   };
 
+  const saveLocationToLocalStorage = (lat, lng) => {
+    localStorage.setItem('latitude', lat.toString());
+    localStorage.setItem('longitude', lng.toString());
+    localStorage.setItem('radius', radius.toString());
+    localStorage.setItem('zoomLevel', zoomLevel.toString());
+  };
+
   const handleLocationChange = (event) => {
     const { lat, lng } = event.target.getLatLng();
     setLatitude(lat);
     setLongitude(lng);
-    onLatitudeChange(lat);
-    onLongitudeChange(lng);
   };
 
   const handleSearchChange = (event) => {
@@ -129,9 +176,8 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
         setSearchQuery('');
         setSearchResults([]);
         mapRef.current.setView([parseFloat(lat), parseFloat(lon)], zoomLevel);
-        onLatitudeChange(parseFloat(lat));
-        onLongitudeChange(parseFloat(lon));
         fetchLocationName(parseFloat(lat), parseFloat(lon));
+        saveLocationToLocalStorage(parseFloat(lat), parseFloat(lon));
       }
     } catch (error) {
       console.log('esperando datos de openstreetmap');
@@ -139,49 +185,14 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
   };
 
   const handleLocationDetection = async () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          try {
-            const response = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
-            );
-            const data = await response.json();
-            const { city } = data.address;
-            setLatitude(lat);
-            setLongitude(lng);
-            onLatitudeChange(lat);
-            onLongitudeChange(lng);
-            setLocationDetected(true);
-            if (city) {
-              setSearchQuery(city);
-            }
-            fetchLocationName(lat, lng);
-            localStorage.setItem('latitude', lat);
-            localStorage.setItem('longitude', lng);
-            localStorage.setItem('radius', radius.toString());
-          } catch (error) {
-            console.error(error);
-          }
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
-    } else {
-      console.error('Geolocation is not supported by this browser.');
-    }
+    fetchLocation();
   };
 
   const handleRadiusChange = (event) => {
     const selectedRadius = parseInt(event.target.value);
     setRadius(selectedRadius);
-    onRadiusChange(selectedRadius);
     localStorage.setItem('radius', selectedRadius.toString());
 
-    // Ajustar el nivel de zoom según el radio seleccionado
     let zoomLevel = 13; // Valor predeterminado de zoom
     if (selectedRadius === 1) {
       zoomLevel = 14;
@@ -206,7 +217,9 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
     setZoomLevel(zoomLevel);
     localStorage.setItem('zoomLevel', zoomLevel.toString());
 
-    mapRef.current.setView([latitude, longitude], zoomLevel);
+    if (latitude && longitude) {
+      mapRef.current.setView([latitude, longitude], zoomLevel);
+    }
   };
 
   const handleKeyDown = (event) => {
@@ -215,22 +228,16 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
     }
   };
 
-  const handleLocationSelection = async () => {
-    setIsLoading(true);
-
-    // Aquí puedes realizar las acciones que deseas realizar al seleccionar la ubicación
-    // y enviar los datos de longitud, latitud y radio.
-    // Por ejemplo:
+  const handleLocationSelection = () => {
     onLatitudeChange(latitude);
     onLongitudeChange(longitude);
     onRadiusChange(radius);
 
-    // Guardar la ubicación en localStorage
     localStorage.setItem('latitude', latitude.toString());
     localStorage.setItem('longitude', longitude.toString());
     localStorage.setItem('radius', radius.toString());
+    localStorage.setItem('zoomLevel', zoomLevel.toString());
 
-    // Cerrar el modal después de seleccionar la ubicación
     closeModal();
   };
 
@@ -270,7 +277,7 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
     if (latitude && longitude && mapRef.current) {
       mapRef.current.setView([latitude, longitude], zoomLevel);
     }
-  }, [latitude, longitude]);
+  }, [latitude, longitude, zoomLevel]);
 
   const openModal = () => {
     setShowModal(true);
@@ -278,16 +285,18 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
 
   const closeModal = () => {
     setShowModal(false);
+    setSearchQuery('');
+    setSearchResults([]);
   };
 
   return (
     <>
-      <button onClick={openModal} className="want-button">
+      <button onClick={openModal} className="generic-button border">
         <i className="bi bi-geo-alt-fill"></i>
         {locationName ? `${locationName} · ${radius} km` : t('postsLocation.selectLocation')}
       </button>
 
-      <Modal show={showModal} onHide={closeModal} size="lg">
+      <Modal show={showModal} onHide={closeModal} size="xl" className='p-0'>
         <Modal.Header closeButton>
           <Modal.Title>{t('postsLocation.selectLocation')}</Modal.Title>
         </Modal.Header>
@@ -376,7 +385,11 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
           <Form.Label>{t('postsLocation.selectRadius')}</Form.Label>
           <Form>
             <Form.Group controlId="radiusSelect">
-              <Form.Control as="select" value={radius} onChange={handleRadiusChange}>
+              <Form.Control
+                as="select"
+                value={radius}
+                onChange={handleRadiusChange}
+              >
                 <option value={5}>5 km</option>
                 <option value={10}>10 km</option>
                 <option value={15}>15 km</option>
@@ -389,8 +402,23 @@ const PostsLocation = ({ onLatitudeChange, onLongitudeChange, onRadiusChange }) 
               </Form.Control>
             </Form.Group>
           </Form>
-          <button className="want-button" onClick={handleLocationDetection}>
+          <button
+            className="generic-button"
+            onClick={handleLocationDetection}
+          >
             {t('postsLocation.useCurrentLocation')}
+            <i className="bi bi-geo-fill m-2"></i>
+          </button>
+          <button className='generic-button' onClick={closeModal} >
+          {t('postsLocation.cancel')}
+          <i className="bi bi-x-circle-fill m-2"></i>
+          </button>
+          <button
+            className="generic-button"
+            onClick={handleLocationSelection}
+          >
+            {t('postsLocation.apply')}
+            <i className="bi bi-check-circle-fill m-2"></i>
           </button>
         </Modal.Footer>
       </Modal>

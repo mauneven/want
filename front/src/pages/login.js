@@ -167,15 +167,15 @@ export default function Login() {
                 </>
               )}
               <div className="mb-3">
-                <button type="submit" className="want-button want-rounded btn-login">{isLogin ? t('login.loginButton') : t('login.signupButton')}</button>
+                <button type="submit" className="want-button ">{isLogin ? t('login.loginButton') : t('login.signupButton')}</button>
               </div>
             </form>
             <div>
               {isLogin ? t('login.noAccountText') : t('login.haveAccountText')}
-              <button onClick={toggleForm} className="btn-link user-link">{isLogin ? t('login.signupLink') : t('login.loginLink')}</button>
+              <button onClick={toggleForm} className="want-border m-2 user-link">{isLogin ? t('login.signupLink') : t('login.loginLink')}</button>
             </div>
             <Link href="/recovery">
-              <span className="rsp-pwd">{t('login.forgotPasswordLink')}</span>
+              <span className="divhover want-color">{t('login.forgotPasswordLink')}</span>
             </Link>
           </div>
         </div>

@@ -19,7 +19,7 @@ const ReportPostModal = ({ postId, onReport }) => {
 
   return (
     <>
-      <button type='none' onClick={handleShow}>
+      <button type='generic-button' onClick={handleShow}>
         <i className="bi bi-flag"></i>
       </button>
 

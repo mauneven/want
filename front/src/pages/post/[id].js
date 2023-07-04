@@ -1,14 +1,17 @@
 import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import RelatedPosts from "@/components/posts/RelatedPosts";
 import ReportPostModal from "@/components/report/ReportPostModal";
 import UserModal from "@/components/user/UserModal";
 import PostDetailsLocation from "@/components/locations/postDetails/";
 import { useTranslation } from "react-i18next";
 import GoBackButton from "@/components/reusable/GoBackButton";
 
-const PostDetails = () => {
+const PostDetails = ({
+  onDetailsCategoryChange,
+  onDetailsSubcategoryChange,
+  onDetailsThirdCategoryChange,
+}) => {
   const router = useRouter();
   const { id } = router.query;
   const { t } = useTranslation();
@@ -23,6 +26,25 @@ const PostDetails = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [showUserModal, setShowUserModal] = useState(false);
   const [user, setUser] = useState(null);
+
+  const handleCategoryButtonClick = (category) => {
+    if (category === "mainCategory") {
+      onDetailsCategoryChange(post.mainCategory);
+      onDetailsSubcategoryChange("");
+      onDetailsThirdCategoryChange("");
+    } else if (category === "subcategory") {
+      onDetailsCategoryChange(post.mainCategory);
+      onDetailsSubcategoryChange(post.subCategory);
+      onDetailsThirdCategoryChange("");
+    } else if (category === "thirdCategory") {
+      onDetailsCategoryChange(post.mainCategory);
+      onDetailsSubcategoryChange(post.subCategory);
+      onDetailsThirdCategoryChange(post.thirdCategory);
+    }
+
+    router.push("/");
+  };
+
 
   useEffect(() => {
     const checkSession = async () => {
@@ -154,15 +176,14 @@ const PostDetails = () => {
     setShowModal(false);
   };
 
-  const openUserModal = (user) => {
-    closeModal(); // Cerrar el modal de detalles
-    setSelectedUser(user);
-    setShowUserModal(true);
-  };
-
   const closeUserModal = () => {
     setSelectedUser(null);
     setShowUserModal(false);
+  };
+
+  const openUserModal = (user) => {
+    setSelectedUser(user);
+    setShowUserModal(true);
   };
 
   useEffect(() => {
@@ -245,9 +266,9 @@ const PostDetails = () => {
   return (
     <>
       <div className="container mt-5 mb-5">
-        <GoBackButton/>
+        <GoBackButton />
         <div className="row">
-          <div className="col-lg-6">
+          <div className="col-lg-6 p-4">
             <div
               ref={imageRef}
               className="img-container"
@@ -286,7 +307,7 @@ const PostDetails = () => {
             </div>
           </div>
           <div
-            className="col-lg-6"
+            className="col-lg-6 p-0 "
             style={{ maxWidth: "100%", overflowWrap: "break-word" }}
           >
             {!mobileDevice && isZoomVisible && (
@@ -310,19 +331,27 @@ const PostDetails = () => {
               </span>
             </div>
             <div className="d-flex">
-              <button className="want-rounded  m-2">
+              <button
+                className="generic-button m-1"
+                onClick={() => handleCategoryButtonClick("mainCategory")}
+              >
                 {t(`categories.${post.mainCategory}.name`)}
               </button>
-              <button className="want-rounded  m-2">
-                {" "}
+              <button
+                className="generic-button m-1"
+                onClick={() => handleCategoryButtonClick("subcategory")}
+              >
                 {t(
                   `categories.${post.mainCategory}.subcategories.${post.subCategory}.name`
                 )}
               </button>
-              <button className="want-rounded  m-2">
-              {t(
-                `categories.${post.mainCategory}.subcategories.${post.subCategory}.thirdCategories.${post.thirdCategory}.name`
-              )}
+              <button
+                className="generic-button m-1"
+                onClick={() => handleCategoryButtonClick("thirdCategory")}
+              >
+                {t(
+                  `categories.${post.mainCategory}.subcategories.${post.subCategory}.thirdCategories.${post.thirdCategory}.name`
+                )}
               </button>
             </div>
             <p className="description-container-id">{post.description}</p>
@@ -355,7 +384,7 @@ const PostDetails = () => {
             </div>
             <div className="mt-3">
               <button
-                className="want-rounded btn-offer"
+                className="want-rounded want-button "
                 onClick={() => router.push(`/createOffer?postId=${id}`)}
               >
                 {t("postDetails.makeAnOffer")}

@@ -1,35 +1,104 @@
-import React from "react";
-import PostsList from "@/components/posts/PostsList";
-import { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
+import PostsList from "@/components/posts/PostsList";
 
-const IndexPage = ({ locationFilter, searchTerm, categoryFilter, currentPage, setCurrentPage }) => {
-
+const IndexPage = ({
+  detailsCategory,
+  detailsSubcategory,
+  detailsThirdCategory,
+  onDetailsCategoryChange,
+  onDetailsSubcategoryChange,
+  onDetailsThirdCategoryChange,
+  mainCategory,
+  subcategory,
+  thirdCategory,
+  onMainCategoryChange,
+  onSubcategoryChange,
+  onThirdCategoryChange,
+  searchTerm,
+  onSearchTermChange,
+  keepCategories,
+  onKeepCategoriesChange,
+  resetAll,
+  onResetAll,
+}) => {
   const router = useRouter();
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [key, setKey] = useState(0);
 
   useEffect(() => {
-    const checkPendingDeletionStatus = async () => {
-      const deletionResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/check-pending-deletion`, {
-        credentials: 'include',
-      });
-  
-      const deletionData = await deletionResponse.json();
-      if (deletionData.pendingDeletion) {
-        router.push('/deleteOn');
+    const handleRouteChange = () => {
+      sessionStorage.setItem("scrollPosition", window.scrollY.toString());
+    };
+
+    const handlePopState = () => {
+      const savedScrollPosition = parseInt(
+        sessionStorage.getItem("scrollPosition"),
+        10
+      );
+      if (!isNaN(savedScrollPosition)) {
+        setScrollPosition(savedScrollPosition);
       }
     };
-  
-    checkPendingDeletionStatus();
-  }, []);  
+
+    router.events.on("routeChangeStart", handleRouteChange);
+    window.addEventListener("popstate", handlePopState);
+
+    const savedScrollPosition = parseInt(
+      sessionStorage.getItem("scrollPosition"),
+      10
+    );
+    if (!isNaN(savedScrollPosition)) {
+      setScrollPosition(savedScrollPosition);
+    }
+
+    document.documentElement.style.scrollBehavior = "auto";
+    window.scrollTo(0, scrollPosition);
+
+    setTimeout(() => {
+      document.documentElement.style.scrollBehavior = "smooth";
+    }, 50);
+
+    return () => {
+      router.events.off("routeChangeStart", handleRouteChange);
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [router.events]);
+
+  useEffect(() => {
+    window.scrollTo(0, scrollPosition);
+  }, [scrollPosition]);
+
+  const handleResetAll = useCallback(() => {
+    setKey((prevKey) => prevKey + 1);
+    onResetAll(false);
+  }, [onResetAll]);
+
+  useEffect(() => {
+    if (resetAll) {
+      handleResetAll();
+    }
+  }, [resetAll, handleResetAll]);
 
   return (
-    <div className="">
+    <div>
       <PostsList
-        locationFilter={locationFilter}
+        key={key}
         searchTerm={searchTerm}
-        categoryFilter={categoryFilter}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
+        detailsCategory={detailsCategory}
+        detailsSubcategory={detailsSubcategory}
+        detailsThirdCategory={detailsThirdCategory}
+        onDetailsCategoryChange={onDetailsCategoryChange}
+        onDetailsSubcategoryChange={onDetailsSubcategoryChange}
+        onDetailsThirdCategoryChange={onDetailsThirdCategoryChange}
+        onMainCategoryChange={onMainCategoryChange}
+        onSubcategoryChange={onSubcategoryChange}
+        onThirdCategoryChange={onThirdCategoryChange}
+        onSearchTermChange={onSearchTermChange}
+        onKeepCategoriesChange={onKeepCategoriesChange}
+        keepCategories={keepCategories}
+        onResetAll={handleResetAll}
+        resetAll={resetAll}
       />
     </div>
   );

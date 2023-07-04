@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
+import Link from "next/link";
 
 export default function Verify() {
   const { t } = useTranslation();
@@ -164,22 +165,25 @@ export default function Verify() {
               </div>
               <div className="mb-3">
                 <button
-                  type="button"
-                  className="btn want-button want-rounded"
-                  onClick={handleResendVerification}
-                >
-                  {t("verificationPage.resendVerificationButton")}
-                </button>
-              </div>
-              <div className="mb-3">
-                <button
                   type="submit"
                   className="want-button want-rounded btn-verify"
                 >
                   {t("verificationPage.verifyButton")}
                 </button>
               </div>
+              <div className="mb-3">
+                <button
+                  type="button"
+                  className="generic-button"
+                  onClick={handleResendVerification}
+                >
+                  {t("verificationPage.resendVerificationButton")}
+                </button>
+              </div>
             </form>
+            <Link href={'/logout'}>
+                <button className="generic-button">{t("navbar.logout")}</button>
+                </Link>
           </div>
         </div>
       </div>

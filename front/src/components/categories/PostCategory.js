@@ -9,83 +9,65 @@ export default function PostCategory({
   initialMainCategory = "",
   initialSubcategory = "",
   initialThirdCategory = "",
-  isRequired = false,
+  onSearchTermChange,
+  searchTerm,
+  keepCategories,
+  resetAll,
+  detailsCategory,
+  detailsSubcategory,
+  detailsThirdCategory,
 }) {
   const { t } = useTranslation();
 
-  const [selectedCategory, setSelectedCategory] = useState(initialMainCategory);
-  const [selectedSubcategory, setSelectedSubcategory] =
-    useState(initialSubcategory);
-  const [selectedThirdCategory, setSelectedThirdCategory] =
-    useState(initialThirdCategory);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
+  const [selectedThirdCategory, setSelectedThirdCategory] = useState("");
+  const [searchPerformed, setSearchPerformed] = useState(false);
   const contentRef = useRef(null);
-  const [userPreferences, setUserPreferences] = useState(null);
-  const [userPreferencesLoaded, setUserPreferencesLoaded] = useState(false);
   const [showLeftScroll, setShowLeftScroll] = useState(false);
   const [showRightScroll, setShowRightScroll] = useState(false);
 
-  const getUserPreferences = async () => {
-    try {
-      if (userPreferencesLoaded) {
-        return;
-      }
+  const handleDetailsCategoryChange = (category, subcategory, thirdCategory) => {
+    handleButtonClick(category, subcategory, thirdCategory);
+    handleCategoryChange(category);
+    handleSubcategoryChange(subcategory);
+    handleThirdCategoryChange(thirdCategory);
+  };
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/preferences`,
-        {
-          credentials: "include",
-        }
-      );
-      const data = await response.json();
-      setUserPreferences(data);
-      setUserPreferencesLoaded(true);
-    } catch (error) {
-      console.error("Error al obtener las preferencias de usuario:", error);
-    }
+  const handleDetailsChange = (category, subcategory, thirdCategory) => {
+    onDetailsCategoryChange(category);
+    onDetailsSubcategoryChange(subcategory);
+    onDetailsThirdCategoryChange(thirdCategory);
   };
 
   useEffect(() => {
-    getUserPreferences();
-  }, []);
+    handleDetailsCategoryChange(detailsCategory, detailsSubcategory, detailsThirdCategory);
+  }, [detailsCategory, detailsSubcategory, detailsThirdCategory]);
 
-  useEffect(() => {
-    setSelectedCategory(initialMainCategory);
-    setSelectedSubcategory(initialSubcategory);
-    setSelectedThirdCategory(initialThirdCategory);
-  }, [initialMainCategory, initialSubcategory, initialThirdCategory]);
+  const clearAllCategories = () => {
+    setSelectedCategory("");
+    setSelectedSubcategory("");
+    setSelectedThirdCategory("");
+  };
 
   const handleCategoryChange = (category) => {
     if (selectedCategory === category) {
-      setSelectedCategory("");
-      setSelectedSubcategory("");
-      setSelectedThirdCategory("");
-
+      clearAllCategories();
       if (onMainCategoryChange) {
         onMainCategoryChange("");
       }
-
-      if (onSubcategoryChange) {
-        onSubcategoryChange("");
-      }
-
-      if (onThirdCategoryChange) {
-        onThirdCategoryChange("");
+      if (onSearchTermChange) {
+        onSearchTermChange("");
       }
     } else {
       setSelectedCategory(category);
       setSelectedSubcategory("");
       setSelectedThirdCategory("");
-
       if (onMainCategoryChange) {
         onMainCategoryChange(category);
       }
-
-      if (onSubcategoryChange) {
-        onSubcategoryChange("");
-      }
-
-      if (onThirdCategoryChange) {
-        onThirdCategoryChange("");
+      if (onSearchTermChange) {
+        onSearchTermChange("");
       }
     }
   };
@@ -94,24 +76,20 @@ export default function PostCategory({
     if (selectedSubcategory === subcategory) {
       setSelectedSubcategory("");
       setSelectedThirdCategory("");
-
       if (onSubcategoryChange) {
         onSubcategoryChange("");
       }
-
-      if (onThirdCategoryChange) {
-        onThirdCategoryChange("");
+      if (onSearchTermChange) {
+        onSearchTermChange("");
       }
     } else {
       setSelectedSubcategory(subcategory);
       setSelectedThirdCategory("");
-
       if (onSubcategoryChange) {
         onSubcategoryChange(subcategory);
       }
-
-      if (onThirdCategoryChange) {
-        onThirdCategoryChange("");
+      if (onSearchTermChange) {
+        onSearchTermChange("");
       }
     }
   };
@@ -119,15 +97,19 @@ export default function PostCategory({
   const handleThirdCategoryChange = (thirdCategory) => {
     if (selectedThirdCategory === thirdCategory) {
       setSelectedThirdCategory("");
-
       if (onThirdCategoryChange) {
         onThirdCategoryChange("");
       }
+      if (onSearchTermChange) {
+        onSearchTermChange("");
+      }
     } else {
       setSelectedThirdCategory(thirdCategory);
-
       if (onThirdCategoryChange) {
         onThirdCategoryChange(thirdCategory);
+      }
+      if (onSearchTermChange) {
+        onSearchTermChange("");
       }
     }
   };
@@ -215,6 +197,74 @@ export default function PostCategory({
     handleScroll();
   }, [selectedCategory, selectedSubcategory, selectedThirdCategory]);
 
+  useEffect(() => {
+    if (searchTerm && !keepCategories) {
+      setSearchPerformed(true);
+      clearAllCategories();
+    }
+  }, [searchTerm, keepCategories]);
+
+  useEffect(() => {
+    if (resetAll) {
+      clearAllCategories();
+    }
+  }, [resetAll]);
+
+  useEffect(() => {
+    if (detailsCategory && detailsSubcategory && detailsThirdCategory) {
+      handleButtonClick(detailsCategory, detailsSubcategory, detailsThirdCategory);
+    }
+  }, [detailsCategory, detailsSubcategory, detailsThirdCategory]);
+
+  useEffect(() => {
+    const handleUnload = () => {
+      localStorage.removeItem("mainCategory");
+      localStorage.removeItem("subcategory");
+      localStorage.removeItem("thirdCategory");
+    };
+
+    window.addEventListener("beforeunload", handleUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Leer las categorías seleccionadas desde el localStorage
+    const storedMainCategory = localStorage.getItem("mainCategory");
+    const storedSubcategory = localStorage.getItem("subcategory");
+    const storedThirdCategory = localStorage.getItem("thirdCategory");
+
+    if (storedMainCategory) {
+      setSelectedCategory(storedMainCategory);
+    }
+    if (storedSubcategory) {
+      setSelectedSubcategory(storedSubcategory);
+    }
+    if (storedThirdCategory) {
+      setSelectedThirdCategory(storedThirdCategory);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (resetAll) {
+      localStorage.removeItem("mainCategory");
+      localStorage.removeItem("subcategory");
+      localStorage.removeItem("thirdCategory");
+      setSelectedCategory("");
+      setSelectedSubcategory("");
+      setSelectedThirdCategory("");
+    }
+  }, [resetAll]);
+
+  useEffect(() => {
+    // Guardar las categorías seleccionadas en el localStorage
+    localStorage.setItem("mainCategory", selectedCategory);
+    localStorage.setItem("subcategory", selectedSubcategory);
+    localStorage.setItem("thirdCategory", selectedThirdCategory);
+  }, [selectedCategory, selectedSubcategory, selectedThirdCategory]);
+
   return (
     <div className="d-flex">
       <div className="col-auto d-flex align-items-center justify-content-center">
@@ -223,16 +273,22 @@ export default function PostCategory({
         )}
       </div>
       <div className="col" style={{ overflowX: "hidden" }}>
-        <div className="slider-container" ref={contentRef} onScroll={handleScroll}>
+        <div
+          className="slider-container"
+          ref={contentRef}
+          onScroll={handleScroll}
+        >
           <div className="d-flex" style={{ whiteSpace: "nowrap" }}>
             {categoriesData.map((category) => (
               <button
                 key={category.id}
                 id={category.id}
-                className={`want-rounded  m-2 ${
+                className={`want-rounded m-2 ${
                   selectedCategory === category.id
-                    ? " want-button "
-                    : "generic-button"
+                    ? "want-button border-selected"
+                    : searchPerformed && !keepCategories
+                    ? "generic-button border"
+                    : "generic-button border"
                 }`}
                 onClick={() => {
                   handleButtonClick(category.id, "", "");
@@ -244,20 +300,13 @@ export default function PostCategory({
                     : "none",
                 }}
               >
-                <div className="d-flex justify-content-center align-items-center">
-                  <div>{getCategoryTranslation(category.id)}</div>
-                  <div
-                    className={`${
-                      selectedCategory === category.id
-                        ? "animate__animated animate__bounceIn d-flex justify-content-center align-items-center"
-                        : ""
-                    }`}
-                  >
-                    {selectedCategory === category.id && (
-                      <i className="bi bi-x-circle close-button-categories"></i>
-                    )}
-                  </div>
-                </div>
+                {getCategoryTranslation(category.id)}
+                {selectedCategory && (
+                  <>
+                    {" "}
+                    <i className="bi bi-x-circle"></i>
+                  </>
+                )}
               </button>
             ))}
 
@@ -268,10 +317,12 @@ export default function PostCategory({
                   <button
                     key={subcategory.id}
                     id={`${selectedCategory}_${subcategory.id}`}
-                    className={`want-rounded  m-2 ${
+                    className={`want-rounded m-2 ${
                       selectedSubcategory === subcategory.id
-                        ? "want-button"
-                        : "generic-button"
+                        ? "want-button border-selected"
+                        : searchPerformed && !keepCategories
+                        ? "generic-button border"
+                        : "generic-button border"
                     }`}
                     onClick={() => {
                       handleButtonClick(selectedCategory, subcategory.id, "");
@@ -283,50 +334,41 @@ export default function PostCategory({
                         : "none",
                     }}
                   >
-                    <div className="d-flex justify-content-center align-items-center">
-                      <div>
-                        {getSubcategoryTranslation(
-                          selectedCategory,
-                          subcategory.id
-                        )}
-                      </div>
-                      <div
-                        className={`${
-                          selectedSubcategory === subcategory.id
-                            ? "animate__animated animate__bounceIn d-flex justify-content-center align-items-center"
-                            : ""
-                        }`}
-                      >
-                        {selectedSubcategory === subcategory.id && (
-                          <i className="bi bi-x-circle close-button-categories"></i>
-                        )}
-                      </div>
-                    </div>
+                    {getSubcategoryTranslation(
+                      selectedCategory,
+                      subcategory.id
+                    )}
+                    {selectedSubcategory && (
+                      <>
+                        {" "}
+                        <i className="bi bi-x-circle"></i>
+                      </>
+                    )}
                   </button>
                 ))}
 
             {selectedSubcategory &&
               categoriesData
                 .find((cat) => cat.id === selectedCategory)
-                .subcategories.find(
-                  (subcat) => subcat.id === selectedSubcategory
-                )
+                .subcategories.find((sub) => sub.id === selectedSubcategory)
                 .thirdCategories.map((thirdCategory) => (
                   <button
                     key={thirdCategory.id}
                     id={`${selectedCategory}_${selectedSubcategory}_${thirdCategory.id}`}
-                    className={`want-rounded  m-2 ${
+                    className={`want-rounded m-2 ${
                       selectedThirdCategory === thirdCategory.id
-                        ? "want-button"
-                        : "generic-button"
+                        ? "want-button border-selected"
+                        : searchPerformed && !keepCategories
+                        ? "generic-button border"
+                        : "generic-button border"
                     }`}
                     onClick={() => {
-                      handleThirdCategoryChange(thirdCategory.id);
                       handleButtonClick(
                         selectedCategory,
                         selectedSubcategory,
                         thirdCategory.id
                       );
+                      handleThirdCategoryChange(thirdCategory.id);
                     }}
                     style={{
                       display: isThirdCategoryButtonVisible(thirdCategory)
@@ -334,32 +376,22 @@ export default function PostCategory({
                         : "none",
                     }}
                   >
-                    <div className="d-flex justify-content-center align-items-center">
-                      <div>
-                        {getThirdCategoryTranslation(
-                          selectedCategory,
-                          selectedSubcategory,
-                          thirdCategory.id
-                        )}
-                      </div>
-                      <div
-                        className={`${
-                          selectedThirdCategory === thirdCategory.id
-                            ? "animate__animated animate__bounceIn d-flex justify-content-center align-items-center"
-                            : ""
-                        }`}
-                      >
-                        {selectedThirdCategory === thirdCategory.id && (
-                          <i className="bi bi-x-circle close-button-categories"></i>
-                        )}
-                      </div>
-                    </div>
+                    {getThirdCategoryTranslation(
+                      selectedCategory,
+                      selectedSubcategory,
+                      thirdCategory.id
+                    )}
+                    {selectedThirdCategory && (
+                      <>
+                        <i className="bi bi-x-circle"></i>
+                      </>
+                    )}
                   </button>
                 ))}
           </div>
         </div>
       </div>
-      <div className="col-auto d-flex justify-content-center align-items-center">
+      <div className="col-auto d-flex align-items-center justify-content-center">
         {showRightScroll && (
           <i className="bi bi-arrow-right fs-1" onClick={scrollRight}></i>
         )}

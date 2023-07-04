@@ -105,7 +105,7 @@ export default function Notifications() {
       <div className='divhover d-flex' onClick={handleModalOpen}>
         <i className="bi bi-bell fs-3"></i>
         {unreadNotifications.length > 0 && (
-          <Badge pill bg="danger" className="position-absolute">
+          <Badge pill bg="success" className="position-absolute">
             {unreadNotifications.length}
           </Badge>
         )}
@@ -124,7 +124,7 @@ export default function Notifications() {
                   handleNotificationClick(notification._id);
                   setShowModal(false);
                 }}
-                className={`notification-item ${!notification.isRead ? 'bg-success text-white' : ''}`}
+                className={`notification-item post-title ${!notification.isRead ? 'bg-success text-white' : ''}`}
               >
                 {notification.content}
               </div>
