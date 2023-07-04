@@ -4,10 +4,7 @@ import { useRouter } from "next/router";
 import PostsLocation from "../locations/Posts/";
 import PostCategory from "../categories/PostCategory";
 import Link from "next/link";
-import {
-  useCheckSession,
-  useGetUserPreferences
-} from "@/utils/userEffects";
+import { useCheckSession, useGetUserPreferences } from "@/utils/userEffects";
 import fetchPosts from "./postsList/PostsListsUtilities";
 import PostCard from "./postsList/PostCard";
 
@@ -187,7 +184,16 @@ const PostsList = ({
         setIsInitialFetchDone(true);
       });
     }
-  }, [userPreferences, currentPage, latitude, longitude, radius, detailsCategory, detailsSubcategory, detailsThirdCategory]);
+  }, [
+    userPreferences,
+    currentPage,
+    latitude,
+    longitude,
+    radius,
+    detailsCategory,
+    detailsSubcategory,
+    detailsThirdCategory,
+  ]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -294,7 +300,8 @@ const PostsList = ({
   }, [searchTerm]);
 
   useEffect(() => {
-    if (isInitialFetchDone) { // Verificar si la petición inicial ya se ha realizado antes de hacer la petición adicional
+    if (isInitialFetchDone) {
+      // Verificar si la petición inicial ya se ha realizado antes de hacer la petición adicional
       fetchPosts(true, {
         hasLocation,
         searchTerm,
@@ -317,7 +324,18 @@ const PostsList = ({
         setIsFetchingMore,
       });
     }
-  }, [isInitialFetchDone, categoryFilter, searchTerm, keepCategories, latitude, longitude, radius, detailsCategory, detailsSubcategory, detailsThirdCategory]);
+  }, [
+    isInitialFetchDone,
+    categoryFilter,
+    searchTerm,
+    keepCategories,
+    latitude,
+    longitude,
+    radius,
+    detailsCategory,
+    detailsSubcategory,
+    detailsThirdCategory,
+  ]);
 
   useEffect(() => {
     onMainCategoryChange(categoryFilter.mainCategory);
@@ -349,9 +367,9 @@ const PostsList = ({
           onMainCategoryChange={handleMainCategoryChange}
           onSubcategoryChange={handleSubcategoryChange}
           onThirdCategoryChange={handleThirdCategoryChange}
-          initialMainCategory={detailsCategory}
-          initialSubcategory={detailsSubcategory}
-          initialThirdCategory={detailsThirdCategory}
+          onDetailsCategoryChange={onDetailsCategoryChange}
+          onDetailsSubcategoryChange={onDetailsSubcategoryChange}
+          onDetailsThirdCategoryChange={onDetailsThirdCategoryChange}
           onSearchTermChange={onSearchTermChange}
           searchTerm={searchTerm}
           keepCategories={keepCategories}
