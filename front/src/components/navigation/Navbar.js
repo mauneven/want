@@ -209,7 +209,7 @@ export default function MegaMenu({
                 <>
                   <Nav.Link
                     className="nav-item"
-                    onClick={() => router.push("/createPost")}
+                    onClick={() => {user ? router.push("/createPost") : router.push("/login") } }
                   >
                     <button className="want-button border-selected want-rounded align-items-center">
                       {t("navbar.wantSomething")}
