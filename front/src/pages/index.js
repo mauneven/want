@@ -82,10 +82,6 @@ const IndexPage = ({
 
   return (
     <div>
-      <p>MC = {mainCategory}</p>
-      <p>SC = {subcategory}</p>
-      <p>TC = {thirdCategory}</p>
-      <p>KC = {keepCategories ? "true": "false"}</p>
       <PostsList
         key={key}
         searchTerm={searchTerm}
