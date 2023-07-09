@@ -28,7 +28,7 @@ const PostsList = ({
   thirdCategory,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [pageSize, setPageSize] = useState(12);
+  const [pageSize, setPageSize] = useState(5);
   const [totalPosts, setTotalPosts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMorePosts, setHasMorePosts] = useState(false);
@@ -47,6 +47,7 @@ const PostsList = ({
 
   const router = useRouter();
   const containerRef = useRef(null);
+  const sentinelRef = useRef(null);
 
   useEffect(() => {
     const handleUnload = () => {
@@ -196,74 +197,30 @@ const PostsList = ({
   ]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop =
-        (document.documentElement && document.documentElement.scrollTop) ||
-        document.body.scrollTop;
-      const scrollHeight =
-        (document.documentElement && document.documentElement.scrollHeight) ||
-        document.body.scrollHeight;
-      const clientHeight =
-        document.documentElement.clientHeight || window.innerHeight;
-      const scrolledToBottom =
-        Math.ceil(scrollTop + clientHeight) >= scrollHeight - buffer;
-      const scrolledToTop = scrollTop === 0;
-
-      if (
-        scrolledToBottom &&
-        hasMorePosts &&
-        !isLoading &&
-        !isFetching &&
-        !isFetchingMore
-      ) {
-        setIsFetchingMore(true);
-      }
-
-      if (scrolledToTop && !isLoading && !isFetching && !isFetchingMore) {
-        setHasMorePosts(false);
-      }
+    const observerOptions = {
+      root: null,
+      rootMargin: "200px",
+      threshold: 0.5,
     };
 
-    const handleTouchMove = () => {
-      const scrollTop =
-        (document.documentElement && document.documentElement.scrollTop) ||
-        document.body.scrollTop;
-      const scrollHeight =
-        (document.documentElement && document.documentElement.scrollHeight) ||
-        document.body.scrollHeight;
-      const clientHeight =
-        document.documentElement.clientHeight || window.innerHeight;
-      const scrolledToBottom =
-        Math.ceil(scrollTop + clientHeight) >= scrollHeight;
-      const scrolledToTop = scrollTop === 0;
-
-      if (
-        scrolledToBottom &&
-        hasMorePosts &&
-        !isLoading &&
-        !isFetching &&
-        !isFetchingMore
-      ) {
-        setIsFetchingMore(true);
-      }
-
-      if (scrolledToTop && !isLoading && !isFetching && !isFetchingMore) {
-        setHasMorePosts(false);
-      }
+    const handleIntersection = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && hasMorePosts && !isLoading && !isFetching && !isFetchingMore) {
+          setIsFetchingMore(true);
+        }
+      });
     };
 
-    const handleScrollOrTouchMove = () => {
-      if ("ontouchstart" in window) {
-        handleTouchMove();
-      } else {
-        handleScroll();
-      }
-    };
+    const observer = new IntersectionObserver(handleIntersection, observerOptions);
 
-    window.addEventListener("scroll", handleScrollOrTouchMove);
+    if (sentinelRef.current) {
+      observer.observe(sentinelRef.current);
+    }
 
     return () => {
-      window.removeEventListener("scroll", handleScrollOrTouchMove);
+      if (sentinelRef.current) {
+        observer.unobserve(sentinelRef.current);
+      }
     };
   }, [hasMorePosts, isLoading, isFetching, isFetchingMore]);
 
@@ -284,7 +241,7 @@ const PostsList = ({
     };
 
     updateLocalStorage();
-  }, [userPreferences]);
+  },[userPreferences]);
 
   useEffect(() => {
     if (isFetchingMore && !isLoading && !isFetching && hasMorePosts) {
@@ -410,6 +367,8 @@ const PostsList = ({
             <p>No more posts available.</p>
           </div>
         )}
+
+        <div ref={sentinelRef} />
       </div>
     </div>
   );
