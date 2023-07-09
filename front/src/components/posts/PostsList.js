@@ -206,7 +206,7 @@ const PostsList = ({
       const clientHeight =
         document.documentElement.clientHeight || window.innerHeight;
       const scrolledToBottom =
-        Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+        Math.ceil(scrollTop + clientHeight) >= scrollHeight - buffer;
       const scrolledToTop = scrollTop === 0;
 
       if (
