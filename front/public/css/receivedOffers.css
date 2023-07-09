@@ -7,7 +7,7 @@
 }
 
 .post-received {
-  border-radius: 7px;
+  border-radius: 26px;
   color: 1px solid rgba(0, 0, 0, 0.364);
   border: 1px solid rgba(0, 0, 0, 0.478);
   background-color: white;
@@ -16,7 +16,7 @@
 }
 
 .post-received-selected {
-  border-radius: 7px 7px 7px 7px;
+  border-radius: 26px 26px 26px 26px;
   border: 1px solid rgb(0, 65, 0);
   background-color: var(--color-background-primary);
   padding: 2em;

@@ -10,11 +10,11 @@
 }
 
 .img-post{
-  border-radius: 7px 7px 7px 7px;
+  border-radius: 26px 26px 26px 26px;
 }
 
 .post-card-contain{
-  border-radius: 0 0 7px 7px;
+  border-radius: 0 0 26px 26px;
 }
 
 .posts-card:hover{
@@ -86,8 +86,8 @@
 
 .floating-btn-container {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 26px;
+  right: 26px;
   color: white;
 }
 
@@ -171,8 +171,8 @@
   border: 1px solid rgba(0, 0, 0, 0.445);
   top: 40%;
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   cursor: pointer;
   transition: 500ms;
   transition-delay: 500ms;

@@ -63,7 +63,7 @@ body::-webkit-scrollbar-track {
 }
 
 .want-logo {
-  border-radius: 30px;
+  border-radius: 26px;
   text-align: center;
   align-items: center;
   margin-right: 10px;
@@ -99,7 +99,7 @@ body::-webkit-scrollbar-track {
 
 .dropdown-menu {
   border: none;
-  border-radius: 7px;
+  border-radius: 26px;
   box-shadow: 0px 0px 15px -1px #00000042;
   position: absolute;
   transform: translateX(-100%);
@@ -108,7 +108,7 @@ body::-webkit-scrollbar-track {
 
 .dropdown-item{
   padding: 10px;
-  border-radius: 7px;
+  border-radius: 26px;
 }
 
 .dropdown-item:hover{
@@ -218,7 +218,7 @@ body::-webkit-scrollbar-track {
     font-size: 15px;
   }
   .text-categories-navbar{
-    font-size: 7px;
+    font-size: 26px;
   }
   .mobile-logo-beta{
     top: 5px;
@@ -235,7 +235,7 @@ body::-webkit-scrollbar-track {
 @media (max-width: 346px) {
   .mobile-logo-beta{
     top: 10px;
-    left: 30px;
+    left: 26px;
   }
   .mobile-logo{
     font-size: 18px!important;
