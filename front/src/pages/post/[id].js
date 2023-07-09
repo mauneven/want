@@ -99,13 +99,13 @@ const PostDetails = ({
     }
   };
 
-  const savePreferencesToLocalStorage = () => {
+const savePreferencesToLocalStorage = () => {
     const mainCategoryPreferences =
-      JSON.parse(localStorage.getItem("mainCategoryPreferences")) || {};
+      JSON.parse(localStorage.getItem("mainCategoryPreferences") || "{}");
     const subCategoryPreferences =
-      JSON.parse(localStorage.getItem("subCategoryPreferences")) || {};
+      JSON.parse(localStorage.getItem("subCategoryPreferences") || "{}");
     const thirdCategoryPreferences =
-      JSON.parse(localStorage.getItem("thirdCategoryPreferences")) || {};
+      JSON.parse(localStorage.getItem("thirdCategoryPreferences") || "{}");
 
     mainCategoryPreferences[post.mainCategory] =
       (mainCategoryPreferences[post.mainCategory] || 0) + 1;

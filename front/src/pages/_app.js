@@ -86,6 +86,9 @@ export default function MyApp({ Component, pageProps }) {
             setMainCategory={setMainCategory}
             setSubcategory={setSubcategory}
             setThirdCategory={setThirdCategory}
+            onDetailsCategoryChange={setDetailsCategory}
+            onDetailsSubcategoryChange={setDetailsSubcategory}
+            onDetailsThirdCategoryChange={setDetailsThirdCategory}
             onResetAll={setResetAll}
             resetAll={resetAll}
           />

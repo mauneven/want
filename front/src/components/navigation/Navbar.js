@@ -18,13 +18,17 @@ export default function MegaMenu({
   setMainCategory,
   setSubcategory,
   setThirdCategory,
+  onDetailsCategoryChange,
+  onDetailsSubcategoryChange,
+  onDetailsThirdCategoryChange,
   resetAll,
-  onResetAll
+  onResetAll,
 }) {
   const { t } = useTranslation();
   const [user, setUser] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [updatedKeepCategories, setUpdatedKeepCategories] = useState(keepCategories);
+  const [updatedKeepCategories, setUpdatedKeepCategories] =
+    useState(keepCategories);
 
   const router = useRouter();
 
@@ -43,22 +47,36 @@ export default function MegaMenu({
 
   const handleSearchSubmit = async (e) => {
     e.preventDefault();
-    const newSearchTerm = e.target.search.value.trim(); // Eliminar espacios en blanco al inicio y final
+    const newSearchTerm = e.target.search.value.trim();
     if (newSearchTerm !== "") {
-      onSearchTermChange(newSearchTerm);
-      router.push("/");
-      if (keepCategories !== true) {
-        setMainCategory("");
-        setSubcategory("");
-        setThirdCategory("");
+      let updatedMainCategory = mainCategory;
+      let updatedSubcategory = subcategory;
+      let updatedThirdCategory = thirdCategory;
+  
+      if (updatedKeepCategories !== true) {
+        updatedMainCategory = "";
+        updatedSubcategory = "";
+        updatedThirdCategory = "";
+        onDetailsCategoryChange("");
+        onDetailsSubcategoryChange("");
+        onDetailsThirdCategoryChange("");
       }
   
-      // Esperar 1 segundo (1000 milisegundos) antes de realizar la búsqueda
+      setMainCategory(updatedMainCategory);
+      setSubcategory(updatedSubcategory);
+      setThirdCategory(updatedThirdCategory);
+  
+      onKeepCategoriesChange(updatedKeepCategories); // Actualizar el valor de keepCategories aquí
+  
+      onSearchTermChange(newSearchTerm);
+      router.push("/");
+  
+      // Esperar (40 milisegundos) antes de realizar la búsqueda
       setTimeout(() => {
         onSearchTermChange(newSearchTerm);
       }, 40);
     }
-  };
+  };  
 
   useEffect(() => {
     const checkSession = async () => {
@@ -111,29 +129,31 @@ export default function MegaMenu({
     }
   };
 
-  useEffect(() => {
-  }, [getCategoryText()]);
+  useEffect(() => {}, [getCategoryText()]);
 
   const handleKeepCategoriesChange = (e) => {
     setUpdatedKeepCategories(e.target.checked);
   };
-
-  useEffect(() => {
-    if (searchTerm) {
-      onKeepCategoriesChange(updatedKeepCategories);
-    }
-  }, [searchTerm]);
 
   return (
     <>
       <Navbar className="nav-borders w-100">
         <div className="d-flex w-100">
           {!isMobile ? (
-            <Navbar.Brand
-              className="d-flex align-items-center m-0 p-0 col-3 justify-content-center"
-            >
+            <Navbar.Brand className="d-flex align-items-center m-0 p-0 col-3 justify-content-center">
               <div className="fs-1 want-color d-flex  m-0 w-100 d-flex">
-                <p className="desktop-logo align-items-center justify-content-center want-color m-0 divhover" onClick={handleLogoClick}>Want</p> <p className="fs-5 m-2 p-1 want-border desktop-logo divhover align-items-center justify-content-center" onClick={handleLogoClick}>Beta</p>
+                <p
+                  className="desktop-logo align-items-center justify-content-center want-color m-0 divhover"
+                  onClick={handleLogoClick}
+                >
+                  Want
+                </p>{" "}
+                <p
+                  className="fs-5 m-2 p-1 want-border desktop-logo divhover align-items-center justify-content-center"
+                  onClick={handleLogoClick}
+                >
+                  Beta
+                </p>
               </div>
             </Navbar.Brand>
           ) : (
@@ -142,17 +162,20 @@ export default function MegaMenu({
               className="divhover d-flex align-items-center m-0 p-0 col-3 justify-content-center"
             >
               <div className="fs-1 want-color d-flex  m-0 w-100 h-100 align-items-center want-color mobile-logo">
-                Want<p className="small text-small m-0 p-1 mobile-logo-beta">BETA</p>
+                Want
+                <p className="small text-small m-0 p-1 mobile-logo-beta">
+                  BETA
+                </p>
               </div>
             </Navbar.Brand>
           )}
           <div className="w-100 d-flex justify-content-center align-items-center">
             <Form
-              className="d-flex m-0 w-100 p-1 border want-rounded text-center align-items-center justify-content-center generic-button"
+              className="d-flex m-0 w-100 p-0 border want-rounded text-center align-items-center justify-content-center generic-button"
               onSubmit={handleSearchSubmit}
             >
               {getCategoryText() && (
-                <div className="form-check d-flex align-items-center mr-2">
+                <div className="form-check m-0 d-flex align-items-center mr-2 border-end ms-2">
                   <input
                     className="form-check-input "
                     type="checkbox"

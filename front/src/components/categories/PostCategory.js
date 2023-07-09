@@ -405,7 +405,7 @@ export default function PostCategory({
                     )}
                     {selectedThirdCategory && (
                       <>
-                        <i className="bi bi-x-circle"></i>
+                        <i className="bi bi-x-circle m-1"></i>
                       </>
                     )}
                   </button>
