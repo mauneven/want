@@ -4,7 +4,10 @@ import { useRouter } from "next/router";
 import PostsLocation from "../locations/Posts/";
 import PostCategory from "../categories/PostCategory";
 import Link from "next/link";
-import { useCheckSession, useGetUserPreferences } from "@/utils/userEffects";
+import {
+  useCheckSession,
+  useGetUserPreferences
+} from "@/utils/userEffects";
 import fetchPosts from "./postsList/PostsListsUtilities";
 import PostCard from "./postsList/PostCard";
 
@@ -28,7 +31,7 @@ const PostsList = ({
   thirdCategory,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(7);
   const [totalPosts, setTotalPosts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMorePosts, setHasMorePosts] = useState(false);
@@ -47,7 +50,6 @@ const PostsList = ({
 
   const router = useRouter();
   const containerRef = useRef(null);
-  const sentinelRef = useRef(null);
 
   useEffect(() => {
     const handleUnload = () => {
@@ -58,19 +60,6 @@ const PostsList = ({
 
     return () => {
       window.removeEventListener("beforeunload", handleUnload);
-    };
-  }, []);
-
-  useEffect(() => {
-    console.log(searchTerm);
-    // tu código que depende de searchTerm
-  }, [searchTerm]);
-
-  useEffect(() => {
-    return () => {
-      onDetailsCategoryChange("");
-      onDetailsSubcategoryChange("");
-      onDetailsThirdCategoryChange("");
     };
   }, []);
 
@@ -92,9 +81,11 @@ const PostsList = ({
       ...prevFilter,
       subCategory: subcategory,
     }));
+
     if (onDetailsSubcategoryChange) {
       onDetailsSubcategoryChange(detailsSubcategory);
     }
+
     setCurrentPage(1);
   };
 
@@ -103,9 +94,11 @@ const PostsList = ({
       ...prevFilter,
       thirdCategory,
     }));
+
     if (onDetailsThirdCategoryChange) {
       onDetailsThirdCategoryChange(detailsThirdCategory);
     }
+
     setCurrentPage(1);
   };
 
@@ -137,6 +130,9 @@ const PostsList = ({
       onDetailsCategoryChange("");
       onDetailsSubcategoryChange("");
       onDetailsThirdCategoryChange("");
+      onMainCategoryChange("");
+      onSubcategoryChange("");
+      onThirdCategoryChange("");
 
       const timer = setTimeout(() => {
         setIsLoading(false);
@@ -185,42 +181,77 @@ const PostsList = ({
         setIsInitialFetchDone(true);
       });
     }
-  }, [
-    userPreferences,
-    currentPage,
-    latitude,
-    longitude,
-    radius,
-    detailsCategory,
-    detailsSubcategory,
-    detailsThirdCategory,
-  ]);
+  }, [userPreferences, currentPage, latitude, longitude, radius, detailsCategory, detailsSubcategory, detailsThirdCategory]);
 
   useEffect(() => {
-    const observerOptions = {
-      root: null,
-      rootMargin: "200px",
-      threshold: 0.5,
+    const handleScroll = () => {
+      const scrollTop =
+        (document.documentElement && document.documentElement.scrollTop) ||
+        document.body.scrollTop;
+      const scrollHeight =
+        (document.documentElement && document.documentElement.scrollHeight) ||
+        document.body.scrollHeight;
+      const clientHeight =
+        document.documentElement.clientHeight || window.innerHeight;
+      const scrolledToBottom =
+        Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+      const scrolledToTop = scrollTop === 0;
+
+      if (
+        scrolledToBottom &&
+        hasMorePosts &&
+        !isLoading &&
+        !isFetching &&
+        !isFetchingMore
+      ) {
+        setIsFetchingMore(true);
+      }
+
+      if (scrolledToTop && !isLoading && !isFetching && !isFetchingMore) {
+        setHasMorePosts(false);
+      }
     };
 
-    const handleIntersection = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && hasMorePosts && !isLoading && !isFetching && !isFetchingMore) {
-          setIsFetchingMore(true);
-        }
-      });
+    const handleTouchMove = () => {
+      const scrollTop =
+        (document.documentElement && document.documentElement.scrollTop) ||
+        document.body.scrollTop;
+      const scrollHeight =
+        (document.documentElement && document.documentElement.scrollHeight) ||
+        document.body.scrollHeight;
+      const clientHeight =
+        document.documentElement.clientHeight || window.innerHeight;
+      const scrolledToBottom =
+        Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+      const scrolledToTop = scrollTop === 0;
+
+      if (
+        scrolledToBottom &&
+        hasMorePosts &&
+        !isLoading &&
+        !isFetching &&
+        !isFetchingMore
+      ) {
+        setIsFetchingMore(true);
+      }
+
+      if (scrolledToTop && !isLoading && !isFetching && !isFetchingMore) {
+        setHasMorePosts(false);
+      }
     };
 
-    const observer = new IntersectionObserver(handleIntersection, observerOptions);
+    const handleScrollOrTouchMove = () => {
+      if ("ontouchstart" in window) {
+        handleTouchMove();
+      } else {
+        handleScroll();
+      }
+    };
 
-    if (sentinelRef.current) {
-      observer.observe(sentinelRef.current);
-    }
+    window.addEventListener("scroll", handleScrollOrTouchMove);
 
     return () => {
-      if (sentinelRef.current) {
-        observer.unobserve(sentinelRef.current);
-      }
+      window.removeEventListener("scroll", handleScrollOrTouchMove);
     };
   }, [hasMorePosts, isLoading, isFetching, isFetchingMore]);
 
@@ -241,7 +272,7 @@ const PostsList = ({
     };
 
     updateLocalStorage();
-  },[userPreferences]);
+  }, [userPreferences]);
 
   useEffect(() => {
     if (isFetchingMore && !isLoading && !isFetching && hasMorePosts) {
@@ -257,8 +288,7 @@ const PostsList = ({
   }, [searchTerm]);
 
   useEffect(() => {
-    if (isInitialFetchDone) {
-      // Verificar si la petición inicial ya se ha realizado antes de hacer la petición adicional
+    if (isInitialFetchDone) { // Verificar si la petición inicial ya se ha realizado antes de hacer la petición adicional
       fetchPosts(true, {
         hasLocation,
         searchTerm,
@@ -281,18 +311,7 @@ const PostsList = ({
         setIsFetchingMore,
       });
     }
-  }, [
-    isInitialFetchDone,
-    categoryFilter,
-    searchTerm,
-    keepCategories,
-    latitude,
-    longitude,
-    radius,
-    detailsCategory,
-    detailsSubcategory,
-    detailsThirdCategory,
-  ]);
+  }, [isInitialFetchDone, categoryFilter, searchTerm, keepCategories, latitude, longitude, radius, detailsCategory, detailsSubcategory, detailsThirdCategory]);
 
   useEffect(() => {
     onMainCategoryChange(categoryFilter.mainCategory);
@@ -317,6 +336,49 @@ const PostsList = ({
     };
   }, []);
 
+  // Guardar la categoría seleccionada en el localStorage cuando cambia
+  useEffect(() => {
+    if (detailsCategory) {
+      if (!detailsSubcategory) {
+        onDetailsSubcategoryChange("");
+      }
+      if (!detailsThirdCategory) {
+        onDetailsThirdCategoryChange("");
+      }
+    } else {
+      onDetailsSubcategoryChange("");
+      onDetailsThirdCategoryChange("");
+    }
+  }, [detailsCategory]);
+
+  // Restaurar la categoría seleccionada desde el localStorage al cargar el componente
+  useEffect(() => {
+    const storedCategory = localStorage.getItem("selectedCategory");
+    const storedSubcategory = localStorage.getItem("selectedSubcategory");
+    const storedThirdCategory = localStorage.getItem("selectedThirdCategory");
+
+    if (storedCategory) {
+      setCategoryFilter((prevFilter) => ({
+        ...prevFilter,
+        mainCategory: storedCategory,
+      }));
+    }
+
+    if (storedSubcategory) {
+      setCategoryFilter((prevFilter) => ({
+        ...prevFilter,
+        subCategory: storedSubcategory,
+      }));
+    }
+
+    if (storedThirdCategory) {
+      setCategoryFilter((prevFilter) => ({
+        ...prevFilter,
+        thirdCategory: storedThirdCategory,
+      }));
+    }
+  }, []);
+
   return (
     <div>
       <div className="text-center">
@@ -324,9 +386,6 @@ const PostsList = ({
           onMainCategoryChange={handleMainCategoryChange}
           onSubcategoryChange={handleSubcategoryChange}
           onThirdCategoryChange={handleThirdCategoryChange}
-          onDetailsCategoryChange={onDetailsCategoryChange}
-          onDetailsSubcategoryChange={onDetailsSubcategoryChange}
-          onDetailsThirdCategoryChange={onDetailsThirdCategoryChange}
           onSearchTermChange={onSearchTermChange}
           searchTerm={searchTerm}
           keepCategories={keepCategories}
@@ -334,6 +393,12 @@ const PostsList = ({
           detailsCategory={detailsCategory}
           detailsThirdCategory={detailsThirdCategory}
           detailsSubcategory={detailsSubcategory}
+          onDetailsCategoryChange={onDetailsCategoryChange}
+          onDetailsSubcategoryChange={onDetailsSubcategoryChange}
+          onDetailsThirdCategoryChange={onDetailsThirdCategoryChange}
+          mainCategory={mainCategory}
+          subcategory={subcategory}
+          thirdCategory={thirdCategory}
         />
       </div>
       <div className="text-start m-2 d-flex">
@@ -367,8 +432,6 @@ const PostsList = ({
             <p>No more posts available.</p>
           </div>
         )}
-
-        <div ref={sentinelRef} />
       </div>
     </div>
   );

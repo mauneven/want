@@ -79,13 +79,12 @@ export default function MyApp({ Component, pageProps }) {
             subcategory={subcategory}
             thirdCategory={thirdCategory}
             onCategoryChange={setMainCategory}
+            onSubcategoryChange={setSubcategory}
+            onThirdCategoryChange={setThirdCategory}
             searchTerm={searchTerm}
             onSearchTermChange={setSearchTerm}
             keepCategories={keepCategories}
             onKeepCategoriesChange={setKeepCategories}
-            setMainCategory={setMainCategory}
-            setSubcategory={setSubcategory}
-            setThirdCategory={setThirdCategory}
             onDetailsCategoryChange={setDetailsCategory}
             onDetailsSubcategoryChange={setDetailsSubcategory}
             onDetailsThirdCategoryChange={setDetailsThirdCategory}

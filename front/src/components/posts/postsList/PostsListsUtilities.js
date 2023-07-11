@@ -46,7 +46,7 @@ const fetchPosts = async (resetPosts, {
     if (searchTerm) {
       if (keepCategories) {
         mainCategoryFilter = categoryFilter?.mainCategory || "";
-        subCategoryFilter = categoryFilter?.subCategory || "";
+        subCategoryFilter = categoryFilter?.subcategory || "";
         thirdCategoryFilter = categoryFilter?.thirdCategory || "";
       } else {
         mainCategoryFilter = "";
@@ -55,13 +55,13 @@ const fetchPosts = async (resetPosts, {
       }
     } else {
       mainCategoryFilter = categoryFilter?.mainCategory || "";
-      subCategoryFilter = categoryFilter?.subCategory || "";
+      subCategoryFilter = categoryFilter?.subcategory || "";
       thirdCategoryFilter = categoryFilter?.thirdCategory || "";
     }
 
     const filterParams = new URLSearchParams({
       mainCategory: mainCategoryFilter,
-      subCategory: subCategoryFilter,
+      subcategory: subCategoryFilter,
       thirdCategory: thirdCategoryFilter,
       searchTerm: searchTerm || "",
       page: resetPosts ? 1 : currentPage,

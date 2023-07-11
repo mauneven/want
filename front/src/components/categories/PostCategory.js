@@ -6,12 +6,6 @@ export default function PostCategory({
   onMainCategoryChange,
   onSubcategoryChange,
   onThirdCategoryChange,
-  initialMainCategory = "",
-  initialSubcategory = "",
-  initialThirdCategory = "",
-  onDetailsCategoryChange,
-  onDetailsSubcategoryChange,
-  onDetailsThirdCategoryChange,
   onSearchTermChange,
   searchTerm,
   keepCategories,
@@ -19,6 +13,9 @@ export default function PostCategory({
   detailsCategory,
   detailsSubcategory,
   detailsThirdCategory,
+  onDetailsCategoryChange,
+  onDetailsSubcategoryChange,
+  onDetailsThirdCategoryChange,
 }) {
   const { t } = useTranslation();
 
@@ -30,89 +27,75 @@ export default function PostCategory({
   const [showLeftScroll, setShowLeftScroll] = useState(false);
   const [showRightScroll, setShowRightScroll] = useState(false);
 
-  const handleDetailsCategoryChange = (category, subcategory, thirdCategory) => {
+  const handleDetailsCategoryChange = (
+    category,
+    subcategory,
+    thirdCategory
+  ) => {
     handleButtonClick(category, subcategory, thirdCategory);
     handleCategoryChange(category);
     handleSubcategoryChange(subcategory);
     handleThirdCategoryChange(thirdCategory);
   };
-
-  const handleDetailsChange = (category, subcategory, thirdCategory) => {
-    onDetailsCategoryChange(category);
-    onDetailsSubcategoryChange(subcategory);
-    onDetailsThirdCategoryChange(thirdCategory);
-  };
-
+  
   useEffect(() => {
-    handleDetailsCategoryChange(detailsCategory, detailsSubcategory, detailsThirdCategory);
-  }, [detailsCategory, detailsSubcategory, detailsThirdCategory]);
+    if (detailsCategory !== "") {
+      handleDetailsCategoryChange(
+        detailsCategory,
+        detailsSubcategory,
+        detailsThirdCategory
+      );
+    }
+  }, [detailsCategory, detailsSubcategory, detailsThirdCategory]);  
 
   const clearAllCategories = () => {
     setSelectedCategory("");
     setSelectedSubcategory("");
     setSelectedThirdCategory("");
+    onDetailsCategoryChange("");
+    onDetailsSubcategoryChange("");
+    onDetailsThirdCategoryChange("");
   };
 
   const handleCategoryChange = (category) => {
-    if (selectedCategory === category) {
-      clearAllCategories();
-      if (onMainCategoryChange) {
-        onMainCategoryChange("");
-        onSubcategoryChange("");
-        onThirdCategoryChange("");
-        onDetailsCategoryChange("");
-        onDetailsSubcategoryChange("");
-        onDetailsThirdCategoryChange("");
-      }
-      if (onSearchTermChange) {
-        onSearchTermChange("");
-      }
-    } else {
+    if (selectedCategory !== category) {
       setSelectedCategory(category);
       setSelectedSubcategory("");
       setSelectedThirdCategory("");
+  
       if (onMainCategoryChange) {
         onMainCategoryChange(category);
       }
-      if (onSearchTermChange) {
-        onSearchTermChange("");
-      }
-    }
-  };
-
-  const handleSubcategoryChange = (subcategory) => {
-    if (selectedSubcategory === subcategory) {
-      setSelectedSubcategory("");
-      setSelectedThirdCategory("");
       if (onSubcategoryChange) {
         onSubcategoryChange("");
-        onThirdCategoryChange("");
       }
-      if (onSearchTermChange) {
-        onSearchTermChange("");
-      }
-    } else {
-      setSelectedSubcategory(subcategory);
-      setSelectedThirdCategory("");
-      if (onSubcategoryChange) {
-        onSubcategoryChange(subcategory);
-      }
-      if (onSearchTermChange) {
-        onSearchTermChange("");
-      }
-    }
-  };
-
-  const handleThirdCategoryChange = (thirdCategory) => {
-    if (selectedThirdCategory === thirdCategory) {
-      setSelectedThirdCategory("");
       if (onThirdCategoryChange) {
         onThirdCategoryChange("");
       }
       if (onSearchTermChange) {
         onSearchTermChange("");
       }
-    } else {
+    }
+  };
+  
+  const handleSubcategoryChange = (subcategory) => {
+    if (selectedSubcategory !== subcategory) {
+      setSelectedSubcategory(subcategory);
+      setSelectedThirdCategory("");
+      if (onSubcategoryChange) {
+        onSubcategoryChange(subcategory);
+      }
+      if (onThirdCategoryChange) {
+        onThirdCategoryChange("");
+      }
+      if (onSearchTermChange) {
+        onSearchTermChange("");
+      }
+    }
+  };
+  
+  const handleThirdCategoryChange = (thirdCategory) => {
+    if (selectedThirdCategory !== thirdCategory) {
       setSelectedThirdCategory(thirdCategory);
       if (onThirdCategoryChange) {
         onThirdCategoryChange(thirdCategory);
@@ -121,7 +104,7 @@ export default function PostCategory({
         onSearchTermChange("");
       }
     }
-  };
+  };  
 
   const getCategoryTranslation = (categoryId) => {
     return t(`categories.${categoryId}.name`);
@@ -221,7 +204,11 @@ export default function PostCategory({
 
   useEffect(() => {
     if (detailsCategory && detailsSubcategory && detailsThirdCategory) {
-      handleButtonClick(detailsCategory, detailsSubcategory, detailsThirdCategory);
+      handleButtonClick(
+        detailsCategory,
+        detailsSubcategory,
+        detailsThirdCategory
+      );
     }
   }, [detailsCategory, detailsSubcategory, detailsThirdCategory]);
 
@@ -254,12 +241,6 @@ export default function PostCategory({
     if (storedThirdCategory) {
       setSelectedThirdCategory(storedThirdCategory);
     }
-
-    if(detailsCategory){
-      setSelectedCategory(detailsCategory);
-      setSelectedSubcategory(detailsSubcategory);
-      setSelectedThirdCategory(detailsThirdCategory);
-    }
   }, []);
 
   useEffect(() => {
@@ -267,9 +248,13 @@ export default function PostCategory({
       localStorage.removeItem("mainCategory");
       localStorage.removeItem("subcategory");
       localStorage.removeItem("thirdCategory");
+
       setSelectedCategory("");
       setSelectedSubcategory("");
       setSelectedThirdCategory("");
+      onMainCategoryChange("");
+      onSubcategoryChange("");
+      onThirdCategoryChange("");
     }
   }, [resetAll]);
 
@@ -278,146 +263,144 @@ export default function PostCategory({
     localStorage.setItem("mainCategory", selectedCategory);
     localStorage.setItem("subcategory", selectedSubcategory);
     localStorage.setItem("thirdCategory", selectedThirdCategory);
-
-    if(detailsSubcategory === ""){
-      localStorage.setItem("mainCategory", detailsCategory || "");
-      localStorage.setItem("mainCategory", detailsSubcategory || "");
-      localStorage.setItem("mainCategory", detailsThirdCategory || "");
-    }
-
   }, [selectedCategory, selectedSubcategory, selectedThirdCategory]);
 
   return (
-    <div className="d-flex">
-      <div className="col-auto d-flex align-items-center justify-content-center">
-        {showLeftScroll && (
-          <i className="bi bi-arrow-left fs-1" onClick={scrollLeft}></i>
-        )}
+    <>
+      <div>
+        <p> DC {detailsCategory}</p>
+        <p> DS {detailsSubcategory}</p>
+        <p> DT {detailsThirdCategory}</p>
       </div>
-      <div className="col" style={{ overflowX: "hidden" }}>
-        <div
-          className="slider-container"
-          ref={contentRef}
-          onScroll={handleScroll}
-        >
-          <div className="d-flex" style={{ whiteSpace: "nowrap" }}>
-            {categoriesData.map((category) => (
-              <button
-                key={category.id}
-                id={category.id}
-                className={`want-rounded m-2 ${
-                  selectedCategory === category.id
-                    ? "want-button border-selected"
-                    : searchPerformed && !keepCategories
-                    ? "generic-button border"
-                    : "generic-button border"
-                }`}
-                onClick={() => {
-                  handleButtonClick(category.id, "", "");
-                  handleCategoryChange(category.id);
-                }}
-                style={{
-                  display: isSubcategoryVisible(category)
-                    ? "inline-block"
-                    : "none",
-                }}
-              >
-                {getCategoryTranslation(category.id)}
-                {selectedCategory && (
-                  <>
-                    {" "}
-                    <i className="bi bi-x-circle"></i>
-                  </>
-                )}
-              </button>
-            ))}
+      <div className="d-flex">
+        <div className="col-auto d-flex align-items-center justify-content-center">
+          {showLeftScroll && (
+            <i className="bi bi-arrow-left fs-1" onClick={scrollLeft}></i>
+          )}
+        </div>
+        <div className="col" style={{ overflowX: "hidden" }}>
+          <div
+            className="slider-container"
+            ref={contentRef}
+            onScroll={handleScroll}
+          >
+            <div className="d-flex" style={{ whiteSpace: "nowrap" }}>
+              {categoriesData.map((category) => (
+                <button
+                  key={category.id}
+                  id={category.id}
+                  className={`want-rounded m-2 ${
+                    selectedCategory === category.id
+                      ? "want-button border-selected"
+                      : searchPerformed && !keepCategories
+                      ? "generic-button border"
+                      : "generic-button border"
+                  }`}
+                  onClick={() => {
+                    handleButtonClick(category.id, "", "");
+                    handleCategoryChange(category.id);
+                  }}
+                  style={{
+                    display: isSubcategoryVisible(category)
+                      ? "inline-block"
+                      : "none",
+                  }}
+                >
+                  {getCategoryTranslation(category.id)}
+                  {selectedCategory && (
+                    <>
+                      {" "}
+                      <i className="bi bi-x-circle"></i>
+                    </>
+                  )}
+                </button>
+              ))}
 
-            {selectedCategory &&
-              categoriesData
-                .find((cat) => cat.id === selectedCategory)
-                .subcategories.map((subcategory) => (
-                  <button
-                    key={subcategory.id}
-                    id={`${selectedCategory}_${subcategory.id}`}
-                    className={`want-rounded m-2 ${
-                      selectedSubcategory === subcategory.id
-                        ? "want-button border-selected"
-                        : searchPerformed && !keepCategories
-                        ? "generic-button border"
-                        : "generic-button border"
-                    }`}
-                    onClick={() => {
-                      handleButtonClick(selectedCategory, subcategory.id, "");
-                      handleSubcategoryChange(subcategory.id);
-                    }}
-                    style={{
-                      display: isThirdCategoryVisible(subcategory)
-                        ? "inline-block"
-                        : "none",
-                    }}
-                  >
-                    {getSubcategoryTranslation(
-                      selectedCategory,
-                      subcategory.id
-                    )}
-                    {selectedSubcategory && (
-                      <>
-                        {" "}
-                        <i className="bi bi-x-circle"></i>
-                      </>
-                    )}
-                  </button>
-                ))}
+              {selectedCategory &&
+                categoriesData
+                  .find((cat) => cat.id === selectedCategory)
+                  .subcategories.map((subcategory) => (
+                    <button
+                      key={subcategory.id}
+                      id={`${selectedCategory}_${subcategory.id}`}
+                      className={`want-rounded m-2 ${
+                        selectedSubcategory === subcategory.id
+                          ? "want-button border-selected"
+                          : searchPerformed && !keepCategories
+                          ? "generic-button border"
+                          : "generic-button border"
+                      }`}
+                      onClick={() => {
+                        handleButtonClick(selectedCategory, subcategory.id, "");
+                        handleSubcategoryChange(subcategory.id);
+                      }}
+                      style={{
+                        display: isThirdCategoryVisible(subcategory)
+                          ? "inline-block"
+                          : "none",
+                      }}
+                    >
+                      {getSubcategoryTranslation(
+                        selectedCategory,
+                        subcategory.id
+                      )}
+                      {selectedSubcategory && (
+                        <>
+                          {" "}
+                          <i className="bi bi-x-circle"></i>
+                        </>
+                      )}
+                    </button>
+                  ))}
 
-            {selectedSubcategory &&
-              categoriesData
-                .find((cat) => cat.id === selectedCategory)
-                .subcategories.find((sub) => sub.id === selectedSubcategory)
-                .thirdCategories.map((thirdCategory) => (
-                  <button
-                    key={thirdCategory.id}
-                    id={`${selectedCategory}_${selectedSubcategory}_${thirdCategory.id}`}
-                    className={`want-rounded m-2 ${
-                      selectedThirdCategory === thirdCategory.id
-                        ? "want-button border-selected"
-                        : searchPerformed && !keepCategories
-                        ? "generic-button border"
-                        : "generic-button border"
-                    }`}
-                    onClick={() => {
-                      handleButtonClick(
+              {selectedSubcategory &&
+                categoriesData
+                  .find((cat) => cat.id === selectedCategory)
+                  .subcategories.find(
+                    (subcat) => subcat.id === selectedSubcategory
+                  )
+                  .thirdCategories.map((thirdCategory) => (
+                    <button
+                      key={thirdCategory.id}
+                      id={`${selectedCategory}_${selectedSubcategory}_${thirdCategory.id}`}
+                      className={`want-rounded m-2 ${
+                        selectedThirdCategory === thirdCategory.id
+                          ? "want-button border-selected"
+                          : searchPerformed && !keepCategories
+                          ? "generic-button border"
+                          : "generic-button border"
+                      }`}
+                      onClick={() =>
+                        handleThirdCategoryChange(thirdCategory.id)
+                      }
+                      style={{
+                        display: isThirdCategoryButtonVisible(thirdCategory)
+                          ? "inline-block"
+                          : "none",
+                      }}
+                    >
+                      {getThirdCategoryTranslation(
                         selectedCategory,
                         selectedSubcategory,
                         thirdCategory.id
-                      );
-                      handleThirdCategoryChange(thirdCategory.id);
-                    }}
-                    style={{
-                      display: isThirdCategoryButtonVisible(thirdCategory)
-                        ? "inline-block"
-                        : "none",
-                    }}
-                  >
-                    {getThirdCategoryTranslation(
-                      selectedCategory,
-                      selectedSubcategory,
-                      thirdCategory.id
-                    )}
-                    {selectedThirdCategory && (
-                      <>
-                        <i className="bi bi-x-circle m-1"></i>
-                      </>
-                    )}
-                  </button>
-                ))}
+                      )}
+                      {selectedThirdCategory && (
+                        <>
+                          {" "}
+                          <i className="bi bi-x-circle"></i>
+                        </>
+                      )}
+                    </button>
+                  ))}
+            </div>
           </div>
         </div>
+        <div className="col-auto d-flex align-items-center justify-content-center">
+          {showRightScroll && (
+            <i className="bi bi-arrow-right fs-1" onClick={scrollRight}></i>
+          )}
+        </div>
       </div>
-      <div className="col-auto d-flex align-items-center justify-content-center">
-        {showRightScroll && (
-          <i className="bi bi-arrow-right fs-1" onClick={scrollRight}></i>
-        )}
-      </div>
-    </div>
+    </>
   );
 }

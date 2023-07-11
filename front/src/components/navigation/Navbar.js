@@ -10,14 +10,13 @@ export default function MegaMenu({
   mainCategory,
   subcategory,
   thirdCategory,
-  onCategoryChange,
   searchTerm,
   onSearchTermChange,
   keepCategories,
   onKeepCategoriesChange,
-  setMainCategory,
-  setSubcategory,
-  setThirdCategory,
+  onCategoryChange,
+  onSubcategoryChange,
+  onThirdCategoryChange,
   onDetailsCategoryChange,
   onDetailsSubcategoryChange,
   onDetailsThirdCategoryChange,
@@ -62,9 +61,9 @@ export default function MegaMenu({
         onDetailsThirdCategoryChange("");
       }
   
-      setMainCategory(updatedMainCategory);
-      setSubcategory(updatedSubcategory);
-      setThirdCategory(updatedThirdCategory);
+      onCategoryChange(updatedMainCategory);
+      onSubcategoryChange(updatedSubcategory);
+      onThirdCategoryChange(updatedThirdCategory);
   
       onKeepCategoriesChange(updatedKeepCategories); // Actualizar el valor de keepCategories aquí
   
@@ -152,7 +151,7 @@ export default function MegaMenu({
                   className="fs-5 m-2 p-1 want-border desktop-logo divhover align-items-center justify-content-center"
                   onClick={handleLogoClick}
                 >
-                  Beta
+                  BETA
                 </p>
               </div>
             </Navbar.Brand>
@@ -284,6 +283,9 @@ export default function MegaMenu({
           </div>
         </div>
       </Navbar>
+      <p> MC {mainCategory}</p>
+      <p> SC {subcategory}</p>
+      <p> TC {thirdCategory}</p>
     </>
   );
 }
