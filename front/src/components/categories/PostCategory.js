@@ -75,6 +75,23 @@ export default function PostCategory({
       if (onSearchTermChange) {
         onSearchTermChange("");
       }
+    } else {
+      setSelectedCategory("");
+      setSelectedSubcategory("");
+      setSelectedThirdCategory("");
+  
+      if (onMainCategoryChange) {
+        onMainCategoryChange("");
+      }
+      if (onSubcategoryChange) {
+        onSubcategoryChange("");
+      }
+      if (onThirdCategoryChange) {
+        onThirdCategoryChange("");
+      }
+      if (onSearchTermChange) {
+        onSearchTermChange("");
+      }
     }
   };
   
@@ -84,6 +101,18 @@ export default function PostCategory({
       setSelectedThirdCategory("");
       if (onSubcategoryChange) {
         onSubcategoryChange(subcategory);
+      }
+      if (onThirdCategoryChange) {
+        onThirdCategoryChange("");
+      }
+      if (onSearchTermChange) {
+        onSearchTermChange("");
+      }
+    } else {
+      setSelectedSubcategory("");
+      setSelectedThirdCategory("");
+      if (onSubcategoryChange) {
+        onSubcategoryChange("");
       }
       if (onThirdCategoryChange) {
         onThirdCategoryChange("");
@@ -103,8 +132,16 @@ export default function PostCategory({
       if (onSearchTermChange) {
         onSearchTermChange("");
       }
+    } else {
+      setSelectedThirdCategory("");
+      if (onThirdCategoryChange) {
+        onThirdCategoryChange("");
+      }
+      if (onSearchTermChange) {
+        onSearchTermChange("");
+      }
     }
-  };  
+  }; 
 
   const getCategoryTranslation = (categoryId) => {
     return t(`categories.${categoryId}.name`);
