@@ -32,7 +32,7 @@ const PostDetails = ({
       onDetailsCategoryChange(post.mainCategory);
       onDetailsSubcategoryChange("");
       onDetailsThirdCategoryChange("");
-    } else if (category === "subcategory") {
+    } else if (category === "subCategory") {
       onDetailsCategoryChange(post.mainCategory);
       onDetailsSubcategoryChange(post.subCategory);
       onDetailsThirdCategoryChange("");
@@ -101,11 +101,11 @@ const PostDetails = ({
 
 const savePreferencesToLocalStorage = () => {
     const mainCategoryPreferences =
-      JSON.parse(localStorage.getItem("mainCategoryPreferences") || {});
+      JSON.parse(localStorage.getItem("mainCategoryPreferences") || "{}");
     const subCategoryPreferences =
-      JSON.parse(localStorage.getItem("subCategoryPreferences") || {});
+      JSON.parse(localStorage.getItem("subCategoryPreferences") || "{}");
     const thirdCategoryPreferences =
-      JSON.parse(localStorage.getItem("thirdCategoryPreferences") || {});
+      JSON.parse(localStorage.getItem("thirdCategoryPreferences") || "{}");
 
     mainCategoryPreferences[post.mainCategory] =
       (mainCategoryPreferences[post.mainCategory] || 0) + 1;
@@ -339,7 +339,7 @@ const savePreferencesToLocalStorage = () => {
               </button>
               <button
                 className="generic-button m-1"
-                onClick={() => handleCategoryButtonClick("subcategory")}
+                onClick={() => handleCategoryButtonClick("subCategory")}
               >
                 {t(
                   `categories.${post.mainCategory}.subcategories.${post.subCategory}.name`

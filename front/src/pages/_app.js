@@ -26,7 +26,7 @@ export default function MyApp({ Component, pageProps }) {
   const [detailsSubcategory, setDetailsSubcategory] = useState("");
   const [detailsThirdCategory, setDetailsThirdCategory] = useState("");
   const [mainCategory, setMainCategory] = useState("");
-  const [subcategory, setSubcategory] = useState("");
+  const [subCategory, setSubcategory] = useState("");
   const [thirdCategory, setThirdCategory] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [keepCategories, setKeepCategories] = useState(false);
@@ -76,7 +76,7 @@ export default function MyApp({ Component, pageProps }) {
         <header className="sticky-top">
           <MegaMenu
             mainCategory={mainCategory}
-            subcategory={subcategory}
+            subCategory={subCategory}
             thirdCategory={thirdCategory}
             onCategoryChange={setMainCategory}
             onSubcategoryChange={setSubcategory}
@@ -105,7 +105,7 @@ export default function MyApp({ Component, pageProps }) {
               detailsSubcategory={detailsSubcategory}
               detailsThirdCategory={detailsThirdCategory}
               mainCategory={mainCategory}
-              subcategory={subcategory}
+              subCategory={subCategory}
               thirdCategory={thirdCategory}
               onMainCategoryChange={setMainCategory}
               onSubcategoryChange={setSubcategory}

@@ -135,7 +135,7 @@ body::-webkit-scrollbar-track {
   -webkit-overflow-scrolling: touch;
 }
 
-.subcategory-button {
+.subCategory-button {
   flex: 0 0 auto;
   white-space: nowrap;
   margin-right: 10px;

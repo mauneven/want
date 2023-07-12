@@ -4,10 +4,7 @@ import { useRouter } from "next/router";
 import PostsLocation from "../locations/Posts/";
 import PostCategory from "../categories/PostCategory";
 import Link from "next/link";
-import {
-  useCheckSession,
-  useGetUserPreferences
-} from "@/utils/userEffects";
+import { useCheckSession, useGetUserPreferences } from "@/utils/userEffects";
 import fetchPosts from "./postsList/PostsListsUtilities";
 import PostCard from "./postsList/PostCard";
 
@@ -31,7 +28,7 @@ const PostsList = ({
   thirdCategory,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [pageSize, setPageSize] = useState(12);
+  const [pageSize, setPageSize] = useState(6);
   const [totalPosts, setTotalPosts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMorePosts, setHasMorePosts] = useState(false);
@@ -68,7 +65,6 @@ const PostsList = ({
       ...prevFilter,
       mainCategory: mainCategory,
     }));
-
     setCurrentPage(1);
   };
 
@@ -77,11 +73,6 @@ const PostsList = ({
       ...prevFilter,
       subCategory: subCategory,
     }));
-
-    if (onDetailsSubcategoryChange) {
-      onDetailsSubcategoryChange(detailsSubcategory);
-    }
-
     setCurrentPage(1);
   };
 
@@ -90,11 +81,6 @@ const PostsList = ({
       ...prevFilter,
       thirdCategory,
     }));
-
-    if (onDetailsThirdCategoryChange) {
-      onDetailsThirdCategoryChange(detailsThirdCategory);
-    }
-
     setCurrentPage(1);
   };
 
@@ -177,7 +163,16 @@ const PostsList = ({
         setIsInitialFetchDone(true);
       });
     }
-  }, [userPreferences, currentPage, latitude, longitude, radius, detailsCategory, detailsSubcategory, detailsThirdCategory]);
+  }, [
+    userPreferences,
+    currentPage,
+    latitude,
+    longitude,
+    radius,
+    detailsCategory,
+    detailsSubcategory,
+    detailsThirdCategory,
+  ]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -284,7 +279,7 @@ const PostsList = ({
   }, [searchTerm]);
 
   useEffect(() => {
-    if (isInitialFetchDone) { // Verificar si la petición inicial ya se ha realizado antes de hacer la petición adicional
+    if (isInitialFetchDone) {
       fetchPosts(true, {
         hasLocation,
         searchTerm,
@@ -307,12 +302,25 @@ const PostsList = ({
         setIsFetchingMore,
       });
     }
-  }, [isInitialFetchDone, categoryFilter, searchTerm, keepCategories, latitude, longitude, radius, detailsCategory, detailsSubcategory, detailsThirdCategory]);
+  }, [
+    isInitialFetchDone,
+    categoryFilter,
+    searchTerm,
+    keepCategories,
+    latitude,
+    longitude,
+    radius,
+    detailsCategory,
+    detailsSubcategory,
+    detailsThirdCategory,
+  ]);
 
   useEffect(() => {
     onMainCategoryChange(categoryFilter.mainCategory);
     onSubcategoryChange(categoryFilter.subCategory);
     onThirdCategoryChange(categoryFilter.thirdCategory);
+    setPosts([]);
+    setCurrentPage(1);
   }, [categoryFilter]);
 
   useEffect(() => {

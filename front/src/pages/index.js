@@ -10,7 +10,7 @@ const IndexPage = ({
   onDetailsSubcategoryChange,
   onDetailsThirdCategoryChange,
   mainCategory,
-  subcategory,
+  subCategory,
   thirdCategory,
   onMainCategoryChange,
   onSubcategoryChange,
@@ -95,7 +95,7 @@ const IndexPage = ({
         onSubcategoryChange={onSubcategoryChange}
         onThirdCategoryChange={onThirdCategoryChange}
         mainCategory={mainCategory}
-        subcategory={subcategory}
+        subCategory={subCategory}
         thirdCategory={thirdCategory}
         onSearchTermChange={onSearchTermChange}
         onKeepCategoriesChange={onKeepCategoriesChange}

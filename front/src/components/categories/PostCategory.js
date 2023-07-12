@@ -47,7 +47,9 @@ export default function PostCategory({
         detailsThirdCategory
       );
     }
-  }, [onDetailsCategoryChange, onDetailsSubcategoryChange, onDetailsThirdCategoryChange]);  
+  }, [onDetailsCategoryChange,
+      onDetailsSubcategoryChange,
+      onDetailsThirdCategoryChange]);  
 
   const clearAllCategories = () => {
     setSelectedCategory("");
@@ -270,23 +272,6 @@ export default function PostCategory({
     return () => {
       window.removeEventListener("beforeunload", handleUnload);
     };
-  }, []);
-
-  useEffect(() => {
-    // Leer las categorías seleccionadas desde el localStorage
-    const storedMainCategory = localStorage.getItem("mainCategory");
-    const storedSubcategory = localStorage.getItem("subCategory");
-    const storedThirdCategory = localStorage.getItem("thirdCategory");
-
-    if (storedMainCategory) {
-      setSelectedCategory(storedMainCategory);
-    }
-    if (storedSubcategory) {
-      setSelectedSubcategory(storedSubcategory);
-    }
-    if (storedThirdCategory) {
-      setSelectedThirdCategory(storedThirdCategory);
-    }
   }, []);
 
   useEffect(() => {

@@ -42,8 +42,8 @@ export default function PostCategory({
   useEffect(() => {
     if (selectedSubcategory) {
       const category = categoriesData.find((cat) => cat.id === selectedCategory);
-      const subcategory = category.subcategories.find((subcat) => subcat.id === selectedSubcategory);
-      setThirdCategoryOptions(subcategory ? subcategory.thirdCategories : []);
+      const subCategory = category.subcategories.find((subcat) => subcat.id === selectedSubcategory);
+      setThirdCategoryOptions(subCategory ? subCategory.thirdCategories : []);
       setSelectedThirdCategory(initialThirdCategory !== '' ? initialThirdCategory : '');
     } else {
       setThirdCategoryOptions([]);
@@ -74,15 +74,15 @@ export default function PostCategory({
   };
 
   const handleSubcategoryChange = (event) => {
-    const subcategory = event.target.value;
-    setSelectedSubcategory(subcategory);
+    const subCategory = event.target.value;
+    setSelectedSubcategory(subCategory);
 
     if (onSubcategoryChange) {
-      onSubcategoryChange(subcategory);
+      onSubcategoryChange(subCategory);
     }
 
     const category = categoriesData.find((cat) => cat.id === selectedCategory);
-    const selectedSubcategoryData = category.subcategories.find((subcat) => subcat.id === subcategory);
+    const selectedSubcategoryData = category.subcategories.find((subcat) => subcat.id === subCategory);
     setThirdCategoryOptions(selectedSubcategoryData ? selectedSubcategoryData.thirdCategories : []);
 
     setSelectedThirdCategory('');
@@ -128,16 +128,16 @@ export default function PostCategory({
 
       {selectedCategory && (
         <select
-          id="subcategory-select"
+          id="subCategory-select"
           className="form-select mt-2 want-rounded"
           value={selectedSubcategory || initialSubcategory}
           onChange={handleSubcategoryChange}
           required={isRequired}
         >
           <option value="">{t('categories.selectSubCategory')}</option>
-          {subcategoryOptions.map((subcategory) => (
-            <option key={subcategory.id} value={subcategory.id}>
-              {getSubcategoryTranslation(selectedCategory, subcategory.id)}
+          {subcategoryOptions.map((subCategory) => (
+            <option key={subCategory.id} value={subCategory.id}>
+              {getSubcategoryTranslation(selectedCategory, subCategory.id)}
             </option>
           ))}
         </select>
