@@ -10,6 +10,7 @@ export default function PostCategory({
   searchTerm,
   keepCategories,
   resetAll,
+  onResetAll,
   detailsCategory,
   detailsSubcategory,
   detailsThirdCategory,
@@ -29,12 +30,12 @@ export default function PostCategory({
 
   const handleDetailsCategoryChange = (
     category,
-    subcategory,
+    subCategory,
     thirdCategory
   ) => {
-    handleButtonClick(category, subcategory, thirdCategory);
+    handleButtonClick(category, subCategory, thirdCategory);
     handleCategoryChange(category);
-    handleSubcategoryChange(subcategory);
+    handleSubcategoryChange(subCategory);
     handleThirdCategoryChange(thirdCategory);
   };
   
@@ -46,7 +47,7 @@ export default function PostCategory({
         detailsThirdCategory
       );
     }
-  }, [detailsCategory, detailsSubcategory, detailsThirdCategory]);  
+  }, [onDetailsCategoryChange, onDetailsSubcategoryChange, onDetailsThirdCategoryChange]);  
 
   const clearAllCategories = () => {
     setSelectedCategory("");
@@ -60,9 +61,12 @@ export default function PostCategory({
   const handleCategoryChange = (category) => {
     if (selectedCategory !== category) {
       setSelectedCategory(category);
+      onDetailsCategoryChange(category);
       setSelectedSubcategory("");
+      onDetailsSubcategoryChange(category);
       setSelectedThirdCategory("");
-  
+      onDetailsThirdCategoryChange(category);
+      
       if (onMainCategoryChange) {
         onMainCategoryChange(category);
       }
@@ -77,17 +81,23 @@ export default function PostCategory({
       }
     } else {
       setSelectedCategory("");
+      onDetailsCategoryChange("");
       setSelectedSubcategory("");
+      onDetailsSubcategoryChange("");
       setSelectedThirdCategory("");
+      onDetailsThirdCategoryChange("");
   
       if (onMainCategoryChange) {
         onMainCategoryChange("");
+        onDetailsCategoryChange("");
       }
       if (onSubcategoryChange) {
         onSubcategoryChange("");
+        onDetailsSubcategoryChange("");
       }
       if (onThirdCategoryChange) {
         onThirdCategoryChange("");
+        onDetailsThirdCategoryChange("");
       }
       if (onSearchTermChange) {
         onSearchTermChange("");
@@ -95,12 +105,13 @@ export default function PostCategory({
     }
   };
   
-  const handleSubcategoryChange = (subcategory) => {
-    if (selectedSubcategory !== subcategory) {
-      setSelectedSubcategory(subcategory);
+  const handleSubcategoryChange = (subCategory) => {
+    if (selectedSubcategory !== subCategory) {
+      setSelectedSubcategory(subCategory);
       setSelectedThirdCategory("");
       if (onSubcategoryChange) {
-        onSubcategoryChange(subcategory);
+        onSubcategoryChange(subCategory);
+        onDetailsSubcategoryChange(subCategory);
       }
       if (onThirdCategoryChange) {
         onThirdCategoryChange("");
@@ -113,9 +124,11 @@ export default function PostCategory({
       setSelectedThirdCategory("");
       if (onSubcategoryChange) {
         onSubcategoryChange("");
+        onDetailsSubcategoryChange("");
       }
       if (onThirdCategoryChange) {
         onThirdCategoryChange("");
+        onDetailsThirdCategoryChange("");
       }
       if (onSearchTermChange) {
         onSearchTermChange("");
@@ -128,6 +141,7 @@ export default function PostCategory({
       setSelectedThirdCategory(thirdCategory);
       if (onThirdCategoryChange) {
         onThirdCategoryChange(thirdCategory);
+        onDetailsThirdCategoryChange(thirdCategory);
       }
       if (onSearchTermChange) {
         onSearchTermChange("");
@@ -136,6 +150,7 @@ export default function PostCategory({
       setSelectedThirdCategory("");
       if (onThirdCategoryChange) {
         onThirdCategoryChange("");
+        onDetailsThirdCategoryChange("");
       }
       if (onSearchTermChange) {
         onSearchTermChange("");
@@ -184,8 +199,8 @@ export default function PostCategory({
     return false;
   };
 
-  const isThirdCategoryVisible = (subcategory) => {
-    if (!selectedSubcategory || selectedSubcategory === subcategory.id) {
+  const isThirdCategoryVisible = (subCategory) => {
+    if (!selectedSubcategory || selectedSubcategory === subCategory.id) {
       return true;
     }
     return false;
@@ -234,12 +249,6 @@ export default function PostCategory({
   }, [searchTerm, keepCategories]);
 
   useEffect(() => {
-    if (resetAll) {
-      clearAllCategories();
-    }
-  }, [resetAll]);
-
-  useEffect(() => {
     if (detailsCategory && detailsSubcategory && detailsThirdCategory) {
       handleButtonClick(
         detailsCategory,
@@ -252,7 +261,7 @@ export default function PostCategory({
   useEffect(() => {
     const handleUnload = () => {
       localStorage.removeItem("mainCategory");
-      localStorage.removeItem("subcategory");
+      localStorage.removeItem("subCategory");
       localStorage.removeItem("thirdCategory");
     };
 
@@ -266,7 +275,7 @@ export default function PostCategory({
   useEffect(() => {
     // Leer las categorías seleccionadas desde el localStorage
     const storedMainCategory = localStorage.getItem("mainCategory");
-    const storedSubcategory = localStorage.getItem("subcategory");
+    const storedSubcategory = localStorage.getItem("subCategory");
     const storedThirdCategory = localStorage.getItem("thirdCategory");
 
     if (storedMainCategory) {
@@ -283,22 +292,17 @@ export default function PostCategory({
   useEffect(() => {
     if (resetAll) {
       localStorage.removeItem("mainCategory");
-      localStorage.removeItem("subcategory");
+      localStorage.removeItem("subCategory");
       localStorage.removeItem("thirdCategory");
 
-      setSelectedCategory("");
-      setSelectedSubcategory("");
-      setSelectedThirdCategory("");
-      onMainCategoryChange("");
-      onSubcategoryChange("");
-      onThirdCategoryChange("");
+      clearAllCategories();
     }
-  }, [resetAll]);
+  }, [onResetAll, resetAll]);
 
   useEffect(() => {
     // Guardar las categorías seleccionadas en el localStorage
     localStorage.setItem("mainCategory", selectedCategory);
-    localStorage.setItem("subcategory", selectedSubcategory);
+    localStorage.setItem("subCategory", selectedSubcategory);
     localStorage.setItem("thirdCategory", selectedThirdCategory);
   }, [selectedCategory, selectedSubcategory, selectedThirdCategory]);
 
@@ -356,30 +360,30 @@ export default function PostCategory({
               {selectedCategory &&
                 categoriesData
                   .find((cat) => cat.id === selectedCategory)
-                  .subcategories.map((subcategory) => (
+                  .subcategories.map((subCategory) => (
                     <button
-                      key={subcategory.id}
-                      id={`${selectedCategory}_${subcategory.id}`}
+                      key={subCategory.id}
+                      id={`${selectedCategory}_${subCategory.id}`}
                       className={`want-rounded m-2 ${
-                        selectedSubcategory === subcategory.id
+                        selectedSubcategory === subCategory.id
                           ? "want-button border-selected"
                           : searchPerformed && !keepCategories
                           ? "generic-button border"
                           : "generic-button border"
                       }`}
                       onClick={() => {
-                        handleButtonClick(selectedCategory, subcategory.id, "");
-                        handleSubcategoryChange(subcategory.id);
+                        handleButtonClick(selectedCategory, subCategory.id, "");
+                        handleSubcategoryChange(subCategory.id);
                       }}
                       style={{
-                        display: isThirdCategoryVisible(subcategory)
+                        display: isThirdCategoryVisible(subCategory)
                           ? "inline-block"
                           : "none",
                       }}
                     >
                       {getSubcategoryTranslation(
                         selectedCategory,
-                        subcategory.id
+                        subCategory.id
                       )}
                       {selectedSubcategory && (
                         <>

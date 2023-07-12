@@ -27,11 +27,11 @@ const PostsList = ({
   onResetAll,
   resetAll,
   mainCategory,
-  subcategory,
+  subCategory,
   thirdCategory,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [pageSize, setPageSize] = useState(7);
+  const [pageSize, setPageSize] = useState(12);
   const [totalPosts, setTotalPosts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMorePosts, setHasMorePosts] = useState(false);
@@ -69,17 +69,13 @@ const PostsList = ({
       mainCategory: mainCategory,
     }));
 
-    if (detailsCategory !== "") {
-      localStorage.removeItem("cachedPosts");
-    }
-
     setCurrentPage(1);
   };
 
-  const handleSubcategoryChange = (subcategory) => {
+  const handleSubcategoryChange = (subCategory) => {
     setCategoryFilter((prevFilter) => ({
       ...prevFilter,
-      subCategory: subcategory,
+      subCategory: subCategory,
     }));
 
     if (onDetailsSubcategoryChange) {
@@ -328,57 +324,6 @@ const PostsList = ({
     }
   }, [posts, currentPage, totalPosts, pageSize]);
 
-  useEffect(() => {
-    return () => {
-      onDetailsCategoryChange("");
-      onDetailsSubcategoryChange("");
-      onDetailsThirdCategoryChange("");
-    };
-  }, []);
-
-  // Guardar la categoría seleccionada en el localStorage cuando cambia
-  useEffect(() => {
-    if (detailsCategory) {
-      if (!detailsSubcategory) {
-        onDetailsSubcategoryChange("");
-      }
-      if (!detailsThirdCategory) {
-        onDetailsThirdCategoryChange("");
-      }
-    } else {
-      onDetailsSubcategoryChange("");
-      onDetailsThirdCategoryChange("");
-    }
-  }, [detailsCategory]);
-
-  // Restaurar la categoría seleccionada desde el localStorage al cargar el componente
-  useEffect(() => {
-    const storedCategory = localStorage.getItem("selectedCategory");
-    const storedSubcategory = localStorage.getItem("selectedSubcategory");
-    const storedThirdCategory = localStorage.getItem("selectedThirdCategory");
-
-    if (storedCategory) {
-      setCategoryFilter((prevFilter) => ({
-        ...prevFilter,
-        mainCategory: storedCategory,
-      }));
-    }
-
-    if (storedSubcategory) {
-      setCategoryFilter((prevFilter) => ({
-        ...prevFilter,
-        subCategory: storedSubcategory,
-      }));
-    }
-
-    if (storedThirdCategory) {
-      setCategoryFilter((prevFilter) => ({
-        ...prevFilter,
-        thirdCategory: storedThirdCategory,
-      }));
-    }
-  }, []);
-
   return (
     <div>
       <div className="text-center">
@@ -390,6 +335,7 @@ const PostsList = ({
           searchTerm={searchTerm}
           keepCategories={keepCategories}
           resetAll={resetAll}
+          onResetAll={onResetAll}
           detailsCategory={detailsCategory}
           detailsThirdCategory={detailsThirdCategory}
           detailsSubcategory={detailsSubcategory}
@@ -397,7 +343,7 @@ const PostsList = ({
           onDetailsSubcategoryChange={onDetailsSubcategoryChange}
           onDetailsThirdCategoryChange={onDetailsThirdCategoryChange}
           mainCategory={mainCategory}
-          subcategory={subcategory}
+          subCategory={subCategory}
           thirdCategory={thirdCategory}
         />
       </div>
