@@ -63,10 +63,10 @@ export default function PostCategory({
       setSelectedCategory(category);
       onDetailsCategoryChange(category);
       setSelectedSubcategory("");
-      onDetailsSubcategoryChange(category);
+      onDetailsSubcategoryChange("");
       setSelectedThirdCategory("");
-      onDetailsThirdCategoryChange(category);
-  
+      onDetailsThirdCategoryChange("");
+
       if (onMainCategoryChange && selectedCategory !== category) {
         onMainCategoryChange(category);
       }
@@ -86,7 +86,7 @@ export default function PostCategory({
       onDetailsSubcategoryChange("");
       setSelectedThirdCategory("");
       onDetailsThirdCategoryChange("");
-  
+
       if (onMainCategoryChange) {
         onMainCategoryChange("");
         onDetailsCategoryChange("");
@@ -104,7 +104,7 @@ export default function PostCategory({
       }
     }
   };
-  
+
   const handleSubcategoryChange = (subCategory) => {
     if (selectedSubcategory !== subCategory) {
       setSelectedSubcategory(subCategory);
@@ -135,7 +135,7 @@ export default function PostCategory({
       }
     }
   };
-  
+
   const handleThirdCategoryChange = (thirdCategory) => {
     if (selectedThirdCategory !== thirdCategory) {
       setSelectedThirdCategory(thirdCategory);
@@ -156,7 +156,7 @@ export default function PostCategory({
         onSearchTermChange("");
       }
     }
-  };  
+  };
 
   const getCategoryTranslation = (categoryId) => {
     return t(`categories.${categoryId}.name`);
@@ -283,6 +283,23 @@ export default function PostCategory({
   }, [onResetAll, resetAll]);
 
   useEffect(() => {
+    // Restaurar las categorías seleccionadas del localStorage
+    const mainCategory = localStorage.getItem("mainCategory");
+    const subCategory = localStorage.getItem("subCategory");
+    const thirdCategory = localStorage.getItem("thirdCategory");
+
+    if (mainCategory) {
+      setSelectedCategory(mainCategory);
+    }
+    if (subCategory) {
+      setSelectedSubcategory(subCategory);
+    }
+    if (thirdCategory) {
+      setSelectedThirdCategory(thirdCategory);
+    }
+  }, []);
+
+  useEffect(() => {
     // Guardar las categorías seleccionadas en el localStorage
     localStorage.setItem("mainCategory", selectedCategory);
     localStorage.setItem("subCategory", selectedSubcategory);
@@ -303,9 +320,9 @@ export default function PostCategory({
   return (
     <>
       <div>
-        <p> DC {detailsCategory}</p>
-        <p> DS {detailsSubcategory}</p>
-        <p> DT {detailsThirdCategory}</p>
+        <p>DC {detailsCategory}</p>
+        <p>DS {detailsSubcategory}</p>
+        <p>DT {detailsThirdCategory}</p>
       </div>
       <div className="d-flex">
         <div className="col-auto d-flex align-items-center justify-content-center">
@@ -394,7 +411,7 @@ export default function PostCategory({
                   .subcategories.find(
                     (subcat) => subcat.id === selectedSubcategory
                   )
-                  .thirdCategories.map((thirdCategory) => (
+                  ?.thirdCategories.map((thirdCategory) => (
                     <button
                       key={thirdCategory.id}
                       id={`${selectedCategory}_${selectedSubcategory}_${thirdCategory.id}`}

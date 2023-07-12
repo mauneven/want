@@ -28,7 +28,7 @@ const PostsList = ({
   thirdCategory,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [pageSize, setPageSize] = useState(6);
+  const [pageSize, setPageSize] = useState(7);
   const [totalPosts, setTotalPosts] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMorePosts, setHasMorePosts] = useState(false);
@@ -51,6 +51,7 @@ const PostsList = ({
   useEffect(() => {
     const handleUnload = () => {
       localStorage.removeItem("cachedPosts");
+      localStorage.removeItem("currentPage");
     };
 
     window.addEventListener("beforeunload", handleUnload);
@@ -103,6 +104,7 @@ const PostsList = ({
     if (resetAll) {
       onResetAll(false);
       localStorage.removeItem("cachedPosts");
+      localStorage.removeItem("currentPage");
       setPosts([]);
       setHasMorePosts(false);
       onSearchTermChange("");
@@ -133,9 +135,11 @@ const PostsList = ({
 
   useEffect(() => {
     const cachedPosts = localStorage.getItem("cachedPosts");
+    const cachedPage = localStorage.getItem("currentPage");
 
-    if (cachedPosts && currentPage === 1) {
+    if (cachedPosts && cachedPage && currentPage === 1) {
       setPosts(JSON.parse(cachedPosts));
+      setCurrentPage(parseInt(cachedPage));
       setIsLoading(false);
       setIsInitialFetchDone(true);
     } else if (latitude !== null && longitude !== null && radius !== null) {
@@ -288,13 +292,14 @@ const PostsList = ({
         previousFilter.thirdCategory !== categoryFilter.thirdCategory;
 
       if (isFilterChanged) {
+        setCurrentPage(1); // Reiniciar la página a 1
         fetchPosts(true, {
           hasLocation,
           searchTerm,
           keepCategories,
           categoryFilter,
           userPreferences,
-          currentPage,
+          currentPage: 1, // Establecer currentPage a 1
           pageSize,
           latitude,
           longitude,
@@ -339,6 +344,10 @@ const PostsList = ({
       setHasMorePosts(true);
     }
   }, [posts, currentPage, totalPosts, pageSize]);
+
+  useEffect(() => {
+    localStorage.setItem("currentPage", currentPage.toString());
+  }, [currentPage]);
 
   return (
     <div>
