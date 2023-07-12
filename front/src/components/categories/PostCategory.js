@@ -38,7 +38,7 @@ export default function PostCategory({
     handleSubcategoryChange(subCategory);
     handleThirdCategoryChange(thirdCategory);
   };
-  
+
   useEffect(() => {
     if (detailsCategory !== "") {
       handleDetailsCategoryChange(
@@ -47,9 +47,7 @@ export default function PostCategory({
         detailsThirdCategory
       );
     }
-  }, [onDetailsCategoryChange,
-      onDetailsSubcategoryChange,
-      onDetailsThirdCategoryChange]);  
+  }, [onDetailsCategoryChange, onDetailsSubcategoryChange, onDetailsThirdCategoryChange]);
 
   const clearAllCategories = () => {
     setSelectedCategory("");
@@ -68,8 +66,8 @@ export default function PostCategory({
       onDetailsSubcategoryChange(category);
       setSelectedThirdCategory("");
       onDetailsThirdCategoryChange(category);
-      
-      if (onMainCategoryChange) {
+  
+      if (onMainCategoryChange && selectedCategory !== category) {
         onMainCategoryChange(category);
       }
       if (onSubcategoryChange) {
@@ -111,7 +109,7 @@ export default function PostCategory({
     if (selectedSubcategory !== subCategory) {
       setSelectedSubcategory(subCategory);
       setSelectedThirdCategory("");
-      if (onSubcategoryChange) {
+      if (onSubcategoryChange && selectedSubcategory !== subCategory) {
         onSubcategoryChange(subCategory);
         onDetailsSubcategoryChange(subCategory);
       }
@@ -141,7 +139,7 @@ export default function PostCategory({
   const handleThirdCategoryChange = (thirdCategory) => {
     if (selectedThirdCategory !== thirdCategory) {
       setSelectedThirdCategory(thirdCategory);
-      if (onThirdCategoryChange) {
+      if (onThirdCategoryChange && selectedThirdCategory !== thirdCategory) {
         onThirdCategoryChange(thirdCategory);
         onDetailsThirdCategoryChange(thirdCategory);
       }
@@ -158,7 +156,7 @@ export default function PostCategory({
         onSearchTermChange("");
       }
     }
-  }; 
+  };  
 
   const getCategoryTranslation = (categoryId) => {
     return t(`categories.${categoryId}.name`);
@@ -289,6 +287,17 @@ export default function PostCategory({
     localStorage.setItem("mainCategory", selectedCategory);
     localStorage.setItem("subCategory", selectedSubcategory);
     localStorage.setItem("thirdCategory", selectedThirdCategory);
+
+    // Realizar las peticiones necesarias
+    if (onMainCategoryChange) {
+      onMainCategoryChange(selectedCategory);
+    }
+    if (onSubcategoryChange) {
+      onSubcategoryChange(selectedSubcategory);
+    }
+    if (onThirdCategoryChange) {
+      onThirdCategoryChange(selectedThirdCategory);
+    }
   }, [selectedCategory, selectedSubcategory, selectedThirdCategory]);
 
   return (

@@ -40,11 +40,11 @@ const PostsList = ({
   const [hasLocation, setHasLocation] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState({});
   const [posts, setPosts] = useState([]);
-  const [isInitialFetchDone, setIsInitialFetchDone] = useState(false); // Variable de estado para indicar si la petición inicial ya se ha realizado
+  const [isInitialFetchDone, setIsInitialFetchDone] = useState(false);
+  const previousCategoryFilter = useRef(categoryFilter);
   const user = useCheckSession();
   const { userPreferences, userPreferencesLoaded } =
     useGetUserPreferences(user);
-
   const router = useRouter();
   const containerRef = useRef(null);
 
@@ -280,27 +280,37 @@ const PostsList = ({
 
   useEffect(() => {
     if (isInitialFetchDone) {
-      fetchPosts(true, {
-        hasLocation,
-        searchTerm,
-        keepCategories,
-        categoryFilter,
-        userPreferences,
-        currentPage,
-        pageSize,
-        latitude,
-        longitude,
-        radius,
-        detailsCategory,
-        detailsSubcategory,
-        detailsThirdCategory,
-        setPosts,
-        setTotalPosts,
-        setHasMorePosts,
-        setIsFetching,
-        setIsLoading,
-        setIsFetchingMore,
-      });
+      // Comparar el valor anterior y el nuevo valor de categoryFilter
+      const previousFilter = previousCategoryFilter.current;
+      const isFilterChanged =
+        previousFilter.mainCategory !== categoryFilter.mainCategory ||
+        previousFilter.subCategory !== categoryFilter.subCategory ||
+        previousFilter.thirdCategory !== categoryFilter.thirdCategory;
+
+      if (isFilterChanged) {
+        fetchPosts(true, {
+          hasLocation,
+          searchTerm,
+          keepCategories,
+          categoryFilter,
+          userPreferences,
+          currentPage,
+          pageSize,
+          latitude,
+          longitude,
+          radius,
+          detailsCategory,
+          detailsSubcategory,
+          detailsThirdCategory,
+          setPosts,
+          setTotalPosts,
+          setHasMorePosts,
+          setIsFetching,
+          setIsLoading,
+          setIsFetchingMore,
+        });
+      }
+      previousCategoryFilter.current = categoryFilter;
     }
   }, [
     isInitialFetchDone,
@@ -319,8 +329,6 @@ const PostsList = ({
     onMainCategoryChange(categoryFilter.mainCategory);
     onSubcategoryChange(categoryFilter.subCategory);
     onThirdCategoryChange(categoryFilter.thirdCategory);
-    setPosts([]);
-    setCurrentPage(1);
   }, [categoryFilter]);
 
   useEffect(() => {
