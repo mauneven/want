@@ -284,7 +284,6 @@ const PostsList = ({
 
   useEffect(() => {
     if (isInitialFetchDone) {
-      // Comparar el valor anterior y el nuevo valor de categoryFilter
       const previousFilter = previousCategoryFilter.current;
       const isFilterChanged =
         previousFilter.mainCategory !== categoryFilter.mainCategory ||
@@ -292,14 +291,14 @@ const PostsList = ({
         previousFilter.thirdCategory !== categoryFilter.thirdCategory;
 
       if (isFilterChanged) {
-        setCurrentPage(1); // Reiniciar la página a 1
+        setCurrentPage(1);
         fetchPosts(true, {
           hasLocation,
           searchTerm,
           keepCategories,
           categoryFilter,
           userPreferences,
-          currentPage: 1, // Establecer currentPage a 1
+          currentPage: 1, 
           pageSize,
           latitude,
           longitude,

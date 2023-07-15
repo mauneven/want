@@ -99,8 +99,33 @@ const PostDetails = ({
     }
   };
 
-const savePreferencesToLocalStorage = () => {
-    
+  const savePreferencesToLocalStorage = () => {
+    const mainCategoryPreferences =
+      JSON.parse(localStorage.getItem("mainCategoryPreferences") || "{}");
+    const subCategoryPreferences =
+      JSON.parse(localStorage.getItem("subCategoryPreferences") || "{}");
+    const thirdCategoryPreferences =
+      JSON.parse(localStorage.getItem("thirdCategoryPreferences") || "{}");
+
+    mainCategoryPreferences[post.mainCategory] =
+      (mainCategoryPreferences[post.mainCategory] || 0) + 1;
+    subCategoryPreferences[post.subCategory] =
+      (subCategoryPreferences[post.subCategory] || 0) + 1;
+    thirdCategoryPreferences[post.thirdCategory] =
+      (thirdCategoryPreferences[post.thirdCategory] || 0) + 1;
+
+    localStorage.setItem(
+      "mainCategoryPreferences",
+      JSON.stringify(mainCategoryPreferences)
+    );
+    localStorage.setItem(
+      "subCategoryPreferences",
+      JSON.stringify(subCategoryPreferences)
+    );
+    localStorage.setItem(
+      "thirdCategoryPreferences",
+      JSON.stringify(thirdCategoryPreferences)
+    );
 
     console.log("Preferencias guardadas en el localStorage");
   };
