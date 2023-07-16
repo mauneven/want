@@ -37,6 +37,7 @@ const PostsList = ({
   const [isInitialFetchDone, setIsInitialFetchDone] = useState(false);
   const previousCategoryFilter = useRef(categoryFilter);
   const user = useCheckSession();
+  const fetchPostsRef = useRef(false);
   const { userPreferences, userPreferencesLoaded } =
     useGetUserPreferences(user);
   const router = useRouter();
@@ -107,6 +108,7 @@ const PostsList = ({
       onMainCategoryChange("");
       onSubcategoryChange("");
       onThirdCategoryChange("");
+      fetchPostsRef.current = false;
     }
   }, [resetAll, onResetAll]);
 
@@ -119,13 +121,13 @@ const PostsList = ({
   useEffect(() => {
     const cachedPosts = localStorage.getItem("cachedPosts");
     const cachedPage = localStorage.getItem("currentPage");
-
+  
     if (cachedPosts && cachedPage && currentPage === 1) {
       setPosts(JSON.parse(cachedPosts));
       setCurrentPage(parseInt(cachedPage));
       setIsLoading(false);
       setIsInitialFetchDone(true);
-    } else if (latitude !== null && longitude !== null && radius !== null) {
+    } else if (latitude !== null && longitude !== null && radius !== null && !fetchPostsRef.current) {
       fetchPosts(false, {
         hasLocation,
         searchTerm,
@@ -145,6 +147,7 @@ const PostsList = ({
         setIsFetchingMore,
       }).then(() => {
         setIsInitialFetchDone(true);
+        fetchPostsRef.current = true;
       });
     }
   }, [
