@@ -11,9 +11,6 @@ const fetchPosts = async (resetPosts, {
   latitude,
   longitude,
   radius,
-  detailsCategory,
-  detailsSubcategory,
-  detailsThirdCategory,
   setPosts,
   setTotalPosts,
   setHasMorePosts,
@@ -81,7 +78,6 @@ const fetchPosts = async (resetPosts, {
     });
 
     console.log("Fetching posts...");
-    console.log(`details category: ${detailsCategory}`)
 
     if (resetPosts) {
       setPosts([]); // Eliminar los posts antiguos

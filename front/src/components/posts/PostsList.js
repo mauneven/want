@@ -13,12 +13,6 @@ const PostsList = ({
   onMainCategoryChange,
   onSubcategoryChange,
   onThirdCategoryChange,
-  onDetailsCategoryChange,
-  onDetailsSubcategoryChange,
-  onDetailsThirdCategoryChange,
-  detailsCategory,
-  detailsSubcategory,
-  detailsThirdCategory,
   keepCategories,
   onSearchTermChange,
   onResetAll,
@@ -80,7 +74,7 @@ const PostsList = ({
   const handleThirdCategoryChange = (thirdCategory) => {
     setCategoryFilter((prevFilter) => ({
       ...prevFilter,
-      thirdCategory,
+      thirdCategory: thirdCategory,
     }));
     setCurrentPage(1);
   };
@@ -104,26 +98,15 @@ const PostsList = ({
     if (resetAll) {
       onResetAll(false);
       localStorage.removeItem("cachedPosts");
-      localStorage.removeItem("currentPage");
       setPosts([]);
       setHasMorePosts(false);
       onSearchTermChange("");
       setCurrentPage(1);
       setIsFetchingMore(false);
       setIsLoading(true);
-      onDetailsCategoryChange("");
-      onDetailsSubcategoryChange("");
-      onDetailsThirdCategoryChange("");
       onMainCategoryChange("");
       onSubcategoryChange("");
       onThirdCategoryChange("");
-
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-        onResetAll(false);
-      }, 1);
-
-      return () => clearTimeout(timer);
     }
   }, [resetAll, onResetAll]);
 
@@ -154,9 +137,6 @@ const PostsList = ({
         latitude,
         longitude,
         radius,
-        detailsCategory,
-        detailsSubcategory,
-        detailsThirdCategory,
         setPosts,
         setTotalPosts,
         setHasMorePosts,
@@ -173,101 +153,11 @@ const PostsList = ({
     latitude,
     longitude,
     radius,
-    detailsCategory,
-    detailsSubcategory,
-    detailsThirdCategory,
+    categoryFilter,
+    mainCategory,
+    subCategory,
+    thirdCategory,
   ]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop =
-        (document.documentElement && document.documentElement.scrollTop) ||
-        document.body.scrollTop;
-      const scrollHeight =
-        (document.documentElement && document.documentElement.scrollHeight) ||
-        document.body.scrollHeight;
-      const clientHeight =
-        document.documentElement.clientHeight || window.innerHeight;
-      const scrolledToBottom =
-        Math.ceil(scrollTop + clientHeight) >= scrollHeight;
-      const scrolledToTop = scrollTop === 0;
-
-      if (
-        scrolledToBottom &&
-        hasMorePosts &&
-        !isLoading &&
-        !isFetching &&
-        !isFetchingMore
-      ) {
-        setIsFetchingMore(true);
-      }
-
-      if (scrolledToTop && !isLoading && !isFetching && !isFetchingMore) {
-        setHasMorePosts(false);
-      }
-    };
-
-    const handleTouchMove = () => {
-      const scrollTop =
-        (document.documentElement && document.documentElement.scrollTop) ||
-        document.body.scrollTop;
-      const scrollHeight =
-        (document.documentElement && document.documentElement.scrollHeight) ||
-        document.body.scrollHeight;
-      const clientHeight =
-        document.documentElement.clientHeight || window.innerHeight;
-      const scrolledToBottom =
-        Math.ceil(scrollTop + clientHeight) >= scrollHeight;
-      const scrolledToTop = scrollTop === 0;
-
-      if (
-        scrolledToBottom &&
-        hasMorePosts &&
-        !isLoading &&
-        !isFetching &&
-        !isFetchingMore
-      ) {
-        setIsFetchingMore(true);
-      }
-
-      if (scrolledToTop && !isLoading && !isFetching && !isFetchingMore) {
-        setHasMorePosts(false);
-      }
-    };
-
-    const handleScrollOrTouchMove = () => {
-      if ("ontouchstart" in window) {
-        handleTouchMove();
-      } else {
-        handleScroll();
-      }
-    };
-
-    window.addEventListener("scroll", handleScrollOrTouchMove);
-
-    return () => {
-      window.removeEventListener("scroll", handleScrollOrTouchMove);
-    };
-  }, [hasMorePosts, isLoading, isFetching, isFetchingMore]);
-
-  useEffect(() => {
-    const updateLocalStorage = () => {
-      localStorage.setItem(
-        "mainCategoryPreferences",
-        JSON.stringify(userPreferences.mainCategoryCounts)
-      );
-      localStorage.setItem(
-        "subCategoryPreferences",
-        JSON.stringify(userPreferences.subCategoryCounts)
-      );
-      localStorage.setItem(
-        "thirdCategoryPreferences",
-        JSON.stringify(userPreferences.thirdCategoryCounts)
-      );
-    };
-
-    updateLocalStorage();
-  }, [userPreferences]);
 
   useEffect(() => {
     if (isFetchingMore && !isLoading && !isFetching && hasMorePosts) {
@@ -292,20 +182,18 @@ const PostsList = ({
 
       if (isFilterChanged) {
         setCurrentPage(1);
+        setPosts([]);
         fetchPosts(true, {
           hasLocation,
           searchTerm,
           keepCategories,
           categoryFilter,
           userPreferences,
-          currentPage: 1, 
+          currentPage: 1,
           pageSize,
           latitude,
           longitude,
           radius,
-          detailsCategory,
-          detailsSubcategory,
-          detailsThirdCategory,
           setPosts,
           setTotalPosts,
           setHasMorePosts,
@@ -324,16 +212,16 @@ const PostsList = ({
     latitude,
     longitude,
     radius,
-    detailsCategory,
-    detailsSubcategory,
-    detailsThirdCategory,
+    mainCategory,
+    subCategory,
+    thirdCategory
   ]);
 
   useEffect(() => {
     onMainCategoryChange(categoryFilter.mainCategory);
     onSubcategoryChange(categoryFilter.subCategory);
     onThirdCategoryChange(categoryFilter.thirdCategory);
-  }, [categoryFilter]);
+  }, [categoryFilter, mainCategory, subCategory, thirdCategory, onMainCategoryChange, onSubcategoryChange, onThirdCategoryChange]);
 
   useEffect(() => {
     const lastPage = Math.ceil(totalPosts / pageSize);
@@ -359,13 +247,6 @@ const PostsList = ({
           searchTerm={searchTerm}
           keepCategories={keepCategories}
           resetAll={resetAll}
-          onResetAll={onResetAll}
-          detailsCategory={detailsCategory}
-          detailsThirdCategory={detailsThirdCategory}
-          detailsSubcategory={detailsSubcategory}
-          onDetailsCategoryChange={onDetailsCategoryChange}
-          onDetailsSubcategoryChange={onDetailsSubcategoryChange}
-          onDetailsThirdCategoryChange={onDetailsThirdCategoryChange}
           mainCategory={mainCategory}
           subCategory={subCategory}
           thirdCategory={thirdCategory}

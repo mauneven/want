@@ -3,12 +3,6 @@ import { useRouter } from "next/router";
 import PostsList from "@/components/posts/PostsList";
 
 const IndexPage = ({
-  detailsCategory,
-  detailsSubcategory,
-  detailsThirdCategory,
-  onDetailsCategoryChange,
-  onDetailsSubcategoryChange,
-  onDetailsThirdCategoryChange,
   mainCategory,
   subCategory,
   thirdCategory,
@@ -85,12 +79,6 @@ const IndexPage = ({
       <PostsList
         key={key}
         searchTerm={searchTerm}
-        detailsCategory={detailsCategory}
-        detailsSubcategory={detailsSubcategory}
-        detailsThirdCategory={detailsThirdCategory}
-        onDetailsCategoryChange={onDetailsCategoryChange}
-        onDetailsSubcategoryChange={onDetailsSubcategoryChange}
-        onDetailsThirdCategoryChange={onDetailsThirdCategoryChange}
         onMainCategoryChange={onMainCategoryChange}
         onSubcategoryChange={onSubcategoryChange}
         onThirdCategoryChange={onThirdCategoryChange}

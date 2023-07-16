@@ -1,3 +1,5 @@
+// postCategory.js
+
 import React, { useState, useEffect, useRef } from "react";
 import categoriesData from "../../data/categories.json";
 import { useTranslation } from "react-i18next";
@@ -9,63 +11,37 @@ export default function PostCategory({
   onSearchTermChange,
   searchTerm,
   keepCategories,
-  resetAll,
-  onResetAll,
-  detailsCategory,
-  detailsSubcategory,
-  detailsThirdCategory,
-  onDetailsCategoryChange,
-  onDetailsSubcategoryChange,
-  onDetailsThirdCategoryChange,
+  mainCategory,
+  subCategory,
+  thirdCategory,
 }) {
   const { t } = useTranslation();
 
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSubcategory, setSelectedSubcategory] = useState("");
-  const [selectedThirdCategory, setSelectedThirdCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(
+    mainCategory || ""
+  );
+  const [selectedSubcategory, setSelectedSubcategory] = useState(
+    subCategory || ""
+  );
+  const [selectedThirdCategory, setSelectedThirdCategory] = useState(
+    thirdCategory || ""
+  );
   const [searchPerformed, setSearchPerformed] = useState(false);
   const contentRef = useRef(null);
   const [showLeftScroll, setShowLeftScroll] = useState(false);
   const [showRightScroll, setShowRightScroll] = useState(false);
 
-  const handleDetailsCategoryChange = (
-    category,
-    subCategory,
-    thirdCategory
-  ) => {
-    handleButtonClick(category, subCategory, thirdCategory);
-    handleCategoryChange(category);
-    handleSubcategoryChange(subCategory);
-    handleThirdCategoryChange(thirdCategory);
-  };
-
-  useEffect(() => {
-    if (detailsCategory !== "") {
-      handleDetailsCategoryChange(
-        detailsCategory,
-        detailsSubcategory,
-        detailsThirdCategory
-      );
-    }
-  }, [onDetailsCategoryChange, onDetailsSubcategoryChange, onDetailsThirdCategoryChange]);
-
   const clearAllCategories = () => {
     setSelectedCategory("");
     setSelectedSubcategory("");
     setSelectedThirdCategory("");
-    onDetailsCategoryChange("");
-    onDetailsSubcategoryChange("");
-    onDetailsThirdCategoryChange("");
   };
 
   const handleCategoryChange = (category) => {
     if (selectedCategory !== category) {
       setSelectedCategory(category);
-      onDetailsCategoryChange(category);
       setSelectedSubcategory("");
-      onDetailsSubcategoryChange("");
       setSelectedThirdCategory("");
-      onDetailsThirdCategoryChange("");
 
       if (onMainCategoryChange && selectedCategory !== category) {
         onMainCategoryChange(category);
@@ -81,23 +57,17 @@ export default function PostCategory({
       }
     } else {
       setSelectedCategory("");
-      onDetailsCategoryChange("");
       setSelectedSubcategory("");
-      onDetailsSubcategoryChange("");
       setSelectedThirdCategory("");
-      onDetailsThirdCategoryChange("");
 
       if (onMainCategoryChange) {
         onMainCategoryChange("");
-        onDetailsCategoryChange("");
       }
       if (onSubcategoryChange) {
         onSubcategoryChange("");
-        onDetailsSubcategoryChange("");
       }
       if (onThirdCategoryChange) {
         onThirdCategoryChange("");
-        onDetailsThirdCategoryChange("");
       }
       if (onSearchTermChange) {
         onSearchTermChange("");
@@ -111,7 +81,6 @@ export default function PostCategory({
       setSelectedThirdCategory("");
       if (onSubcategoryChange && selectedSubcategory !== subCategory) {
         onSubcategoryChange(subCategory);
-        onDetailsSubcategoryChange(subCategory);
       }
       if (onThirdCategoryChange) {
         onThirdCategoryChange("");
@@ -124,11 +93,9 @@ export default function PostCategory({
       setSelectedThirdCategory("");
       if (onSubcategoryChange) {
         onSubcategoryChange("");
-        onDetailsSubcategoryChange("");
       }
       if (onThirdCategoryChange) {
         onThirdCategoryChange("");
-        onDetailsThirdCategoryChange("");
       }
       if (onSearchTermChange) {
         onSearchTermChange("");
@@ -141,7 +108,6 @@ export default function PostCategory({
       setSelectedThirdCategory(thirdCategory);
       if (onThirdCategoryChange && selectedThirdCategory !== thirdCategory) {
         onThirdCategoryChange(thirdCategory);
-        onDetailsThirdCategoryChange(thirdCategory);
       }
       if (onSearchTermChange) {
         onSearchTermChange("");
@@ -150,7 +116,6 @@ export default function PostCategory({
       setSelectedThirdCategory("");
       if (onThirdCategoryChange) {
         onThirdCategoryChange("");
-        onDetailsThirdCategoryChange("");
       }
       if (onSearchTermChange) {
         onSearchTermChange("");
@@ -249,38 +214,22 @@ export default function PostCategory({
   }, [searchTerm, keepCategories]);
 
   useEffect(() => {
-    if (detailsCategory && detailsSubcategory && detailsThirdCategory) {
-      handleButtonClick(
-        detailsCategory,
-        detailsSubcategory,
-        detailsThirdCategory
-      );
+    // Guardar las categorías seleccionadas en el localStorage
+    localStorage.setItem("mainCategory", selectedCategory);
+    localStorage.setItem("subCategory", selectedSubcategory);
+    localStorage.setItem("thirdCategory", selectedThirdCategory);
+
+    // Realizar las peticiones necesarias
+    if (onMainCategoryChange) {
+      onMainCategoryChange(selectedCategory);
     }
-  }, [detailsCategory, detailsSubcategory, detailsThirdCategory]);
-
-  useEffect(() => {
-    const handleUnload = () => {
-      localStorage.removeItem("mainCategory");
-      localStorage.removeItem("subCategory");
-      localStorage.removeItem("thirdCategory");
-    };
-
-    window.addEventListener("beforeunload", handleUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleUnload);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (resetAll) {
-      localStorage.removeItem("mainCategory");
-      localStorage.removeItem("subCategory");
-      localStorage.removeItem("thirdCategory");
-
-      clearAllCategories();
+    if (onSubcategoryChange) {
+      onSubcategoryChange(selectedSubcategory);
     }
-  }, [onResetAll, resetAll]);
+    if (onThirdCategoryChange) {
+      onThirdCategoryChange(selectedThirdCategory);
+    }
+  }, [selectedCategory, selectedSubcategory, selectedThirdCategory]);
 
   useEffect(() => {
     // Restaurar las categorías seleccionadas del localStorage
@@ -299,31 +248,8 @@ export default function PostCategory({
     }
   }, []);
 
-  useEffect(() => {
-    // Guardar las categorías seleccionadas en el localStorage
-    localStorage.setItem("mainCategory", selectedCategory);
-    localStorage.setItem("subCategory", selectedSubcategory);
-    localStorage.setItem("thirdCategory", selectedThirdCategory);
-
-    // Realizar las peticiones necesarias
-    if (onMainCategoryChange) {
-      onMainCategoryChange(selectedCategory);
-    }
-    if (onSubcategoryChange) {
-      onSubcategoryChange(selectedSubcategory);
-    }
-    if (onThirdCategoryChange) {
-      onThirdCategoryChange(selectedThirdCategory);
-    }
-  }, [selectedCategory, selectedSubcategory, selectedThirdCategory]);
-
   return (
     <>
-      <div>
-        <p>DC {detailsCategory}</p>
-        <p>DS {detailsSubcategory}</p>
-        <p>DT {detailsThirdCategory}</p>
-      </div>
       <div className="d-flex">
         <div className="col-auto d-flex align-items-center justify-content-center">
           {showLeftScroll && (

@@ -8,9 +8,12 @@ import { useTranslation } from "react-i18next";
 import GoBackButton from "@/components/reusable/GoBackButton";
 
 const PostDetails = ({
-  onDetailsCategoryChange,
-  onDetailsSubcategoryChange,
-  onDetailsThirdCategoryChange,
+  mainCategory,
+  subCategory,
+  thirdCategory,
+  onMainCategoryChange,
+  onSubcategoryChange,
+  onThirdCategoryChange,
 }) => {
   const router = useRouter();
   const { id } = router.query;
@@ -29,22 +32,21 @@ const PostDetails = ({
 
   const handleCategoryButtonClick = (category) => {
     if (category === "mainCategory") {
-      onDetailsCategoryChange(post.mainCategory);
-      onDetailsSubcategoryChange("");
-      onDetailsThirdCategoryChange("");
+      onMainCategoryChange(post.mainCategory);
+      onSubcategoryChange("");
+      onThirdCategoryChange("");
     } else if (category === "subCategory") {
-      onDetailsCategoryChange(post.mainCategory);
-      onDetailsSubcategoryChange(post.subCategory);
-      onDetailsThirdCategoryChange("");
+      onMainCategoryChange(post.mainCategory);
+      onSubcategoryChange(post.subCategory);
+      onThirdCategoryChange("");
     } else if (category === "thirdCategory") {
-      onDetailsCategoryChange(post.mainCategory);
-      onDetailsSubcategoryChange(post.subCategory);
-      onDetailsThirdCategoryChange(post.thirdCategory);
+      onMainCategoryChange(post.mainCategory);
+      onSubcategoryChange(post.subCategory);
+      onThirdCategoryChange(post.thirdCategory);
     }
-
+    localStorage.removeItem("cachedPosts");
     router.push("/");
   };
-
 
   useEffect(() => {
     const checkSession = async () => {

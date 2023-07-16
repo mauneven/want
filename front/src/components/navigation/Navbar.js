@@ -17,9 +17,6 @@ export default function MegaMenu({
   onCategoryChange,
   onSubcategoryChange,
   onThirdCategoryChange,
-  onDetailsCategoryChange,
-  onDetailsSubcategoryChange,
-  onDetailsThirdCategoryChange,
   resetAll,
   onResetAll,
 }) {
@@ -56,9 +53,6 @@ export default function MegaMenu({
         updatedMainCategory = "";
         updatedSubcategory = "";
         updatedThirdCategory = "";
-        onDetailsCategoryChange("");
-        onDetailsSubcategoryChange("");
-        onDetailsThirdCategoryChange("");
       }
   
       onCategoryChange(updatedMainCategory);
