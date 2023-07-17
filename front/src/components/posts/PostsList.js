@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useCheckSession, useGetUserPreferences } from "@/utils/userEffects";
 import fetchPosts from "./postsList/PostsListsUtilities";
 import PostCard from "./postsList/PostCard";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const PostsList = ({
   searchTerm,
@@ -22,9 +23,10 @@ const PostsList = ({
   thirdCategory,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [pageSize, setPageSize] = useState(7);
+  const [pageSize, setPageSize] = useState(5);
   const [totalPosts, setTotalPosts] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
+  const initialPage = parseInt(localStorage.getItem("currentPage") || "1", 10);
+  const [currentPage, setCurrentPage] = useState(initialPage);
   const [hasMorePosts, setHasMorePosts] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
@@ -47,6 +49,7 @@ const PostsList = ({
     const handleUnload = () => {
       localStorage.removeItem("cachedPosts");
       localStorage.removeItem("currentPage");
+      setCurrentPage(1);
     };
 
     window.addEventListener("beforeunload", handleUnload);
@@ -82,28 +85,29 @@ const PostsList = ({
 
   const handleLatitudeChange = (lat) => {
     setLatitude(lat);
-    setCurrentPage(1);
   };
 
   const handleLongitudeChange = (lng) => {
     setLongitude(lng);
-    setCurrentPage(1);
   };
 
   const handleRadiusChange = (selectedRadius) => {
     setRadius(selectedRadius);
-    setCurrentPage(1);
   };
 
   useEffect(() => {
     if (resetAll) {
       onResetAll(false);
       localStorage.removeItem("cachedPosts");
-      setPosts([]);
-      setHasMorePosts(false);
-      onSearchTermChange("");
+      localStorage.removeItem("currentPage");
+      localStorage.removeItem("mainCategory");
+      localStorage.removeItem("subCategory");
+      localStorage.removeItem("thirdCategory");
       setCurrentPage(1);
-      setIsFetchingMore(false);
+      setPosts([]);
+      setHasMorePosts(true);
+      onSearchTermChange("");
+      setIsFetchingMore(true);
       setIsLoading(true);
       onMainCategoryChange("");
       onSubcategoryChange("");
@@ -111,6 +115,52 @@ const PostsList = ({
       fetchPostsRef.current = false;
     }
   }, [resetAll, onResetAll]);
+
+  const fetchMorePosts = () => {
+    setIsFetchingMore(true);
+  };
+
+  useEffect(() => {
+    const fetchMore = async () => {
+      await fetchPosts(false, {
+        hasLocation,
+        searchTerm,
+        keepCategories,
+        categoryFilter,
+        userPreferences,
+        currentPage: currentPage + 1,
+        pageSize,
+        latitude,
+        longitude,
+        radius,
+        setPosts,
+        setTotalPosts,
+        setHasMorePosts,
+        setIsFetching,
+        setIsLoading,
+        setIsFetchingMore,
+      });
+    };
+
+    if (isFetchingMore && !isLoading && !isFetching && hasMorePosts) {
+      fetchMore();
+    }
+  }, [
+    isFetchingMore,
+    isLoading,
+    isFetching,
+    hasMorePosts,
+    hasLocation,
+    searchTerm,
+    keepCategories,
+    categoryFilter,
+    userPreferences,
+    currentPage,
+    pageSize,
+    latitude,
+    longitude,
+    radius,
+  ]);
 
   useEffect(() => {
     if (latitude !== null && longitude !== null && radius !== null) {
@@ -120,14 +170,17 @@ const PostsList = ({
 
   useEffect(() => {
     const cachedPosts = localStorage.getItem("cachedPosts");
-    const cachedPage = localStorage.getItem("currentPage");
-  
-    if (cachedPosts && cachedPage && currentPage === 1) {
+
+    if (cachedPosts) {
       setPosts(JSON.parse(cachedPosts));
-      setCurrentPage(parseInt(cachedPage));
       setIsLoading(false);
       setIsInitialFetchDone(true);
-    } else if (latitude !== null && longitude !== null && radius !== null && !fetchPostsRef.current) {
+    } else if (
+      latitude !== null &&
+      longitude !== null &&
+      radius !== null &&
+      !fetchPostsRef.current
+    ) {
       fetchPosts(false, {
         hasLocation,
         searchTerm,
@@ -165,6 +218,7 @@ const PostsList = ({
   useEffect(() => {
     if (isFetchingMore && !isLoading && !isFetching && hasMorePosts) {
       setCurrentPage((prevPage) => prevPage + 1);
+      setIsFetchingMore(false);
     }
   }, [isFetchingMore, isLoading, isFetching, hasMorePosts]);
 
@@ -184,8 +238,8 @@ const PostsList = ({
         previousFilter.thirdCategory !== categoryFilter.thirdCategory;
 
       if (isFilterChanged) {
-        setCurrentPage(1);
         setPosts([]);
+        // setCurrentPage(1); no puedo poner esto porque esto haria que siempre la paginacion se ponga en 1, perderia la persistencia
         fetchPosts(true, {
           hasLocation,
           searchTerm,
@@ -217,14 +271,16 @@ const PostsList = ({
     radius,
     mainCategory,
     subCategory,
-    thirdCategory
+    thirdCategory,
   ]);
 
   useEffect(() => {
     onMainCategoryChange(categoryFilter.mainCategory);
     onSubcategoryChange(categoryFilter.subCategory);
     onThirdCategoryChange(categoryFilter.thirdCategory);
-  }, [categoryFilter, mainCategory, subCategory, thirdCategory, onMainCategoryChange, onSubcategoryChange, onThirdCategoryChange]);
+  }, [
+    categoryFilter,
+  ]);
 
   useEffect(() => {
     const lastPage = Math.ceil(totalPosts / pageSize);
@@ -239,8 +295,28 @@ const PostsList = ({
     localStorage.setItem("currentPage", currentPage.toString());
   }, [currentPage]);
 
+  useEffect(() => {
+    const storedPage = localStorage.getItem("currentPage");
+    if (storedPage) {
+      setCurrentPage(parseInt(storedPage, 10));
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.setItem("currentPage", currentPage.toString());
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [currentPage]);
+
   return (
     <div>
+      <p>{currentPage}</p>
       <div className="text-center">
         <PostCategory
           onMainCategoryChange={handleMainCategoryChange}
@@ -262,31 +338,37 @@ const PostsList = ({
           onRadiusChange={handleRadiusChange}
         />
       </div>
-      <div
-        className="row row-cols-1 row-cols row-cols-lg-3 row-cols-xl-6"
-        ref={containerRef}
+      <InfiniteScroll
+        dataLength={posts.length}
+        next={fetchMorePosts}
+        hasMore={hasMorePosts}
+        loader={<ContentLoader />}
       >
-        {posts.map((post) => {
-          const userReputation = 5 - 0.3 * post.createdBy.reports.length;
-          let photoIndex = 0;
-          return (
-            <PostCard
-              key={post._id}
-              post={post}
-              userReputation={userReputation}
-              photoIndex={photoIndex}
-            />
-          );
-        })}
+        <div
+          className="row row-cols-1 row-cols row-cols-lg-3 row-cols-xl-6"
+          id="posts-list"
+          ref={containerRef}
+        >
+          {posts.map((post) => {
+            const userReputation = 5 - 0.3 * post.createdBy.reports.length;
+            let photoIndex = 0;
+            return (
+              <PostCard
+                key={post._id}
+                post={post}
+                userReputation={userReputation}
+                photoIndex={photoIndex}
+              />
+            );
+          })}
 
-        {isLoading && <ContentLoader />}
-
-        {!hasMorePosts && !isLoading && !isFetchingMore && (
-          <div className="col-md-12">
-            <p>No more posts available.</p>
-          </div>
-        )}
-      </div>
+          {!hasMorePosts && !isLoading && !isFetchingMore && (
+            <div className="col-md-12">
+              <p>No more posts available.</p>
+            </div>
+          )}
+        </div>
+      </InfiniteScroll>
     </div>
   );
 };

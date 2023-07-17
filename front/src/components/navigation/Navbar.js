@@ -277,9 +277,6 @@ export default function MegaMenu({
           </div>
         </div>
       </Navbar>
-      <p> MC {mainCategory}</p>
-      <p> SC {subCategory}</p>
-      <p> TC {thirdCategory}</p>
     </>
   );
 }

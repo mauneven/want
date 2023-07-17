@@ -20,48 +20,21 @@ const IndexPage = ({
   const [scrollPosition, setScrollPosition] = useState(0);
   const [key, setKey] = useState(0);
 
-  useEffect(() => {
-    const handleRouteChange = () => {
-      sessionStorage.setItem("scrollPosition", window.scrollY.toString());
-    };
+  const handleRouteChange = () => {
+    localStorage.setItem("scrollPosition", window.pageYOffset.toString());
+  };
 
-    const handlePopState = () => {
-      const savedScrollPosition = parseInt(
-        sessionStorage.getItem("scrollPosition"),
-        10
-      );
-      if (!isNaN(savedScrollPosition)) {
-        setScrollPosition(savedScrollPosition);
-      }
-    };
+  useEffect(() => {
+    const storedScrollPosition = localStorage.getItem("scrollPosition");
+    const yPosition = storedScrollPosition !== null ? parseInt(storedScrollPosition) : 0;
+    setScrollPosition(yPosition);
 
     router.events.on("routeChangeStart", handleRouteChange);
-    window.addEventListener("popstate", handlePopState);
-
-    const savedScrollPosition = parseInt(
-      sessionStorage.getItem("scrollPosition"),
-      10
-    );
-    if (!isNaN(savedScrollPosition)) {
-      setScrollPosition(savedScrollPosition);
-    }
-
-    document.documentElement.style.scrollBehavior = "auto";
-    window.scrollTo(0, scrollPosition);
-
-    setTimeout(() => {
-      document.documentElement.style.scrollBehavior = "smooth";
-    }, 50);
 
     return () => {
       router.events.off("routeChangeStart", handleRouteChange);
-      window.removeEventListener("popstate", handlePopState);
     };
   }, [router.events]);
-
-  useEffect(() => {
-    window.scrollTo(0, scrollPosition);
-  }, [scrollPosition]);
 
   const handleResetAll = useCallback(() => {
     setKey((prevKey) => prevKey + 1);
@@ -74,10 +47,16 @@ const IndexPage = ({
     }
   }, [resetAll, handleResetAll]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      window.scrollTo(0, scrollPosition);
+    }, 100);
+  }, [scrollPosition]);  
+
   return (
     <div>
       <PostsList
-        key={key}
+      key={key}
         searchTerm={searchTerm}
         onMainCategoryChange={onMainCategoryChange}
         onSubcategoryChange={onSubcategoryChange}

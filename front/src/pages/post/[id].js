@@ -45,6 +45,7 @@ const PostDetails = ({
       onThirdCategoryChange(post.thirdCategory);
     }
     localStorage.removeItem("cachedPosts");
+    localStorage.removeItem("currentPage");
     router.push("/");
   };
 
