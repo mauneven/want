@@ -8,9 +8,12 @@ import { useTranslation } from "react-i18next";
 import GoBackButton from "@/components/reusable/GoBackButton";
 
 const PostDetails = ({
-  onDetailsCategoryChange,
-  onDetailsSubcategoryChange,
-  onDetailsThirdCategoryChange,
+  mainCategory,
+  subCategory,
+  thirdCategory,
+  onMainCategoryChange,
+  onSubcategoryChange,
+  onThirdCategoryChange,
 }) => {
   const router = useRouter();
   const { id } = router.query;
@@ -29,22 +32,22 @@ const PostDetails = ({
 
   const handleCategoryButtonClick = (category) => {
     if (category === "mainCategory") {
-      onDetailsCategoryChange(post.mainCategory);
-      onDetailsSubcategoryChange("");
-      onDetailsThirdCategoryChange("");
-    } else if (category === "subcategory") {
-      onDetailsCategoryChange(post.mainCategory);
-      onDetailsSubcategoryChange(post.subCategory);
-      onDetailsThirdCategoryChange("");
+      onMainCategoryChange(post.mainCategory);
+      onSubcategoryChange("");
+      onThirdCategoryChange("");
+    } else if (category === "subCategory") {
+      onMainCategoryChange(post.mainCategory);
+      onSubcategoryChange(post.subCategory);
+      onThirdCategoryChange("");
     } else if (category === "thirdCategory") {
-      onDetailsCategoryChange(post.mainCategory);
-      onDetailsSubcategoryChange(post.subCategory);
-      onDetailsThirdCategoryChange(post.thirdCategory);
+      onMainCategoryChange(post.mainCategory);
+      onSubcategoryChange(post.subCategory);
+      onThirdCategoryChange(post.thirdCategory);
     }
-
+    localStorage.removeItem("cachedPosts");
+    localStorage.removeItem("currentPage");
     router.push("/");
   };
-
 
   useEffect(() => {
     const checkSession = async () => {
@@ -99,13 +102,13 @@ const PostDetails = ({
     }
   };
 
-const savePreferencesToLocalStorage = () => {
+  const savePreferencesToLocalStorage = () => {
     const mainCategoryPreferences =
-      JSON.parse(localStorage.getItem("mainCategoryPreferences") || {});
+      JSON.parse(localStorage.getItem("mainCategoryPreferences") || "{}");
     const subCategoryPreferences =
-      JSON.parse(localStorage.getItem("subCategoryPreferences") || {});
+      JSON.parse(localStorage.getItem("subCategoryPreferences") || "{}");
     const thirdCategoryPreferences =
-      JSON.parse(localStorage.getItem("thirdCategoryPreferences") || {});
+      JSON.parse(localStorage.getItem("thirdCategoryPreferences") || "{}");
 
     mainCategoryPreferences[post.mainCategory] =
       (mainCategoryPreferences[post.mainCategory] || 0) + 1;
@@ -339,7 +342,7 @@ const savePreferencesToLocalStorage = () => {
               </button>
               <button
                 className="generic-button m-1"
-                onClick={() => handleCategoryButtonClick("subcategory")}
+                onClick={() => handleCategoryButtonClick("subCategory")}
               >
                 {t(
                   `categories.${post.mainCategory}.subcategories.${post.subCategory}.name`

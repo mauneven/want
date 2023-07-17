@@ -83,7 +83,7 @@ exports.getAllPosts = async (req, res, next) => {
 
     if (enableTopSubCategories) {
       // Obtener los posts con las subcategorías con más vistas
-      allPosts = await Post.find({
+      const topSubCategoryPosts = await Post.find({
         ...filters,
         subCategory: { $in: topSubCategories },
       })
@@ -96,12 +96,7 @@ exports.getAllPosts = async (req, res, next) => {
           },
         });
 
-      // Ordenar los posts según las subcategorías con más vistas
-      allPosts.sort((a, b) => {
-        const aViews = subCategoryPreferences[a.subCategory] || 0;
-        const bViews = subCategoryPreferences[b.subCategory] || 0;
-        return bViews - aViews;
-      });
+      allPosts.push(...topSubCategoryPosts);
 
       // Obtener los posts más recientes que no están en las subcategorías con más vistas
       const recentPosts = await Post.find({
@@ -116,10 +111,9 @@ exports.getAllPosts = async (req, res, next) => {
             path: "reports",
             select: "_id",
           },
-        })
-        .limit(pageSize - allPosts.length);
+        });
 
-      allPosts = allPosts.concat(recentPosts);
+      allPosts.push(...recentPosts);
     } else {
       // Obtener todos los posts sin filtrar por distancia
       allPosts = await Post.find(filters)
@@ -164,6 +158,13 @@ exports.getAllPosts = async (req, res, next) => {
         return false;
       });
     }
+
+    // Ordenar los posts según los gustos del usuario
+    allPosts.sort((a, b) => {
+      const aViews = subCategoryPreferences[a.subCategory] || 0;
+      const bViews = subCategoryPreferences[b.subCategory] || 0;
+      return bViews - aViews;
+    });
 
     // Obtener los posts paginados
     const posts = allPosts.slice(skip, skip + pageSize);

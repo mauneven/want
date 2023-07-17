@@ -1,4 +1,3 @@
-// _app.js
 import React, { useState, useEffect, Suspense } from "react";
 import MegaMenu from "@/components/navigation/Navbar";
 import { LanguageProvider } from "@/components/language/LanguageProvider";
@@ -22,11 +21,8 @@ import MobileMenu from "@/components/navigation/MobileMenu";
 export default function MyApp({ Component, pageProps }) {
   const [hasMounted, setHasMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [detailsCategory, setDetailsCategory] = useState("");
-  const [detailsSubcategory, setDetailsSubcategory] = useState("");
-  const [detailsThirdCategory, setDetailsThirdCategory] = useState("");
   const [mainCategory, setMainCategory] = useState("");
-  const [subcategory, setSubcategory] = useState("");
+  const [subCategory, setSubcategory] = useState("");
   const [thirdCategory, setThirdCategory] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [keepCategories, setKeepCategories] = useState(false);
@@ -76,7 +72,7 @@ export default function MyApp({ Component, pageProps }) {
         <header className="sticky-top">
           <MegaMenu
             mainCategory={mainCategory}
-            subcategory={subcategory}
+            subCategory={subCategory}
             thirdCategory={thirdCategory}
             onCategoryChange={setMainCategory}
             onSubcategoryChange={setSubcategory}
@@ -85,9 +81,6 @@ export default function MyApp({ Component, pageProps }) {
             onSearchTermChange={setSearchTerm}
             keepCategories={keepCategories}
             onKeepCategoriesChange={setKeepCategories}
-            onDetailsCategoryChange={setDetailsCategory}
-            onDetailsSubcategoryChange={setDetailsSubcategory}
-            onDetailsThirdCategoryChange={setDetailsThirdCategory}
             onResetAll={setResetAll}
             resetAll={resetAll}
           />
@@ -96,27 +89,21 @@ export default function MyApp({ Component, pageProps }) {
         <div className="">
           <Suspense fallback="Loading...">
             <div className="want-container">
-            <Component
-              {...pageProps}
-              onDetailsCategoryChange={setDetailsCategory}
-              onDetailsSubcategoryChange={setDetailsSubcategory}
-              onDetailsThirdCategoryChange={setDetailsThirdCategory}
-              detailsCategory={detailsCategory}
-              detailsSubcategory={detailsSubcategory}
-              detailsThirdCategory={detailsThirdCategory}
-              mainCategory={mainCategory}
-              subcategory={subcategory}
-              thirdCategory={thirdCategory}
-              onMainCategoryChange={setMainCategory}
-              onSubcategoryChange={setSubcategory}
-              onThirdCategoryChange={setThirdCategory}
-              searchTerm={searchTerm}
-              onSearchTermChange={setSearchTerm}
-              keepCategories={keepCategories}
-              onKeepCategoriesChange={setKeepCategories}
-              onResetAll={setResetAll}
-              resetAll={resetAll}
-            />
+              <Component
+                {...pageProps}
+                mainCategory={mainCategory}
+                subCategory={subCategory}
+                thirdCategory={thirdCategory}
+                onMainCategoryChange={setMainCategory}
+                onSubcategoryChange={setSubcategory}
+                onThirdCategoryChange={setThirdCategory}
+                searchTerm={searchTerm}
+                onSearchTermChange={setSearchTerm}
+                keepCategories={keepCategories}
+                onKeepCategoriesChange={setKeepCategories}
+                onResetAll={setResetAll}
+                resetAll={resetAll}
+              />
             </div>
           </Suspense>
         </div>

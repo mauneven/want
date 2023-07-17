@@ -8,7 +8,7 @@ import LanguageSelector from "../language/LanguageSelector";
 
 export default function MegaMenu({
   mainCategory,
-  subcategory,
+  subCategory,
   thirdCategory,
   searchTerm,
   onSearchTermChange,
@@ -17,9 +17,6 @@ export default function MegaMenu({
   onCategoryChange,
   onSubcategoryChange,
   onThirdCategoryChange,
-  onDetailsCategoryChange,
-  onDetailsSubcategoryChange,
-  onDetailsThirdCategoryChange,
   resetAll,
   onResetAll,
 }) {
@@ -49,16 +46,13 @@ export default function MegaMenu({
     const newSearchTerm = e.target.search.value.trim();
     if (newSearchTerm !== "") {
       let updatedMainCategory = mainCategory;
-      let updatedSubcategory = subcategory;
+      let updatedSubcategory = subCategory;
       let updatedThirdCategory = thirdCategory;
   
       if (updatedKeepCategories !== true) {
         updatedMainCategory = "";
         updatedSubcategory = "";
         updatedThirdCategory = "";
-        onDetailsCategoryChange("");
-        onDetailsSubcategoryChange("");
-        onDetailsThirdCategoryChange("");
       }
   
       onCategoryChange(updatedMainCategory);
@@ -117,10 +111,10 @@ export default function MegaMenu({
   const getCategoryText = () => {
     if (thirdCategory) {
       return t(
-        `categories.${mainCategory}.subcategories.${subcategory}.thirdCategories.${thirdCategory}.name`
+        `categories.${mainCategory}.subcategories.${subCategory}.thirdCategories.${thirdCategory}.name`
       );
-    } else if (subcategory) {
-      return t(`categories.${mainCategory}.subcategories.${subcategory}.name`);
+    } else if (subCategory) {
+      return t(`categories.${mainCategory}.subcategories.${subCategory}.name`);
     } else if (mainCategory) {
       return t(`categories.${mainCategory}.name`);
     } else {
@@ -283,9 +277,6 @@ export default function MegaMenu({
           </div>
         </div>
       </Navbar>
-      <p> MC {mainCategory}</p>
-      <p> SC {subcategory}</p>
-      <p> TC {thirdCategory}</p>
     </>
   );
 }

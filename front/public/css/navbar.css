@@ -4,21 +4,10 @@
 
 body {
   font-family: "Poppins", sans-serif;
-  scroll-behavior: smooth;
-}
-body::-webkit-scrollbar {
-  width: 0.4em; /* Ancho de la barra de desplazamiento */
-  background-color: white; /* Color de fondo de la barra de desplazamiento */
-  border-radius: 50%;
 }
 
-body::-webkit-scrollbar-thumb {
-  background-color: #a7a7a7; /* Color del pulgar de la barra de desplazamiento */
-  border-radius: 50px;
-}
-
-body::-webkit-scrollbar-track {
-  background-color: white; /* Color de la pista de la barra de desplazamiento */
+html {
+  scroll-behavior: auto !important;
 }
 
 .search-bar-input {
@@ -131,11 +120,10 @@ body::-webkit-scrollbar-track {
 .category-slider {
   display: flex;
   overflow-x: auto;
-  scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
 
-.subcategory-button {
+.subCategory-button {
   flex: 0 0 auto;
   white-space: nowrap;
   margin-right: 10px;
@@ -168,7 +156,6 @@ body::-webkit-scrollbar-track {
 .category-slider {
   display: flex;
   overflow-x: auto;
-  scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none; /* Oculta la barra de desplazamiento en navegadores compatibles */
   -ms-overflow-style: none; /* Oculta la barra de desplazamiento en Internet Explorer y Edge */

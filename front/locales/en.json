@@ -14,6 +14,10 @@
   "menu": "Menu",
   "onlyon": "Only on"
   },
+  "postslist": {
+    "noMorePosts": "Wow, there are no more posts to load, try choosing different parameters.",
+    "locationAccess": "Please allow Want to access your location to display relevant posts near you."
+    },
   "createPost": {
   "title": "Create a post about what you want",
   "titleLabel": "Give a title to what you want*",

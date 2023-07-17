@@ -3,14 +3,8 @@ import { useRouter } from "next/router";
 import PostsList from "@/components/posts/PostsList";
 
 const IndexPage = ({
-  detailsCategory,
-  detailsSubcategory,
-  detailsThirdCategory,
-  onDetailsCategoryChange,
-  onDetailsSubcategoryChange,
-  onDetailsThirdCategoryChange,
   mainCategory,
-  subcategory,
+  subCategory,
   thirdCategory,
   onMainCategoryChange,
   onSubcategoryChange,
@@ -25,49 +19,23 @@ const IndexPage = ({
   const router = useRouter();
   const [scrollPosition, setScrollPosition] = useState(0);
   const [key, setKey] = useState(0);
+  const [showOverlay, setShowOverlay] = useState(true);
+
+  const handleRouteChange = () => {
+    localStorage.setItem("scrollPosition", window.pageYOffset.toString());
+  };
 
   useEffect(() => {
-    const handleRouteChange = () => {
-      sessionStorage.setItem("scrollPosition", window.scrollY.toString());
-    };
-
-    const handlePopState = () => {
-      const savedScrollPosition = parseInt(
-        sessionStorage.getItem("scrollPosition"),
-        10
-      );
-      if (!isNaN(savedScrollPosition)) {
-        setScrollPosition(savedScrollPosition);
-      }
-    };
+    const storedScrollPosition = localStorage.getItem("scrollPosition");
+    const yPosition = storedScrollPosition !== null ? parseInt(storedScrollPosition) : 0;
+    setScrollPosition(yPosition);
 
     router.events.on("routeChangeStart", handleRouteChange);
-    window.addEventListener("popstate", handlePopState);
-
-    const savedScrollPosition = parseInt(
-      sessionStorage.getItem("scrollPosition"),
-      10
-    );
-    if (!isNaN(savedScrollPosition)) {
-      setScrollPosition(savedScrollPosition);
-    }
-
-    document.documentElement.style.scrollBehavior = "auto";
-    window.scrollTo(0, scrollPosition);
-
-    setTimeout(() => {
-      document.documentElement.style.scrollBehavior = "smooth";
-    }, 50);
 
     return () => {
       router.events.off("routeChangeStart", handleRouteChange);
-      window.removeEventListener("popstate", handlePopState);
     };
   }, [router.events]);
-
-  useEffect(() => {
-    window.scrollTo(0, scrollPosition);
-  }, [scrollPosition]);
 
   const handleResetAll = useCallback(() => {
     setKey((prevKey) => prevKey + 1);
@@ -80,22 +48,28 @@ const IndexPage = ({
     }
   }, [resetAll, handleResetAll]);
 
+  useEffect(() => {
+    const overlayTimer = setTimeout(() => {
+      window.scrollTo(0, scrollPosition);
+      setShowOverlay(false);
+    }, 220); // Timer de 220 ms (200 ms + 20 ms adicionales)
+
+    return () => {
+      clearTimeout(overlayTimer);
+    };
+  }, [scrollPosition]);
+
   return (
     <div>
+      {showOverlay && <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "white", zIndex: 2 }}></div>}
       <PostsList
         key={key}
         searchTerm={searchTerm}
-        detailsCategory={detailsCategory}
-        detailsSubcategory={detailsSubcategory}
-        detailsThirdCategory={detailsThirdCategory}
-        onDetailsCategoryChange={onDetailsCategoryChange}
-        onDetailsSubcategoryChange={onDetailsSubcategoryChange}
-        onDetailsThirdCategoryChange={onDetailsThirdCategoryChange}
         onMainCategoryChange={onMainCategoryChange}
         onSubcategoryChange={onSubcategoryChange}
         onThirdCategoryChange={onThirdCategoryChange}
         mainCategory={mainCategory}
-        subcategory={subcategory}
+        subCategory={subCategory}
         thirdCategory={thirdCategory}
         onSearchTermChange={onSearchTermChange}
         onKeepCategoriesChange={onKeepCategoriesChange}

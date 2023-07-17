@@ -4,37 +4,33 @@ import { useRouter } from "next/router";
 import PostsLocation from "../locations/Posts/";
 import PostCategory from "../categories/PostCategory";
 import Link from "next/link";
-import {
-  useCheckSession,
-  useGetUserPreferences
-} from "@/utils/userEffects";
+import { useCheckSession, useGetUserPreferences } from "@/utils/userEffects";
 import fetchPosts from "./postsList/PostsListsUtilities";
 import PostCard from "./postsList/PostCard";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { useTranslation } from 'react-i18next';
 
 const PostsList = ({
   searchTerm,
   onMainCategoryChange,
   onSubcategoryChange,
   onThirdCategoryChange,
-  onDetailsCategoryChange,
-  onDetailsSubcategoryChange,
-  onDetailsThirdCategoryChange,
-  detailsCategory,
-  detailsSubcategory,
-  detailsThirdCategory,
   keepCategories,
   onSearchTermChange,
   onResetAll,
   resetAll,
   mainCategory,
-  subcategory,
+  subCategory,
   thirdCategory,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [pageSize, setPageSize] = useState(7);
+  const [pageSize, setPageSize] = useState(14);
   const [totalPosts, setTotalPosts] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [hasMorePosts, setHasMorePosts] = useState(false);
+  const initialPage = parseInt(localStorage.getItem("currentPage") || "1", 10);
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [hasMorePosts, setHasMorePosts] = useState(
+    localStorage.getItem("hasMorePosts") === "true"
+  );
   const [isFetching, setIsFetching] = useState(false);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [latitude, setLatitude] = useState(null);
@@ -43,17 +39,21 @@ const PostsList = ({
   const [hasLocation, setHasLocation] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState({});
   const [posts, setPosts] = useState([]);
-  const [isInitialFetchDone, setIsInitialFetchDone] = useState(false); // Variable de estado para indicar si la petición inicial ya se ha realizado
+  const [isInitialFetchDone, setIsInitialFetchDone] = useState(false);
+  const previousCategoryFilter = useRef(categoryFilter);
   const user = useCheckSession();
+  const fetchPostsRef = useRef(false);
   const { userPreferences, userPreferencesLoaded } =
     useGetUserPreferences(user);
-
   const router = useRouter();
   const containerRef = useRef(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleUnload = () => {
       localStorage.removeItem("cachedPosts");
+      localStorage.removeItem("currentPage");
+      setCurrentPage(1);
     };
 
     window.addEventListener("beforeunload", handleUnload);
@@ -68,37 +68,22 @@ const PostsList = ({
       ...prevFilter,
       mainCategory: mainCategory,
     }));
-
-    if (detailsCategory !== "") {
-      localStorage.removeItem("cachedPosts");
-    }
-
     setCurrentPage(1);
   };
 
-  const handleSubcategoryChange = (subcategory) => {
+  const handleSubcategoryChange = (subCategory) => {
     setCategoryFilter((prevFilter) => ({
       ...prevFilter,
-      subCategory: subcategory,
+      subCategory: subCategory,
     }));
-
-    if (onDetailsSubcategoryChange) {
-      onDetailsSubcategoryChange(detailsSubcategory);
-    }
-
     setCurrentPage(1);
   };
 
   const handleThirdCategoryChange = (thirdCategory) => {
     setCategoryFilter((prevFilter) => ({
       ...prevFilter,
-      thirdCategory,
+      thirdCategory: thirdCategory,
     }));
-
-    if (onDetailsThirdCategoryChange) {
-      onDetailsThirdCategoryChange(detailsThirdCategory);
-    }
-
     setCurrentPage(1);
   };
 
@@ -121,27 +106,70 @@ const PostsList = ({
     if (resetAll) {
       onResetAll(false);
       localStorage.removeItem("cachedPosts");
-      setPosts([]);
-      setHasMorePosts(false);
-      onSearchTermChange("");
+      localStorage.removeItem("currentPage");
+      localStorage.removeItem("mainCategory");
+      localStorage.removeItem("subCategory");
+      localStorage.removeItem("thirdCategory");
+      localStorage.removeItem("allPostsCharged"); // Remove allPostsCharged flag
+      localStorage.removeItem("hasMorePosts"); // Remove hasMorePosts flag
       setCurrentPage(1);
-      setIsFetchingMore(false);
+      setPosts([]);
+      setHasMorePosts(true);
+      onSearchTermChange("");
+      setIsFetchingMore(true);
       setIsLoading(true);
-      onDetailsCategoryChange("");
-      onDetailsSubcategoryChange("");
-      onDetailsThirdCategoryChange("");
       onMainCategoryChange("");
       onSubcategoryChange("");
       onThirdCategoryChange("");
-
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-        onResetAll(false);
-      }, 1);
-
-      return () => clearTimeout(timer);
+      fetchPostsRef.current = false;
     }
   }, [resetAll, onResetAll]);
+
+  const fetchMorePosts = () => {
+    setIsFetchingMore(true);
+  };
+
+  useEffect(() => {
+    const fetchMore = async () => {
+      await fetchPosts(false, {
+        hasLocation,
+        searchTerm,
+        keepCategories,
+        categoryFilter,
+        userPreferences,
+        currentPage: currentPage + 1,
+        pageSize,
+        latitude,
+        longitude,
+        radius,
+        setPosts,
+        setTotalPosts,
+        setHasMorePosts,
+        setIsFetching,
+        setIsLoading,
+        setIsFetchingMore,
+      });
+    };
+
+    if (isFetchingMore && !isLoading && !isFetching && hasMorePosts) {
+      fetchMore();
+    }
+  }, [
+    isFetchingMore,
+    isLoading,
+    isFetching,
+    hasMorePosts,
+    hasLocation,
+    searchTerm,
+    keepCategories,
+    categoryFilter,
+    userPreferences,
+    currentPage,
+    pageSize,
+    latitude,
+    longitude,
+    radius,
+  ]);
 
   useEffect(() => {
     if (latitude !== null && longitude !== null && radius !== null) {
@@ -152,11 +180,16 @@ const PostsList = ({
   useEffect(() => {
     const cachedPosts = localStorage.getItem("cachedPosts");
 
-    if (cachedPosts && currentPage === 1) {
+    if (cachedPosts) {
       setPosts(JSON.parse(cachedPosts));
       setIsLoading(false);
       setIsInitialFetchDone(true);
-    } else if (latitude !== null && longitude !== null && radius !== null) {
+    } else if (
+      latitude !== null &&
+      longitude !== null &&
+      radius !== null &&
+      !fetchPostsRef.current
+    ) {
       fetchPosts(false, {
         hasLocation,
         searchTerm,
@@ -168,9 +201,6 @@ const PostsList = ({
         latitude,
         longitude,
         radius,
-        detailsCategory,
-        detailsSubcategory,
-        detailsThirdCategory,
         setPosts,
         setTotalPosts,
         setHasMorePosts,
@@ -179,130 +209,44 @@ const PostsList = ({
         setIsFetchingMore,
       }).then(() => {
         setIsInitialFetchDone(true);
+        fetchPostsRef.current = true;
       });
     }
-  }, [userPreferences, currentPage, latitude, longitude, radius, detailsCategory, detailsSubcategory, detailsThirdCategory]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop =
-        (document.documentElement && document.documentElement.scrollTop) ||
-        document.body.scrollTop;
-      const scrollHeight =
-        (document.documentElement && document.documentElement.scrollHeight) ||
-        document.body.scrollHeight;
-      const clientHeight =
-        document.documentElement.clientHeight || window.innerHeight;
-      const scrolledToBottom =
-        Math.ceil(scrollTop + clientHeight) >= scrollHeight;
-      const scrolledToTop = scrollTop === 0;
-
-      if (
-        scrolledToBottom &&
-        hasMorePosts &&
-        !isLoading &&
-        !isFetching &&
-        !isFetchingMore
-      ) {
-        setIsFetchingMore(true);
-      }
-
-      if (scrolledToTop && !isLoading && !isFetching && !isFetchingMore) {
-        setHasMorePosts(false);
-      }
-    };
-
-    const handleTouchMove = () => {
-      const scrollTop =
-        (document.documentElement && document.documentElement.scrollTop) ||
-        document.body.scrollTop;
-      const scrollHeight =
-        (document.documentElement && document.documentElement.scrollHeight) ||
-        document.body.scrollHeight;
-      const clientHeight =
-        document.documentElement.clientHeight || window.innerHeight;
-      const scrolledToBottom =
-        Math.ceil(scrollTop + clientHeight) >= scrollHeight;
-      const scrolledToTop = scrollTop === 0;
-
-      if (
-        scrolledToBottom &&
-        hasMorePosts &&
-        !isLoading &&
-        !isFetching &&
-        !isFetchingMore
-      ) {
-        setIsFetchingMore(true);
-      }
-
-      if (scrolledToTop && !isLoading && !isFetching && !isFetchingMore) {
-        setHasMorePosts(false);
-      }
-    };
-
-    const handleScrollOrTouchMove = () => {
-      if ("ontouchstart" in window) {
-        handleTouchMove();
-      } else {
-        handleScroll();
-      }
-    };
-
-    window.addEventListener("scroll", handleScrollOrTouchMove);
-
-    return () => {
-      window.removeEventListener("scroll", handleScrollOrTouchMove);
-    };
-  }, [hasMorePosts, isLoading, isFetching, isFetchingMore]);
-
-  useEffect(() => {
-    const updateLocalStorage = () => {
-      localStorage.setItem(
-        "mainCategoryPreferences",
-        JSON.stringify(userPreferences.mainCategoryCounts)
-      );
-      localStorage.setItem(
-        "subCategoryPreferences",
-        JSON.stringify(userPreferences.subCategoryCounts)
-      );
-      localStorage.setItem(
-        "thirdCategoryPreferences",
-        JSON.stringify(userPreferences.thirdCategoryCounts)
-      );
-    };
-
-    updateLocalStorage();
-  }, [userPreferences]);
+  }, [
+    userPreferences,
+    currentPage,
+    latitude,
+    longitude,
+    radius,
+    categoryFilter,
+    mainCategory,
+    subCategory,
+    thirdCategory,
+  ]);
 
   useEffect(() => {
     if (isFetchingMore && !isLoading && !isFetching && hasMorePosts) {
       setCurrentPage((prevPage) => prevPage + 1);
+      setIsFetchingMore(false);
     }
   }, [isFetchingMore, isLoading, isFetching, hasMorePosts]);
 
   useEffect(() => {
-    if (searchTerm) {
-      setPosts([]);
-      setCurrentPage(1);
-    }
-  }, [searchTerm]);
+    const previousSearchTerm = previousCategoryFilter.current.searchTerm;
 
-  useEffect(() => {
-    if (isInitialFetchDone) { // Verificar si la petición inicial ya se ha realizado antes de hacer la petición adicional
+    if (previousSearchTerm !== searchTerm) {
+      setPosts([]);
       fetchPosts(true, {
         hasLocation,
         searchTerm,
         keepCategories,
         categoryFilter,
         userPreferences,
-        currentPage,
+        currentPage: 1,
         pageSize,
         latitude,
         longitude,
         radius,
-        detailsCategory,
-        detailsSubcategory,
-        detailsThirdCategory,
         setPosts,
         setTotalPosts,
         setHasMorePosts,
@@ -310,8 +254,68 @@ const PostsList = ({
         setIsLoading,
         setIsFetchingMore,
       });
+      previousCategoryFilter.current = {
+        ...categoryFilter,
+        latitude,
+        longitude,
+        radius,
+        searchTerm,
+      };
     }
-  }, [isInitialFetchDone, categoryFilter, searchTerm, keepCategories, latitude, longitude, radius, detailsCategory, detailsSubcategory, detailsThirdCategory]);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (isInitialFetchDone) {
+      const previousFilter = previousCategoryFilter.current;
+      const isFilterChanged =
+        previousFilter.mainCategory !== categoryFilter.mainCategory ||
+        previousFilter.subCategory !== categoryFilter.subCategory ||
+        previousFilter.thirdCategory !== categoryFilter.thirdCategory ||
+        previousFilter.latitude !== latitude ||
+        previousFilter.longitude !== longitude ||
+        previousFilter.radius !== radius;
+
+      if (isFilterChanged) {
+        localStorage.removeItem("allPostsCharged");
+        setPosts([]);
+        fetchPosts(true, {
+          hasLocation,
+          searchTerm,
+          keepCategories,
+          categoryFilter,
+          userPreferences,
+          currentPage: 1,
+          pageSize,
+          latitude,
+          longitude,
+          radius,
+          setPosts,
+          setTotalPosts,
+          setHasMorePosts,
+          setIsFetching,
+          setIsLoading,
+          setIsFetchingMore,
+        });
+      }
+      previousCategoryFilter.current = {
+        ...categoryFilter,
+        latitude,
+        longitude,
+        radius,
+      };
+    }
+  }, [
+    isInitialFetchDone,
+    categoryFilter,
+    searchTerm,
+    keepCategories,
+    latitude,
+    longitude,
+    radius,
+    mainCategory,
+    subCategory,
+    thirdCategory,
+  ]);
 
   useEffect(() => {
     onMainCategoryChange(categoryFilter.mainCategory);
@@ -329,55 +333,48 @@ const PostsList = ({
   }, [posts, currentPage, totalPosts, pageSize]);
 
   useEffect(() => {
-    return () => {
-      onDetailsCategoryChange("");
-      onDetailsSubcategoryChange("");
-      onDetailsThirdCategoryChange("");
+    localStorage.setItem("currentPage", currentPage.toString());
+    localStorage.setItem("hasMorePosts", hasMorePosts.toString()); // Save hasMorePosts flag to localStorage
+  }, [currentPage, hasMorePosts]);
+
+  useEffect(() => {
+    const storedPage = localStorage.getItem("currentPage");
+    const storedHasMorePosts = localStorage.getItem("hasMorePosts");
+
+    if (storedPage) {
+      setCurrentPage(parseInt(storedPage, 10));
+    }
+    if (storedHasMorePosts) {
+      setHasMorePosts(storedHasMorePosts === "true");
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.setItem("currentPage", currentPage.toString());
     };
-  }, []);
 
-  // Guardar la categoría seleccionada en el localStorage cuando cambia
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [currentPage]);
+
+  // Set allPostsCharged flag in localStorage when all posts are loaded
   useEffect(() => {
-    if (detailsCategory) {
-      if (!detailsSubcategory) {
-        onDetailsSubcategoryChange("");
-      }
-      if (!detailsThirdCategory) {
-        onDetailsThirdCategoryChange("");
-      }
-    } else {
-      onDetailsSubcategoryChange("");
-      onDetailsThirdCategoryChange("");
+    if (isInitialFetchDone && !isLoading && !isFetching && !hasMorePosts) {
+      localStorage.setItem("allPostsCharged", "true");
     }
-  }, [detailsCategory]);
+  }, [isInitialFetchDone, isLoading, isFetching, hasMorePosts]);
 
-  // Restaurar la categoría seleccionada desde el localStorage al cargar el componente
+  const allPostsCharged = localStorage.getItem("allPostsCharged") === "true";
+
   useEffect(() => {
-    const storedCategory = localStorage.getItem("selectedCategory");
-    const storedSubcategory = localStorage.getItem("selectedSubcategory");
-    const storedThirdCategory = localStorage.getItem("selectedThirdCategory");
-
-    if (storedCategory) {
-      setCategoryFilter((prevFilter) => ({
-        ...prevFilter,
-        mainCategory: storedCategory,
-      }));
+    if (allPostsCharged) {
+      setHasMorePosts(false);
     }
-
-    if (storedSubcategory) {
-      setCategoryFilter((prevFilter) => ({
-        ...prevFilter,
-        subCategory: storedSubcategory,
-      }));
-    }
-
-    if (storedThirdCategory) {
-      setCategoryFilter((prevFilter) => ({
-        ...prevFilter,
-        thirdCategory: storedThirdCategory,
-      }));
-    }
-  }, []);
+  }, [allPostsCharged]);
 
   return (
     <div>
@@ -390,14 +387,8 @@ const PostsList = ({
           searchTerm={searchTerm}
           keepCategories={keepCategories}
           resetAll={resetAll}
-          detailsCategory={detailsCategory}
-          detailsThirdCategory={detailsThirdCategory}
-          detailsSubcategory={detailsSubcategory}
-          onDetailsCategoryChange={onDetailsCategoryChange}
-          onDetailsSubcategoryChange={onDetailsSubcategoryChange}
-          onDetailsThirdCategoryChange={onDetailsThirdCategoryChange}
           mainCategory={mainCategory}
-          subcategory={subcategory}
+          subCategory={subCategory}
           thirdCategory={thirdCategory}
         />
       </div>
@@ -408,31 +399,74 @@ const PostsList = ({
           onRadiusChange={handleRadiusChange}
         />
       </div>
-      <div
-        className="row row-cols-1 row-cols row-cols-lg-3 row-cols-xl-6"
-        ref={containerRef}
+      {latitude === null || longitude === null ? (
+        <div className="text-center p-5 m-5">
+          <h1>
+          {t('postslist.locationAccess')}
+          </h1>
+        </div>
+      ) : null}
+      <InfiniteScroll
+        dataLength={posts.length}
+        next={fetchMorePosts}
+        hasMore={!allPostsCharged && hasMorePosts}
+        loader={
+          <div className="row row-cols-1 row-cols row-cols-lg-3 row-cols-xl-6">
+            {[...Array(0)].map((_, index) => (
+              <div key={index} style={{ margin: "20px 0" }}>
+                {isFetchingMore || isLoading ? (
+                  <ContentLoader
+                    speed={1.4}
+                    width={270}
+                    height={200}
+                    viewBox="0 0 270 200"
+                    backgroundColor="#f3f3f3"
+                    foregroundColor="#ecebeb"
+                  >
+                    <rect x="0" y="0" rx="3" ry="3" width="270" height="200" />
+                  </ContentLoader>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        }
+        style={{ overflowX: "hidden" }}
       >
-        {posts.map((post) => {
-          const userReputation = 5 - 0.3 * post.createdBy.reports.length;
-          let photoIndex = 0;
-          return (
-            <PostCard
-              key={post._id}
-              post={post}
-              userReputation={userReputation}
-              photoIndex={photoIndex}
-            />
-          );
-        })}
+        <div
+          className="row row-cols-1 row-cols row-cols-lg-3 row-cols-xl-6"
+          id="posts-list"
+          ref={containerRef}
+        >
+          {posts.map((post) => {
+            const userReputation = 5 - 0.3 * post.createdBy.reports.length;
+            let photoIndex = 0;
+            return (
+              <PostCard
+                key={post._id}
+                post={post}
+                userReputation={userReputation}
+                photoIndex={photoIndex}
+              />
+            );
+          })}
+        </div>
 
-        {isLoading && <ContentLoader />}
-
-        {!hasMorePosts && !isLoading && !isFetchingMore && (
-          <div className="col-md-12">
-            <p>No more posts available.</p>
+        {allPostsCharged && (
+          <div className="text-center p-5">
+            <h1>
+            {t('postslist.noMorePosts')}
+            </h1>
           </div>
         )}
-      </div>
+
+        {!hasMorePosts && !isLoading && !isFetchingMore && !allPostsCharged && (
+          <div className="text-center p-5">
+            <h1>
+            {t('postslist.noMorePosts')}
+            </h1>
+          </div>
+        )}
+      </InfiniteScroll>
     </div>
   );
 };

@@ -20,7 +20,7 @@ const PostsLocation = ({
   const [radius, setRadius] = useState(15); // Valor predeterminado de radio: 5 km
   const radiusOptions = [1, 2, 5, 10, 20, 30, 50, 80, 100, 10000000000]; // Opciones de radio en km
   const [locationName, setLocationName] = useState(null); // Nombre de la ubicación
-  const [zoomLevel, setZoomLevel] = useState(13); // Nivel de zoom predeterminado: 13
+  const [zoomLevel, setZoomLevel] = useState(11);
 
   useEffect(() => {
     const storedRadius = localStorage.getItem('radius');
@@ -58,34 +58,38 @@ const PostsLocation = ({
 
   const fetchLocation = () => {
     const fetchExactLocation = async () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-            setLatitude(lat);
-            setLongitude(lng);
-            onLatitudeChange(lat);
-            onLongitudeChange(lng);
-            setLocationDetected(true);
-            fetchLocationName(lat, lng);
-            saveLocationToLocalStorage(lat, lng);
-          },
-          (error) => {
-            console.log('esperando datos de openstreetmap');
-          }
-        );
-      } else {
-        console.error('Geolocation is not supported by this browser.');
-      }
+      return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const lat = position.coords.latitude;
+              const lng = position.coords.longitude;
+              resolve({ lat, lng });
+            },
+            (error) => {
+              reject(error);
+            }
+          );
+        } else {
+          reject(new Error('Geolocation is not supported by this browser.'));
+        }
+      });
     };
-
+  
     const fetchReferenceLocation = async () => {
       try {
         const response = await fetch('https://ipapi.co/json');
         const data = await response.json();
         const lat = parseFloat(data.latitude);
         const lng = parseFloat(data.longitude);
+        return { lat, lng };
+      } catch (error) {
+        console.log('esperando datos de no-ipapi');
+      }
+    };
+  
+    fetchExactLocation()
+      .then(({ lat, lng }) => {
         setLatitude(lat);
         setLongitude(lng);
         onLatitudeChange(lat);
@@ -93,23 +97,19 @@ const PostsLocation = ({
         setLocationDetected(true);
         fetchLocationName(lat, lng);
         saveLocationToLocalStorage(lat, lng);
-      } catch (error) {
-        console.log('esperando datos de no-ipapi');
-      }
-    };
-
-    if (navigator.permissions) {
-      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-        if (result.state === 'granted') {
-          fetchExactLocation();
-        } else {
-          fetchReferenceLocation();
-        }
+      })
+      .catch(() => {
+        fetchReferenceLocation().then(({ lat, lng }) => {
+          setLatitude(lat);
+          setLongitude(lng);
+          onLatitudeChange(lat);
+          onLongitudeChange(lng);
+          setLocationDetected(true);
+          fetchLocationName(lat, lng);
+          saveLocationToLocalStorage(lat, lng);
+        });
       });
-    } else {
-      fetchReferenceLocation();
-    }
-  };
+  };  
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {

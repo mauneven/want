@@ -1,3 +1,5 @@
+// postCategory.js
+
 import React, { useState, useEffect, useRef } from "react";
 import categoriesData from "../../data/categories.json";
 import { useTranslation } from "react-i18next";
@@ -9,52 +11,30 @@ export default function PostCategory({
   onSearchTermChange,
   searchTerm,
   keepCategories,
-  resetAll,
-  detailsCategory,
-  detailsSubcategory,
-  detailsThirdCategory,
-  onDetailsCategoryChange,
-  onDetailsSubcategoryChange,
-  onDetailsThirdCategoryChange,
+  mainCategory,
+  subCategory,
+  thirdCategory,
 }) {
   const { t } = useTranslation();
 
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSubcategory, setSelectedSubcategory] = useState("");
-  const [selectedThirdCategory, setSelectedThirdCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(
+    mainCategory || ""
+  );
+  const [selectedSubcategory, setSelectedSubcategory] = useState(
+    subCategory || ""
+  );
+  const [selectedThirdCategory, setSelectedThirdCategory] = useState(
+    thirdCategory || ""
+  );
   const [searchPerformed, setSearchPerformed] = useState(false);
   const contentRef = useRef(null);
   const [showLeftScroll, setShowLeftScroll] = useState(false);
   const [showRightScroll, setShowRightScroll] = useState(false);
 
-  const handleDetailsCategoryChange = (
-    category,
-    subcategory,
-    thirdCategory
-  ) => {
-    handleButtonClick(category, subcategory, thirdCategory);
-    handleCategoryChange(category);
-    handleSubcategoryChange(subcategory);
-    handleThirdCategoryChange(thirdCategory);
-  };
-  
-  useEffect(() => {
-    if (detailsCategory !== "") {
-      handleDetailsCategoryChange(
-        detailsCategory,
-        detailsSubcategory,
-        detailsThirdCategory
-      );
-    }
-  }, [detailsCategory, detailsSubcategory, detailsThirdCategory]);  
-
   const clearAllCategories = () => {
     setSelectedCategory("");
     setSelectedSubcategory("");
     setSelectedThirdCategory("");
-    onDetailsCategoryChange("");
-    onDetailsSubcategoryChange("");
-    onDetailsThirdCategoryChange("");
   };
 
   const handleCategoryChange = (category) => {
@@ -62,8 +42,8 @@ export default function PostCategory({
       setSelectedCategory(category);
       setSelectedSubcategory("");
       setSelectedThirdCategory("");
-  
-      if (onMainCategoryChange) {
+
+      if (onMainCategoryChange && selectedCategory !== category) {
         onMainCategoryChange(category);
       }
       if (onSubcategoryChange) {
@@ -79,7 +59,7 @@ export default function PostCategory({
       setSelectedCategory("");
       setSelectedSubcategory("");
       setSelectedThirdCategory("");
-  
+
       if (onMainCategoryChange) {
         onMainCategoryChange("");
       }
@@ -94,13 +74,13 @@ export default function PostCategory({
       }
     }
   };
-  
-  const handleSubcategoryChange = (subcategory) => {
-    if (selectedSubcategory !== subcategory) {
-      setSelectedSubcategory(subcategory);
+
+  const handleSubcategoryChange = (subCategory) => {
+    if (selectedSubcategory !== subCategory) {
+      setSelectedSubcategory(subCategory);
       setSelectedThirdCategory("");
-      if (onSubcategoryChange) {
-        onSubcategoryChange(subcategory);
+      if (onSubcategoryChange && selectedSubcategory !== subCategory) {
+        onSubcategoryChange(subCategory);
       }
       if (onThirdCategoryChange) {
         onThirdCategoryChange("");
@@ -122,11 +102,11 @@ export default function PostCategory({
       }
     }
   };
-  
+
   const handleThirdCategoryChange = (thirdCategory) => {
     if (selectedThirdCategory !== thirdCategory) {
       setSelectedThirdCategory(thirdCategory);
-      if (onThirdCategoryChange) {
+      if (onThirdCategoryChange && selectedThirdCategory !== thirdCategory) {
         onThirdCategoryChange(thirdCategory);
       }
       if (onSearchTermChange) {
@@ -141,7 +121,7 @@ export default function PostCategory({
         onSearchTermChange("");
       }
     }
-  }; 
+  };
 
   const getCategoryTranslation = (categoryId) => {
     return t(`categories.${categoryId}.name`);
@@ -184,8 +164,8 @@ export default function PostCategory({
     return false;
   };
 
-  const isThirdCategoryVisible = (subcategory) => {
-    if (!selectedSubcategory || selectedSubcategory === subcategory.id) {
+  const isThirdCategoryVisible = (subCategory) => {
+    if (!selectedSubcategory || selectedSubcategory === subCategory.id) {
       return true;
     }
     return false;
@@ -234,81 +214,42 @@ export default function PostCategory({
   }, [searchTerm, keepCategories]);
 
   useEffect(() => {
-    if (resetAll) {
-      clearAllCategories();
-    }
-  }, [resetAll]);
-
-  useEffect(() => {
-    if (detailsCategory && detailsSubcategory && detailsThirdCategory) {
-      handleButtonClick(
-        detailsCategory,
-        detailsSubcategory,
-        detailsThirdCategory
-      );
-    }
-  }, [detailsCategory, detailsSubcategory, detailsThirdCategory]);
-
-  useEffect(() => {
-    const handleUnload = () => {
-      localStorage.removeItem("mainCategory");
-      localStorage.removeItem("subcategory");
-      localStorage.removeItem("thirdCategory");
-    };
-
-    window.addEventListener("beforeunload", handleUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleUnload);
-    };
-  }, []);
-
-  useEffect(() => {
-    // Leer las categorías seleccionadas desde el localStorage
-    const storedMainCategory = localStorage.getItem("mainCategory");
-    const storedSubcategory = localStorage.getItem("subcategory");
-    const storedThirdCategory = localStorage.getItem("thirdCategory");
-
-    if (storedMainCategory) {
-      setSelectedCategory(storedMainCategory);
-    }
-    if (storedSubcategory) {
-      setSelectedSubcategory(storedSubcategory);
-    }
-    if (storedThirdCategory) {
-      setSelectedThirdCategory(storedThirdCategory);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (resetAll) {
-      localStorage.removeItem("mainCategory");
-      localStorage.removeItem("subcategory");
-      localStorage.removeItem("thirdCategory");
-
-      setSelectedCategory("");
-      setSelectedSubcategory("");
-      setSelectedThirdCategory("");
-      onMainCategoryChange("");
-      onSubcategoryChange("");
-      onThirdCategoryChange("");
-    }
-  }, [resetAll]);
-
-  useEffect(() => {
     // Guardar las categorías seleccionadas en el localStorage
     localStorage.setItem("mainCategory", selectedCategory);
-    localStorage.setItem("subcategory", selectedSubcategory);
+    localStorage.setItem("subCategory", selectedSubcategory);
     localStorage.setItem("thirdCategory", selectedThirdCategory);
+
+    // Realizar las peticiones necesarias
+    if (onMainCategoryChange) {
+      onMainCategoryChange(selectedCategory);
+    }
+    if (onSubcategoryChange) {
+      onSubcategoryChange(selectedSubcategory);
+    }
+    if (onThirdCategoryChange) {
+      onThirdCategoryChange(selectedThirdCategory);
+    }
   }, [selectedCategory, selectedSubcategory, selectedThirdCategory]);
+
+  useEffect(() => {
+    // Restaurar las categorías seleccionadas del localStorage
+    const mainCategory = localStorage.getItem("mainCategory");
+    const subCategory = localStorage.getItem("subCategory");
+    const thirdCategory = localStorage.getItem("thirdCategory");
+
+    if (mainCategory) {
+      setSelectedCategory(mainCategory);
+    }
+    if (subCategory) {
+      setSelectedSubcategory(subCategory);
+    }
+    if (thirdCategory) {
+      setSelectedThirdCategory(thirdCategory);
+    }
+  }, []);
 
   return (
     <>
-      <div>
-        <p> DC {detailsCategory}</p>
-        <p> DS {detailsSubcategory}</p>
-        <p> DT {detailsThirdCategory}</p>
-      </div>
       <div className="d-flex">
         <div className="col-auto d-flex align-items-center justify-content-center">
           {showLeftScroll && (
@@ -356,30 +297,30 @@ export default function PostCategory({
               {selectedCategory &&
                 categoriesData
                   .find((cat) => cat.id === selectedCategory)
-                  .subcategories.map((subcategory) => (
+                  .subcategories.map((subCategory) => (
                     <button
-                      key={subcategory.id}
-                      id={`${selectedCategory}_${subcategory.id}`}
+                      key={subCategory.id}
+                      id={`${selectedCategory}_${subCategory.id}`}
                       className={`want-rounded m-2 ${
-                        selectedSubcategory === subcategory.id
+                        selectedSubcategory === subCategory.id
                           ? "want-button border-selected"
                           : searchPerformed && !keepCategories
                           ? "generic-button border"
                           : "generic-button border"
                       }`}
                       onClick={() => {
-                        handleButtonClick(selectedCategory, subcategory.id, "");
-                        handleSubcategoryChange(subcategory.id);
+                        handleButtonClick(selectedCategory, subCategory.id, "");
+                        handleSubcategoryChange(subCategory.id);
                       }}
                       style={{
-                        display: isThirdCategoryVisible(subcategory)
+                        display: isThirdCategoryVisible(subCategory)
                           ? "inline-block"
                           : "none",
                       }}
                     >
                       {getSubcategoryTranslation(
                         selectedCategory,
-                        subcategory.id
+                        subCategory.id
                       )}
                       {selectedSubcategory && (
                         <>
@@ -396,7 +337,7 @@ export default function PostCategory({
                   .subcategories.find(
                     (subcat) => subcat.id === selectedSubcategory
                   )
-                  .thirdCategories.map((thirdCategory) => (
+                  ?.thirdCategories.map((thirdCategory) => (
                     <button
                       key={thirdCategory.id}
                       id={`${selectedCategory}_${selectedSubcategory}_${thirdCategory.id}`}
