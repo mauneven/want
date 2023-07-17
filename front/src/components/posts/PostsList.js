@@ -23,11 +23,13 @@ const PostsList = ({
   thirdCategory,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(14);
   const [totalPosts, setTotalPosts] = useState(0);
   const initialPage = parseInt(localStorage.getItem("currentPage") || "1", 10);
   const [currentPage, setCurrentPage] = useState(initialPage);
-  const [hasMorePosts, setHasMorePosts] = useState(false);
+  const [hasMorePosts, setHasMorePosts] = useState(
+    localStorage.getItem("hasMorePosts") === "true"
+  );
   const [isFetching, setIsFetching] = useState(false);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [latitude, setLatitude] = useState(null);
@@ -103,6 +105,8 @@ const PostsList = ({
       localStorage.removeItem("mainCategory");
       localStorage.removeItem("subCategory");
       localStorage.removeItem("thirdCategory");
+      localStorage.removeItem("allPostsCharged"); // Remove allPostsCharged flag
+      localStorage.removeItem("hasMorePosts"); // Remove hasMorePosts flag
       setCurrentPage(1);
       setPosts([]);
       setHasMorePosts(true);
@@ -226,6 +230,7 @@ const PostsList = ({
     if (searchTerm) {
       setPosts([]);
       setCurrentPage(1);
+      localStorage.removeItem("allPostsCharged");
     }
   }, [searchTerm]);
 
@@ -238,6 +243,7 @@ const PostsList = ({
         previousFilter.thirdCategory !== categoryFilter.thirdCategory;
 
       if (isFilterChanged) {
+        localStorage.removeItem("allPostsCharged");
         setPosts([]);
         // setCurrentPage(1); no puedo poner esto porque esto haria que siempre la paginacion se ponga en 1, perderia la persistencia
         fetchPosts(true, {
@@ -278,9 +284,7 @@ const PostsList = ({
     onMainCategoryChange(categoryFilter.mainCategory);
     onSubcategoryChange(categoryFilter.subCategory);
     onThirdCategoryChange(categoryFilter.thirdCategory);
-  }, [
-    categoryFilter,
-  ]);
+  }, [categoryFilter]);
 
   useEffect(() => {
     const lastPage = Math.ceil(totalPosts / pageSize);
@@ -293,12 +297,18 @@ const PostsList = ({
 
   useEffect(() => {
     localStorage.setItem("currentPage", currentPage.toString());
-  }, [currentPage]);
+    localStorage.setItem("hasMorePosts", hasMorePosts.toString()); // Save hasMorePosts flag to localStorage
+  }, [currentPage, hasMorePosts]);
 
   useEffect(() => {
     const storedPage = localStorage.getItem("currentPage");
+    const storedHasMorePosts = localStorage.getItem("hasMorePosts");
+
     if (storedPage) {
       setCurrentPage(parseInt(storedPage, 10));
+    }
+    if (storedHasMorePosts) {
+      setHasMorePosts(storedHasMorePosts === "true");
     }
   }, []);
 
@@ -313,6 +323,21 @@ const PostsList = ({
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [currentPage]);
+
+  // Set allPostsCharged flag in localStorage when all posts are loaded
+  useEffect(() => {
+    if (isInitialFetchDone && !isLoading && !isFetching && !hasMorePosts) {
+      localStorage.setItem("allPostsCharged", "true");
+    }
+  }, [isInitialFetchDone, isLoading, isFetching, hasMorePosts]);
+
+  const allPostsCharged = localStorage.getItem("allPostsCharged") === "true";
+
+  useEffect(() => {
+    if (allPostsCharged === true) {
+      setHasMorePosts(false);
+    }
+  }, [allPostsCharged]);
 
   return (
     <div>
@@ -341,8 +366,28 @@ const PostsList = ({
       <InfiniteScroll
         dataLength={posts.length}
         next={fetchMorePosts}
-        hasMore={hasMorePosts}
-        loader={<ContentLoader />}
+        hasMore={!allPostsCharged && hasMorePosts}
+        loader={
+          <div className="row row-cols-1 row-cols row-cols-lg-3 row-cols-xl-6">
+            {[...Array(7)].map((_, index) => (
+              <div key={index} style={{ margin: "20px 0" }}>
+                {isFetchingMore || isLoading ? (
+                  <ContentLoader
+                    speed={1.4}
+                    width={270}
+                    height={200}
+                    viewBox="0 0 270 200"
+                    backgroundColor="#f3f3f3"
+                    foregroundColor="#ecebeb"
+                  >
+                    <rect x="0" y="0" rx="3" ry="3" width="270" height="200" />
+                  </ContentLoader>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        }
+        style={{ overflowX: "hidden" }}
       >
         <div
           className="row row-cols-1 row-cols row-cols-lg-3 row-cols-xl-6"
@@ -361,13 +406,23 @@ const PostsList = ({
               />
             );
           })}
-
-          {!hasMorePosts && !isLoading && !isFetchingMore && (
-            <div className="col-md-12">
-              <p>No more posts available.</p>
-            </div>
-          )}
         </div>
+
+        {allPostsCharged && (
+          <div className="text-center p-5">
+            <h1>
+              Wow, no hay posts por cargar, intenta elegir otros parámetros.
+            </h1>
+          </div>
+        )}
+
+        {!hasMorePosts && !isLoading && !isFetchingMore && !allPostsCharged && (
+          <div className="text-center p-5">
+            <h1>
+              Wow, no hay posts por cargar, intenta elegir otros parámetros.
+            </h1>
+          </div>
+        )}
       </InfiniteScroll>
     </div>
   );

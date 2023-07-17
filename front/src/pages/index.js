@@ -19,6 +19,7 @@ const IndexPage = ({
   const router = useRouter();
   const [scrollPosition, setScrollPosition] = useState(0);
   const [key, setKey] = useState(0);
+  const [showOverlay, setShowOverlay] = useState(true);
 
   const handleRouteChange = () => {
     localStorage.setItem("scrollPosition", window.pageYOffset.toString());
@@ -48,15 +49,21 @@ const IndexPage = ({
   }, [resetAll, handleResetAll]);
 
   useEffect(() => {
-    setTimeout(() => {
+    const overlayTimer = setTimeout(() => {
       window.scrollTo(0, scrollPosition);
-    }, 100);
-  }, [scrollPosition]);  
+      setShowOverlay(false);
+    }, 220); // Timer de 220 ms (200 ms + 20 ms adicionales)
+
+    return () => {
+      clearTimeout(overlayTimer);
+    };
+  }, [scrollPosition]);
 
   return (
     <div>
+      {showOverlay && <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "white", zIndex: 2 }}></div>}
       <PostsList
-      key={key}
+        key={key}
         searchTerm={searchTerm}
         onMainCategoryChange={onMainCategoryChange}
         onSubcategoryChange={onSubcategoryChange}
