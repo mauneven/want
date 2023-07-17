@@ -8,6 +8,7 @@ import { useCheckSession, useGetUserPreferences } from "@/utils/userEffects";
 import fetchPosts from "./postsList/PostsListsUtilities";
 import PostCard from "./postsList/PostCard";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useTranslation } from 'react-i18next';
 
 const PostsList = ({
   searchTerm,
@@ -46,6 +47,7 @@ const PostsList = ({
     useGetUserPreferences(user);
   const router = useRouter();
   const containerRef = useRef(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleUnload = () => {
@@ -87,14 +89,17 @@ const PostsList = ({
 
   const handleLatitudeChange = (lat) => {
     setLatitude(lat);
+    setCurrentPage(1);
   };
 
   const handleLongitudeChange = (lng) => {
     setLongitude(lng);
+    setCurrentPage(1);
   };
 
   const handleRadiusChange = (selectedRadius) => {
     setRadius(selectedRadius);
+    setCurrentPage(1);
   };
 
   useEffect(() => {
@@ -227,10 +232,35 @@ const PostsList = ({
   }, [isFetchingMore, isLoading, isFetching, hasMorePosts]);
 
   useEffect(() => {
-    if (searchTerm) {
+    const previousSearchTerm = previousCategoryFilter.current.searchTerm;
+
+    if (previousSearchTerm !== searchTerm) {
       setPosts([]);
-      setCurrentPage(1);
-      localStorage.removeItem("allPostsCharged");
+      fetchPosts(true, {
+        hasLocation,
+        searchTerm,
+        keepCategories,
+        categoryFilter,
+        userPreferences,
+        currentPage: 1,
+        pageSize,
+        latitude,
+        longitude,
+        radius,
+        setPosts,
+        setTotalPosts,
+        setHasMorePosts,
+        setIsFetching,
+        setIsLoading,
+        setIsFetchingMore,
+      });
+      previousCategoryFilter.current = {
+        ...categoryFilter,
+        latitude,
+        longitude,
+        radius,
+        searchTerm,
+      };
     }
   }, [searchTerm]);
 
@@ -240,12 +270,14 @@ const PostsList = ({
       const isFilterChanged =
         previousFilter.mainCategory !== categoryFilter.mainCategory ||
         previousFilter.subCategory !== categoryFilter.subCategory ||
-        previousFilter.thirdCategory !== categoryFilter.thirdCategory;
+        previousFilter.thirdCategory !== categoryFilter.thirdCategory ||
+        previousFilter.latitude !== latitude ||
+        previousFilter.longitude !== longitude ||
+        previousFilter.radius !== radius;
 
       if (isFilterChanged) {
         localStorage.removeItem("allPostsCharged");
         setPosts([]);
-        // setCurrentPage(1); no puedo poner esto porque esto haria que siempre la paginacion se ponga en 1, perderia la persistencia
         fetchPosts(true, {
           hasLocation,
           searchTerm,
@@ -265,7 +297,12 @@ const PostsList = ({
           setIsFetchingMore,
         });
       }
-      previousCategoryFilter.current = categoryFilter;
+      previousCategoryFilter.current = {
+        ...categoryFilter,
+        latitude,
+        longitude,
+        radius,
+      };
     }
   }, [
     isInitialFetchDone,
@@ -334,14 +371,13 @@ const PostsList = ({
   const allPostsCharged = localStorage.getItem("allPostsCharged") === "true";
 
   useEffect(() => {
-    if (allPostsCharged === true) {
+    if (allPostsCharged) {
       setHasMorePosts(false);
     }
   }, [allPostsCharged]);
 
   return (
     <div>
-      <p>{currentPage}</p>
       <div className="text-center">
         <PostCategory
           onMainCategoryChange={handleMainCategoryChange}
@@ -363,13 +399,20 @@ const PostsList = ({
           onRadiusChange={handleRadiusChange}
         />
       </div>
+      {latitude === null || longitude === null ? (
+        <div className="text-center p-5 m-5">
+          <h1>
+          {t('postslist.locationAccess')}
+          </h1>
+        </div>
+      ) : null}
       <InfiniteScroll
         dataLength={posts.length}
         next={fetchMorePosts}
         hasMore={!allPostsCharged && hasMorePosts}
         loader={
           <div className="row row-cols-1 row-cols row-cols-lg-3 row-cols-xl-6">
-            {[...Array(7)].map((_, index) => (
+            {[...Array(0)].map((_, index) => (
               <div key={index} style={{ margin: "20px 0" }}>
                 {isFetchingMore || isLoading ? (
                   <ContentLoader
@@ -411,7 +454,7 @@ const PostsList = ({
         {allPostsCharged && (
           <div className="text-center p-5">
             <h1>
-              Wow, no hay posts por cargar, intenta elegir otros parámetros.
+            {t('postslist.noMorePosts')}
             </h1>
           </div>
         )}
@@ -419,7 +462,7 @@ const PostsList = ({
         {!hasMorePosts && !isLoading && !isFetchingMore && !allPostsCharged && (
           <div className="text-center p-5">
             <h1>
-              Wow, no hay posts por cargar, intenta elegir otros parámetros.
+            {t('postslist.noMorePosts')}
             </h1>
           </div>
         )}

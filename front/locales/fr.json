@@ -14,6 +14,10 @@
   "menu": "Menu",
   "onlyon": "Uniquement sur"
   },
+  "postslist": {
+    "noMorePosts": "Wow, il n'y a plus de publications à charger, essayez de choisir d'autres paramètres.",
+    "locationAccess": "Veuillez autoriser Want à accéder à votre emplacement afin d'afficher les publications pertinentes à proximité."
+    },
   "createPost": {
   "title": "Créez une publication sur ce que vous voulez",
   "titleLabel": "Attribuez un titre à ce que vous voulez*",

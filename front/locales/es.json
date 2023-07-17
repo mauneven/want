@@ -13,6 +13,10 @@
     "menu": "Menú",
     "onlyon": "Solo en"
   },
+  "postslist": {
+    "noMorePosts": "Wow, no hay posts por cargar, intenta elegir otros parámetros.",
+    "locationAccess": "Por favor, permite a Want acceder a tu ubicación para mostrar posts relevantes cerca a tu ubicación."
+  },
   "createPost": {
     "title": "Crea una publicación sobre lo que quieres",
     "titleLabel": "Asigna un título a lo que quieres*",
@@ -116,7 +120,7 @@
     "everywhere": "En todas partes *BETA*",
     "useCurrentLocation": "Usar mi ubicación actual",
     "apply": "Aplicar",
-    "cancel" : "Cancelar"
+    "cancel": "Cancelar"
   },
   "reportOfferModal": {
     "report": "Reportar",
