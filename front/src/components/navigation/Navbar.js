@@ -45,29 +45,9 @@ export default function MegaMenu({
     e.preventDefault();
     const newSearchTerm = e.target.search.value.trim();
     if (newSearchTerm !== "") {
-      let updatedMainCategory = mainCategory;
-      let updatedSubcategory = subCategory;
-      let updatedThirdCategory = thirdCategory;
-  
-      if (updatedKeepCategories !== true) {
-        updatedMainCategory = "";
-        updatedSubcategory = "";
-        updatedThirdCategory = "";
-      }
-  
-      onCategoryChange(updatedMainCategory);
-      onSubcategoryChange(updatedSubcategory);
-      onThirdCategoryChange(updatedThirdCategory);
-  
       onKeepCategoriesChange(updatedKeepCategories); // Actualizar el valor de keepCategories aquí
-  
       onSearchTermChange(newSearchTerm);
       router.push("/");
-  
-      // Esperar (40 milisegundos) antes de realizar la búsqueda
-      setTimeout(() => {
-        onSearchTermChange(newSearchTerm);
-      }, 40);
     }
   };  
 
