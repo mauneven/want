@@ -45,9 +45,11 @@ export default function MegaMenu({
     e.preventDefault();
     const newSearchTerm = e.target.search.value.trim();
     if (newSearchTerm !== "") {
-      onKeepCategoriesChange(updatedKeepCategories); // Actualizar el valor de keepCategories aquí
-      onSearchTermChange(newSearchTerm);
       router.push("/");
+      setTimeout(() => {
+        onKeepCategoriesChange(updatedKeepCategories); // Actualizar el valor de keepCategories aquí
+        onSearchTermChange(newSearchTerm);
+      }, 80); // 80 milisegundos de retraso
     }
   };  
 
