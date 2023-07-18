@@ -254,6 +254,7 @@ const PostsList = ({
         setIsLoading,
         setIsFetchingMore,
       });
+      console.log("esto es el useEffect A");
       previousCategoryFilter.current = {
         ...categoryFilter,
         latitude,
@@ -274,6 +275,15 @@ const PostsList = ({
         previousFilter.latitude !== latitude ||
         previousFilter.longitude !== longitude ||
         previousFilter.radius !== radius;
+
+      if (
+        !categoryFilter.mainCategory &&
+        !categoryFilter.subCategory &&
+        !categoryFilter.thirdCategory &&
+        searchTerm !== ""
+      ) {
+        return; // Skip fetchPosts
+      }
 
       if (isFilterChanged) {
         localStorage.removeItem("allPostsCharged");
@@ -296,6 +306,7 @@ const PostsList = ({
           setIsLoading,
           setIsFetchingMore,
         });
+        console.log("esto es el useEffect B");
       }
       previousCategoryFilter.current = {
         ...categoryFilter,
@@ -401,9 +412,7 @@ const PostsList = ({
       </div>
       {latitude === null || longitude === null ? (
         <div className="text-center p-5 m-5">
-          <h1>
-          {t('postslist.locationAccess')}
-          </h1>
+          <h1>{t('postslist.locationAccess')}</h1>
         </div>
       ) : null}
       <InfiniteScroll
@@ -453,17 +462,13 @@ const PostsList = ({
 
         {allPostsCharged && (
           <div className="text-center p-5">
-            <h1>
-            {t('postslist.noMorePosts')}
-            </h1>
+            <h1>{t('postslist.noMorePosts')}</h1>
           </div>
         )}
 
         {!hasMorePosts && !isLoading && !isFetchingMore && !allPostsCharged && (
           <div className="text-center p-5">
-            <h1>
-            {t('postslist.noMorePosts')}
-            </h1>
+            <h1>{t('postslist.noMorePosts')}</h1>
           </div>
         )}
       </InfiniteScroll>
