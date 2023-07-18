@@ -48,8 +48,11 @@ exports.register = async (req, res, next) => {
     // Generate verification token
     const token = generateVerificationCode(); // Generate a random 6-digit verification code
 
-    // Assign verification code and expiration time to the user
-    user.verificationCode = token;
+    // Encrypt verification code
+    const encryptedToken = await bcrypt.hash(token, salt);
+
+    // Assign encrypted verification code and expiration time to the user
+    user.verificationCode = encryptedToken;
     user.verificationCodeExpires = Date.now() + 1800000; // Verification code expires in 30 minutes
 
     await user.save();
@@ -84,8 +87,11 @@ exports.resendVerification = async (req, res, next) => {
     // Generar un nuevo código de verificación
     const code = generateVerificationCode(); // Generar un nuevo código de verificación aleatorio de 6 dígitos
 
-    // Almacenar el nuevo código de verificación y el tiempo de expiración en el documento del usuario
-    user.verificationCode = code;
+    // Encriptar el nuevo código de verificación
+    const encryptedCode = await bcrypt.hash(code, salt);
+
+    // Almacenar el nuevo código de verificación encriptado y el tiempo de expiración en el documento del usuario
+    user.verificationCode = encryptedCode;
     user.verificationCodeExpires = Date.now() + 1800000; // Establecer un nuevo tiempo de expiración
     await user.save();
 
@@ -102,11 +108,29 @@ exports.verifyUser = async (req, res, next) => {
   try {
     const { verificationCode } = req.body;
 
+    // Check if verificationCode is provided
+    if (!verificationCode) {
+      return res.status(400).send("Verification code is required");
+    }
+
     const user = await User.findOne({
-      verificationCode,
       verificationCodeExpires: { $gt: Date.now() },
     });
+
+    // Check if a user with a valid verificationCodeExpires is found
     if (!user) {
+      return res.status(400).send("Invalid verification code");
+    }
+
+    // Get the salt stored during registration
+    const salt = user.password.substr(0, 29); // Get the first 29 characters of the hashed password
+
+    // Turn bcrypt.compare into a function that returns a promise
+    const compareAsync = promisify(bcrypt.compare);
+
+    // Compare the decrypted verification code with the encrypted code stored in the database
+    const isCodeValid = await compareAsync(verificationCode, user.verificationCode);
+    if (!isCodeValid) {
       return res.status(400).send("Invalid verification code");
     }
 
@@ -159,7 +183,6 @@ const sendVerificationEmail = async (email, verificationCode) => {
     console.error("Error sending verification email:", err);
   }
 };
-
 
 exports.login = async (req, res, next) => {
   try {
