@@ -288,7 +288,7 @@ export default function PostCategory({
                   {selectedCategory && (
                     <>
                       {" "}
-                      <i className="bi bi-x-circle"></i>
+                      <i className="bi bi-x-circle animate__animated animate__bounceIn"></i>
                     </>
                   )}
                 </button>
@@ -303,7 +303,7 @@ export default function PostCategory({
                       id={`${selectedCategory}_${subCategory.id}`}
                       className={`want-rounded m-2 ${
                         selectedSubcategory === subCategory.id
-                          ? "want-button border-selected"
+                          ? "want-button border-selected "
                           : searchPerformed && !keepCategories
                           ? "generic-button border"
                           : "generic-button border"
@@ -325,7 +325,7 @@ export default function PostCategory({
                       {selectedSubcategory && (
                         <>
                           {" "}
-                          <i className="bi bi-x-circle"></i>
+                          <i className="bi bi-x-circle  animate__animated animate__bounceIn"></i>
                         </>
                       )}
                     </button>
@@ -365,7 +365,7 @@ export default function PostCategory({
                       {selectedThirdCategory && (
                         <>
                           {" "}
-                          <i className="bi bi-x-circle"></i>
+                          <i className="bi bi-x-circle animate__animated animate__bounceIn"></i>
                         </>
                       )}
                     </button>

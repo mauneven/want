@@ -19,7 +19,7 @@ const ReportPostModal = ({ postId, onReport }) => {
 
   return (
     <>
-      <button type='generic-button' onClick={handleShow}>
+      <button className='want-button-danger ms-3' onClick={handleShow}>
         <i className="bi bi-flag"></i>
       </button>
 
@@ -39,7 +39,7 @@ const ReportPostModal = ({ postId, onReport }) => {
                 required
               />
             </Form.Group>
-            <button type="submit">
+            <button type="submit" className='want-button-danger mt-2'>
               {t('reportPostModal.sendReport')}
             </button>
           </Form>

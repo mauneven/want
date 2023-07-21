@@ -169,7 +169,7 @@ const CreatePostLocation = ({ onLatitudeChange, onLongitudeChange }) => {
             center={[latitude, longitude]}
             zoom={13}
             style={{ height: '100%', width: '100%' }}
-            scrollWheelZoom={true}
+            scrollWheelZoom={false}
             attributionControl={false} // Desactiva la atribución de Leaflet
             dragging={false}
             zoomSnap={false}

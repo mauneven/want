@@ -1,7 +1,18 @@
 
 
 .card{
-  border: 0;
+  border: 1px solid #e1e1e1;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 1px #e1e1e14b;
+}
+
+.post-card {
+  transition: box-shadow 200ms, transform 200ms;
+}
+
+.post-card:hover {
+  box-shadow: 0px 0px 15px -3px #16161646;
+  transform: translateY(-5px);
 }
 
 .text-price{
@@ -10,11 +21,11 @@
 }
 
 .img-post{
-  border-radius: 26px 26px 26px 26px;
+  border-radius: 10px 10px 0px 0px;
 }
 
 .post-card-contain{
-  border-radius: 0 0 26px 26px;
+  border-radius: 0 0 10px 10px;
 }
 
 .posts-card:hover{
@@ -22,13 +33,18 @@
   transition: 150ms;
 }
 
+.post-details{
+  background-color: #b4b4b40c;
+  border-radius: 0px 0px 10px 10px;
+}
+
 .post-title { 
-  display: block;
-  display: -webkit-box;
   margin: 0 auto;
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
+  overflow: hidden; /* Oculta el contenido que sobrepasa el div */
+  text-overflow: ellipsis; /* Agrega puntos suspensivos al final del texto que se corta */
+  white-space: nowrap; /* Evita el salto de línea */
+  color: #444444;
 }
 
 .post-text { 
@@ -59,29 +75,6 @@
   line-height: 1.3;
   padding: 6px;
 
-}
-
-.btn-report:hover{
-  background-color: #dc3546d3;
-  box-shadow: 0 0 10px red;
-}
-
-.btn-save{
-  color: #fff;
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  border: none;
-  transition: 0.1s;
-  width: 28px;
-  height: 28px;
-  line-height: 1.9;
-
-}
-
-.btn-save:hover{
-  background-color: #4FC68D;
-  box-shadow: 0 0 10px rgb(47, 255, 127);
 }
 
 .floating-btn-container {
@@ -144,11 +137,6 @@
   color: white;
 }
 
-.btn-slider-categories-active:hover{
-  background-color: #267700;
-  color: white;
-}
-
 .slider-container {
   overflow-x: auto;
   white-space: nowrap;
@@ -192,7 +180,12 @@
 }
 
 .post-price{
-  color: black;
+  margin: 0 auto;
+  white-space: nowrap;
   font-weight: 600;
+  overflow: hidden; /* Oculta el contenido que sobrepasa el div */
+  text-overflow: ellipsis; /* Agrega puntos suspensivos al final del texto que se corta */
+  white-space: nowrap; /* Evita el salto de línea */
+  color: #444444;
 }
 

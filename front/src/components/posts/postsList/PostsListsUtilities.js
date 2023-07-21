@@ -75,8 +75,6 @@
         ),
       });
 
-      console.log("Fetching posts...");
-
       if (resetPosts) {
         setPosts([]); // Eliminar los posts antiguos
       }

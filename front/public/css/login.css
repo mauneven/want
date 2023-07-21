@@ -36,7 +36,7 @@
 }
 
 .rst-pwd{
-    color: black;
+    color: var(--color-generic);
     text-decoration: none;
     transition: 0.1s;
 }

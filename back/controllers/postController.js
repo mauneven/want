@@ -191,6 +191,7 @@ exports.getPostById = async (req, res, next) => {
   }
 };
 
+
 exports.createPost = async (req, res, next) => {
   try {
     const {
@@ -229,12 +230,21 @@ exports.createPost = async (req, res, next) => {
       req.files = compressedImagePaths.map((path) => ({ path }));
     }
 
+    // Desplazar las coordenadas dentro de un radio de 5 km
+    const newPosition = geolib.computeDestinationPoint(
+      { latitude, longitude },
+      1000, //  1000 metros
+      Math.random() * 360 // Ángulo aleatorio en grados
+    );
+    const newLatitude = newPosition.latitude;
+    const newLongitude = newPosition.longitude;
+
     const post = new Post({
       title,
       description,
       createdBy: req.session.userId,
-      latitude,
-      longitude,
+      latitude: newLatitude,
+      longitude: newLongitude,
       mainCategory,
       subCategory,
       thirdCategory,
@@ -287,8 +297,16 @@ exports.updatePost = async (req, res, next) => {
 
     post.title = title;
     post.description = description;
-    post.latitude = latitude;
-    post.longitude = longitude;
+
+    // Desplazar las coordenadas dentro de un radio de 5 km
+    const newPosition = geolib.computeDestinationPoint(
+      { latitude, longitude },
+      1000, // 1000 metros
+      Math.random() * 360 // Ángulo aleatorio en grados
+    );
+    post.latitude = newPosition.latitude;
+    post.longitude = newPosition.longitude;
+
     post.mainCategory = mainCategory;
     post.subCategory = subCategory;
     post.thirdCategory = thirdCategory;

@@ -9,13 +9,13 @@ const PostCard = ({ post, userReputation, photoIndex }) => {
   return (
     <div
       key={post._id}
-      className="col post-card want-rounded d-flex align-items-stretch p-3"
+      className="col d-flex p-3"
     >
-      <div className="card want-rounded divhover w-100">
+      <div className="card post-card divhover w-100 animate__fadeIn animate__animated">
         {post.photos && post.photos.length > 0 ? (
           <div
             id={`carousel-${post._id}`}
-            className="carousel slide want-rounded  img-post"
+            className="carousel slide img-post"
             data-bs-ride="carousel"
             style={{ height: "200px", overflow: "hidden" }}
           >
@@ -68,14 +68,14 @@ const PostCard = ({ post, userReputation, photoIndex }) => {
             )}
           </div>
         ) : (
-          <div className="border img-post d-flex w-100 h-100" onClick={() => router.push(`post/${post._id}`)}>
-            <h4 className="w-100 h-100 p-3 text-center">{post.title}</h4>
+          <div className="d-flex w-100 h-100 align-items-center justify-content-center" onClick={() => router.push(`post/${post._id}`)}>
+            <h4 className="text-center p-3">{post.title}</h4>
           </div>
         )}
-        <Link href={`post/${post._id}`} className="post-details">
+        <Link href={`post/${post._id}`} className="post-details p-2 ">
           <div className="want-color-generic">
             <div className="">
-              <h3 className="post-price mt-3">
+              <h3 className="post-price">
                 ${post.price.toLocaleString()}
               </h3>
               <h5 className="p-1 post-title">{post.title}</h5>

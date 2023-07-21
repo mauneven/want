@@ -159,8 +159,8 @@ export default function ReceivedOffers() {
         </Modal.Footer>
       </Modal>
       <div className="container">
+      <GoBackButton/>
         <h1 className='my-4'>{t('receivedOffers.yourOffers')}</h1>
-        <GoBackButton/>
         <div className="row">
           <div className="col-md-3">
             <h3 className='mb-4'>{t('receivedOffers.yourPosts')}</h3>
