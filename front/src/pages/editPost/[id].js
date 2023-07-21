@@ -10,12 +10,14 @@ const EditPost = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [user, setUser] = useState(null);
   const [mainCategory, setMainCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
   const [thirdCategory, setThirdCategory] = useState("");
   const [price, setPrice] = useState("");
-  const [latitude, setLatitude] = useState(null); // Agrega el estado para latitude
-  const [longitude, setLongitude] = useState(null); // Agrega el estado para longitude
+  const [postData, setPostData] = useState(null); 
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
   const [photos, setPhotos] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -31,14 +33,14 @@ const EditPost = () => {
   const handleLongitudeChange = (longitude) => {
     setLongitude(longitude);
   };
-
+  
   useEffect(() => {
     validations(router);
   }, []);
 
   useEffect(() => {
-    // Load post data
-    const loadPost = async () => {
+    // Load post data and check session
+    const loadPostAndCheckSession = async () => {
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${router.query.id}`
@@ -47,6 +49,7 @@ const EditPost = () => {
           throw new Error("Failed to fetch post data");
         }
         const postData = await response.json();
+        setPostData(postData); // Set the postData state
         setTitle(postData.title);
         setDescription(postData.description);
         setMainCategory(postData.mainCategory);
@@ -59,15 +62,36 @@ const EditPost = () => {
             preview: `${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`,
           }))
         );
-        setLatitude(postData.latitude); // Establecer la latitud inicial
-        setLongitude(postData.longitude); // Establecer la longitud inicial
+        setLatitude(postData.latitude);
+        setLongitude(postData.longitude);
+
+        const checkSessionResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+
+        if (checkSessionResponse.ok) {
+          const data = await checkSessionResponse.json();
+          setUser(data.user || null);
+          console.log(data);
+          console.log(postData);
+          if (data.user._id && data.user._id !== postData.createdBy._id) {
+            router.push("/");
+          }
+        } else if (checkSessionResponse.status === 401) {
+          setUser(null);
+          console.log("not logged in");
+        }
       } catch (error) {
-        console.error(error);
+        console.error("Error al verificar la sesión:", error);
       }
     };
 
-    loadPost();
-  }, [router.query.id]);
+    loadPostAndCheckSession();
+  }, [router.query.id, router.pathname]);
 
   const handleShowModal = () => {
     setShowModal(true);
