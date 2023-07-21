@@ -1,19 +1,57 @@
-import axios from "axios";
+import GoBackButton from "@/components/reusable/GoBackButton";
+import React from "react";
+import { useTranslation } from "react-i18next";
 
-function Terms({ html }) {
-  return <div dangerouslySetInnerHTML={{ __html: html }} />;
-}
+const TermsAndConditionsPage = () => {
+  const { t } = useTranslation();
 
-export async function getServerSideProps() {
-  // Obtiene el HTML desde el back-end
-  const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/convertDocxToHtml`);
-  const html = response.data;
+  return (
+    <div className="container">
+      <GoBackButton/>
+      <h1>{t("termsAndConditions.title")}</h1>
+      <h2>{t("termsAndConditions.disclaimerTitle")}</h2>
+      <p>{t("termsAndConditions.disclaimerContent")}</p>
 
-  return {
-    props: {
-      html,
-    },
-  };
-}
+      <h2>{t("termsAndConditions.paymentServicesTitle")}</h2>
+      <p>{t("termsAndConditions.paymentServicesContent")}</p>
 
-export default Terms;
+      <h2>{t("termsAndConditions.contentModerationTitle")}</h2>
+      <p>{t("termsAndConditions.contentModerationContent")}</p>
+
+      <h2>{t("termsAndConditions.dataSecurityTitle")}</h2>
+      <p>{t("termsAndConditions.dataSecurityContent")}</p>
+
+      <h2>{t("termsAndConditions.disputesTitle")}</h2>
+      <p>{t("termsAndConditions.disputesContent")}</p>
+
+      <h2>{t("termsAndConditions.accountSuspensionTitle")}</h2>
+      <p>{t("termsAndConditions.accountSuspensionContent")}</p>
+
+      <h2>{t("termsAndConditions.disputeResolutionTitle")}</h2>
+      <p>{t("termsAndConditions.disputeResolutionContent")}</p>
+
+      <h2>{t("termsAndConditions.userResponsibilityTitle")}</h2>
+      <p>{t("termsAndConditions.userResponsibilityContent")}</p>
+
+      <h2>{t("termsAndConditions.intellectualPropertyTitle")}</h2>
+      <p>{t("termsAndConditions.intellectualPropertyContent")}</p>
+
+      <h2>{t("termsAndConditions.accountCancellationTitle")}</h2>
+      <p>{t("termsAndConditions.accountCancellationContent")}</p>
+
+      <h2>{t("termsAndConditions.modificationsTitle")}</h2>
+      <p>{t("termsAndConditions.modificationsContent")}</p>
+
+      <h2>{t("termsAndConditions.cookiesTitle")}</h2>
+      <p>{t("termsAndConditions.cookiesContent")}</p>
+
+      <h2>{t("termsAndConditions.userLiabilityTitle")}</h2>
+      <p>{t("termsAndConditions.userLiabilityContent")}</p>
+
+      <h2>{t("termsAndConditions.privacyTitle")}</h2>
+      <p>{t("termsAndConditions.privacyContent")}</p>
+    </div>
+  );
+};
+
+export default TermsAndConditionsPage;

@@ -24,7 +24,7 @@ const PostsList = ({
   thirdCategory,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [pageSize, setPageSize] = useState(14);
+  const [pageSize, setPageSize] = useState(13);
   const [totalPosts, setTotalPosts] = useState(0);
   const initialPage = parseInt(localStorage.getItem("currentPage") || "1", 10);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -104,16 +104,13 @@ const PostsList = ({
 
   useEffect(() => {
     if (resetAll) {
-      onResetAll(false);
       localStorage.removeItem("cachedPosts");
       localStorage.removeItem("currentPage");
       localStorage.removeItem("mainCategory");
       localStorage.removeItem("subCategory");
       localStorage.removeItem("thirdCategory");
-      localStorage.removeItem("allPostsCharged"); // Remove allPostsCharged flag
-      localStorage.removeItem("hasMorePosts"); // Remove hasMorePosts flag
-      setCurrentPage(1);
-      setPosts([]);
+      localStorage.removeItem("allPostsCharged");
+      localStorage.removeItem("hasMorePosts");
       setHasMorePosts(true);
       onSearchTermChange("");
       setIsFetchingMore(true);
@@ -122,6 +119,7 @@ const PostsList = ({
       onSubcategoryChange("");
       onThirdCategoryChange("");
       fetchPostsRef.current = false;
+      onResetAll(false);
     }
   }, [resetAll, onResetAll]);
 
@@ -235,7 +233,6 @@ const PostsList = ({
     const previousSearchTerm = previousCategoryFilter.current.searchTerm;
 
     if (previousSearchTerm !== searchTerm) {
-      setPosts([]);
       fetchPosts(true, {
         hasLocation,
         searchTerm,
@@ -254,7 +251,6 @@ const PostsList = ({
         setIsLoading,
         setIsFetchingMore,
       });
-      console.log("esto es el useEffect A");
       previousCategoryFilter.current = {
         ...categoryFilter,
         latitude,
@@ -263,7 +259,7 @@ const PostsList = ({
         searchTerm,
       };
     }
-  }, [searchTerm]);
+  }, [searchTerm, keepCategories]);
 
   useEffect(() => {
     if (isInitialFetchDone) {
@@ -287,7 +283,6 @@ const PostsList = ({
 
       if (isFilterChanged) {
         localStorage.removeItem("allPostsCharged");
-        setPosts([]);
         fetchPosts(true, {
           hasLocation,
           searchTerm,
@@ -306,7 +301,6 @@ const PostsList = ({
           setIsLoading,
           setIsFetchingMore,
         });
-        console.log("esto es el useEffect B");
       }
       previousCategoryFilter.current = {
         ...categoryFilter,
@@ -332,6 +326,7 @@ const PostsList = ({
     onMainCategoryChange(categoryFilter.mainCategory);
     onSubcategoryChange(categoryFilter.subCategory);
     onThirdCategoryChange(categoryFilter.thirdCategory);
+    setPosts([]);
   }, [categoryFilter]);
 
   useEffect(() => {

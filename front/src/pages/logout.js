@@ -28,7 +28,7 @@ const Logout = () => {
   }, []);
 
   return (
-    <div className="container">
+    <div className="container text-center justify-content-center">
       <h1>{t('logoutPage.message')}</h1>
     </div>
   );

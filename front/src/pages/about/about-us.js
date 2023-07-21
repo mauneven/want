@@ -1,45 +1,88 @@
-import Head from 'next/head';
-import { Container, Row, Col } from 'react-bootstrap';
+import React from "react";
+import { useRouter } from "next/router";
+import { useTranslation } from "react-i18next";
+import GoBackButton from "@/components/reusable/GoBackButton";
 
-const vision = "Our vision is to create a platform that allows users to post their needs and find offers from other users in a safe and reliable environment. We want to facilitate negotiations between users and create a trusted community where everyone can benefit from the exchange of goods and services."
-const mission = "Our mission is to build a user-friendly platform that connects people who need something with people who can offer something. We want to make it easy for users to post their needs and find offers from others while providing a secure and reliable environment for negotiations. We aim to create a platform that benefits all involved and fosters collaboration and mutual support."
-const values = [
-"Collaboration: We believe that by working together, we can achieve great things.",
-"Trust: We value trust and strive to create a safe and reliable environment for all users.",
-"Community: Our goal is to build a community of like-minded individuals who support and help each other.",
-"Innovation: We embrace innovation and constantly seek new ways to improve our platform.",
-"Accessibility: We believe that everyone should have access to our platform and its benefits."
-];
-  
-const AboutPage = () => {
-    return (
-        <>
-          <Head>
-            <title>Sobre Nosotros</title>
-          </Head>
-          <Container className="my-5">
-            <Row className="justify-content-center">
-              <Col md={8}>
-                <h1 className="text-center mb-4">Sobre Nosotros</h1>
-                <div className="text-center mb-5">
-                  <p className="lead">{vision}</p>
-                </div>
-                <div className="mb-5">
-                  <h2 className="text-center mb-4">Nuestra Misión</h2>
-                  <p>{mission}</p>
-                </div>
-                <div>
-                  <h2 className="text-center mb-4">Nuestros Valores</h2>
-                  <ul>
-                    {values.map((value, index) => (
-                      <li key={index}>{value}</li>
-                    ))}
-                  </ul>
-                </div>
-              </Col>
-            </Row>
-          </Container>
-        </>
-      );      
-  };  
-export default AboutPage;
+const LandingPage = () => {
+  const router = useRouter();
+  const { t } = useTranslation();
+
+  return (
+    <div className="container">
+      <GoBackButton/>
+      <div className="row pb-5">
+        <div className="col-md-6 d-grid align-items-center">
+          <h1 className="display-4">
+            <span className="want-color">{t("landingPage.title")}</span> - {t("landingPage.subtitle")}
+          </h1>
+          <p>{t("landingPage.description")}</p>
+        </div>
+        <div className="col-md-6 d-flex justify-content-center align-items-center">
+          <div id="earth"></div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-md-6 d-flex align-items-center">
+          <div>
+            <h1 className="display-5">{t("landingPage.buyTitle")}</h1>
+            <p>{t("landingPage.buyDescription")}</p>
+            <div className="text-center">
+              <i className="bi bi-person-check-fill about-icon"></i>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-6 d-flex align-items-center">
+          <div>
+            <h1 className="display-5">{t("landingPage.sellTitle")}</h1>
+            <p>{t("landingPage.sellDescription")}</p>
+            <div className="text-center">
+              <i className="bi bi-shop about-icon"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-md-6 d-flex align-items-center">
+          <div>
+            <h1 className="display-5">{t("landingPage.anywhereTitle")}</h1>
+            <p>{t("landingPage.anywhereDescription")}</p>
+            <div className="text-center">
+              <i className="bi bi-geo-alt about-icon"></i>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-6 d-flex align-items-center">
+          <div>
+            <h1 className="display-5">{t("landingPage.secureTitle")}</h1>
+            <p>{t("landingPage.secureDescription")}</p>
+            <div className="text-center">
+              <i className="bi bi-shield-check about-icon"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-md-6 d-flex align-items-center">
+          <div>
+            <h1 className="display-5">{t("landingPage.secureDataTitle")}</h1>
+            <p>{t("landingPage.secureDataDescription")}</p>
+            <div className="text-center">
+              <i className="bi bi-lock about-icon"></i>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-6 d-flex align-items-center">
+          <div>
+            <h1 className="display-5">{t("landingPage.privacyTitle")}</h1>
+            <p>{t("landingPage.privacyDescription")}</p>
+            <div className="text-center">
+              <i className="bi bi-safe about-icon"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LandingPage;

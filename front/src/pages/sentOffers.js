@@ -77,17 +77,17 @@ export default function SentOffers() {
         </Modal.Header>
         <Modal.Body>{t('sentOffers.deleteOfferConfirmation')}</Modal.Body>
         <Modal.Footer>
-          <button onClick={() => setShowModal(false)}>
+          <button className='generic-button' onClick={() => setShowModal(false)}>
             {t('sentOffers.cancel')}
           </button>
-          <button onClick={handleDeleteOffer}>
+          <button className='want-button-danger' onClick={handleDeleteOffer}>
             {t('sentOffers.delete')}
           </button>
         </Modal.Footer>
       </Modal>
       <div className="container">
+      <GoBackButton/>
         <h1 className='my-4'>{t('sentOffers.yourOffers')}</h1>
-        <GoBackButton/>
         <div className="row">
           {offers.map((offer) => (
             <div key={offer._id} className="col-12 col-md-6">
@@ -120,7 +120,7 @@ export default function SentOffers() {
                         <i className="bi bi-eye ms-2"></i>
                       </button>
                       <button
-                        className="generic-button mb-2"
+                        className="mb-2 want-button-danger"
                         onClick={() => handleShowModal(offer._id)}
                       >
                         {t('sentOffers.delete')}

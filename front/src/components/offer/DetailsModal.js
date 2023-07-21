@@ -92,7 +92,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
           <Modal.Title>{t('detailsModal.offerForPost', { title: offer.post.title })}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="row">
+          <div className="row p-2">
             <div className="col-md-6">
               <div
                 ref={imageRef}
@@ -157,7 +157,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
                 <>
                 <div>
                   <button
-                    className="btn want-rounded want-button mt-2 mb-2"
+                    className="want-rounded want-button mt-2 mb-2"
                     onClick={() => window.open(`https://wa.me/${offer.countryCode}${offer.phoneNumber}`, '_blank')}
                   >
                     <i className="bi bi-whatsapp mt-2"></i>{`+${offer.countryCode} ${offer.phoneNumber}`}
@@ -165,7 +165,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
                   </div>
                   <div>
                   <button
-                    className="want-button btn want-rounded mt-2 mb-2"
+                    className="want-button want-rounded mt-2 mb-2"
                     onClick={() => window.open(`tel:+${offer.countryCode}${offer.phoneNumber}`, '_blank')}
                   >
                     <i className="bi bi-telephone-forward"></i> {`+${offer.countryCode} ${offer.phoneNumber}`}

@@ -19,7 +19,7 @@ const ReportOfferModal = ({ offerId, onReport }) => {
 
   return (
     <>
-      <button onClick={handleShow} className='border p-1 border-danger btn-danger btn'>
+      <button onClick={handleShow} className=' want-button-danger'>
         {t('reportOfferModal.report')}
         <i className="bi bi-flag ms-2"></i>
       </button>
@@ -40,7 +40,7 @@ const ReportOfferModal = ({ offerId, onReport }) => {
                 required
               />
             </Form.Group>
-            <button type="submit">
+            <button type="submit" className='want-button-danger mt-2'>
               {t('reportOfferModal.sendReport')}
             </button>
           </Form>

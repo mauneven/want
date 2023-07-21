@@ -6,23 +6,7 @@
   }
   
   .animate__animated {
-    animation-duration: 0.5s;
-  }
-  
-  .animate__bounceIn {
-    animation-name: animate__bounceIn;
-  }
-  
-  @keyframes animate__bounceIn {
-    0% {
-      transform: scale(0);
-    }
-    50% {
-      transform: scale(1.1);
-    }
-    100% {
-      transform: scale(1);
-    }
+    animation-duration: 0.3s;
   }
   
   .bi {

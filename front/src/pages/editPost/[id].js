@@ -4,6 +4,7 @@ import PostCategory from "@/components/categories/Categories";
 import EditPostLocation from "@/components/locations/editPost/";
 import WordsFilter from "@/badWordsFilter/WordsFilter.js";
 import { validations } from "@/utils/validations";
+import GoBackButton from "@/components/reusable/GoBackButton";
 
 const EditPost = () => {
   const [title, setTitle] = useState("");
@@ -223,9 +224,11 @@ const EditPost = () => {
 
   return (
     <div className="mt-3 mb-3">
-      <h3 className="text-center mb-4">Edit the post of what you Want</h3>
+      
       <div className="">
         <div className="container">
+        <GoBackButton/>
+        <h3 className="text-center mb-4">Edit the post of what you Want</h3>
           <form onSubmit={handleSubmit} className="">
             <div className="mb-3">
               <label htmlFor="title" className="form-label">

@@ -268,9 +268,9 @@ const PostDetails = ({
 
   return (
     <>
-      <div className="container mt-5 mb-5">
+      <div className="container">
         <GoBackButton />
-        <div className="row">
+        <div className="row p-2">
           <div className="col-lg-6 p-4">
             <div
               ref={imageRef}

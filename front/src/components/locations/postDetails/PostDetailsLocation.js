@@ -1,12 +1,15 @@
 // PostDetailsLocation.js
 import React, { useRef, useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Circle } from "react-leaflet";
+import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 import { Icon } from "leaflet";
 
 const PostDetailsLocation = ({ latitude, longitude }) => {
   const mapRef = useRef(null);
   const [locationName, setLocationName] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     delete Icon.Default.prototype._getIconUrl;
@@ -17,6 +20,24 @@ const PostDetailsLocation = ({ latitude, longitude }) => {
       shadowUrl: null,
     });
   }, []);
+
+  useEffect(() => {
+    const fetchLocationName = async () => {
+      try {
+        const response = await axios.get(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+        );
+        const city = response.data.address.city || response.data.address.town;
+        setLocationName(city);
+      } catch (error) {
+        console.error("Error al obtener el nombre de la ciudad:", error);
+      }
+    };
+
+    if (latitude && longitude) {
+      fetchLocationName();
+    }
+  }, [latitude, longitude]);
 
   useEffect(() => {
     if (latitude && longitude && mapRef.current) {
@@ -34,7 +55,11 @@ const PostDetailsLocation = ({ latitude, longitude }) => {
             position: "relative",
             marginTop: "10px",
           }}
+          className=""
         >
+          <div style={{ textAlign: "", marginTop: "10px" }}>
+            {locationName && <h3>{locationName} | {t('postsLocation.approximateLocation')}</h3>}
+          </div>
           <MapContainer
             ref={mapRef}
             center={[latitude, longitude]}
@@ -47,17 +72,11 @@ const PostDetailsLocation = ({ latitude, longitude }) => {
             doubleClickZoom={false}
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <Marker
-              position={[latitude, longitude]}
-              draggable={false}
-              icon={
-                new Icon({
-                  iconUrl: "/icons/pin-location-icon.svg",
-                  iconSize: [32, 32],
-                  iconAnchor: [16, 32],
-                })
-              }
-            ></Marker>
+            <Circle
+              center={[latitude, longitude]}
+              radius={1500}
+              pathOptions={{ color: "#036cd7" }}
+            />
           </MapContainer>
         </div>
       )}

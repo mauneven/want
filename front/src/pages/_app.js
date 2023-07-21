@@ -3,12 +3,14 @@ import MegaMenu from "@/components/navigation/Navbar";
 import { LanguageProvider } from "@/components/language/LanguageProvider";
 import Footer from "@/components/footer/Footer";
 import i18n from "../../i18n";
+import 'animate.css';
 import "../../node_modules/leaflet/dist/leaflet.css";
 import "../../public/css/app.css";
 import "../../public/css/categories.css";
 import "../../public/css/navbar.css";
 import "../../public/css/mobile-menu.css";
 import "../../public/css/posts.css";
+import "../../public/css/about-us.css";
 import "../../public/css/modals.css";
 import "../../public/css/login.css";
 import "../../public/css/notifications.css";
@@ -68,7 +70,7 @@ export default function MyApp({ Component, pageProps }) {
 
   return (
     <LanguageProvider>
-      <div className="container-fluid">
+      <div className="app-container">
         <header className="sticky-top">
           <MegaMenu
             mainCategory={mainCategory}
@@ -86,9 +88,9 @@ export default function MyApp({ Component, pageProps }) {
           />
         </header>
 
-        <div className="">
+        <div className="content-container">
           <Suspense fallback="Loading...">
-            <div className="want-container">
+            <div className="want-container pt-3 pb-3">
               <Component
                 {...pageProps}
                 mainCategory={mainCategory}
@@ -108,7 +110,7 @@ export default function MyApp({ Component, pageProps }) {
           </Suspense>
         </div>
 
-        <footer>
+        <footer className="footer-container pt-4">
           <div className="want-container">
             {isMobile ? <MobileMenu /> : <Footer />}
           </div>

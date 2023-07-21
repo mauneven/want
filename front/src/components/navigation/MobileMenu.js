@@ -62,7 +62,7 @@ const MobileMenu = () => {
           : "navbar-hidden p-0"
       }
     >
-      <div className="container-fluid w-100 p-0">
+      <div className=" w-100 p-0">
         <div className="d-flex justify-content-center w-100">
           <div
             className="text-center divhover align-items-center m-1"

@@ -47,6 +47,7 @@ export default function Login() {
 
     if (age < 14) {
       setAlertMessage(t('login.ageValidationMessage'));
+      window.scrollTo(0, 0); // Scroll to the top
       return false;
     }
 
@@ -70,13 +71,14 @@ export default function Login() {
 
       if (password !== confirmPassword) {
         setAlertMessage(t('login.passwordMatchErrorMessage'));
+        window.scrollTo(0, 0); // Scroll to the top
         return;
       }
   
       if (!passwordRegex.test(password)) {
         setAlertMessage(t('login.passwordValidationErrorMessage'));
+        window.scrollTo(0, 0); // Scroll to the top
         return;
-        
       }
 
       if (!validateAgeAndParentPermission(birthdate)) {
@@ -106,24 +108,27 @@ export default function Login() {
         router.push('/');
       }
     } else {
-      if (response.headers.get('Content-Type') === 'application/json') {
+      if (response.status === 409) {
+        setAlertMessage(t('login.userAlreadyExistsErrorMessage'));
+      } else if (response.headers.get('Content-Type') === 'application/json') {
         const responseData = await response.json();
         setAlertMessage(responseData.error || t('login.invalidCredentialsErrorMessage'));
       } else {
         setAlertMessage(t('login.invalidCredentialsErrorMessage'));
       }
-
+  
       setTimeout(() => {
         setAlertMessage('');
-      }, 5000);
-
+      }, 10000);
+  
+      window.scrollTo(0, 0); // Scroll to the top
     }
   };
 
   return (
-    <div className="container form-container">
-      <div className='card login-form want-rounded '>
-        <div className='card-body p-0'>
+    <div className="container form-container ">
+      <div className='card login-form want-rounded pt-3 pb-3'>
+        <div className='card-body'>
           <div className="container">
             <h1 className="text-center">{isLogin ? t('login.loginTitle') : t('login.signupTitle')}</h1>
             {alertMessage && (
@@ -150,15 +155,15 @@ export default function Login() {
 
                   <div className="mb-3">
                     <label htmlFor="firstName" className="form-label">{t('login.firstNameLabel')}</label>
-                    <input type="text" className="form-control want-rounded" id="firstName" name="firstName" required />
+                    <input type="text" className="form-control want-rounded" id="firstName" name="firstName" placeholder={t('login.firstNamePlaceholder')} required />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="lastName" className="form-label">{t('login.lastNameLabel')}</label>
-                    <input type="text" className="form-control want-rounded" id="lastName" name="lastName" required />
+                    <input type="text" className="form-control want-rounded" id="lastName" name="lastName" placeholder={t('login.lastNamePlaceholder')} required />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="phone" className="form-label">{t('login.phoneLabel')}</label>
-                    <input type="tel" className="form-control want-rounded" id="phone" name="phone" required />
+                    <input type="tel" className="form-control want-rounded" id="phone" name="phone" placeholder={t('login.phonePlaceholder')}  required />
                   </div>
                   <div className="mb-3">
                     <label htmlFor="birthdate" className="form-label">{t('login.birthdateLabel')}</label>
@@ -166,13 +171,20 @@ export default function Login() {
                   </div>
                 </>
               )}
+              {!isLogin && (
+                <div className='text-small small d-block text-price'>
+                  <p>{t('login.termsandprivacycheck')}</p>
+                  <p className='links' onClick={() => router.push('/about/terms-and-conditions')}>{t('login.termsAndConditions')}</p>
+                  <p className='links' onClick={() => router.push('/about/terms-and-conditions')}>{t('login.privacy')}</p>
+                </div>
+              )}
               <div className="mb-3">
                 <button type="submit" className="want-button ">{isLogin ? t('login.loginButton') : t('login.signupButton')}</button>
               </div>
             </form>
             <div>
               {isLogin ? t('login.noAccountText') : t('login.haveAccountText')}
-              <button onClick={toggleForm} className="want-border m-2 user-link">{isLogin ? t('login.signupLink') : t('login.loginLink')}</button>
+              <button onClick={toggleForm} className="want-button m-2">{isLogin ? t('login.signupLink') : t('login.loginLink')}</button>
             </div>
             <Link href="/recovery">
               <span className="divhover want-color">{t('login.forgotPasswordLink')}</span>
@@ -181,6 +193,5 @@ export default function Login() {
         </div>
       </div>
     </div>
-
   );
 }

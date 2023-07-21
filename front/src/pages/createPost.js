@@ -5,6 +5,7 @@ import CreatePostLocation from "@/components/locations/createPost/";
 import WordsFilter from "@/badWordsFilter/WordsFilter.js";
 import { validations } from "@/utils/validations";
 import { useTranslation } from "react-i18next";
+import GoBackButton from "@/components/reusable/GoBackButton";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
@@ -162,6 +163,7 @@ const CreatePost = () => {
 
   return (
     <div className="mt-3 mb-3 container">
+      <GoBackButton/>
       <h1 className="text-center mb-4">{t("createPost.title")}</h1>
       <div className="">
         <div className=" ">

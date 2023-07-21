@@ -37,6 +37,8 @@ export default function MegaMenu({
 
   const handleLogoClick = () => {
     clearSearchBar();
+    localStorage.removeItem("currentPage");
+    localStorage.removeItem("scrollPosition")
     onResetAll(true);
     router.push("/");
   };
@@ -112,11 +114,11 @@ export default function MegaMenu({
 
   return (
     <>
-      <Navbar className="nav-borders w-100">
+      <Navbar className="nav-borders w-100 p-1">
         <div className="d-flex w-100">
           {!isMobile ? (
             <Navbar.Brand className="d-flex align-items-center m-0 p-0 col-3 justify-content-center">
-              <div className="fs-1 want-color d-flex  m-0 w-100 d-flex">
+              <div className="fs-1 ms-2 want-color d-flex  m-0 w-100 d-flex">
                 <p
                   className="desktop-logo align-items-center justify-content-center want-color m-0 divhover"
                   onClick={handleLogoClick}
@@ -146,7 +148,7 @@ export default function MegaMenu({
           )}
           <div className="w-100 d-flex justify-content-center align-items-center">
             <Form
-              className="d-flex m-0 w-100 p-0 border want-rounded text-center align-items-center justify-content-center generic-button"
+              className="d-flex m-0 w-100 p-0 border want-rounded text-center align-items-center justify-content-center "
               onSubmit={handleSearchSubmit}
             >
               {getCategoryText() && (

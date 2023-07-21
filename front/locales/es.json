@@ -47,7 +47,8 @@
     "cancel": "Cancelar",
     "delete": "Eliminar",
     "yourPosts": "Tus publicaciones",
-    "edit": "Editar"
+    "edit": "Editar",
+    "see": "Ver"
   },
   "editProfile": {
     "checkEditProfile": "Verifica y edita tu perfil",
@@ -120,7 +121,8 @@
     "everywhere": "En todas partes *BETA*",
     "useCurrentLocation": "Usar mi ubicación actual",
     "apply": "Aplicar",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "approximateLocation": "La ubicación es aproximada"
   },
   "reportOfferModal": {
     "report": "Reportar",
@@ -161,8 +163,11 @@
     "confirmPasswordLabel": "Confirmar contraseña:",
     "confirmPasswordPlaceholder": "confirmar tu contraseña",
     "firstNameLabel": "Nombre:",
+    "firstNamePlaceholder": "Tu nombre",
     "lastNameLabel": "Apellido:",
+    "lastNamePlaceholder": "Tu apellido",
     "phoneLabel": "Número de teléfono:",
+    "phonePlaceholder": "Tu número de teléfono",
     "birthdateLabel": "Fecha de nacimiento:",
     "noAccountText": "¿No tienes una cuenta?",
     "haveAccountText": "¿Ya tienes una cuenta?",
@@ -174,7 +179,11 @@
     "forgotPasswordLink": "Olvidé mi contraseña, ayuda",
     "invalidCredentialsErrorMessage": "Correo electrónico o contraseña inválidos.",
     "passwordValidationErrorMessage": "Las contraseñas deben tener almenos una mayúscula, un número y ser de 8 carácteres",
-    "passwordMatchErrorMessage": "Las contraseñas no coinciden"
+    "userAlreadyExistsErrorMessage": "Este correo ya está registrado. Debes iniciar sesión.",
+    "passwordMatchErrorMessage": "Las contraseñas no coinciden",
+    "termsandprivacycheck": "Al crear tu cuenta aceptas nuestros:",
+    "termsAndConditions": "Términos y condiciones",
+    "privacy": "Política de Privacidad"
   },
   "footer": {
     "wantTitle": "Want",
@@ -261,6 +270,23 @@
     "empty": "Vacío",
     "markAllRead": "Marcar todo como leído",
     "markingRead": "Marcando como leído..."
+  },
+  "landingPage": {
+    "title": "Want",
+    "subtitle": "Redefiniendo el comercio en línea",
+    "description": "Want es el mercado donde los usuarios publican lo que quieren y reciben ofertas. Conecta compradores con vendedores sin esfuerzo. Encuentra lo que buscas o descubre clientes potenciales. Simplificando la experiencia de compra y venta.",
+    "buyTitle": "Para comprar",
+    "buyDescription": "En un marketplace, puedes publicar lo que quieres a un precio que puedes pagar, despreocupándote de la necesidad de buscar entre productos y productos. Aquí puedes dejar que los vendedores te hagan las mejores ofertas.",
+    "sellTitle": "Para vender",
+    "sellDescription": "Want es también una plataforma donde puedes vender tus productos o servicios a todos los usuarios que publicaron que lo necesitan. Puedes hacer ofertas e iniciar negociaciones.",
+    "anywhereTitle": "En cualquier lugar",
+    "anywhereDescription": "En Want puedes publicar lo que quieres o hacer ofertas de tus productos o servicios en cualquier lugar del mundo, a través de las ubicaciones de los compradores y vendedores.",
+    "secureTitle": "De forma segura",
+    "secureDescription": "Con una comunidad que califica constantemente la reputación de los usuarios y toma medidas seguras para hacer los negocios de forma clara y responsable.",
+    "secureDataTitle": "Con tus datos seguros",
+    "secureDataDescription": "En Want encriptamos tus contraseñas para que nadie, ni siquiera nosotros mismos, tengamos acceso a ellas. Todo esto gracias a nuestros protocolos y procesos de seguridad.",
+    "privacyTitle": "Respetando tu privacidad",
+    "privacyDescription": "En Want respetamos tu privacidad y no compartimos ni vendemos tu información pública o privada de nuestra plataforma, guiándonos con una ética para poder crear un comercio electrónico libre y respetuoso."
   },
   "categories": {
     "selectMainCategory": "1 | Categoría general",
@@ -938,5 +964,61 @@
         }
       }
     }
+  },
+  "termsAndConditions": {
+    "title": "Términos y Condiciones de Want",
+    "disclaimerTitle": "Limitación de Responsabilidad",
+    "disclaimerContent": "La plataforma de Want tiene como objetivo conectar a los usuarios para que puedan interactuar y realizar transacciones entre ellos. Sin embargo, Want no se hace responsable de las acciones o conducta de los usuarios en la plataforma, ni de cualquier resultado o consecuencia que pueda surgir de tales acciones.",
+    "paymentServicesTitle": "Servicios de Pago",
+    "paymentServicesContent": "Want no proporciona servicios de pago o transacciones financieras entre los usuarios. Los usuarios son responsables de llevar a cabo cualquier transacción financiera por su cuenta y riesgo, y aceptan que Want no será responsable por ningún daño, pérdida o reclamación que pueda surgir de dichas transacciones.",
+    "contentModerationTitle": "Moderación de Contenido",
+    "contentModerationContent": "La plataforma de Want se esfuerza por garantizar la calidad y la integridad del contenido publicado en la plataforma. Los usuarios aceptan que están prohibidos de publicar contenido ilegal, obsceno, violento o de cualquier otra manera inapropiado en la plataforma. Want no se hace responsable de cualquier daño o consecuencia que pueda surgir de cualquier contenido publicado en la plataforma. Si se identifica algún contenido ilegal o inapropiado, Want tomará las medidas necesarias para eliminar dicho contenido y reportar a los usuarios responsables a las autoridades correspondientes.",
+    "dataSecurityTitle": "Seguridad de Datos",
+    "dataSecurityContent": "Want se compromete a tomar medidas razonables para proteger la información personal y financiera de sus usuarios. Sin embargo, los usuarios aceptan que Want no será responsable de cualquier daño, pérdida o reclamación que pueda surgir del uso no autorizado de su información personal o financiera.",
+    "disputesTitle": "Disputas entre Usuarios",
+    "disputesContent": "Want no se hace responsable de cualquier disputa, reclamación legal o daño que pueda surgir de las transacciones realizadas entre los usuarios en la plataforma. Los usuarios aceptan que cualquier transacción realizada en la plataforma es responsabilidad de ellos mismos y aceptan renunciar a cualquier reclamación o demanda contra Want por cualquier pérdida o daño que puedan experimentar como resultado de dicha transacción.",
+    "accountSuspensionTitle": "Suspensión de Cuenta",
+    "accountSuspensionContent": "Want se reserva el derecho de suspender o cerrar la cuenta de cualquier usuario que viole los términos y condiciones de uso de la plataforma. Want también se reserva el derecho de tomar medidas legales contra cualquier usuario que viole los términos y condiciones de uso de la plataforma.",
+    "disputeResolutionTitle": "Resolución de Disputas",
+    "disputeResolutionContent": "Los usuarios aceptan que cualquier disputa que surja de su uso de la plataforma de Want se resolverá exclusivamente mediante arbitraje y no mediante litigio. Los usuarios renuncian a su derecho a litigar cualquier disputa que surja de su uso de la plataforma y aceptan que cualquier arbitraje se llevará a cabo en el lugar elegido por Want.",
+    "userResponsibilityTitle": "Responsabilidad del Usuario",
+    "userResponsibilityContent": "Los usuarios son responsables del uso que hagan de la plataforma y de cualquier información que proporcionen a otros usuarios. Los usuarios se comprometen a no utilizar la plataforma para actividades ilegales, engañosas, fraudulentas, difamatorias, ofensivas o amenazantes, o para cualquier otro propósito que viole los términos y condiciones de uso.",
+    "intellectualPropertyTitle": "Propiedad Intelectual",
+    "intellectualPropertyContent": "La plataforma de Want y todo su contenido, incluyendo los derechos de propiedad intelectual relacionados, son propiedad exclusiva de Want. Los usuarios reconocen y aceptan que no pueden reproducir, distribuir, modificar o utilizar de cualquier otra manera ningún contenido o propiedad intelectual de la plataforma sin el consentimiento previo por escrito de Want.",
+    "accountCancellationTitle": "Cancelación de Cuenta",
+    "accountCancellationContent": "Los usuarios pueden cancelar su cuenta de usuario en cualquier momento, y la cancelación se hará efectiva después de un período de espera de 30 días desde el día de la eliminación. Los usuarios reconocen y aceptan que la cancelación de la cuenta de usuario no eximirá a los usuarios de su obligación de cumplir con los términos y condiciones de uso de la plataforma durante el período en que utilizaron la plataforma de Want.",
+    "modificationsTitle": "Modificaciones de los Términos y Condiciones de Uso",
+    "modificationsContent": "Want se reserva el derecho de modificar los Términos y Condiciones de Uso de la plataforma en cualquier momento y sin previo aviso. Los usuarios están obligados a aceptar los Términos y Condiciones de Uso actualizados y modificados. El uso continuo de la plataforma después de la actualización de los Términos y Condiciones de Uso se considera como una aceptación y acuerdo a los Términos y Condiciones de Uso actualizados.",
+    "cookiesTitle": "Cookies",
+    "cookiesContent": "En Want, utilizamos cookies para garantizar el correcto funcionamiento de nuestra plataforma. Las cookies permiten que nuestra plataforma te reconozca y puedas utilizar todas sus funcionalidades. Utilizamos cookies funcionales y de sesión. No es posible desactivar o eliminar las cookies en nuestra plataforma.",
+    "userLiabilityTitle": "Responsabilidad del Usuario",
+    "userLiabilityContent": "Los usuarios son responsables del uso que hagan de la plataforma y de cualquier información que proporcionen a otros usuarios. Los usuarios se comprometen a no utilizar la plataforma para actividades ilegales, engañosas, fraudulentas, difamatorias, ofensivas o amenazantes, o para cualquier otro propósito que viole los términos y condiciones de uso.",
+    "privacyTitle": "Privacidad",
+    "privacyContent": "Want no comparte, vende ni renta información personal de los usuarios a terceros, salvo en los casos previstos por la ley o cuando sea necesario para la prestación de servicios contratados por los usuarios. Want mantiene medidas de seguridad técnicas, administrativas y físicas para proteger la información personal de los usuarios contra el acceso no autorizado."
+  },
+  "privacyPolicy": {
+    "title": "Política de Privacidad de Want",
+    "intro": "En Want, nos comprometemos a proteger la privacidad de nuestros usuarios y garantizar el manejo seguro de su información personal. Esta Política de Privacidad describe cómo recopilamos, utilizamos y protegemos la información personal que obtenemos a través de nuestra plataforma.",
+    "informationCollectionTitle": "Recopilación de Información",
+    "informationCollectionContent": "Recopilamos información personal de nuestros usuarios cuando se registran en nuestra plataforma. Esta información puede incluir nombres, direcciones de correo electrónico, números de teléfono y preferencias de comunicación. Además, podemos recopilar información sobre las interacciones de los usuarios con nuestra plataforma, como la visualización de perfiles, las transacciones realizadas y los mensajes enviados.",
+    "informationUsageTitle": "Uso de la Información",
+    "informationUsageContent": "Utilizamos la información personal de nuestros usuarios para proporcionar y mejorar nuestros servicios. Esta información nos permite personalizar la experiencia del usuario, facilitar la comunicación entre los usuarios y procesar transacciones. También podemos utilizar la información para enviar notificaciones, actualizaciones y ofertas relevantes a los usuarios.",
+    "informationSharingTitle": "Compartir Información",
+    "informationSharingContent": "No vendemos, alquilamos ni compartimos información personal de nuestros usuarios con terceros, excepto en los casos previstos por la ley o cuando sea necesario para brindar los servicios contratados por los usuarios. Sin embargo, podemos compartir información no identificable con terceros con fines de análisis y mejora de la plataforma.",
+    "dataSecurityTitle": "Seguridad de los Datos",
+    "dataSecurityContent": "Implementamos medidas de seguridad técnicas, administrativas y físicas para proteger la información personal de nuestros usuarios contra accesos no autorizados, pérdidas o alteraciones. Solo permitimos el acceso a la información personal a empleados y proveedores de servicios que necesitan dicha información para brindar y mejorar nuestros servicios.",
+    "dataRetentionTitle": "Retención de Datos",
+    "dataRetentionContent": "Mantenemos la información personal de nuestros usuarios durante el tiempo que sea necesario para cumplir con los fines descritos en esta Política de Privacidad, a menos que la ley exija o permita lo contrario. Si un usuario desea modificar o eliminar su información personal de nuestros sistemas, puede hacerlo a través de su cuenta o poniéndose en contacto con nuestro equipo de soporte.",
+    "preferencesTitle": "Preferencias del Usuario",
+    "preferencesContent": "Respetamos las preferencias de nuestros usuarios en cuanto a la recepción de comunicaciones y ofertas. Los usuarios pueden optar por no recibir ciertas comunicaciones o actualizar sus preferencias de comunicación en cualquier momento. También pueden ejercer sus derechos de acceso, rectificación, restricción y eliminación de su información personal según lo establecido por la ley aplicable.",
+    "thirdPartyWebsitesTitle": "Sitios Web de Terceros",
+    "thirdPartyWebsitesContent": "Nuestra plataforma puede contener enlaces a sitios web de terceros. No nos hacemos responsables de las prácticas de privacidad o el contenido de estos sitios web. Se recomienda a los usuarios revisar las políticas de privacidad de dichos sitios antes de proporcionar cualquier información personal.",
+    "updatesTitle": "Actualizaciones de la Política",
+    "updatesContent": "Podemos actualizar esta Política de Privacidad periódicamente para reflejar cambios en nuestras prácticas de privacidad. Se notificará a los usuarios sobre cualquier cambio importante mediante una notificación en nuestra plataforma o a través de otros medios de comunicación. Se alienta a los usuarios a revisar esta Política de Privacidad de vez en cuando para mantenerse informados sobre cómo protegemos su información personal.",
+    "contactTitle": "Contacto",
+    "contactContent": "Si tienes alguna pregunta, inquietud o solicitud relacionada con esta Política de Privacidad o el manejo de tu información personal, no dudes en contactarnos a través de los medios de contacto proporcionados en nuestra plataforma.",
+    "agreementTitle": "Acuerdo",
+    "agreementContent": "Al utilizar nuestra plataforma, aceptas los términos y condiciones de esta Política de Privacidad. Si no estás de acuerdo con esta Política de Privacidad, te recomendamos que no utilices nuestra plataforma.",
+    "lastUpdated": "Última actualización: 20 de julio de 2023"
   }
 }
