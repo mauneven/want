@@ -365,7 +365,7 @@ const PostDetails = ({
               />
             </p>
             <div
-              className="d-flex align-items-center text-start"
+              className="d-flex align-items-center text-start mt-5 pt-4"
               onClick={() => openUserModal(post.createdBy)}
             >
               <img
