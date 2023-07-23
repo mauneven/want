@@ -304,10 +304,10 @@ const CreatePost = () => {
           </label>
           <div className="row row-cols-xl-2">
             {[1, 2, 3, 4].map((index) => (
-              <div className="form-group mt-2 mb-2" key={index}>
+              <div className="form-group border d-flex p-2 want-rounded mt-2 mb-2" key={index}>
                 <div className="photo-upload-container col text-center align-items-center">
                   {photos[index - 1] && (
-                    <div className="photo-preview">
+                    <div className="photo-preview ">
                       <img
                         src={URL.createObjectURL(photos[index - 1])}
                         className="img-thumbnail  uploaded-photos want-rounded"
@@ -316,7 +316,7 @@ const CreatePost = () => {
                     </div>
                   )}
                   {!photos[index - 1] && (
-                    <label htmlFor={`photo${index}`} className="photo-upload">
+                    <label htmlFor={`photo${index}`} className="photo-upload" >
                       <i className="bi bi-image divhover display-1"></i>
                       <i className="bi bi-plus-circle-fill display-6 divhover"></i>
                       <input
