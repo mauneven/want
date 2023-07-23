@@ -69,6 +69,17 @@ const CreatePost = () => {
     }
   };
 
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleFileChange({ target: { files: e.dataTransfer.files } });
+  };
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -302,9 +313,9 @@ const CreatePost = () => {
           <label htmlFor="price" className="form-label">
             {t("createPost.photosLabel")}
           </label>
-          <div className="row row-cols-xl-2">
+          <div className="row row-cols-xl-2" onDragOver={handleDragOver} onDrop={handleDrop}>
             {[1, 2, 3, 4].map((index) => (
-              <div className="form-group border d-flex p-2 want-rounded mt-2 mb-2" key={index}>
+              <div className="form-group border justify-content-center align-items-center d-flex p-2 want-rounded mt-2 mb-2" key={index}>
                 <div className="photo-upload-container col text-center align-items-center">
                   {photos[index - 1] && (
                     <div className="photo-preview ">

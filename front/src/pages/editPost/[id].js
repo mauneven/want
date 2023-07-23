@@ -131,6 +131,17 @@ const EditPost = () => {
     }
   };
 
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleFileChange({ target: { files: e.dataTransfer.files } });
+  };
+
   const handleFileChange = (e) => {
     const newImages = [...e.target.files].map((file) => {
       if (file.size > 5000000) {
@@ -348,9 +359,9 @@ const EditPost = () => {
             <label htmlFor="price" className="form-label">
               upload upto 4 photos about what you Want*
             </label>
-            <div className="row row-cols-xl-2">
+            <div className="row row-cols-xl-2" onDragOver={handleDragOver} onDrop={handleDrop}>
               {[1, 2, 3, 4].map((index) => (
-                <div className="form-group mt-2 mb-2" key={index}>
+                <div className="form-group border justify-content-center align-items-center d-flex p-2 want-rounded mt-2 mb-2" key={index}>
                   <div className="photo-upload-container col text-center align-items-center">
                     {photos[index - 1] && (
                       <div className="photo-preview">

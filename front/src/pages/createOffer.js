@@ -94,6 +94,17 @@ const CreateOffer = () => {
     }
   };
 
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleFileChange({ target: { files: e.dataTransfer.files } });
+  };
+
   useEffect(() => {
     validations(router);
   }, []);
@@ -114,25 +125,37 @@ const CreateOffer = () => {
 
   const bwf = new WordsFilter();
 
-  const handleFileChange = (e, index) => {
+  const findEmptyPhotoIndex = () => {
+    for (let i = 0; i < 4; i++) {
+      if (!photos[i]) {
+        return i;
+      }
+    }
+    return -1;
+  };
+
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
         setErrorAlert(t("createOffer.fileSizeError"));
-        // Clear the file input to avoid uploading large files multiple times without errors
         e.target.value = "";
       } else {
         setErrorAlert(null);
-        const newPhotos = [...photos];
-        newPhotos[index] = file;
-        setPhotos(newPhotos);
+        const index = findEmptyPhotoIndex();
+        if (index !== -1) {
+          const newPhotos = [...photos];
+          newPhotos[index] = file;
+          setPhotos(newPhotos);
+        }
       }
     }
   };
 
   const handleDeletePhoto = (index) => {
     const newPhotos = [...photos];
-    newPhotos[index] = null;
+    newPhotos.splice(index, 1);
+    newPhotos.push(null);
     setPhotos(newPhotos);
   };
 
@@ -343,48 +366,48 @@ const CreateOffer = () => {
               <label htmlFor="photo" className="form-label">
                 {t("createOffer.uploadPhotos")}
               </label>
-              <div className="row row-cols-xl-2">
-                {[1, 2, 3, 4].map((index) => (
-                  <div className="form-group mt-2 mb-2" key={index}>
-                    <div className="photo-upload-container col text-center align-items-center">
-                      {photos[index - 1] && (
-                        <div className="photo-preview">
-                          <img
-                            src={URL.createObjectURL(photos[index - 1])}
-                            className="img-thumbnail  uploaded-photos want-rounded"
-                            alt={`Photo ${index}`}
-                          />
-                        </div>
-                      )}
-                      {!photos[index - 1] && (
-                        <label
-                          htmlFor={`photo${index}`}
-                          className="photo-upload"
-                        >
-                          <i className="bi bi-image divhover display-1"></i>
-                          <i className="bi bi-plus-circle-fill display-6 divhover"></i>
-                        </label>
-                      )}
-                      {photos[index - 1] && (
-                        <button
-                          className="btn-light circle btn-sm delete-photo"
-                          onClick={() => handleDeletePhoto(index - 1)}
-                          type="button"
-                        >
-                          <i className="bi bi-trash fs-5"></i>
-                        </button>
-                      )}
-                      <input
-                        type="file"
-                        id={`photo${index}`}
-                        className="form-control visually-hidden"
-                        accept="image/jpeg,image/png,image/gif"
-                        onChange={(e) => handleFileChange(e, index - 1)}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <div className="row row-cols-xl-2" onDragOver={handleDragOver} onDrop={handleDrop} >
+        {[1, 2, 3, 4].map((index) => (
+          <div className="form-group border justify-content-center align-items-center d-flex p-2 want-rounded mt-2 mb-2" key={index}>
+            <div className="photo-upload-container col text-center align-items-center">
+              {photos[index - 1] && (
+                <div className="photo-preview">
+                  <img
+                    src={URL.createObjectURL(photos[index - 1])}
+                    className="img-thumbnail  uploaded-photos want-rounded"
+                    alt={`Photo ${index}`}
+                  />
+                </div>
+              )}
+              {!photos[index - 1] && (
+                <label
+                  htmlFor={`photo${index}`}
+                  className="photo-upload"
+                >
+                  <i className="bi bi-image divhover display-1"></i>
+                  <i className="bi bi-plus-circle-fill display-6 divhover"></i>
+                </label>
+              )}
+              {photos[index - 1] && (
+                <button
+                  className="btn-light circle btn-sm delete-photo"
+                  onClick={() => handleDeletePhoto(index - 1)}
+                  type="button"
+                >
+                  <i className="bi bi-trash fs-5"></i>
+                </button>
+              )}
+              <input
+                type="file"
+                id={`photo${index}`}
+                className="form-control visually-hidden"
+                accept="image/jpeg,image/png,image/gif"
+                onChange={handleFileChange}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
             </div>
             {errorAlert && (
               <Alert
