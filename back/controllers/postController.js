@@ -10,6 +10,7 @@ const url = require("url");
 const User = require("../models/user");
 const geolib = require("geolib");
 
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
@@ -46,20 +47,17 @@ exports.createPost = async (req, res, next) => {
     if (photos.length > 0) {
       compressedImagePaths = await Promise.all(
         photos.map(async (photo) => {
-          const compressedImagePath = `uploads/${uuidv4()}.webp`; // Cambiar la extensión a .webp
-          await sharp(photo.path)
+          const compressedImagePath = `uploads/${uuidv4()}.webp`;
+          const fileBuffer = await fs.promises.readFile(photo.path);
+          await sharp(fileBuffer)
             .resize({ width: 500 })
-            .toFormat('webp') // Convertir a formato WebP
+            .toFormat("webp")
             .toFile(compressedImagePath);
-          try {
-            await fs.promises.unlink(photo.path);
-          } catch (err) {
-            console.error(`Error deleting file ${photo.path}: ${err.message}`);
-          }
+          await fs.promises.unlink(photo.path);
           return compressedImagePath;
         })
       );
-
+      
       req.files = compressedImagePaths.map((path) => ({ path }));
     }
 
@@ -146,16 +144,21 @@ exports.updatePost = async (req, res, next) => {
     post.price = price;
 
     if (req.files.length > 0) {
-      const photos = req.files.map((file) => file.path);
+      const photos = req.files.map((file) => ({
+        type: file.mimetype,
+        path: file.path,
+        originalname: file.originalname,
+      }));
+    
       const compressedImagePaths = await Promise.all(
         photos.map(async (photo) => {
-          const compressedImagePath = `uploads/${uuidv4()}.webp`; // Cambiar la extensión a .webp
-          await sharp(photo).resize({ width: 500 }).toFormat('webp').toFile(compressedImagePath); // Convertir a formato WebP
-          try {
-            await fs.promises.unlink(photo);
-          } catch (err) {
-            console.error(`Error deleting file ${photo}: ${err.message}`);
-          }
+          const compressedImagePath = `uploads/${uuidv4()}.webp`;
+          const fileBuffer = await fs.promises.readFile(photo.path);
+          await sharp(fileBuffer)
+            .resize({ width: 500 })
+            .toFormat("webp")
+            .toFile(compressedImagePath);
+          await fs.promises.unlink(photo.path);
           return compressedImagePath;
         })
       );
@@ -346,17 +349,17 @@ exports.getAllPosts = async (req, res, next) => {
     const skip = (page - 1) * pageSize;
 
     // Obtener las subcategorías con más vistas del usuario
-    const topSubCategories = Object.keys(subCategoryPreferences)
-      .sort((a, b) => subCategoryPreferences[b] - subCategoryPreferences[a]);
+    const topSubCategories = Object.keys(subCategoryPreferences).sort(
+      (a, b) => subCategoryPreferences[b] - subCategoryPreferences[a]
+    );
 
     // Verificar si se debe habilitar la lógica de subcategorías con más vistas
-    const enableTopSubCategories = (
+    const enableTopSubCategories =
       !req.query.searchTerm &&
       !req.query.mainCategory &&
       !req.query.subCategory &&
       !req.query.thirdCategory &&
-      topSubCategories.length > 0
-    );
+      topSubCategories.length > 0;
 
     let allPosts = [];
 
@@ -365,15 +368,14 @@ exports.getAllPosts = async (req, res, next) => {
       const topSubCategoryPosts = await Post.find({
         ...filters,
         subCategory: { $in: topSubCategories },
-      })
-        .populate({
-          path: "createdBy",
-          select: "firstName totalPosts totalOffers lastName photo createdAt",
-          populate: {
-            path: "reports",
-            select: "_id",
-          },
-        });
+      }).populate({
+        path: "createdBy",
+        select: "firstName totalPosts totalOffers lastName photo createdAt",
+        populate: {
+          path: "reports",
+          select: "_id",
+        },
+      });
 
       allPosts.push(...topSubCategoryPosts);
 

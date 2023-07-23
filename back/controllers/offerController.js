@@ -34,20 +34,28 @@ exports.createOffer = async (req, res, next) => {
     const photos = req.files.map(file => file.path);
     let compressedImagePaths = [];
 
-    if (photos.length > 0) {
-      compressedImagePaths = await Promise.all(photos.map(async (photo) => {
-        const compressedImagePath = `uploads/${uuidv4()}.webp`; // Cambiar la extensión a .webp
-        await sharp(photo).resize({ width: 500 }).toFormat('webp').toFile(compressedImagePath); // Convertir a formato WebP
-        try {
-          await fs.promises.unlink(photo);
-        } catch (err) {
-          console.error(`Error deleting file ${photo}: ${err.message}`);
-        }
-        return compressedImagePath;
+    if (req.files.length > 0) {
+      const photoDetails = req.files.map((file) => ({
+        type: file.mimetype,
+        path: file.path,
+        originalname: file.originalname,
       }));
-
-      req.files = compressedImagePaths.map(path => ({ path }));
-    }
+    
+      compressedImagePaths = await Promise.all(
+        photoDetails.map(async (photo) => {
+          const compressedImagePath = `uploads/${uuidv4()}.webp`;
+          const fileBuffer = await fs.promises.readFile(photo.path);
+          await sharp(fileBuffer)
+            .resize({ width: 500 })
+            .toFormat("webp")
+            .toFile(compressedImagePath);
+          await fs.promises.unlink(photo.path);
+          return compressedImagePath;
+        })
+      );
+      
+      req.files = compressedImagePaths.map((path) => ({ path }));
+    }    
 
     const offer = new Offer({
       title,
