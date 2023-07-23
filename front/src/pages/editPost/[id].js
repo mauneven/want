@@ -255,6 +255,14 @@ const EditPost = () => {
     }
   };
 
+  useEffect(() => {
+    // Scroll to the bottom of the page when the error alert is shown
+    if (showErrorAlert) {
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+  }, [showErrorAlert]);
+
+
   return (
     <div className="mt-3 mb-3">
       <div className="">
