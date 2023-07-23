@@ -156,9 +156,9 @@ const EditPost = () => {
           setShowErrorAlert(false);
         }, 10000);
         return null;
-      } else if (!/^(image\/jpeg|image\/png|image\/jpg)$/.test(file.type)) {
+      } else if (!/^(image\/jpeg|image\/png|image\/jpg |image\/webp)$/.test(file.type)) {
         console.log("Selected file is not a JPG, JPEG, or PNG.");
-        const errorMessage = "The selected file must be in JPG, JPEG, or PNG format.";
+        const errorMessage = "The selected file must be in JPG, JPEG, WEBP or PNG format.";
         setErrorMessage(errorMessage);
         setShowErrorAlert(true);
         setTimeout(() => {
@@ -381,7 +381,7 @@ const EditPost = () => {
                           type="file"
                           className="form-control visually-hidden"
                           id={`photo${index}`}
-                          accept="image/png, image/jpeg"
+                          accept="image/png, image/jpeg, image/webp, image/jpg"
                           onChange={handleFileChange}
                         />
                       </label>

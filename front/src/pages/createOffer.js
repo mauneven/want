@@ -402,7 +402,7 @@ const CreateOffer = () => {
                 type="file"
                 id={`photo${index}`}
                 className="form-control visually-hidden"
-                accept="image/jpeg,image/png,image/gif"
+                accept="image/jpeg,image/png,image/webp,image/jpg"
                 onChange={handleFileChange}
               />
             </div>
