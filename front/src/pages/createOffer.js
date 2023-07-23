@@ -4,7 +4,7 @@ import WordsFilter from '@/badWordsFilter/WordsFilter';
 import { Button, Modal } from 'react-bootstrap';
 import { validations } from '@/utils/validations';
 import { countries } from '../data/countries.json';
-import GoBackButton from '@/components/reusable/GoBackButton';
+import GoHomeButton from '@/components/reusable/GoHomeButton';
 import { useTranslation } from 'react-i18next';
 
 const CreateOffer = () => {
@@ -192,7 +192,7 @@ const CreateOffer = () => {
 
   return (
     <div className="container mt-4 mb-4">
-      <GoBackButton/>
+      <GoHomeButton/>
       <h1 className="mt-3 text-center">{t('createOffer.creatingOfferFor')} "{post.title}"</h1>
       <h2 className="mt-3 text-center">{t('createOffer.paymentAmount')} ${Number(post.price).toLocaleString()}</h2>
       <h4 className="mt-3 text-center want-color">{t('createOffer.doYourBestOffer')}</h4>

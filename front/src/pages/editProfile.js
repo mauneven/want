@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { validations } from '@/utils/validations';
 import { useTranslation } from 'react-i18next';
-import GoBackButton from '@/components/reusable/GoBackButton';
+import GoHomeButton from '@/components/reusable/GoHomeButton';
 
 const EditProfile = () => {
   const router = useRouter();
@@ -164,7 +164,7 @@ const EditProfile = () => {
 
   return (
     <div className="container">
-      <GoBackButton/>
+      <GoHomeButton/>
       <h1 className='my-4'>{t('editProfile.checkEditProfile')}</h1>
       <div className="card want-rounded my-4">
         <div className="card-body">

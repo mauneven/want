@@ -1,4 +1,4 @@
-import GoBackButton from '@/components/reusable/GoBackButton';
+import GoHomeButton from '@/components/reusable/GoHomeButton';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -31,7 +31,7 @@ const PasswordRecovery = () => {
 
   return (
     <div className="container">
-      <GoBackButton/>
+      <GoHomeButton/>
       <h1>{t('passwordRecovery.title')}</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">

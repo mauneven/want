@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import PostCategory from "@/components/categories/Categories";
 import CreatePostLocation from "@/components/locations/createPost/";
 import WordsFilter from "@/badWordsFilter/WordsFilter.js";
 import { validations } from "@/utils/validations";
 import { useTranslation } from "react-i18next";
-import GoBackButton from "@/components/reusable/GoBackButton";
+import GoHomeButton from "@/components/reusable/GoHomeButton";
+import { Alert } from "react-bootstrap";
+
+const MAX_PHOTO_SIZE_MB = 5; // Tamaño máximo permitido para cada foto (en megabytes)
+const MAX_TOTAL_PHOTOS_MB = 20; // Tamaño máximo total permitido para todas las fotos (en megabytes)
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
@@ -18,11 +22,13 @@ const CreatePost = () => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [photos, setPhotos] = useState([]);
-  const [error, setError] = useState(null);
+  const [alertMessage, setAlertMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const bwf = new WordsFilter();
   const { t } = useTranslation();
+  const alertRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     validations(router);
@@ -66,6 +72,19 @@ const CreatePost = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Verificar el tamaño del archivo
+      const fileSizeMB = file.size / (1024 * 1024); // Convertir tamaño a megabytes
+      if (fileSizeMB > MAX_PHOTO_SIZE_MB) {
+        // Si el tamaño de la foto es mayor al máximo permitido, mostrar alerta y no agregar la foto
+        setAlertMessage({
+          variant: "danger",
+          message: `La foto es demasiado grande. El tamaño máximo permitido es de ${MAX_PHOTO_SIZE_MB} MB.`,
+        });
+        setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
+        fileInputRef.current.value = null; // Limpiar el input de archivo
+        return;
+      }
+
       const newPhotos = [...photos];
       const emptyIndex = newPhotos.findIndex((photo) => photo === null);
       if (emptyIndex !== -1) {
@@ -73,6 +92,20 @@ const CreatePost = () => {
       } else {
         newPhotos.push(file);
       }
+
+      // Verificar el tamaño total de todas las fotos
+      const totalPhotosSizeMB =
+        newPhotos.reduce((totalSize, photo) => totalSize + (photo ? photo.size : 0), 0) / (1024 * 1024);
+      if (totalPhotosSizeMB > MAX_TOTAL_PHOTOS_MB) {
+        // Si el tamaño total de las fotos supera el máximo permitido, mostrar alerta y eliminar la última foto agregada
+        setAlertMessage({
+          variant: "danger",
+          message: `El tamaño total de las fotos supera el máximo permitido de ${MAX_TOTAL_PHOTOS_MB} MB.`,
+        });
+        setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
+        newPhotos.pop(); // Eliminar la última foto agregada
+      }
+
       setPhotos(newPhotos);
     }
   };
@@ -105,7 +138,7 @@ const CreatePost = () => {
       const errorMessage = t("createPost.missingFieldsError", {
         fields: missingFields.map((field) => field.name).join(", "),
       });
-      setError(errorMessage);
+      setAlertMessage({ variant: "danger", message: errorMessage });
       return false;
     }
 
@@ -136,17 +169,14 @@ const CreatePost = () => {
     });
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-          },
-          credentials: "include",
-          body: formData,
-        }
-      );
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
+        credentials: "include",
+        body: formData,
+      });
 
       if (!response.ok) {
         const error = await response.text();
@@ -154,16 +184,33 @@ const CreatePost = () => {
       }
 
       setLoading(false);
-      router.push("/");
+      router.push("/myPosts");
     } catch (error) {
       setLoading(false);
-      setError(error.message);
+      setAlertMessage({ variant: "danger", message: error.message });
     }
   };
 
+  useEffect(() => {
+    if (alertMessage) {
+      // Scroll hacia el fondo de la página
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+
+      // Cerrar la alerta automáticamente después de 5 segundos
+      const timer = setTimeout(() => {
+        setAlertMessage(null);
+      }, 10000);
+
+      // Limpiar el timer cuando el componente se desmonta o cuando cambia la alerta
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [alertMessage]);
+
   return (
     <div className="mt-3 mb-3 container">
-      <GoBackButton/>
+      <GoHomeButton />
       <h1 className="text-center mb-4">{t("createPost.title")}</h1>
       <div className="">
         <div className=" ">
@@ -216,15 +263,9 @@ const CreatePost = () => {
               {t("createPost.categoriesLabel")}
             </label>
             <PostCategory
-              onMainCategoryChange={(selectedMainCategory) =>
-                setMainCategory(selectedMainCategory)
-              }
-              onSubcategoryChange={(selectedSubCategory) =>
-                setSubCategory(selectedSubCategory)
-              }
-              onThirdCategoryChange={(selectedThirdCategory) =>
-                setThirdCategory(selectedThirdCategory)
-              }
+              onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
+              onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)}
+              onThirdCategoryChange={(selectedThirdCategory) => setThirdCategory(selectedThirdCategory)}
               initialMainCategory={mainCategory}
               initialSubcategory={subCategory}
               initialThirdCategory={thirdCategory}
@@ -264,8 +305,9 @@ const CreatePost = () => {
                         type="file"
                         className="form-control visually-hidden"
                         id={`photo${index}`}
-                        accept="image/png, image/jpeg"
+                        accept="image/png, image/jpeg, image/jpg, image/webp"
                         onChange={handleFileChange}
+                        ref={index === 1 ? fileInputRef : null}
                       />
                     </label>
                   )}
@@ -282,7 +324,11 @@ const CreatePost = () => {
               </div>
             ))}
           </div>
-          {error && <div className="alert alert-danger">{error}</div>}
+          {alertMessage && (
+            <Alert variant={alertMessage.variant} onClose={() => setAlertMessage(null)} dismissible ref={alertRef}>
+              {alertMessage.message}
+            </Alert>
+          )}
           <button
             type="button"
             className="want-button want-rounded mt-2 border-selected "

@@ -4,7 +4,8 @@ import PostCategory from "@/components/categories/Categories";
 import EditPostLocation from "@/components/locations/editPost/";
 import WordsFilter from "@/badWordsFilter/WordsFilter.js";
 import { validations } from "@/utils/validations";
-import GoBackButton from "@/components/reusable/GoBackButton";
+import GoHomeButton from "@/components/reusable/GoHomeButton";
+import { Alert } from "react-bootstrap";
 
 const EditPost = () => {
   const [title, setTitle] = useState("");
@@ -18,6 +19,8 @@ const EditPost = () => {
   const [postData, setPostData] = useState(null); 
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [photos, setPhotos] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -129,43 +132,49 @@ const EditPost = () => {
   };
 
   const handleFileChange = (e) => {
-    const newImages = [...e.target.files]
-      .map((file) => {
-        if (file.size > 50000000) {
-          // 50MB en bytes
-          console.log("Selected file is too large.");
-          const errorMessage =
-            "The selected file is too large. Please select a file that is 50MB or smaller.";
-          setError(errorMessage);
-          alert(errorMessage);
-          return null;
-        } else if (!/^(image\/jpeg|image\/png|image\/jpg)$/.test(file.type)) {
-          console.log("Selected file is not a JPG, JPEG, or PNG.");
-          const errorMessage =
-            "The selected file must be in JPG, JPEG or PNG format.";
-          setError(errorMessage);
-          alert(errorMessage);
-          return null;
-        } else {
-          return {
-            file,
-            preview: URL.createObjectURL(file),
-          };
-        }
-      })
-      .filter((image) => image !== null);
-
+    const newImages = [...e.target.files].map((file) => {
+      if (file.size > 5000000) {
+        console.log("Selected file is too large.");
+        const errorMessage =
+          "The selected file is too large. Please select a file that is 5MB or smaller.";
+        setErrorMessage(errorMessage);
+        setShowErrorAlert(true);
+        setTimeout(() => {
+          setErrorMessage("");
+          setShowErrorAlert(false);
+        }, 10000);
+        return null;
+      } else if (!/^(image\/jpeg|image\/png|image\/jpg)$/.test(file.type)) {
+        console.log("Selected file is not a JPG, JPEG, or PNG.");
+        const errorMessage = "The selected file must be in JPG, JPEG, or PNG format.";
+        setErrorMessage(errorMessage);
+        setShowErrorAlert(true);
+        setTimeout(() => {
+          setErrorMessage("");
+          setShowErrorAlert(false);
+        }, 10000);
+        return null;
+      } else {
+        return {
+          file,
+          preview: URL.createObjectURL(file),
+        };
+      }
+    }).filter((image) => image !== null);
+  
     const totalImages = photos.length + newImages.length;
-
+  
     if (totalImages > 4) {
       const errorMessage = "You cannot upload more than 4 images.";
       setError(errorMessage);
-      alert(errorMessage);
+      setTimeout(() => setError(null), 10000);
     } else {
       setError(null);
       setPhotos((prevState) => [...prevState, ...newImages]);
+      // Clear the input value after processing the files
+      e.target.value = null;
     }
-  };
+  };  
 
   const handleDeletePhoto = (index) => {
     const deletedImage = photos[index];
@@ -248,11 +257,10 @@ const EditPost = () => {
 
   return (
     <div className="mt-3 mb-3">
-      
       <div className="">
         <div className="container">
-        <GoBackButton/>
-        <h3 className="text-center mb-4">Edit the post of what you Want</h3>
+          <GoHomeButton/>
+          <h3 className="text-center mb-4">Edit the post of what you Want</h3>
           <form onSubmit={handleSubmit} className="">
             <div className="mb-3">
               <label htmlFor="title" className="form-label">
@@ -371,7 +379,11 @@ const EditPost = () => {
                 </div>
               ))}
             </div>
-            {error && <div className="alert alert-danger">{error}</div>}
+            {showErrorAlert && (
+        <Alert variant="danger" onClose={() => setShowErrorAlert(false)} dismissible>
+          {errorMessage}
+        </Alert>
+      )}
             <button
               type="submit"
               className="btn-lg want-button want-rounded"

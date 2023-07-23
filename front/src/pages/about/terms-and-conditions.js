@@ -1,4 +1,4 @@
-import GoBackButton from "@/components/reusable/GoBackButton";
+import GoHomeButton from "@/components/reusable/GoHomeButton";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -7,7 +7,7 @@ const TermsAndConditionsPage = () => {
 
   return (
     <div className="container">
-      <GoBackButton/>
+      <GoHomeButton/>
       <h1>{t("termsAndConditions.title")}</h1>
       <h2>{t("termsAndConditions.disclaimerTitle")}</h2>
       <p>{t("termsAndConditions.disclaimerContent")}</p>

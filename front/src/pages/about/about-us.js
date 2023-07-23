@@ -1,7 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
-import GoBackButton from "@/components/reusable/GoBackButton";
+import GoHomeButton from "@/components/reusable/GoHomeButton";
 
 const LandingPage = () => {
   const router = useRouter();
@@ -9,7 +9,7 @@ const LandingPage = () => {
 
   return (
     <div className="container">
-      <GoBackButton/>
+      <GoHomeButton/>
       <div className="row pb-5">
         <div className="col-md-6 d-grid align-items-center">
           <h1 className="display-4">

@@ -5,7 +5,7 @@ import DetailsModal from '@/components/offer/DetailsModal';
 import ReportOfferModal from '@/components/report/ReportOfferModal';
 import { validations } from '@/utils/validations';
 import { useTranslation } from 'react-i18next';
-import GoBackButton from '@/components/reusable/GoBackButton';
+import GoHomeButton from '@/components/reusable/GoHomeButton';
 
 export default function ReceivedOffers() {
   const [offers, setOffers] = useState([]);
@@ -159,7 +159,7 @@ export default function ReceivedOffers() {
         </Modal.Footer>
       </Modal>
       <div className="container">
-      <GoBackButton/>
+      <GoHomeButton/>
         <h1 className='my-4'>{t('receivedOffers.yourOffers')}</h1>
         <div className="row">
           <div className="col-md-3">
