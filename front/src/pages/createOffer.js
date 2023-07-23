@@ -137,6 +137,7 @@ const CreateOffer = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      e.target.value = null;
       if (file.size > 5 * 1024 * 1024) {
         setErrorAlert(t("createOffer.fileSizeError"));
         e.target.value = "";

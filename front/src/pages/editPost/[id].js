@@ -144,6 +144,7 @@ const EditPost = () => {
 
   const handleFileChange = (e) => {
     const newImages = [...e.target.files].map((file) => {
+      e.target.value = null;
       if (file.size > 5000000) {
         console.log("Selected file is too large.");
         const errorMessage =

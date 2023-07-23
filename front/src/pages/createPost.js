@@ -83,6 +83,7 @@ const CreatePost = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      e.target.value = null;
       // Verificar el tamaño del archivo
       const fileSizeMB = file.size / (1024 * 1024); // Convertir tamaño a megabytes
       if (fileSizeMB > MAX_PHOTO_SIZE_MB) {
