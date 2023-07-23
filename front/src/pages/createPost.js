@@ -95,7 +95,11 @@ const CreatePost = () => {
 
       // Verificar el tamaño total de todas las fotos
       const totalPhotosSizeMB =
-        newPhotos.reduce((totalSize, photo) => totalSize + (photo ? photo.size : 0), 0) / (1024 * 1024);
+        newPhotos.reduce(
+          (totalSize, photo) => totalSize + (photo ? photo.size : 0),
+          0
+        ) /
+        (1024 * 1024);
       if (totalPhotosSizeMB > MAX_TOTAL_PHOTOS_MB) {
         // Si el tamaño total de las fotos supera el máximo permitido, mostrar alerta y eliminar la última foto agregada
         setAlertMessage({
@@ -128,7 +132,10 @@ const CreatePost = () => {
     const requiredFields = [
       { name: t("createPost.titleField"), value: title },
       { name: t("createPost.descriptionField"), value: description },
-      { name: t("createPost.categoriesField"), value: mainCategory && subCategory && thirdCategory },
+      {
+        name: t("createPost.categoriesField"),
+        value: mainCategory && subCategory && thirdCategory,
+      },
       { name: t("createPost.priceField"), value: price },
     ];
 
@@ -169,14 +176,17 @@ const CreatePost = () => {
     });
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-        },
-        credentials: "include",
-        body: formData,
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+          },
+          credentials: "include",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         const error = await response.text();
@@ -254,7 +264,9 @@ const CreatePost = () => {
             />
             {price ? (
               <small className="form-text text-muted">
-                {t("createPost.priceText", { price: Number(price).toLocaleString() })}
+                {t("createPost.priceText", {
+                  price: Number(price).toLocaleString(),
+                })}
               </small>
             ) : null}
           </div>
@@ -263,9 +275,15 @@ const CreatePost = () => {
               {t("createPost.categoriesLabel")}
             </label>
             <PostCategory
-              onMainCategoryChange={(selectedMainCategory) => setMainCategory(selectedMainCategory)}
-              onSubcategoryChange={(selectedSubCategory) => setSubCategory(selectedSubCategory)}
-              onThirdCategoryChange={(selectedThirdCategory) => setThirdCategory(selectedThirdCategory)}
+              onMainCategoryChange={(selectedMainCategory) =>
+                setMainCategory(selectedMainCategory)
+              }
+              onSubcategoryChange={(selectedSubCategory) =>
+                setSubCategory(selectedSubCategory)
+              }
+              onThirdCategoryChange={(selectedThirdCategory) =>
+                setThirdCategory(selectedThirdCategory)
+              }
               initialMainCategory={mainCategory}
               initialSubcategory={subCategory}
               initialThirdCategory={thirdCategory}
@@ -325,7 +343,12 @@ const CreatePost = () => {
             ))}
           </div>
           {alertMessage && (
-            <Alert variant={alertMessage.variant} onClose={() => setAlertMessage(null)} dismissible ref={alertRef}>
+            <Alert
+              variant={alertMessage.variant}
+              onClose={() => setAlertMessage(null)}
+              dismissible
+              ref={alertRef}
+            >
               {alertMessage.message}
             </Alert>
           )}

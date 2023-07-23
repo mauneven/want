@@ -1,29 +1,30 @@
-import { useRouter } from 'next/router';
-import react, { useState, useEffect } from 'react';
-import WordsFilter from '@/badWordsFilter/WordsFilter';
-import { Button, Modal } from 'react-bootstrap';
-import { validations } from '@/utils/validations';
-import { countries } from '../data/countries.json';
-import GoHomeButton from '@/components/reusable/GoHomeButton';
-import { useTranslation } from 'react-i18next';
+import { useRouter } from "next/router";
+import react, { useState, useEffect } from "react";
+import WordsFilter from "@/badWordsFilter/WordsFilter";
+import { Button, Modal, Alert } from "react-bootstrap";
+import { validations } from "@/utils/validations";
+import { countries } from "../data/countries.json";
+import GoHomeButton from "@/components/reusable/GoHomeButton";
+import { useTranslation } from "react-i18next";
 
 const CreateOffer = () => {
   const router = useRouter();
   const { postId } = router.query;
   const { t } = useTranslation();
   const [post, setPost] = useState(null);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [contact, setContact] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [selectedCountryCode, setSelectedCountryCode] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [contact, setContact] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [selectedCountryCode, setSelectedCountryCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photos, setPhotos] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [errorAlert, setErrorAlert] = useState(null);
 
   const getActivePhotoIndex = () => {
-    const activeItem = document.querySelector('.carousel-item.active');
+    const activeItem = document.querySelector(".carousel-item.active");
     return activeItem ? parseInt(activeItem.dataset.index) : -1;
   };
 
@@ -99,7 +100,9 @@ const CreateOffer = () => {
 
   useEffect(() => {
     const fetchPost = async () => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts/${postId}`
+      );
       const data = await response.json();
       setPost(data);
     };
@@ -114,9 +117,16 @@ const CreateOffer = () => {
   const handleFileChange = (e, index) => {
     const file = e.target.files[0];
     if (file) {
-      const newPhotos = [...photos];
-      newPhotos[index] = file;
-      setPhotos(newPhotos);
+      if (file.size > 5 * 1024 * 1024) {
+        setErrorAlert(t("createOffer.fileSizeError"));
+        // Clear the file input to avoid uploading large files multiple times without errors
+        e.target.value = "";
+      } else {
+        setErrorAlert(null);
+        const newPhotos = [...photos];
+        newPhotos[index] = file;
+        setPhotos(newPhotos);
+      }
     }
   };
 
@@ -142,42 +152,49 @@ const CreateOffer = () => {
     }
 
     if (bwf.containsBadWord(description)) {
-      alert(`You wrote a bad word in the description: ${bwf.devolverPalabra(description)}`);
+      alert(
+        `You wrote a bad word in the description: ${bwf.devolverPalabra(
+          description
+        )}`
+      );
       setIsSubmitting(false);
       return;
     }
 
     const formData = new FormData();
-    formData.append('title', title);
-    formData.append('description', description);
-    formData.append('price', price);
-    formData.append('contact', contact);
-    formData.append('phoneNumber', phoneNumber);
-    formData.append('countryCode', selectedCountryCode);
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("contact", contact);
+    formData.append("phoneNumber", phoneNumber);
+    formData.append("countryCode", selectedCountryCode);
 
     if (photos.length > 0) {
       for (let i = 0; i < photos.length; i++) {
-        formData.append('photos[]', photos[i]);
+        formData.append("photos[]", photos[i]);
       }
     }
 
-    formData.append('postId', postId);
+    formData.append("postId", postId);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/create`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-        },
-        credentials: 'include',
-        body: formData,
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/create`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+          },
+          credentials: "include",
+          body: formData,
+        }
+      );
 
       if (response.ok) {
-        alert('Offer created');
+        alert("Offer created");
         router.push(`/post/${postId}`);
       } else {
-        alert('There was an error, try again later or change the photos');
+        alert("There was an error, try again later or change the photos");
       }
     } catch (error) {
       console.error(error);
@@ -186,26 +203,47 @@ const CreateOffer = () => {
     }
   };
 
+  useEffect(() => {
+    // Handle the automatic scroll to the top when an alert is shown
+    if (errorAlert) {
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+  }, [errorAlert]);
+
   if (!post) {
     return <p className="container mt-5">Loading...</p>;
   }
 
   return (
     <div className="container mt-4 mb-4">
-      <GoHomeButton/>
-      <h1 className="mt-3 text-center">{t('createOffer.creatingOfferFor')} "{post.title}"</h1>
-      <h2 className="mt-3 text-center">{t('createOffer.paymentAmount')} ${Number(post.price).toLocaleString()}</h2>
-      <h4 className="mt-3 text-center want-color">{t('createOffer.doYourBestOffer')}</h4>
+      <GoHomeButton />
+      <h1 className="mt-3 text-center">
+        {t("createOffer.creatingOfferFor")} "{post.title}"
+      </h1>
+      <h2 className="mt-3 text-center">
+        {t("createOffer.paymentAmount")} ${Number(post.price).toLocaleString()}
+      </h2>
+      <h4 className="mt-3 text-center want-color">
+        {t("createOffer.doYourBestOffer")}
+      </h4>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>{t('createOffer.createOffer')}</Modal.Title>
+          <Modal.Title>{t("createOffer.createOffer")}</Modal.Title>
         </Modal.Header>
         <Modal.Body className="p-0">
           <ul className="list-group list-group-flush">
-            <li className="list-group-item">1. {t('createOffer.offerLifetime')}</li>
-            <li className="list-group-item">2. {t('createOffer.offerRemoved')}</li>
-            <li className="list-group-item">3. {t('createOffer.offerDelete')}</li>
-            <li className="list-group-item">4. {t('createOffer.offerDeleteManually')}</li>
+            <li className="list-group-item">
+              1. {t("createOffer.offerLifetime")}
+            </li>
+            <li className="list-group-item">
+              2. {t("createOffer.offerRemoved")}
+            </li>
+            <li className="list-group-item">
+              3. {t("createOffer.offerDelete")}
+            </li>
+            <li className="list-group-item">
+              4. {t("createOffer.offerDeleteManually")}
+            </li>
           </ul>
         </Modal.Body>
         <Modal.Footer>
@@ -219,7 +257,7 @@ const CreateOffer = () => {
           <form onSubmit={handleSubmit} className="container">
             <div className="mb-3">
               <label htmlFor="title" className="form-label">
-                {t('createOffer.offerTitle')}
+                {t("createOffer.offerTitle")}
               </label>
               <input
                 type="text"
@@ -232,7 +270,7 @@ const CreateOffer = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="description" className="form-label">
-                {t('createOffer.offerDescription')}
+                {t("createOffer.offerDescription")}
               </label>
               <textarea
                 className="form-control"
@@ -244,7 +282,7 @@ const CreateOffer = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="phone-country" className="form-label">
-                {t('createOffer.phoneContact')}
+                {t("createOffer.phoneContact")}
               </label>
               <div className="input-group">
                 <select
@@ -253,7 +291,7 @@ const CreateOffer = () => {
                   value={selectedCountryCode}
                   onChange={handleCountryChange}
                 >
-                  <option value="">{t('createOffer.chooseCountryCode')}</option>
+                  <option value="">{t("createOffer.chooseCountryCode")}</option>
                   {countries.map((country) => (
                     <option key={country.id} value={country.phoneCode}>
                       {`${country.name} +${country.phoneCode}`}
@@ -263,7 +301,7 @@ const CreateOffer = () => {
                 <input
                   type="text"
                   className="form-control no-spinners"
-                  placeholder={t('createOffer.phoneNumber')}
+                  placeholder={t("createOffer.phoneNumber")}
                   value={phoneNumber}
                   onChange={handlePhoneNumberChange}
                   onKeyPress={handleKeyPress}
@@ -272,7 +310,7 @@ const CreateOffer = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="contact" className="form-label">
-                {t('createOffer.otherContact')}
+                {t("createOffer.otherContact")}
               </label>
               <input
                 type="text"
@@ -284,7 +322,7 @@ const CreateOffer = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="price" className="form-label">
-                {t('createOffer.offerPrice')}
+                {t("createOffer.offerPrice")}
               </label>
               <input
                 type="text"
@@ -295,11 +333,15 @@ const CreateOffer = () => {
                 onKeyPress={handleKeyPress}
                 required
               />
-              {price ? <small className="form-text text-muted">{t('createOffer.priceLabel')} {Number(price).toLocaleString()}</small> : null}
+              {price ? (
+                <small className="form-text text-muted">
+                  {t("createOffer.priceLabel")} {Number(price).toLocaleString()}
+                </small>
+              ) : null}
             </div>
             <div className="mb-3">
               <label htmlFor="photo" className="form-label">
-                {t('createOffer.uploadPhotos')}
+                {t("createOffer.uploadPhotos")}
               </label>
               <div className="row row-cols-xl-2">
                 {[1, 2, 3, 4].map((index) => (
@@ -315,7 +357,10 @@ const CreateOffer = () => {
                         </div>
                       )}
                       {!photos[index - 1] && (
-                        <label htmlFor={`photo${index}`} className="photo-upload">
+                        <label
+                          htmlFor={`photo${index}`}
+                          className="photo-upload"
+                        >
                           <i className="bi bi-image divhover display-1"></i>
                           <i className="bi bi-plus-circle-fill display-6 divhover"></i>
                         </label>
@@ -341,13 +386,24 @@ const CreateOffer = () => {
                 ))}
               </div>
             </div>
+            {errorAlert && (
+              <Alert
+                variant="danger"
+                onClose={() => setErrorAlert(null)}
+                dismissible
+              >
+                {errorAlert}
+              </Alert>
+            )}
             <div className="mb-3">
               <button
                 type="submit"
                 className="want-button want-rounded border-selected"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? t('createOffer.creating') : t('createOffer.createOffer')}
+                {isSubmitting
+                  ? t("createOffer.creating")
+                  : t("createOffer.createOffer")}
               </button>
             </div>
           </form>
