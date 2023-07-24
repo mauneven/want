@@ -93,7 +93,18 @@ const CreatePost = () => {
           message: `La foto es demasiado grande. El tamaño máximo permitido es de ${MAX_PHOTO_SIZE_MB} MB.`,
         });
         setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
-        fileInputRef.current.value = null; // Limpiar el input de archivo
+        return;
+      } else if (
+        !/^(image\/jpeg|image\/png|image\/jpg |image\/webp)$/.test(file.type)
+      ) {
+        console.log("Selected file is not a JPG, JPEG, or PNG.");
+        const errorMessage =
+          "The selected file must be in JPG, JPEG, WEBP or PNG format.";
+        setAlertMessage({
+          variant: "danger",
+          message: `The selected file must be in JPG, JPEG, WEBP or PNG format.`,
+        });
+        setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
         return;
       }
 
@@ -122,6 +133,17 @@ const CreatePost = () => {
         newPhotos.pop(); // Eliminar la última foto agregada
       }
 
+      const totalImages = photos.length;
+
+      if (totalImages > 3) {
+        // Si el tamaño total de las fotos supera el máximo permitido, mostrar alerta y eliminar la última foto agregada
+        setAlertMessage({
+          variant: "danger",
+          message: `La maxima cantidad de fotos que puedes subir es 4.`,
+        });
+        setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
+        newPhotos.pop(); // Eliminar la última foto agregada
+      }
       setPhotos(newPhotos);
     }
   };
@@ -283,7 +305,7 @@ const CreatePost = () => {
             ) : null}
           </div>
           <div className="mb-3">
-            <label htmlFor="price" className="form-label">
+            <label className="form-label">
               {t("createPost.categoriesLabel")}
             </label>
             <PostCategory
@@ -303,7 +325,7 @@ const CreatePost = () => {
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="price" className="form-label">
+            <label className="form-label">
               {t("createPost.locationLabel")}
             </label>
             <CreatePostLocation
@@ -311,12 +333,36 @@ const CreatePost = () => {
               onLongitudeChange={handleLongitudeChange}
             />
           </div>
-          <label htmlFor="price" className="form-label">
-            {t("createPost.photosLabel")}
-          </label>
-          <div className="row row-cols-xl-2" onDragOver={handleDragOver} onDrop={handleDrop}>
+          <label className="form-label">{t("createPost.photosLabel")}</label>
+          {photos.length < 4 && (
+            <div
+              className="border want-border row d-flex justify-content-center align-items-center text-center"
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+            >
+              <label className="photo-upload">
+                <div>
+                  <i className="bi bi-image divhover display-1"></i>
+                </div>
+
+                <input
+                  type="file"
+                  multiple
+                  className="form-control visually-hidden"
+                  accept="image/png, image/jpeg, image/jpg, image/webp"
+                  onChange={handleFileChange}
+                />
+              </label>
+              SELECCIONA O ARROJA TUS IMAGENES AQUI
+            </div>
+          )}
+
+          <div className="row row-cols-xl-2">
             {[1, 2, 3, 4].map((index) => (
-              <div className="form-group border justify-content-center align-items-center d-flex p-2 want-rounded mt-2 mb-2" key={index}>
+              <div
+                className="form-group justify-content-center align-items-center d-flex mt-3"
+                key={index}
+              >
                 <div className="photo-upload-container col text-center align-items-center">
                   {photos[index - 1] && (
                     <div className="photo-preview ">
@@ -327,20 +373,7 @@ const CreatePost = () => {
                       />
                     </div>
                   )}
-                  {!photos[index - 1] && (
-                    <label htmlFor={`photo${index}`} className="photo-upload" >
-                      <i className="bi bi-image divhover display-1"></i>
-                      <i className="bi bi-plus-circle-fill display-6 divhover"></i>
-                      <input
-                        type="file"
-                        className="form-control visually-hidden"
-                        id={`photo${index}`}
-                        accept="image/png, image/jpeg, image/jpg, image/webp"
-                        onChange={handleFileChange}
-                        ref={index === 1 ? fileInputRef : null}
-                      />
-                    </label>
-                  )}
+
                   {photos[index - 1] && (
                     <button
                       className="btn-light circle btn-sm delete-photo"
@@ -366,7 +399,7 @@ const CreatePost = () => {
           )}
           <button
             type="button"
-            className="want-button want-rounded mt-2 border-selected "
+            className="want-button want-rounded mt-3 border-selected "
             disabled={loading}
             onClick={handleCreatePost}
           >
