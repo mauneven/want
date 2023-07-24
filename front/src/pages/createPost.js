@@ -84,7 +84,7 @@ const CreatePost = () => {
     const files = Array.from(e.target.files);
     let newPhotos = [...photos];
     let totalImages = newPhotos.length + files.length;
-
+  
     if (totalImages > 4) {
       totalImages = 4; // Only keep the first 4 files.
       files.length = 4 - photos.length; // Remove extra files.
@@ -107,7 +107,7 @@ const CreatePost = () => {
             message: `La foto es demasiado grande. El tamaño máximo permitido es de ${MAX_PHOTO_SIZE_MB} MB.`,
           });
           setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
-          return;
+          continue; // Skip this file and continue with the next one
         } else if (
           !/^(image\/jpeg|image\/png|image\/jpg |image\/webp)$/.test(file.type)
         ) {
@@ -119,7 +119,7 @@ const CreatePost = () => {
             message: `The selected file must be in JPG, JPEG, WEBP or PNG format.`,
           });
           setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
-          return;
+          continue; // Skip this file and continue with the next one
         }
   
         const emptyIndex = newPhotos.findIndex((photo) => photo === null);
@@ -149,7 +149,7 @@ const CreatePost = () => {
       }
     }
     setPhotos(newPhotos);
-  };  
+  };   
 
   const handleLatitudeChange = (latitude) => {
     setLatitude(latitude);

@@ -143,51 +143,56 @@ const EditPost = () => {
   };
 
   const handleFileChange = (e) => {
-    const newImages = [...e.target.files].map((file) => {
-      e.target.value = null;
+    let selectedImages = Array.from(e.target.files);
+    let newImages = [];
+    let imageSizeErrorMessage = null;
+    let imageFormatErrorMessage = null;
+  
+    // Check each file for size and format
+    for(let i=0; i<selectedImages.length; i++) {
+      let file = selectedImages[i];
       if (file.size > 5000000) {
-        console.log("Selected file is too large.");
-        const errorMessage =
-          "The selected file is too large. Please select a file that is 5MB or smaller.";
-        setErrorMessage(errorMessage);
-        setShowErrorAlert(true);
-        setTimeout(() => {
-          setErrorMessage("");
-          setShowErrorAlert(false);
-        }, 10000);
-        return null;
-      } else if (!/^(image\/jpeg|image\/png|image\/jpg |image\/webp)$/.test(file.type)) {
-        console.log("Selected file is not a JPG, JPEG, or PNG.");
-        const errorMessage = "The selected file must be in JPG, JPEG, WEBP or PNG format.";
-        setErrorMessage(errorMessage);
-        setShowErrorAlert(true);
-        setTimeout(() => {
-          setErrorMessage("");
-          setShowErrorAlert(false);
-        }, 10000);
-        return null;
-      } else {
-        return {
-          file,
-          preview: URL.createObjectURL(file),
-        };
+        imageSizeErrorMessage = "The selected file is too large. Please select a file that is 5MB or smaller.";
+        continue;
       }
-    }).filter((image) => image !== null);
+      if (!/^(image\/jpeg|image\/png|image\/jpg|image\/webp)$/.test(file.type)) {
+        imageFormatErrorMessage = "The selected file must be in JPG, JPEG, WEBP or PNG format.";
+        continue;
+      }
+      newImages.push({
+        file,
+        preview: URL.createObjectURL(file),
+      });
+    }
   
+    // Display any error messages
+    if(imageSizeErrorMessage || imageFormatErrorMessage) {
+      setErrorMessage(imageSizeErrorMessage || imageFormatErrorMessage);
+      setShowErrorAlert(true);
+      setTimeout(() => {
+        setErrorMessage("");
+        setShowErrorAlert(false);
+      }, 10000);
+    }
+  
+    // Check total number of images
     const totalImages = photos.length + newImages.length;
-  
     if (totalImages > 4) {
       const errorMessage = "You cannot upload more than 4 images.";
-      setError(errorMessage);
-      setTimeout(() => setError(null), 10000);
-    } else {
-      setError(null);
-      setPhotos((prevState) => [...prevState, ...newImages]);
-      // Clear the input value after processing the files
-      e.target.value = null;
+      setErrorMessage(errorMessage);
+      setShowErrorAlert(true);
+      setTimeout(() => {
+        setErrorMessage("");
+        setShowErrorAlert(false);
+      }, 10000);
+      newImages = newImages.slice(0, 4 - photos.length); // Keep only enough images to reach the limit
     }
-  };  
-
+  
+    setPhotos((prevState) => [...prevState, ...newImages]);
+    // Clear the input value after processing the files
+    e.target.value = null;
+  };
+  
   const handleDeletePhoto = (index) => {
     const deletedImage = photos[index];
     setDeletedPhotos((prevState) => [...prevState, deletedImage]);
@@ -360,9 +365,31 @@ const EditPost = () => {
             <label htmlFor="price" className="form-label">
               upload upto 4 photos about what you Want*
             </label>
+            {photos.length < 4 && (
+            <div
+              className="border want-border p-4 row d-flex justify-content-center align-items-center text-center"
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+            >
+              <label className="photo-upload">
+                <div>
+                  <i className="bi bi-image divhover display-1"></i>
+                </div>
+
+                <input
+                  type="file"
+                  multiple
+                  className="form-control visually-hidden"
+                  accept="image/png, image/jpeg, image/jpg, image/webp"
+                  onChange={handleFileChange}
+                />
+              </label>
+              SELECCIONA O ARROJA TUS IMAGENES AQUI
+            </div>
+          )}
             <div className="row row-cols-xl-2" onDragOver={handleDragOver} onDrop={handleDrop}>
               {[1, 2, 3, 4].map((index) => (
-                <div className="form-group border justify-content-center align-items-center d-flex p-2 want-rounded mt-2 mb-2" key={index}>
+                <div className="form-group justify-content-center align-items-center d-flex p-2 want-rounded mt-2 mb-2" key={index}>
                   <div className="photo-upload-container col text-center align-items-center">
                     {photos[index - 1] && (
                       <div className="photo-preview">
@@ -372,19 +399,6 @@ const EditPost = () => {
                           alt={`Photo ${index}`}
                         />
                       </div>
-                    )}
-                    {!photos[index - 1] && (
-                      <label htmlFor={`photo${index}`} className="photo-upload">
-                        <i className="bi bi-image divhover display-1"></i>
-                        <i className="bi bi-plus-circle-fill display-6 divhover"></i>
-                        <input
-                          type="file"
-                          className="form-control visually-hidden"
-                          id={`photo${index}`}
-                          accept="image/png, image/jpeg, image/webp, image/jpg"
-                          onChange={handleFileChange}
-                        />
-                      </label>
                     )}
                     {photos[index - 1] && (
                       <button

@@ -149,7 +149,7 @@ exports.updatePost = async (req, res, next) => {
         path: file.path,
         originalname: file.originalname,
       }));
-    
+
       const compressedImagePaths = await Promise.all(
         photos.map(async (photo) => {
           const compressedImagePath = `uploads/${uuidv4()}.webp`;
@@ -164,24 +164,27 @@ exports.updatePost = async (req, res, next) => {
       );
       req.files = compressedImagePaths.map((path) => ({ path }));
 
-      // Si hay imágenes eliminadas previamente, también debes eliminarlas en formato WebP
-      if (deletedImages) {
-        const deletedImagePaths = deletedImages.split(",");
-        deletedImagePaths.forEach(async (imagePath) => {
-          const parsedUrl = url.parse(imagePath);
-          const localPath = parsedUrl.pathname;
-          const oldPhotoPath = path.join(__dirname, "..", localPath);
-          try {
-            await fs.promises.unlink(oldPhotoPath);
-          } catch (err) {
-            console.error(
-              `Error deleting file ${oldPhotoPath}: ${err.message}`
-            );
-          }
-        });
-      }
-
       post.photos = [...post.photos, ...compressedImagePaths];
+    }
+
+    if (deletedImages) {
+      const deletedImagePaths = deletedImages.split(",");
+      await Promise.all(deletedImagePaths.map(async (imagePath) => {
+        const parsedUrl = url.parse(imagePath);
+        const localPath = parsedUrl.pathname;
+        const oldPhotoPath = path.join(__dirname, "..", localPath);
+        try {
+          await fs.promises.unlink(oldPhotoPath);
+          const index = post.photos.findIndex(photo => photo === localPath);
+          if (index !== -1) {
+            post.photos.splice(index, 1);
+          }
+        } catch (err) {
+          console.error(
+            `Error deleting file ${oldPhotoPath}: ${err.message}`
+          );
+        }
+      }));
     }
 
     await Promise.all(
@@ -468,6 +471,9 @@ exports.getPostById = async (req, res, next) => {
     }
     res.status(200).json(post);
   } catch (err) {
+    if (err.kind === 'ObjectId' && err.name === 'CastError') {
+      return res.status(400).send("Invalid Post ID");
+    }
     next(err);
   }
 };
