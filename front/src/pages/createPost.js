@@ -81,72 +81,75 @@ const CreatePost = () => {
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      e.target.value = null;
-      // Verificar el tamaño del archivo
-      const fileSizeMB = file.size / (1024 * 1024); // Convertir tamaño a megabytes
-      if (fileSizeMB > MAX_PHOTO_SIZE_MB) {
-        // Si el tamaño de la foto es mayor al máximo permitido, mostrar alerta y no agregar la foto
-        setAlertMessage({
-          variant: "danger",
-          message: `La foto es demasiado grande. El tamaño máximo permitido es de ${MAX_PHOTO_SIZE_MB} MB.`,
-        });
-        setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
-        return;
-      } else if (
-        !/^(image\/jpeg|image\/png|image\/jpg |image\/webp)$/.test(file.type)
-      ) {
-        console.log("Selected file is not a JPG, JPEG, or PNG.");
-        const errorMessage =
-          "The selected file must be in JPG, JPEG, WEBP or PNG format.";
-        setAlertMessage({
-          variant: "danger",
-          message: `The selected file must be in JPG, JPEG, WEBP or PNG format.`,
-        });
-        setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
-        return;
-      }
+    const files = Array.from(e.target.files);
+    let newPhotos = [...photos];
+    let totalImages = newPhotos.length + files.length;
 
-      const newPhotos = [...photos];
-      const emptyIndex = newPhotos.findIndex((photo) => photo === null);
-      if (emptyIndex !== -1) {
-        newPhotos[emptyIndex] = file;
-      } else {
-        newPhotos.push(file);
+    if (totalImages > 4) {
+      totalImages = 4; // Only keep the first 4 files.
+      files.length = 4 - photos.length; // Remove extra files.
+      setAlertMessage({
+        variant: "danger",
+        message: `La máxima cantidad de fotos que puedes subir es 4.`,
+      });
+      setTimeout(() => setAlertMessage(null), 5000); // Close the warning automatically in 5 seconds.
+    }    
+  
+    for (let file of files) {
+      if (file) {
+        e.target.value = null;
+        // Verificar el tamaño del archivo
+        const fileSizeMB = file.size / (1024 * 1024); // Convertir tamaño a megabytes
+        if (fileSizeMB > MAX_PHOTO_SIZE_MB) {
+          // Si el tamaño de la foto es mayor al máximo permitido, mostrar alerta y no agregar la foto
+          setAlertMessage({
+            variant: "danger",
+            message: `La foto es demasiado grande. El tamaño máximo permitido es de ${MAX_PHOTO_SIZE_MB} MB.`,
+          });
+          setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
+          return;
+        } else if (
+          !/^(image\/jpeg|image\/png|image\/jpg |image\/webp)$/.test(file.type)
+        ) {
+          console.log("Selected file is not a JPG, JPEG, or PNG.");
+          const errorMessage =
+            "The selected file must be in JPG, JPEG, WEBP or PNG format.";
+          setAlertMessage({
+            variant: "danger",
+            message: `The selected file must be in JPG, JPEG, WEBP or PNG format.`,
+          });
+          setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
+          return;
+        }
+  
+        const emptyIndex = newPhotos.findIndex((photo) => photo === null);
+        if (emptyIndex !== -1) {
+          newPhotos[emptyIndex] = file;
+        } else {
+          newPhotos.push(file);
+        }
+  
+        // Verificar el tamaño total de todas las fotos
+        const totalPhotosSizeMB =
+          newPhotos.reduce(
+            (totalSize, photo) => totalSize + (photo ? photo.size : 0),
+            0
+          ) /
+          (1024 * 1024);
+        if (totalPhotosSizeMB > MAX_TOTAL_PHOTOS_MB) {
+          // Si el tamaño total de las fotos supera el máximo permitido, mostrar alerta y eliminar la última foto agregada
+          setAlertMessage({
+            variant: "danger",
+            message: `El tamaño total de las fotos supera el máximo permitido de ${MAX_TOTAL_PHOTOS_MB} MB.`,
+          });
+          setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
+          newPhotos.pop(); // Eliminar la última foto agregada
+          break;
+        }
       }
-
-      // Verificar el tamaño total de todas las fotos
-      const totalPhotosSizeMB =
-        newPhotos.reduce(
-          (totalSize, photo) => totalSize + (photo ? photo.size : 0),
-          0
-        ) /
-        (1024 * 1024);
-      if (totalPhotosSizeMB > MAX_TOTAL_PHOTOS_MB) {
-        // Si el tamaño total de las fotos supera el máximo permitido, mostrar alerta y eliminar la última foto agregada
-        setAlertMessage({
-          variant: "danger",
-          message: `El tamaño total de las fotos supera el máximo permitido de ${MAX_TOTAL_PHOTOS_MB} MB.`,
-        });
-        setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
-        newPhotos.pop(); // Eliminar la última foto agregada
-      }
-
-      const totalImages = photos.length;
-
-      if (totalImages > 3) {
-        // Si el tamaño total de las fotos supera el máximo permitido, mostrar alerta y eliminar la última foto agregada
-        setAlertMessage({
-          variant: "danger",
-          message: `La maxima cantidad de fotos que puedes subir es 4.`,
-        });
-        setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
-        newPhotos.pop(); // Eliminar la última foto agregada
-      }
-      setPhotos(newPhotos);
     }
-  };
+    setPhotos(newPhotos);
+  };  
 
   const handleLatitudeChange = (latitude) => {
     setLatitude(latitude);
@@ -336,7 +339,7 @@ const CreatePost = () => {
           <label className="form-label">{t("createPost.photosLabel")}</label>
           {photos.length < 4 && (
             <div
-              className="border want-border row d-flex justify-content-center align-items-center text-center"
+              className="border want-border p-4 row d-flex justify-content-center align-items-center text-center"
               onDragOver={handleDragOver}
               onDrop={handleDrop}
             >
