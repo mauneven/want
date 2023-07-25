@@ -150,10 +150,10 @@ export default function ReceivedOffers() {
         </Modal.Header>
         <Modal.Body>{t('receivedOffers.deleteOfferConfirmation')}</Modal.Body>
         <Modal.Footer>
-          <button onClick={() => setShowModal(false)}>
+          <button className='generic-button' onClick={() => setShowModal(false)}>
             {t('receivedOffers.cancel')}
           </button>
-          <button onClick={handleDeleteOffer}>
+          <button className='want-button-danger' onClick={handleDeleteOffer}>
             {t('receivedOffers.delete')}
           </button>
         </Modal.Footer>
