@@ -22,6 +22,7 @@ const CreateOffer = () => {
   const [photos, setPhotos] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [errorAlert, setErrorAlert] = useState(null);
+  const showUploadOptions = photos.filter((photo) => photo !== null).length < 4;
 
   const getActivePhotoIndex = () => {
     const activeItem = document.querySelector(".carousel-item.active");
@@ -135,28 +136,72 @@ const CreateOffer = () => {
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      e.target.value = null;
-      if (file.size > 5 * 1024 * 1024) {
-        setErrorAlert(t("createOffer.fileSizeError"));
-        e.target.value = "";
-      } else {
-        setErrorAlert(null);
-        const index = findEmptyPhotoIndex();
-        if (index !== -1) {
-          const newPhotos = [...photos];
-          newPhotos[index] = file;
-          setPhotos(newPhotos);
+    const files = Array.from(e.target.files);
+    let newPhotos = [...photos];
+    let totalImages = newPhotos.length + files.length;
+
+    if (totalImages > 4) {
+      totalImages = 4; // Solo mantén los primeros 4 archivos.
+      files.length = 4 - photos.length; // Elimina archivos extra.
+      setErrorAlert(`La máxima cantidad de fotos que puedes subir es 4.`);
+      setTimeout(() => setErrorAlert(null), 5000); // Cierra la advertencia automáticamente en 5 segundos.
+    }
+
+    for (let file of files) {
+      if (file) {
+        e.target.value = null;
+        // Verificar el tamaño del archivo
+        const fileSizeMB = file.size / (1024 * 1024); // Convertir tamaño a megabytes
+        if (fileSizeMB > 5) {
+          // Si el tamaño de la foto es mayor al máximo permitido, mostrar error y no agregar la foto
+          setErrorAlert(
+            `La foto es demasiado grande. El tamaño máximo permitido es de 5 MB.`
+          );
+          setTimeout(() => setErrorAlert(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
+          continue; // Continuar con el siguiente archivo
+        } else if (
+          !/^(image\/jpeg|image\/png|image\/jpg |image\/webp)$/.test(file.type)
+        ) {
+          setErrorAlert(
+            `El archivo seleccionado debe estar en formato JPG, JPEG, WEBP o PNG.`
+          );
+          setTimeout(() => setErrorAlert(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
+          continue; // Continuar con el siguiente archivo
+        }
+
+        const newPhoto = file;
+
+        const emptyIndex = newPhotos.findIndex((photo) => photo === null);
+        if (emptyIndex !== -1) {
+          newPhotos[emptyIndex] = newPhoto;
+        } else {
+          newPhotos.push(newPhoto);
+        }
+
+        // Verificar el tamaño total de todas las fotos
+        const totalPhotosSizeMB =
+          newPhotos.reduce(
+            (totalSize, photo) => totalSize + (photo ? photo.size : 0),
+            0
+          ) /
+          (1024 * 1024);
+        if (totalPhotosSizeMB > 20) {
+          // Si el tamaño total de las fotos supera el máximo permitido, mostrar error y eliminar la última foto agregada
+          setErrorAlert(
+            `El tamaño total de las fotos supera el máximo permitido de 20 MB.`
+          );
+          setTimeout(() => setErrorAlert(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
+          newPhotos.pop(); // Eliminar la última foto agregada
+          break;
         }
       }
     }
+    setPhotos(newPhotos);
   };
 
   const handleDeletePhoto = (index) => {
     const newPhotos = [...photos];
     newPhotos.splice(index, 1);
-    newPhotos.push(null);
     setPhotos(newPhotos);
   };
 
@@ -367,48 +412,68 @@ const CreateOffer = () => {
               <label htmlFor="photo" className="form-label">
                 {t("createOffer.uploadPhotos")}
               </label>
-              <div className="row row-cols-xl-2" onDragOver={handleDragOver} onDrop={handleDrop} >
-        {[1, 2, 3, 4].map((index) => (
-          <div className="form-group border justify-content-center align-items-center d-flex p-2 want-rounded mt-2 mb-2" key={index}>
-            <div className="photo-upload-container col text-center align-items-center">
-              {photos[index - 1] && (
-                <div className="photo-preview">
-                  <img
-                    src={URL.createObjectURL(photos[index - 1])}
-                    className="img-thumbnail  uploaded-photos want-rounded"
-                    alt={`Photo ${index}`}
-                  />
+              {showUploadOptions && (
+                <div
+                  className="border want-border p-4 row d-flex justify-content-center align-items-center text-center"
+                  onDragOver={handleDragOver}
+                  onDrop={handleDrop}
+                >
+                  <label className="photo-upload">
+                    <div>
+                      <i className="bi bi-image divhover display-1"></i>
+                    </div>
+
+                    <input
+                      type="file"
+                      multiple
+                      className="form-control visually-hidden"
+                      accept="image/png, image/jpeg, image/jpg, image/webp"
+                      onChange={handleFileChange}
+                    />
+                  </label>
+                  SELECCIONA O ARROJA TUS IMAGENES AQUI
                 </div>
               )}
-              {!photos[index - 1] && (
-                <label
-                  htmlFor={`photo${index}`}
-                  className="photo-upload"
-                >
-                  <i className="bi bi-image divhover display-1"></i>
-                  <i className="bi bi-plus-circle-fill display-6 divhover"></i>
-                </label>
-              )}
-              {photos[index - 1] && (
-                <button
-                  className="btn-light circle btn-sm delete-photo"
-                  onClick={() => handleDeletePhoto(index - 1)}
-                  type="button"
-                >
-                  <i className="bi bi-trash fs-5"></i>
-                </button>
-              )}
-              <input
-                type="file"
-                id={`photo${index}`}
-                className="form-control visually-hidden"
-                accept="image/jpeg,image/png,image/webp,image/jpg"
-                onChange={handleFileChange}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+              <div
+                className="row row-cols-xl-2"
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+              >
+                {[1, 2, 3, 4].map((index) => (
+                  <div
+                    className="form-group justify-content-center align-items-center d-flex p-2 want-rounded mt-2 mb-2"
+                    key={index}
+                  >
+                    <div className="photo-upload-container col text-center align-items-center">
+                      {photos[index - 1] && (
+                        <div className="photo-preview">
+                          <img
+                            src={URL.createObjectURL(photos[index - 1])}
+                            className="img-thumbnail  uploaded-photos want-rounded"
+                            alt={`Photo ${index}`}
+                          />
+                        </div>
+                      )}
+                      {photos[index - 1] && (
+                        <button
+                          className="btn-light circle btn-sm delete-photo"
+                          onClick={() => handleDeletePhoto(index - 1)}
+                          type="button"
+                        >
+                          <i className="bi bi-trash fs-5"></i>
+                        </button>
+                      )}
+                      <input
+                        type="file"
+                        id={`photo${index}`}
+                        className="form-control visually-hidden"
+                        accept="image/jpeg,image/png,image/webp,image/jpg"
+                        onChange={handleFileChange}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
             {errorAlert && (
               <Alert
