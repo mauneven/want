@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import GoHomeButton from '@/components/reusable/GoHomeButton';
 
 const ChangePassword = () => {
   const router = useRouter();
@@ -74,7 +75,8 @@ const ChangePassword = () => {
   };
 
   return (
-    <div className="">
+    <div className="container">
+      <GoHomeButton/>
       <h1>{t("changePassword.title")}</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
