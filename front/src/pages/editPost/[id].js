@@ -6,6 +6,7 @@ import WordsFilter from "@/badWordsFilter/WordsFilter.js";
 import { validations } from "@/utils/validations";
 import GoHomeButton from "@/components/reusable/GoHomeButton";
 import { Alert } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
 const EditPost = () => {
   const [title, setTitle] = useState("");
@@ -16,7 +17,7 @@ const EditPost = () => {
   const [subCategory, setSubCategory] = useState("");
   const [thirdCategory, setThirdCategory] = useState("");
   const [price, setPrice] = useState("");
-  const [postData, setPostData] = useState(null); 
+  const [postData, setPostData] = useState(null);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -27,6 +28,7 @@ const EditPost = () => {
   const [deletedPhotos, setDeletedPhotos] = useState([]);
   const [deletedImages, setDeletedImages] = useState([]);
   const router = useRouter();
+  const { t } = useTranslation();
   const bwf = new WordsFilter();
 
   const handleLatitudeChange = (latitude) => {
@@ -36,7 +38,7 @@ const EditPost = () => {
   const handleLongitudeChange = (longitude) => {
     setLongitude(longitude);
   };
-  
+
   useEffect(() => {
     validations(router);
   }, []);
@@ -147,16 +149,18 @@ const EditPost = () => {
     let newImages = [];
     let imageSizeErrorMessage = null;
     let imageFormatErrorMessage = null;
-  
+
     // Check each file for size and format
-    for(let i=0; i<selectedImages.length; i++) {
+    for (let i = 0; i < selectedImages.length; i++) {
       let file = selectedImages[i];
       if (file.size > 5000000) {
-        imageSizeErrorMessage = "The selected file is too large. Please select a file that is 5MB or smaller.";
+        imageSizeErrorMessage = `${t("uploads.fileSizeExceeded")}`;
         continue;
       }
-      if (!/^(image\/jpeg|image\/png|image\/jpg|image\/webp)$/.test(file.type)) {
-        imageFormatErrorMessage = "The selected file must be in JPG, JPEG, WEBP or PNG format.";
+      if (
+        !/^(image\/jpeg|image\/png|image\/jpg|image\/webp)$/.test(file.type)
+      ) {
+        imageFormatErrorMessage = `${t("uploads.incorrectFile")}`;
         continue;
       }
       newImages.push({
@@ -164,9 +168,9 @@ const EditPost = () => {
         preview: URL.createObjectURL(file),
       });
     }
-  
+
     // Display any error messages
-    if(imageSizeErrorMessage || imageFormatErrorMessage) {
+    if (imageSizeErrorMessage || imageFormatErrorMessage) {
       setErrorMessage(imageSizeErrorMessage || imageFormatErrorMessage);
       setShowErrorAlert(true);
       setTimeout(() => {
@@ -174,11 +178,11 @@ const EditPost = () => {
         setShowErrorAlert(false);
       }, 10000);
     }
-  
+
     // Check total number of images
     const totalImages = photos.length + newImages.length;
     if (totalImages > 4) {
-      const errorMessage = "You cannot upload more than 4 images.";
+      const errorMessage = `${t("uploads.maxImages")}`;
       setErrorMessage(errorMessage);
       setShowErrorAlert(true);
       setTimeout(() => {
@@ -187,12 +191,12 @@ const EditPost = () => {
       }, 10000);
       newImages = newImages.slice(0, 4 - photos.length); // Keep only enough images to reach the limit
     }
-  
+
     setPhotos((prevState) => [...prevState, ...newImages]);
     // Clear the input value after processing the files
     e.target.value = null;
   };
-  
+
   const handleDeletePhoto = (index) => {
     const deletedImage = photos[index];
     setDeletedPhotos((prevState) => [...prevState, deletedImage]);
@@ -204,25 +208,30 @@ const EditPost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
     if (bwf.containsBadWord(title)) {
-      alert(
-        `Escribiste una mala palabra en el titulo: ${bwf.devolverPalabra(
-          title
-        )}`
-      );
-      setLoading(false);
+      const errorMessage = `${t("wordsFilter.badWordInTitle")} ${bwf.badWordIs(
+        title
+      )}`;
+      setErrorMessage(errorMessage);
+      setShowErrorAlert(true);
+      setTimeout(() => {
+        setErrorMessage("");
+        setShowErrorAlert(false);
+      }, 10000);
       return;
     }
 
     if (bwf.containsBadWord(description)) {
-      alert(
-        `Escribiste una mala palabra en la descripción: ${bwf.devolverPalabra(
-          description
-        )}`
-      );
-      setLoading(false);
+      const errorMessage = `${t(
+        "wordsFilter.badWordInDescription"
+      )} ${bwf.badWordIs(description)}`;
+      setErrorMessage(errorMessage);
+      setShowErrorAlert(true);
+      setTimeout(() => {
+        setErrorMessage("");
+        setShowErrorAlert(false);
+      }, 10000);
       return;
     }
 
@@ -279,17 +288,16 @@ const EditPost = () => {
     }
   }, [showErrorAlert]);
 
-
   return (
     <div className="mt-3 mb-3">
       <div className="">
         <div className="container">
-          <GoHomeButton/>
-          <h3 className="text-center mb-4">Edit the post of what you Want</h3>
+          <GoHomeButton />
+          <h3 className="text-center mb-4">{t("createPost.editPost")}</h3>
           <form onSubmit={handleSubmit} className="">
             <div className="mb-3">
               <label htmlFor="title" className="form-label">
-                Give a title to what you want*
+                {t("createPost.titleLabel")}
               </label>
               <input
                 type="text"
@@ -302,7 +310,7 @@ const EditPost = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="description" className="form-label">
-                Now describe it in more detail*
+                {t("createPost.descriptionLabel")}
               </label>
               <textarea
                 className="form-control want-rounded"
@@ -315,7 +323,7 @@ const EditPost = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="price" className="form-label">
-                How much would you pay for what you want*
+                {t("createPost.priceLabel")}
               </label>
               <input
                 type="number"
@@ -327,24 +335,15 @@ const EditPost = () => {
               />
               {price ? (
                 <small className="form-text text-muted">
-                  Price: {Number(price).toLocaleString()}
+                  {t("createPost.priceText", {
+                    price: Number(price).toLocaleString(),
+                  })}
                 </small>
               ) : null}
             </div>
             <div className="mb-3">
               <label htmlFor="price" className="form-label">
-                Give an approximate location of where you want this*
-              </label>
-              <EditPostLocation
-                latitude={latitude}
-                longitude={longitude}
-                onLatitudeChange={handleLatitudeChange}
-                onLongitudeChange={handleLongitudeChange}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="price" className="form-label">
-                Now, organize or define what you Want in 3 categories*
+                {t("createPost.categoriesLabel")}
               </label>
               <PostCategory
                 onMainCategoryChange={(selectedMainCategory) =>
@@ -362,34 +361,52 @@ const EditPost = () => {
                 isRequired={true}
               />
             </div>
+            <div className="mb-3">
+              <label htmlFor="price" className="form-label">
+              {t("createPost.locationLabel")}
+              </label>
+              <EditPostLocation
+                latitude={latitude}
+                longitude={longitude}
+                onLatitudeChange={handleLatitudeChange}
+                onLongitudeChange={handleLongitudeChange}
+              />
+            </div>
             <label htmlFor="price" className="form-label">
-              upload upto 4 photos about what you Want*
+            {t("createPost.photosLabel")}
             </label>
             {photos.length < 4 && (
+              <div
+                className="border want-border p-4 row d-flex justify-content-center align-items-center text-center"
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+              >
+                <label className="photo-upload">
+                  <div>
+                    <i className="bi bi-image divhover display-1"></i>
+                  </div>
+
+                  <input
+                    type="file"
+                    multiple
+                    className="form-control visually-hidden"
+                    accept="image/png, image/jpeg, image/jpg, image/webp"
+                    onChange={handleFileChange}
+                  />
+                </label>
+                {t("uploads.loadImagesHere")}
+              </div>
+            )}
             <div
-              className="border want-border p-4 row d-flex justify-content-center align-items-center text-center"
+              className="row row-cols-xl-2"
               onDragOver={handleDragOver}
               onDrop={handleDrop}
             >
-              <label className="photo-upload">
-                <div>
-                  <i className="bi bi-image divhover display-1"></i>
-                </div>
-
-                <input
-                  type="file"
-                  multiple
-                  className="form-control visually-hidden"
-                  accept="image/png, image/jpeg, image/jpg, image/webp"
-                  onChange={handleFileChange}
-                />
-              </label>
-              SELECCIONA O ARROJA TUS IMAGENES AQUI
-            </div>
-          )}
-            <div className="row row-cols-xl-2" onDragOver={handleDragOver} onDrop={handleDrop}>
               {[1, 2, 3, 4].map((index) => (
-                <div className="form-group justify-content-center align-items-center d-flex p-2 want-rounded mt-2 mb-2" key={index}>
+                <div
+                  className="form-group justify-content-center align-items-center d-flex p-2 want-rounded mt-2 mb-2"
+                  key={index}
+                >
                   <div className="photo-upload-container col text-center align-items-center">
                     {photos[index - 1] && (
                       <div className="photo-preview">
@@ -414,10 +431,14 @@ const EditPost = () => {
               ))}
             </div>
             {showErrorAlert && (
-        <Alert variant="danger" onClose={() => setShowErrorAlert(false)} dismissible>
-          {errorMessage}
-        </Alert>
-      )}
+              <Alert
+                variant="danger"
+                onClose={() => setShowErrorAlert(false)}
+                dismissible
+              >
+                {errorMessage}
+              </Alert>
+            )}
             <button
               type="submit"
               className="btn-lg want-button want-rounded"
@@ -430,7 +451,7 @@ const EditPost = () => {
                   aria-hidden="true"
                 ></span>
               ) : (
-                "Save Changes"
+                `${t("createPost.updatePost")}`
               )}
             </button>
           </form>

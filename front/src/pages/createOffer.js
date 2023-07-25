@@ -143,7 +143,7 @@ const CreateOffer = () => {
     if (totalImages > 4) {
       totalImages = 4; // Solo mantén los primeros 4 archivos.
       files.length = 4 - photos.length; // Elimina archivos extra.
-      setErrorAlert(`La máxima cantidad de fotos que puedes subir es 4.`);
+      setErrorAlert(`${t("uploads.maxImages")}`);
       setTimeout(() => setErrorAlert(null), 5000); // Cierra la advertencia automáticamente en 5 segundos.
     }
 
@@ -155,7 +155,7 @@ const CreateOffer = () => {
         if (fileSizeMB > 5) {
           // Si el tamaño de la foto es mayor al máximo permitido, mostrar error y no agregar la foto
           setErrorAlert(
-            `La foto es demasiado grande. El tamaño máximo permitido es de 5 MB.`
+            `${t("uploads.fileSizeExceeded")}`
           );
           setTimeout(() => setErrorAlert(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
           continue; // Continuar con el siguiente archivo
@@ -163,9 +163,9 @@ const CreateOffer = () => {
           !/^(image\/jpeg|image\/png|image\/jpg |image\/webp)$/.test(file.type)
         ) {
           setErrorAlert(
-            `El archivo seleccionado debe estar en formato JPG, JPEG, WEBP o PNG.`
+            `${t("uploads.incorrectFile")}`
           );
-          setTimeout(() => setErrorAlert(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
+          setTimeout(() => setErrorAlert(null), 10000); // Cerrar la advertencia automáticamente en 5 segundos
           continue; // Continuar con el siguiente archivo
         }
 
@@ -188,7 +188,7 @@ const CreateOffer = () => {
         if (totalPhotosSizeMB > 20) {
           // Si el tamaño total de las fotos supera el máximo permitido, mostrar error y eliminar la última foto agregada
           setErrorAlert(
-            `El tamaño total de las fotos supera el máximo permitido de 20 MB.`
+            `${t("uploads.totalSize")}`
           );
           setTimeout(() => setErrorAlert(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
           newPhotos.pop(); // Eliminar la última foto agregada
@@ -215,17 +215,28 @@ const CreateOffer = () => {
     setIsSubmitting(true);
 
     if (bwf.containsBadWord(title)) {
-      alert(`You wrote a bad word in the title: ${bwf.devolverPalabra(title)}`);
+      setErrorAlert(
+        `${t("wordsFilter.badWordInTitle")} ${bwf.badWordIs(title)}`
+      );
+      setTimeout(() => setErrorAlert(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
       setIsSubmitting(false);
       return;
     }
 
     if (bwf.containsBadWord(description)) {
-      alert(
-        `You wrote a bad word in the description: ${bwf.devolverPalabra(
-          description
-        )}`
+      setErrorAlert(
+        `${t("wordsFilter.badWordInDescription")} ${bwf.badWordIs(description)}`
       );
+      setTimeout(() => setErrorAlert(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (bwf.containsBadWord(contact)) {
+      setErrorAlert(
+        `${t("wordsFilter.badWordInContact")} ${bwf.badWordIs(contact)}`
+      );
+      setTimeout(() => setErrorAlert(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
       setIsSubmitting(false);
       return;
     }
@@ -431,7 +442,7 @@ const CreateOffer = () => {
                       onChange={handleFileChange}
                     />
                   </label>
-                  SELECCIONA O ARROJA TUS IMAGENES AQUI
+                  {t("uploads.loadImagesHere")}
                 </div>
               )}
               <div

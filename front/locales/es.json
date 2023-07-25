@@ -28,10 +28,12 @@
     "photosLabel": "Sube hasta 4 fotos de lo que quieres*",
     "missingFieldsError": "Por favor completa todos los campos obligatorios:\n{{fields}}",
     "createPostButton": "Crear post",
+    "updatePost": "Actualizar",
     "titleField": "Título*",
     "descriptionField": "Descripción*",
     "categoriesField": "Categorías*",
-    "priceField": "Precio*"
+    "priceField": "Precio*",
+    "editPost": "Editando tu post"
   },
   "wantSomething": {
     "title": "Título de la publicación",
@@ -264,6 +266,18 @@
     "passwordMismatch": "Las contraseñas no coinciden",
     "passwordResetSuccess": "Contraseña restablecida correctamente",
     "passwordResetError": "Error: No se pudo restablecer la contraseña"
+  },
+  "uploads": {
+    "loadImagesHere": "Selecciona o arroja tus imágenes aquí",
+    "maxImages": "Puedes subir máximo 4 imágenes.",
+    "incorrectFile": "Solo puedes subir imágenes de tipo PNG, JPG, JPEG y WEBP.",
+    "fileSizeExceeded": "Una de las imágenes que intentaste subir supera el límite de 5MB.",
+    "totalSize": "Las fotos superan el máximo de 20MB, intenta cambiar algunas fotos."
+  },
+  "wordsFilter": {
+    "badWordInTitle": "Has escrito una palabra inapropiada en el título:",
+    "badWordInDescription": "Has escrito una palabra inapropiada en la descripción:",
+    "badWordInContact": "Has escrito una palabra inapropiada en la información de contacto:"
   },
   "notifications": {
     "title": "Notificaciones",

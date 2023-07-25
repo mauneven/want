@@ -28,10 +28,12 @@
     "photosLabel": "Upload up to 4 photos of what you want*",
     "missingFieldsError": "Please complete all required fields:\n{{fields}}",
     "createPostButton": "Create post",
+    "updatePost": "Update",
     "titleField": "Title*",
     "descriptionField": "Description*",
     "categoriesField": "Categories*",
-    "priceField": "Price*"
+    "priceField": "Price*",
+    "editPost": "Editing your post"
   },
   "wantSomething": {
     "title": "Post Title",
@@ -167,7 +169,7 @@
     "lastNameLabel": "Last Name:",
     "lastNamePlaceholder": "Your last name",
     "phoneLabel": "Phone Number:",
-    "phonePlaceholder": "Your phone number",    
+    "phonePlaceholder": "Your phone number",
     "birthdateLabel": "Birthdate:",
     "noAccountText": "Don't have an account?",
     "haveAccountText": "Already have an account?",
@@ -264,6 +266,18 @@
     "passwordMismatch": "Passwords do not match",
     "passwordResetSuccess": "Password reset successfully",
     "passwordResetError": "Error: Could not reset the password"
+  },
+  "uploads": {
+    "loadImagesHere": "Select or drop your images here",
+    "maxImages": "You can upload a maximum of 4 images.",
+    "incorrectFile": "You can only upload images of type PNG, JPG, JPEG, and WEBP.",
+    "fileSizeExceeded": "One of the images you tried to upload exceeds the 5MB limit.",
+    "totalSize": "The photos exceed the maximum of 20MB. Please try changing some photos."
+  },
+  "wordsFilter": {
+    "badWordInTitle": "You have used an inappropriate word in the title:",
+    "badWordInDescription": "You have used an inappropriate word in the description:",
+    "badWordInContact": "You have used an inappropriate word in the contact information:"
   },
   "notifications": {
     "title": "Notifications",

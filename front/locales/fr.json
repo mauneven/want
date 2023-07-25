@@ -28,10 +28,12 @@
     "photosLabel": "Téléchargez jusqu'à 4 photos de ce que vous voulez*",
     "missingFieldsError": "Veuillez remplir tous les champs obligatoires :\n{{fields}}",
     "createPostButton": "Créer une publication",
+    "updatePost": "Mettre à jour",
     "titleField": "Titre*",
     "descriptionField": "Description*",
     "categoriesField": "Catégories*",
-    "priceField": "Prix*"
+    "priceField": "Prix*",
+    "editPost": "Modification de votre publication"
   },
   "wantSomething": {
     "title": "Titre de la publication",
@@ -167,7 +169,7 @@
     "lastNameLabel": "Nom de famille:",
     "lastNamePlaceholder": "Votre nom de famille",
     "phoneLabel": "Numéro de téléphone:",
-    "phonePlaceholder": "Votre numéro de téléphone",    
+    "phonePlaceholder": "Votre numéro de téléphone",
     "birthdateLabel": "Date de naissance :",
     "noAccountText": "Vous n'avez pas de compte ?",
     "haveAccountText": "Vous avez déjà un compte ?",
@@ -270,6 +272,18 @@
     "empty": "Vide",
     "markAllRead": "Marquer tout comme lu",
     "markingRead": "Marquage en cours..."
+  },
+  "uploads": {
+    "loadImagesHere": "Sélectionnez ou déposez vos images ici",
+    "maxImages": "Vous pouvez télécharger un maximum de 4 images.",
+    "incorrectFile": "Vous ne pouvez télécharger que des images de type PNG, JPG, JPEG et WEBP.",
+    "fileSizeExceeded": "Une des images que vous avez essayé de télécharger dépasse la limite de 5 Mo.",
+    "totalSize": "Les photos dépassent le maximum de 20 Mo. Veuillez essayer de changer certaines photos."
+  },
+  "wordsFilter": {
+    "badWordInTitle": "Vous avez écrit un mot inapproprié dans le titre:",
+    "badWordInDescription": "Vous avez écrit un mot inapproprié dans la description:",
+    "badWordInContact": "Vous avez écrit un mot inapproprié dans les informations de contact:"
   },
   "landingPage": {
     "title": "Want",

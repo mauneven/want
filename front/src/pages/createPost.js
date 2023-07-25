@@ -84,17 +84,17 @@ const CreatePost = () => {
     const files = Array.from(e.target.files);
     let newPhotos = [...photos];
     let totalImages = newPhotos.length + files.length;
-  
+
     if (totalImages > 4) {
       totalImages = 4; // Only keep the first 4 files.
       files.length = 4 - photos.length; // Remove extra files.
       setAlertMessage({
         variant: "danger",
-        message: `La máxima cantidad de fotos que puedes subir es 4.`,
+        message: `${t("uploads.maxImages")}`,
       });
       setTimeout(() => setAlertMessage(null), 5000); // Close the warning automatically in 5 seconds.
-    }    
-  
+    }
+
     for (let file of files) {
       if (file) {
         e.target.value = null;
@@ -104,31 +104,28 @@ const CreatePost = () => {
           // Si el tamaño de la foto es mayor al máximo permitido, mostrar alerta y no agregar la foto
           setAlertMessage({
             variant: "danger",
-            message: `La foto es demasiado grande. El tamaño máximo permitido es de ${MAX_PHOTO_SIZE_MB} MB.`,
+            message: `${t("uploads.fileSizeExceeded")}`,
           });
           setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
           continue; // Skip this file and continue with the next one
         } else if (
           !/^(image\/jpeg|image\/png|image\/jpg |image\/webp)$/.test(file.type)
         ) {
-          console.log("Selected file is not a JPG, JPEG, or PNG.");
-          const errorMessage =
-            "The selected file must be in JPG, JPEG, WEBP or PNG format.";
           setAlertMessage({
             variant: "danger",
-            message: `The selected file must be in JPG, JPEG, WEBP or PNG format.`,
+            message: `${t("uploads.incorrectFile")}`,
           });
           setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
           continue; // Skip this file and continue with the next one
         }
-  
+
         const emptyIndex = newPhotos.findIndex((photo) => photo === null);
         if (emptyIndex !== -1) {
           newPhotos[emptyIndex] = file;
         } else {
           newPhotos.push(file);
         }
-  
+
         // Verificar el tamaño total de todas las fotos
         const totalPhotosSizeMB =
           newPhotos.reduce(
@@ -140,7 +137,7 @@ const CreatePost = () => {
           // Si el tamaño total de las fotos supera el máximo permitido, mostrar alerta y eliminar la última foto agregada
           setAlertMessage({
             variant: "danger",
-            message: `El tamaño total de las fotos supera el máximo permitido de ${MAX_TOTAL_PHOTOS_MB} MB.`,
+            message: `${t("uploads.totalSize")}`,
           });
           setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
           newPhotos.pop(); // Eliminar la última foto agregada
@@ -149,7 +146,7 @@ const CreatePost = () => {
       }
     }
     setPhotos(newPhotos);
-  };   
+  };
 
   const handleLatitudeChange = (latitude) => {
     setLatitude(latitude);
@@ -191,6 +188,28 @@ const CreatePost = () => {
 
   const handleCreatePost = async () => {
     if (!validateForm()) {
+      return;
+    }
+
+    if (bwf.containsBadWord(title)) {
+      setLoading(false);
+      setAlertMessage({
+        variant: "danger",
+        message: `${t("wordsFilter.badWordInTitle")} ${bwf.badWordIs(title)}`,
+      });
+      setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
+      return;
+    }
+
+    if (bwf.containsBadWord(description)) {
+      setLoading(false);
+      setAlertMessage({
+        variant: "danger",
+        message: `${t("wordsFilter.badWordInDescription")} ${bwf.badWordIs(
+          description
+        )}`,
+      });
+      setTimeout(() => setAlertMessage(null), 5000); // Cerrar la advertencia automáticamente en 5 segundos
       return;
     }
 
@@ -356,7 +375,7 @@ const CreatePost = () => {
                   onChange={handleFileChange}
                 />
               </label>
-              SELECCIONA O ARROJA TUS IMAGENES AQUI
+              {t("uploads.loadImagesHere")}
             </div>
           )}
 
