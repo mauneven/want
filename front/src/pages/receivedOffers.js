@@ -5,7 +5,7 @@ import DetailsModal from '@/components/offer/DetailsModal';
 import ReportOfferModal from '@/components/report/ReportOfferModal';
 import { validations } from '@/utils/validations';
 import { useTranslation } from 'react-i18next';
-import GoBackButton from '@/components/reusable/GoBackButton';
+import GoHomeButton from '@/components/reusable/GoHomeButton';
 
 export default function ReceivedOffers() {
   const [offers, setOffers] = useState([]);
@@ -150,16 +150,16 @@ export default function ReceivedOffers() {
         </Modal.Header>
         <Modal.Body>{t('receivedOffers.deleteOfferConfirmation')}</Modal.Body>
         <Modal.Footer>
-          <button onClick={() => setShowModal(false)}>
+          <button className='generic-button' onClick={() => setShowModal(false)}>
             {t('receivedOffers.cancel')}
           </button>
-          <button onClick={handleDeleteOffer}>
+          <button className='want-button-danger' onClick={handleDeleteOffer}>
             {t('receivedOffers.delete')}
           </button>
         </Modal.Footer>
       </Modal>
       <div className="container">
-      <GoBackButton/>
+      <GoHomeButton/>
         <h1 className='my-4'>{t('receivedOffers.yourOffers')}</h1>
         <div className="row">
           <div className="col-md-3">

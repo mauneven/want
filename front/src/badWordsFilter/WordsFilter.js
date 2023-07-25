@@ -8,11 +8,11 @@ class WordsFilter {
   
     containsBadWord(text) {
       const regex = new RegExp(`\\b(${this.badWordsArray.join('|')})\\b`, 'gi');
-      console.log(this.devolverPalabra(text));
+      console.log(this.badWordIs(text));
       return regex.test(text);
     }
   
-    devolverPalabra(text) {
+    badWordIs(text) {
       const regex = new RegExp(`\\b(${this.badWordsArray.join('|')})\\b`, 'gi');
       const match = regex.exec(text);
       if (match) {

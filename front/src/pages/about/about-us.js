@@ -1,7 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
-import GoBackButton from "@/components/reusable/GoBackButton";
+import GoHomeButton from "@/components/reusable/GoHomeButton";
 
 const LandingPage = () => {
   const router = useRouter();
@@ -9,9 +9,9 @@ const LandingPage = () => {
 
   return (
     <div className="container">
-      <GoBackButton/>
+      <GoHomeButton />
       <div className="row pb-5">
-        <div className="col-md-6 d-grid align-items-center">
+        <div className="col-md-6 d-flex flex-column justify-content-center">
           <h1 className="display-4">
             <span className="want-color">{t("landingPage.title")}</span> - {t("landingPage.subtitle")}
           </h1>
@@ -22,16 +22,16 @@ const LandingPage = () => {
         </div>
       </div>
       <div className="row">
-        <div className="col-md-6 d-flex align-items-center">
+        <div className="col-md-6 d-flex flex-column align-items-center">
           <div>
             <h1 className="display-5">{t("landingPage.buyTitle")}</h1>
             <p>{t("landingPage.buyDescription")}</p>
             <div className="text-center">
-              <i className="bi bi-person-check-fill about-icon"></i>
+              <i className="bi bi-bag about-icon"></i>
             </div>
           </div>
         </div>
-        <div className="col-md-6 d-flex align-items-center">
+        <div className="col-md-6 d-flex flex-column align-items-center">
           <div>
             <h1 className="display-5">{t("landingPage.sellTitle")}</h1>
             <p>{t("landingPage.sellDescription")}</p>
@@ -42,7 +42,7 @@ const LandingPage = () => {
         </div>
       </div>
       <div className="row">
-        <div className="col-md-6 d-flex align-items-center">
+        <div className="col-md-6 d-flex flex-column align-items-center">
           <div>
             <h1 className="display-5">{t("landingPage.anywhereTitle")}</h1>
             <p>{t("landingPage.anywhereDescription")}</p>
@@ -51,7 +51,7 @@ const LandingPage = () => {
             </div>
           </div>
         </div>
-        <div className="col-md-6 d-flex align-items-center">
+        <div className="col-md-6 d-flex flex-column align-items-center">
           <div>
             <h1 className="display-5">{t("landingPage.secureTitle")}</h1>
             <p>{t("landingPage.secureDescription")}</p>
@@ -62,7 +62,7 @@ const LandingPage = () => {
         </div>
       </div>
       <div className="row">
-        <div className="col-md-6 d-flex align-items-center">
+        <div className="col-md-6 d-flex flex-column align-items-center">
           <div>
             <h1 className="display-5">{t("landingPage.secureDataTitle")}</h1>
             <p>{t("landingPage.secureDataDescription")}</p>
@@ -71,7 +71,7 @@ const LandingPage = () => {
             </div>
           </div>
         </div>
-        <div className="col-md-6 d-flex align-items-center">
+        <div className="col-md-6 d-flex flex-column align-items-center">
           <div>
             <h1 className="display-5">{t("landingPage.privacyTitle")}</h1>
             <p>{t("landingPage.privacyDescription")}</p>

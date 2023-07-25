@@ -5,7 +5,7 @@ import ReportPostModal from "@/components/report/ReportPostModal";
 import UserModal from "@/components/user/UserModal";
 import PostDetailsLocation from "@/components/locations/postDetails/";
 import { useTranslation } from "react-i18next";
-import GoBackButton from "@/components/reusable/GoBackButton";
+import GoHomeButton from "@/components/reusable/GoHomeButton";
 
 const PostDetails = ({
   mainCategory,
@@ -269,7 +269,7 @@ const PostDetails = ({
   return (
     <>
       <div className="container">
-        <GoBackButton />
+        <GoHomeButton />
         <div className="row p-2">
           <div className="col-lg-6 p-4">
             <div

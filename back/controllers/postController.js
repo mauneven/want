@@ -10,6 +10,7 @@ const url = require("url");
 const User = require("../models/user");
 const geolib = require("geolib");
 
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
@@ -23,174 +24,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage }).array("photos[]", 4);
 
 exports.uploadPhotoMiddleware = upload;
-
-exports.getAllPosts = async (req, res, next) => {
-  try {
-    const filters = {};
-
-    // Filtrar por categoría
-    if (req.query.mainCategory) {
-      filters["mainCategory"] = req.query.mainCategory;
-    }
-    if (req.query.subCategory) {
-      filters["subCategory"] = req.query.subCategory;
-    }
-    if (req.query.thirdCategory) {
-      filters["thirdCategory"] = req.query.thirdCategory;
-    }
-
-    // Filtrar por término de búsqueda
-    if (req.query.searchTerm) {
-      filters["$or"] = [
-        { title: { $regex: req.query.searchTerm, $options: "i" } },
-        { description: { $regex: req.query.searchTerm, $options: "i" } },
-      ];
-    }
-
-    const mainCategoryPreferences = JSON.parse(
-      req.query.mainCategoryPreferences || "{}"
-    );
-    const subCategoryPreferences = JSON.parse(
-      req.query.subCategoryPreferences || "{}"
-    );
-    const thirdCategoryPreferences = JSON.parse(
-      req.query.thirdCategoryPreferences || "{}"
-    );
-
-    console.log("Gustos del usuario:");
-    console.log("Main Category Preferences:", mainCategoryPreferences);
-    console.log("Sub Category Preferences:", subCategoryPreferences);
-    console.log("Third Category Preferences:", thirdCategoryPreferences);
-
-    const page = parseInt(req.query.page) || 1;
-    const pageSize = parseInt(req.query.pageSize) || 10;
-    const skip = (page - 1) * pageSize;
-
-    // Obtener las subcategorías con más vistas del usuario
-    const topSubCategories = Object.keys(subCategoryPreferences)
-      .sort((a, b) => subCategoryPreferences[b] - subCategoryPreferences[a]);
-
-    // Verificar si se debe habilitar la lógica de subcategorías con más vistas
-    const enableTopSubCategories = (
-      !req.query.searchTerm &&
-      !req.query.mainCategory &&
-      !req.query.subCategory &&
-      !req.query.thirdCategory &&
-      topSubCategories.length > 0
-    );
-
-    let allPosts = [];
-
-    if (enableTopSubCategories) {
-      // Obtener los posts con las subcategorías con más vistas
-      const topSubCategoryPosts = await Post.find({
-        ...filters,
-        subCategory: { $in: topSubCategories },
-      })
-        .populate({
-          path: "createdBy",
-          select: "firstName totalPosts totalOffers lastName photo createdAt",
-          populate: {
-            path: "reports",
-            select: "_id",
-          },
-        });
-
-      allPosts.push(...topSubCategoryPosts);
-
-      // Obtener los posts más recientes que no están en las subcategorías con más vistas
-      const recentPosts = await Post.find({
-        ...filters,
-        subCategory: { $nin: topSubCategories },
-      })
-        .sort({ createdAt: -1 })
-        .populate({
-          path: "createdBy",
-          select: "firstName totalPosts totalOffers lastName photo createdAt",
-          populate: {
-            path: "reports",
-            select: "_id",
-          },
-        });
-
-      allPosts.push(...recentPosts);
-    } else {
-      // Obtener todos los posts sin filtrar por distancia
-      allPosts = await Post.find(filters)
-        .sort({ createdAt: -1 })
-        .populate({
-          path: "createdBy",
-          select: "firstName totalPosts totalOffers lastName photo createdAt",
-          populate: {
-            path: "reports",
-            select: "_id",
-          },
-        });
-    }
-
-    // Filtrar los posts por distancia
-    if (
-      req.query.latitude &&
-      req.query.longitude &&
-      req.query.radius &&
-      !isNaN(req.query.latitude) &&
-      !isNaN(req.query.longitude) &&
-      !isNaN(req.query.radius)
-    ) {
-      const userLocation = {
-        latitude: parseFloat(req.query.latitude),
-        longitude: parseFloat(req.query.longitude),
-      };
-      const radius = parseFloat(req.query.radius) * 1000; // Convertir a metros
-
-      allPosts = allPosts.filter((post) => {
-        if (!isNaN(post.latitude) && !isNaN(post.longitude)) {
-          const postLocation = {
-            latitude: parseFloat(post.latitude),
-            longitude: parseFloat(post.longitude),
-          };
-
-          const distance = geolib.getDistance(userLocation, postLocation, 1); // Especificar la precisión decimal para evitar errores
-
-          return distance <= radius;
-        }
-
-        return false;
-      });
-    }
-
-    // Ordenar los posts según los gustos del usuario
-    allPosts.sort((a, b) => {
-      const aViews = subCategoryPreferences[a.subCategory] || 0;
-      const bViews = subCategoryPreferences[b.subCategory] || 0;
-      return bViews - aViews;
-    });
-
-    // Obtener los posts paginados
-    const posts = allPosts.slice(skip, skip + pageSize);
-    const totalPosts = allPosts.length;
-
-    res.status(200).json({ posts, totalPosts });
-  } catch (err) {
-    next(err);
-  }
-};
-
-exports.getPostById = async (req, res, next) => {
-  try {
-    const post = await Post.findById(req.params.id).populate(
-      "createdBy",
-      "firstName totalPosts totalOffers lastName photo reports createdAt"
-    );
-    if (!post) {
-      return res.status(404).send("Post not found");
-    }
-    res.status(200).json(post);
-  } catch (err) {
-    next(err);
-  }
-};
-
 
 exports.createPost = async (req, res, next) => {
   try {
@@ -214,19 +47,17 @@ exports.createPost = async (req, res, next) => {
     if (photos.length > 0) {
       compressedImagePaths = await Promise.all(
         photos.map(async (photo) => {
-          const compressedImagePath = `uploads/${uuidv4()}.jpg`;
-          await sharp(photo.path)
+          const compressedImagePath = `uploads/${uuidv4()}.webp`;
+          const fileBuffer = await fs.promises.readFile(photo.path);
+          await sharp(fileBuffer)
             .resize({ width: 500 })
+            .toFormat("webp")
             .toFile(compressedImagePath);
-          try {
-            await fs.promises.unlink(photo.path);
-          } catch (err) {
-            console.error(`Error deleting file ${photo.path}: ${err.message}`);
-          }
+          await fs.promises.unlink(photo.path);
           return compressedImagePath;
         })
       );
-
+      
       req.files = compressedImagePaths.map((path) => ({ path }));
     }
 
@@ -312,45 +143,48 @@ exports.updatePost = async (req, res, next) => {
     post.thirdCategory = thirdCategory;
     post.price = price;
 
-    if (deletedImages) {
-      const deletedImagePaths = deletedImages.split(",");
-      post.photos = post.photos.filter(
-        (photo) => !deletedImagePaths.includes(photo)
-      );
-
-      await Promise.all(
-        deletedImagePaths.map(async (imagePath) => {
-          const parsedUrl = url.parse(imagePath);
-          const localPath = parsedUrl.pathname;
-          const oldPhotoPath = path.join(__dirname, "..", localPath);
-          try {
-            await fs.promises.unlink(oldPhotoPath);
-          } catch (err) {
-            console.error(
-              `Error deleting file ${oldPhotoPath}: ${err.message}`
-            );
-          }
-        })
-      );
-    }
-
     if (req.files.length > 0) {
-      const photos = req.files.map((file) => file.path);
+      const photos = req.files.map((file) => ({
+        type: file.mimetype,
+        path: file.path,
+        originalname: file.originalname,
+      }));
+
       const compressedImagePaths = await Promise.all(
         photos.map(async (photo) => {
-          const compressedImagePath = `uploads/${uuidv4()}.jpg`;
-          await sharp(photo).resize({ width: 500 }).toFile(compressedImagePath);
-          try {
-            await fs.promises.unlink(photo);
-          } catch (err) {
-            console.error(`Error deleting file ${photo}: ${err.message}`);
-          }
+          const compressedImagePath = `uploads/${uuidv4()}.webp`;
+          const fileBuffer = await fs.promises.readFile(photo.path);
+          await sharp(fileBuffer)
+            .resize({ width: 500 })
+            .toFormat("webp")
+            .toFile(compressedImagePath);
+          await fs.promises.unlink(photo.path);
           return compressedImagePath;
         })
       );
       req.files = compressedImagePaths.map((path) => ({ path }));
 
       post.photos = [...post.photos, ...compressedImagePaths];
+    }
+
+    if (deletedImages) {
+      const deletedImagePaths = deletedImages.split(",");
+      await Promise.all(deletedImagePaths.map(async (imagePath) => {
+        const parsedUrl = url.parse(imagePath);
+        const localPath = parsedUrl.pathname;
+        const oldPhotoPath = path.join(__dirname, "..", localPath);
+        try {
+          await fs.promises.unlink(oldPhotoPath);
+          const index = post.photos.findIndex(photo => photo === localPath);
+          if (index !== -1) {
+            post.photos.splice(index, 1);
+          }
+        } catch (err) {
+          console.error(
+            `Error deleting file ${oldPhotoPath}: ${err.message}`
+          );
+        }
+      }));
     }
 
     await Promise.all(
@@ -473,6 +307,175 @@ exports.schedulePostDeletion = async (postId, delay) => {
       console.error(`Error deleting post ${postId}: ${err.message}`);
     }
   }, delay);
+};
+
+exports.getAllPosts = async (req, res, next) => {
+  try {
+    const filters = {};
+
+    // Filtrar por categoría
+    if (req.query.mainCategory) {
+      filters["mainCategory"] = req.query.mainCategory;
+    }
+    if (req.query.subCategory) {
+      filters["subCategory"] = req.query.subCategory;
+    }
+    if (req.query.thirdCategory) {
+      filters["thirdCategory"] = req.query.thirdCategory;
+    }
+
+    // Filtrar por término de búsqueda
+    if (req.query.searchTerm) {
+      filters["$or"] = [
+        { title: { $regex: req.query.searchTerm, $options: "i" } },
+        { description: { $regex: req.query.searchTerm, $options: "i" } },
+      ];
+    }
+
+    const mainCategoryPreferences = JSON.parse(
+      req.query.mainCategoryPreferences || "{}"
+    );
+    const subCategoryPreferences = JSON.parse(
+      req.query.subCategoryPreferences || "{}"
+    );
+    const thirdCategoryPreferences = JSON.parse(
+      req.query.thirdCategoryPreferences || "{}"
+    );
+
+    console.log("Gustos del usuario:");
+    console.log("Main Category Preferences:", mainCategoryPreferences);
+    console.log("Sub Category Preferences:", subCategoryPreferences);
+    console.log("Third Category Preferences:", thirdCategoryPreferences);
+
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 10;
+    const skip = (page - 1) * pageSize;
+
+    // Obtener las subcategorías con más vistas del usuario
+    const topSubCategories = Object.keys(subCategoryPreferences).sort(
+      (a, b) => subCategoryPreferences[b] - subCategoryPreferences[a]
+    );
+
+    // Verificar si se debe habilitar la lógica de subcategorías con más vistas
+    const enableTopSubCategories =
+      !req.query.searchTerm &&
+      !req.query.mainCategory &&
+      !req.query.subCategory &&
+      !req.query.thirdCategory &&
+      topSubCategories.length > 0;
+
+    let allPosts = [];
+
+    if (enableTopSubCategories) {
+      // Obtener los posts con las subcategorías con más vistas
+      const topSubCategoryPosts = await Post.find({
+        ...filters,
+        subCategory: { $in: topSubCategories },
+      }).populate({
+        path: "createdBy",
+        select: "firstName totalPosts totalOffers lastName photo createdAt",
+        populate: {
+          path: "reports",
+          select: "_id",
+        },
+      });
+
+      allPosts.push(...topSubCategoryPosts);
+
+      // Obtener los posts más recientes que no están en las subcategorías con más vistas
+      const recentPosts = await Post.find({
+        ...filters,
+        subCategory: { $nin: topSubCategories },
+      })
+        .sort({ createdAt: -1 })
+        .populate({
+          path: "createdBy",
+          select: "firstName totalPosts totalOffers lastName photo createdAt",
+          populate: {
+            path: "reports",
+            select: "_id",
+          },
+        });
+
+      allPosts.push(...recentPosts);
+    } else {
+      // Obtener todos los posts sin filtrar por distancia
+      allPosts = await Post.find(filters)
+        .sort({ createdAt: -1 })
+        .populate({
+          path: "createdBy",
+          select: "firstName totalPosts totalOffers lastName photo createdAt",
+          populate: {
+            path: "reports",
+            select: "_id",
+          },
+        });
+    }
+
+    // Filtrar los posts por distancia
+    if (
+      req.query.latitude &&
+      req.query.longitude &&
+      req.query.radius &&
+      !isNaN(req.query.latitude) &&
+      !isNaN(req.query.longitude) &&
+      !isNaN(req.query.radius)
+    ) {
+      const userLocation = {
+        latitude: parseFloat(req.query.latitude),
+        longitude: parseFloat(req.query.longitude),
+      };
+      const radius = parseFloat(req.query.radius) * 1000; // Convertir a metros
+
+      allPosts = allPosts.filter((post) => {
+        if (!isNaN(post.latitude) && !isNaN(post.longitude)) {
+          const postLocation = {
+            latitude: parseFloat(post.latitude),
+            longitude: parseFloat(post.longitude),
+          };
+
+          const distance = geolib.getDistance(userLocation, postLocation, 1); // Especificar la precisión decimal para evitar errores
+
+          return distance <= radius;
+        }
+
+        return false;
+      });
+    }
+
+    // Ordenar los posts según los gustos del usuario
+    allPosts.sort((a, b) => {
+      const aViews = subCategoryPreferences[a.subCategory] || 0;
+      const bViews = subCategoryPreferences[b.subCategory] || 0;
+      return bViews - aViews;
+    });
+
+    // Obtener los posts paginados
+    const posts = allPosts.slice(skip, skip + pageSize);
+    const totalPosts = allPosts.length;
+
+    res.status(200).json({ posts, totalPosts });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getPostById = async (req, res, next) => {
+  try {
+    const post = await Post.findById(req.params.id).populate(
+      "createdBy",
+      "firstName totalPosts totalOffers lastName photo reports createdAt"
+    );
+    if (!post) {
+      return res.status(404).send("Post not found");
+    }
+    res.status(200).json(post);
+  } catch (err) {
+    if (err.kind === 'ObjectId' && err.name === 'CastError') {
+      return res.status(400).send("Invalid Post ID");
+    }
+    next(err);
+  }
 };
 
 exports.getPostsByCurrentUser = async (req, res, next) => {

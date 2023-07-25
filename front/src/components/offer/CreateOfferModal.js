@@ -142,14 +142,14 @@ const CreateOfferModal = ({ postId, showModal, closeModal }) => {
     setIsSubmitting(true);
 
     if (bwf.containsBadWord(title)) {
-      alert(`${t("badWordTitle")}: ${bwf.devolverPalabra(title)}`);
+      alert(`${t("badWordTitle")}: ${bwf.badWordIs(title)}`);
       setIsSubmitting(false);
       return;
     }
 
     if (bwf.containsBadWord(description)) {
       alert(
-        `${t("badWordDescription")}: ${bwf.devolverPalabra(description)}`
+        `${t("badWordDescription")}: ${bwf.badWordIs(description)}`
       );
       setIsSubmitting(false);
       return;

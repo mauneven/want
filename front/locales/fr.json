@@ -28,10 +28,12 @@
     "photosLabel": "Téléchargez jusqu'à 4 photos de ce que vous voulez*",
     "missingFieldsError": "Veuillez remplir tous les champs obligatoires :\n{{fields}}",
     "createPostButton": "Créer une publication",
+    "updatePost": "Mettre à jour",
     "titleField": "Titre*",
     "descriptionField": "Description*",
     "categoriesField": "Catégories*",
-    "priceField": "Prix*"
+    "priceField": "Prix*",
+    "editPost": "Modification de votre publication"
   },
   "wantSomething": {
     "title": "Titre de la publication",
@@ -167,7 +169,7 @@
     "lastNameLabel": "Nom de famille:",
     "lastNamePlaceholder": "Votre nom de famille",
     "phoneLabel": "Numéro de téléphone:",
-    "phonePlaceholder": "Votre numéro de téléphone",    
+    "phonePlaceholder": "Votre numéro de téléphone",
     "birthdateLabel": "Date de naissance :",
     "noAccountText": "Vous n'avez pas de compte ?",
     "haveAccountText": "Vous avez déjà un compte ?",
@@ -271,19 +273,31 @@
     "markAllRead": "Marquer tout comme lu",
     "markingRead": "Marquage en cours..."
   },
+  "uploads": {
+    "loadImagesHere": "Sélectionnez ou déposez vos images ici",
+    "maxImages": "Vous pouvez télécharger un maximum de 4 images.",
+    "incorrectFile": "Vous ne pouvez télécharger que des images de type PNG, JPG, JPEG et WEBP.",
+    "fileSizeExceeded": "Une des images que vous avez essayé de télécharger dépasse la limite de 5 Mo.",
+    "totalSize": "Les photos dépassent le maximum de 20 Mo. Veuillez essayer de changer certaines photos."
+  },
+  "wordsFilter": {
+    "badWordInTitle": "Vous avez écrit un mot inapproprié dans le titre:",
+    "badWordInDescription": "Vous avez écrit un mot inapproprié dans la description:",
+    "badWordInContact": "Vous avez écrit un mot inapproprié dans les informations de contact:"
+  },
   "landingPage": {
     "title": "Want",
     "subtitle": "Redéfinir le commerce en ligne",
     "description": "Want est la place de marché où les utilisateurs publient ce qu'ils veulent et reçoivent des offres. Connectez facilement les acheteurs aux vendeurs. Trouvez ce que vous recherchez ou découvrez des clients potentiels. Simplification de l'expérience d'achat et de vente.",
     "buyTitle": "Pour Acheter",
-    "buyDescription": "Sur une place de marché, vous pouvez publier ce que vous voulez à un prix que vous pouvez vous permettre, sans avoir à chercher parmi d'innombrables produits. Ici, vous pouvez laisser les vendeurs vous faire les meilleures offres.",
+    "buyDescription": "Dans une place de marché où vous pouvez publier ce que vous voulez à un prix que vous pouvez vous permettre, sans avoir besoin de chercher parmi les produits et les produits. Ici, vous pouvez laisser les vendeurs vous faire les meilleures offres.",
     "sellTitle": "Pour Vendre",
     "sellDescription": "Want est également une plateforme où vous pouvez vendre vos produits ou services à tous les utilisateurs qui ont publié qu'ils en ont besoin. Vous pouvez faire des offres et initier des négociations.",
     "anywhereTitle": "De N'importe Où",
     "anywhereDescription": "Sur Want, vous pouvez publier ce que vous voulez ou faire des offres pour vos produits ou services de n'importe où dans le monde, en fonction des emplacements des acheteurs et des vendeurs.",
     "secureTitle": "En Toute Sécurité",
     "secureDescription": "Avec une communauté qui évalue constamment la réputation des utilisateurs et prend des mesures sécurisées pour mener des transactions de manière transparente et responsable.",
-    "secureDataTitle": "Avec Vos Données Sécurisées",
+    "secureDataTitle": "Avec vos données en toute sécurité",
     "secureDataDescription": "Chez Want, nous cryptons vos mots de passe afin que personne, même nous-mêmes, n'y ait accès. Tout cela grâce à nos protocoles et processus de sécurité.",
     "privacyTitle": "Respect de Votre Vie Privée",
     "privacyDescription": "Chez Want, nous respectons votre vie privée et nous ne partageons ni ne vendons vos informations publiques ou privées provenant de notre plateforme. Nous nous efforçons de créer un environnement de commerce électronique éthique et respectueux."
