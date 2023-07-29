@@ -154,7 +154,8 @@
     "message": "Goodbye!"
   },
   "goBackButton": {
-    "homeButton": "Go to Home"
+    "homeButton": "Go to Home",
+    "backButton": "Go back"
   },
   "login": {
     "loginTitle": "Login",

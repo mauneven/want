@@ -154,7 +154,8 @@
     "message": "¡Hasta pronto!"
   },
   "goBackButton": {
-    "homeButton": "Ir al Inicio"
+    "homeButton": "Ir al Inicio",
+    "backButton": "Ir atrás"
   },
   "login": {
     "loginTitle": "Iniciar sesión",

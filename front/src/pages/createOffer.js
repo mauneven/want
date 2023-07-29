@@ -6,6 +6,7 @@ import { validations } from "@/utils/validations";
 import { countries } from "../data/countries.json";
 import GoHomeButton from "@/components/reusable/GoHomeButton";
 import { useTranslation } from "react-i18next";
+import GoBackButton from "@/components/reusable/GoBackButton";
 
 const CreateOffer = () => {
   const router = useRouter();
@@ -296,7 +297,7 @@ const CreateOffer = () => {
 
   return (
     <div className="container mt-4 mb-4">
-      <GoHomeButton />
+      <GoBackButton/>
       <h1 className="mt-3 text-center">
         {t("createOffer.creatingOfferFor")} "{post.title}"
       </h1>
