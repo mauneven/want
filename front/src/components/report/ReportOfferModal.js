@@ -24,7 +24,7 @@ const ReportOfferModal = ({ offerId, onReport }) => {
         <i className="bi bi-flag ms-2"></i>
       </button>
 
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>{t('reportOfferModal.reportOffer')}</Modal.Title>
         </Modal.Header>
