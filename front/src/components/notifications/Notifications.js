@@ -92,13 +92,32 @@ export default function Notifications() {
     }
   };
 
-  // Actualizar las notificaciones automáticamente cada 5 segundos (5000 milisegundos)
   useEffect(() => {
-    const interval = setInterval(() => {
-      updateNotifications();
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+    const ws = new WebSocket('ws://localhost:4000');
+  
+    ws.onopen = () => {
+      console.log('WebSocket connection opened');
+    };
+  
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+  
+    ws.onclose = (event) => {
+      console.log('WebSocket connection closed:', event);
+    };
+  
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      switch (message.type) {
+        case 'NEW_OFFER':
+          updateNotifications();
+          break;
+      }
+    };
+  
+    return () => ws.close();
+  }, []);  
 
   return (
     <>

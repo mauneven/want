@@ -49,6 +49,17 @@ const PostDetails = ({
     router.push("/");
   };
 
+  const handleOfferButtonClick = () => {
+    // Check if the user is logged in
+    if (isLogged) {
+      // If logged in, redirect to the "createOffer" page with the postId parameter
+      router.push(`/createOffer?postId=${id}`);
+    } else {
+      // If not logged in, redirect to the login page
+      router.push("/login");
+    }
+  };
+
   useEffect(() => {
     const checkSession = async () => {
       const response = await fetch(
@@ -408,8 +419,8 @@ const PostDetails = ({
             </div>
             <div className="mt-3">
               <button
-                className="want-rounded want-button "
-                onClick={() => router.push(`/createOffer?postId=${id}`)}
+                className="want-rounded want-button"
+                onClick={handleOfferButtonClick}
               >
                 {t("postDetails.makeAnOffer")}
               </button>
