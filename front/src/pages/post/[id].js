@@ -103,12 +103,15 @@ const PostDetails = ({
   };
 
   const savePreferencesToLocalStorage = () => {
-    const mainCategoryPreferences =
-      JSON.parse(localStorage.getItem("mainCategoryPreferences") || "{}");
-    const subCategoryPreferences =
-      JSON.parse(localStorage.getItem("subCategoryPreferences") || "{}");
-    const thirdCategoryPreferences =
-      JSON.parse(localStorage.getItem("thirdCategoryPreferences") || "{}");
+    const mainCategoryPreferences = JSON.parse(
+      localStorage.getItem("mainCategoryPreferences") || "{}"
+    );
+    const subCategoryPreferences = JSON.parse(
+      localStorage.getItem("subCategoryPreferences") || "{}"
+    );
+    const thirdCategoryPreferences = JSON.parse(
+      localStorage.getItem("thirdCategoryPreferences") || "{}"
+    );
 
     mainCategoryPreferences[post.mainCategory] =
       (mainCategoryPreferences[post.mainCategory] || 0) + 1;
@@ -357,17 +360,21 @@ const PostDetails = ({
                 )}
               </button>
             </div>
-            <p className="description-container-id">{post.description}</p>
+            <p className="description-container-id pt-2">
+              {post.description.split("\n").map((line, index) => (
+                <span key={index}>
+                  {line}
+                  <br />
+                </span>
+              ))}
+            </p>
             <p className="pb-0 mb-0 small-text mt-3">
               <PostDetailsLocation
                 latitude={post.latitude}
                 longitude={post.longitude}
               />
             </p>
-            <div
-              className="d-flex align-items-center text-start mt-5 pt-4"
-              onClick={() => openUserModal(post.createdBy)}
-            >
+            <div className="d-flex align-items-center text-start mt-5 pt-4 divhover">
               <img
                 src={
                   post.createdBy.photo
@@ -376,14 +383,19 @@ const PostDetails = ({
                 }
                 alt=""
                 className="createdBy-photo-id"
+                onClick={() => openUserModal(post.createdBy)}
               />
-              <p className="mb-0 p-0" style={{ cursor: "pointer" }}>
+              <p
+                className="mb-0 ps-2 divhover"
+                onClick={() => openUserModal(post.createdBy)}
+              >
                 {post.createdBy.firstName} {post.createdBy.lastName} |{" "}
                 <i className="bi bi-star-fill"></i>{" "}
                 {post.createdBy.reports
                   ? 5 - 0.3 * post.createdBy.reports.length
                   : ""}
               </p>
+              <ReportPostModal postId={post._id} onReport={handleReportPost} />
             </div>
             <div className="mt-3">
               <button
@@ -392,7 +404,6 @@ const PostDetails = ({
               >
                 {t("postDetails.makeAnOffer")}
               </button>
-              <ReportPostModal postId={post._id} onReport={handleReportPost} />
             </div>
           </div>
         </div>

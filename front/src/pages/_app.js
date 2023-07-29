@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Suspense } from "react";
 import MegaMenu from "@/components/navigation/Navbar";
+import MobileMenu from "@/components/navigation/MobileMenu";
 import { LanguageProvider } from "@/components/language/LanguageProvider";
 import Footer from "@/components/footer/Footer";
 import i18n from "../../i18n";
@@ -18,7 +19,7 @@ import "../../public/css/postById.css";
 import "../../public/css/receivedOffers.css";
 import "../../public/css/footer.css";
 import "../../public/css/post-category.css";
-import MobileMenu from "@/components/navigation/MobileMenu";
+import "../../public/css/user.css";
 
 export default function MyApp({ Component, pageProps }) {
   const [hasMounted, setHasMounted] = useState(false);

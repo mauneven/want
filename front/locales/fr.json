@@ -302,6 +302,12 @@
     "privacyTitle": "Respect de Votre Vie Privée",
     "privacyDescription": "Chez Want, nous respectons votre vie privée et nous ne partageons ni ne vendons vos informations publiques ou privées provenant de notre plateforme. Nous nous efforçons de créer un environnement de commerce électronique éthique et respectueux."
   },
+  "aboutUser": {
+    "wantUserSince": "Utilisateur de Want depuis",
+    "hasMade": "A réalisé",
+    "posts": "publications",
+    "offers": "offres"
+  },  
   "categories": {
     "selectMainCategory": "1 | catégorie générale",
     "selectSubCategory": "2 |  sous-catégorie",

@@ -302,6 +302,12 @@
     "privacyTitle": "Respecting Your Privacy",
     "privacyDescription": "At Want, we respect your privacy and do not share or sell your public or private information from our platform. We strive to create an ethical and respectful e-commerce environment."
   },
+  "aboutUser": {
+    "wantUserSince": "Want user since",
+    "hasMade": "Has made",
+    "posts": "posts",
+    "offers": "offers"
+  },
   "categories": {
     "selectMainCategory": "1 | General Category",
     "selectSubCategory": "2 | Sub Category",
