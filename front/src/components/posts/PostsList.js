@@ -24,7 +24,7 @@ const PostsList = ({
   thirdCategory,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [pageSize, setPageSize] = useState(13);
+  const [pageSize, setPageSize] = useState(7);
   const [totalPosts, setTotalPosts] = useState(0);
   const initialPage = parseInt(localStorage.getItem("currentPage") || "1", 10);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -456,16 +456,16 @@ const PostsList = ({
         </div>
 
         {allPostsCharged && (
-          <div className="text-center p-5">
-            <h1>{t('postslist.noMorePosts')}</h1>
-          </div>
-        )}
+        <div className="text-center p-5">
+          <h1>{t('postslist.noMorePosts')}</h1>
+        </div>
+      )}
 
-        {!hasMorePosts && !isLoading && !isFetchingMore && !allPostsCharged && (
-          <div className="text-center p-5">
-            <h1>{t('postslist.noMorePosts')}</h1>
-          </div>
-        )}
+      {!hasMorePosts && !isLoading && !isFetchingMore && !allPostsCharged && posts.length > 0 && (
+        <div className="text-center p-5 animate__fadeIn animate__animated">
+          <h1>{t('postslist.noMorePosts')}</h1>
+        </div>
+      )}
       </InfiniteScroll>
     </div>
   );

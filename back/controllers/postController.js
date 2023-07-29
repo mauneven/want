@@ -129,14 +129,21 @@ exports.updatePost = async (req, res, next) => {
     post.title = title;
     post.description = description;
 
-    // Desplazar las coordenadas dentro de un radio de 5 km
-    const newPosition = geolib.computeDestinationPoint(
-      { latitude, longitude },
-      1000, // 1000 metros
-      Math.random() * 360 // Ángulo aleatorio en grados
-    );
-    post.latitude = newPosition.latitude;
-    post.longitude = newPosition.longitude;
+    // Convertir las coordenadas a número para hacer una comparación precisa
+    const newLatitude = Number(latitude);
+    const newLongitude = Number(longitude);
+
+    // Solo se desplazan las coordenadas si son diferentes a las existentes
+    if (post.latitude !== newLatitude || post.longitude !== newLongitude) {
+      const newPosition = geolib.computeDestinationPoint(
+        { latitude: newLatitude, longitude: newLongitude },
+        1000, // 1000 metros
+        Math.random() * 360 // Ángulo aleatorio en grados
+      );
+
+      post.latitude = newPosition.latitude;
+      post.longitude = newPosition.longitude;
+    }
 
     post.mainCategory = mainCategory;
     post.subCategory = subCategory;

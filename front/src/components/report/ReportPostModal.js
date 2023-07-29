@@ -23,7 +23,7 @@ const ReportPostModal = ({ postId, onReport }) => {
         <i className="bi bi-flag"></i>
       </button>
 
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>{t('reportPostModal.reportPost')}</Modal.Title>
         </Modal.Header>

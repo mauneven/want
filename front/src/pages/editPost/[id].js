@@ -7,6 +7,7 @@ import { validations } from "@/utils/validations";
 import GoHomeButton from "@/components/reusable/GoHomeButton";
 import { Alert } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import GoBackButton from "@/components/reusable/GoBackButton";
 
 const EditPost = () => {
   const [title, setTitle] = useState("");
@@ -292,7 +293,7 @@ const EditPost = () => {
     <div className="mt-3 mb-3">
       <div className="">
         <div className="container">
-          <GoHomeButton />
+          <GoBackButton/>
           <h3 className="text-center mb-4">{t("createPost.editPost")}</h3>
           <form onSubmit={handleSubmit} className="">
             <div className="mb-3">

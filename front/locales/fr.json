@@ -41,7 +41,8 @@
   },
   "postDetails": {
     "makeAnOffer": "Faire une offre",
-    "publishedIn": "Publié dans"
+    "publishedIn": "Publié dans",
+    "noPhotos": "Le créateur de cette publication n'a pas ajouté de photos d'exemple."
   },
   "myPosts": {
     "deletePostTitle": "Supprimer cette publication",
@@ -153,7 +154,8 @@
     "message": "À bientôt !"
   },
   "goBackButton": {
-    "homeButton": "Retourner à l'accueil"
+    "homeButton": "Retourner à l'accueil",
+    "backButton": "Retourner en arrière"
   },
   "login": {
     "loginTitle": "Se connecter",
@@ -302,6 +304,12 @@
     "privacyTitle": "Respect de Votre Vie Privée",
     "privacyDescription": "Chez Want, nous respectons votre vie privée et nous ne partageons ni ne vendons vos informations publiques ou privées provenant de notre plateforme. Nous nous efforçons de créer un environnement de commerce électronique éthique et respectueux."
   },
+  "aboutUser": {
+    "wantUserSince": "Utilisateur de Want depuis",
+    "hasMade": "A réalisé",
+    "posts": "publications",
+    "offers": "offres"
+  },  
   "categories": {
     "selectMainCategory": "1 | catégorie générale",
     "selectSubCategory": "2 |  sous-catégorie",

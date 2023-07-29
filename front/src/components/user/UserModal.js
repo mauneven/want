@@ -1,22 +1,24 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
-import { formatDistanceToNow } from "date-fns";
+import { useTranslation } from 'react-i18next';
 
 const UserModal = ({ selectedUser, showModal, closeModal }) => {
-  const getFormattedDate = (date) => {
-    return formatDistanceToNow(new Date(date), { addSuffix: true });
+
+  const { t } = useTranslation();
+  const getYearFromDate = (date) => {
+    return new Date(date).getFullYear();
   };
 
   return (
-    <Modal show={showModal} onHide={closeModal} centered>
+    <Modal show={showModal} onHide={closeModal} centered className="modal-lg">
       <Modal.Header closeButton>
         <Modal.Title>About</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {selectedUser && (
           <>
-            <div className="user-profile">
-              <div className="user-profile__image">
+            <div className="row">
+              <div className="col-lg-6 p-2 d-flex justify-content-center">
                 <img
                   src={
                     selectedUser.photo
@@ -24,24 +26,25 @@ const UserModal = ({ selectedUser, showModal, closeModal }) => {
                       : "/icons/person-circle.svg"
                   }
                   alt=""
-                  className="user-profile__photo"
+                  className="user-photo img-fluid"
                 />
               </div>
-              <div className="user-profile__info">
-                <h5 className="user-profile__name">
+              <div className="col-lg-6 d-grid justify-content-center align-items-center">
+                <h2>
                   {selectedUser.firstName} {selectedUser.lastName}
-                </h5>
-                <h5><i className="bi bi-star-fill"></i> {selectedUser.reports ? 5 - (0.3 * selectedUser.reports.length) : ""}</h5>
-                <div className="user-profile__stats">
-                  <p className="user-profile__stat">
-                    Want user {getFormattedDate(selectedUser.createdAt)}
+                </h2>
+                <h2>
+                  <i className="bi bi-star-fill"></i>{" "}
+                  {selectedUser.reports
+                    ? 5 - 0.3 * selectedUser.reports.length
+                    : ""}
+                </h2>
+                <div>
+                  <p>
+                  {t('aboutUser.wantUserSince')} {getYearFromDate(selectedUser.createdAt)}
                   </p>
-                  <p className="user-profile__stat">
-                    Has made {selectedUser.totalPosts} posts
-                  </p>
-                  <p className="user-profile__stat">
-                    Has made {selectedUser.totalOffers} offers
-                  </p>
+                  <p>{t('aboutUser.hasMade')} {selectedUser.totalPosts} {t('aboutUser.posts')}</p>
+                  <p>{t('aboutUser.hasMade')} {selectedUser.totalOffers} {t('aboutUser.offers')}</p>
                 </div>
               </div>
             </div>
