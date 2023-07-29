@@ -13,16 +13,41 @@ const CreatePostLocation = ({ onLatitudeChange, onLongitudeChange }) => {
   const [locationDetected, setLocationDetected] = useState(false);
 
   useEffect(() => {
+    const storedLatitude = localStorage.getItem('latitude');
+    const storedLongitude = localStorage.getItem('longitude');
+
+    if (storedLatitude && storedLongitude) {
+      setLatitude(parseFloat(storedLatitude));
+      setLongitude(parseFloat(storedLongitude));
+    } else {
+      requestLocation();
+    }
+  }, []);
+
+  const requestLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
-          setLatitude(lat);
-          setLongitude(lng);
-          onLatitudeChange(lat); 
-          onLongitudeChange(lng); 
-          setLocationDetected(true);
+          try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
+            const data = await response.json();
+            const { city } = data.address;
+            setLatitude(lat);
+            setLongitude(lng);
+            onLatitudeChange(lat);
+            onLongitudeChange(lng);
+            setLocationDetected(true);
+            if (city) {
+              setSearchQuery(city);
+            }
+            // Guardar en localStorage
+            localStorage.setItem('latitude', lat);
+            localStorage.setItem('longitude', lng);
+          } catch (error) {
+            console.error(error);
+          }
         },
         (error) => {
           console.error(error);
@@ -31,7 +56,7 @@ const CreatePostLocation = ({ onLatitudeChange, onLongitudeChange }) => {
     } else {
       console.error('Geolocation is not supported by this browser.');
     }
-  }, []);
+  };
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
