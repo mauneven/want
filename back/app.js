@@ -140,12 +140,13 @@ schedule.scheduleJob('0 */12 * * *', async () => {
 });
 
 // para main
-/*
-const server = https.createServer(options, app);
-*/
-// para development
 
+const server = https.createServer(options, app);
+
+// para development
+/*
 const server = http.createServer(app);
+*/
 
 // Initialize WebSocket after the server starts listening
 initializeWss(server);
