@@ -10,15 +10,17 @@ const offerRoutes = require('./routes/offerRoutes');
 const docxRoutes = require('./routes/docxRoutes.js');
 const authController = require('./controllers/authController');
 const https = require('https');
+const http = require('http');
 const fs = require('fs');
 const schedule = require('node-schedule');
 const Report = require('./models/report');
 const Post = require('./models/post');
 const postController = require('./controllers/postController');
 const app = express();
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+const {getWss} = require ('./controllers/webSocket');
+const {initializeWss} = require ('./controllers/webSocket');
 
 app.use(cors({
   origin: [
@@ -137,6 +139,11 @@ schedule.scheduleJob('0 */12 * * *', async () => {
   }
 });
 
+const server = http.createServer(app);
+
+// Initialize WebSocket after the server starts listening
+initializeWss(server);
+
 // para la main
 /*
 const options = {
@@ -150,6 +157,6 @@ https.createServer(options, app).listen(4000, () => {
 */
 // para development
 
-app.listen(4000, () => {
+server.listen(4000, () => {
   console.log('Server started on port 4000');
 });

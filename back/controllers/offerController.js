@@ -7,6 +7,8 @@ const fs = require("fs");
 const sharp = require("sharp");
 const { v4: uuidv4 } = require("uuid");
 const User = require("../models/user");
+const WebSocket = require('ws');
+const { getWss } = require('./webSocket');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -24,6 +26,7 @@ exports.uploadPhotoMiddleware = upload;
 
 exports.createOffer = async (req, res, next) => {
   try {
+    const wss = getWss();
     const { title, description, price, countryCode, phoneNumber, contact, postId } = req.body;
     const post = await Post.findById(postId);
 
@@ -72,11 +75,20 @@ exports.createOffer = async (req, res, next) => {
 
     await offer.save();
 
-    // Incrementar contador de totalOffers del usuario
-    await User.findByIdAndUpdate(req.session.userId, { $inc: { totalOffers: 1 } });
-
     // Define notificationContent after initializing offer
     const notificationContent = `${offer.title}`;
+
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify({
+          type: 'NEW_OFFER',
+          content: notificationContent,
+        }));
+      }
+    });
+
+    // Incrementar contador de totalOffers del usuario
+    await User.findByIdAndUpdate(req.session.userId, { $inc: { totalOffers: 1 } });
 
     await exports.sendNotification(post.createdBy, notificationContent, postId);
     res.status(201).json(offer);
