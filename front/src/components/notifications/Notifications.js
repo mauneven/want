@@ -93,7 +93,7 @@ export default function Notifications() {
   };
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:4000');
+    const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_BASE_URL);
   
     ws.onopen = () => {
       console.log('WebSocket connection opened');
