@@ -41,7 +41,8 @@
   },
   "postDetails": {
     "makeAnOffer": "Make an Offer",
-    "publishedIn": "Published in"
+    "publishedIn": "Published in",
+    "noPhotos": "The creator of this post did not add sample photos."
   },
   "myPosts": {
     "deletePostTitle": "Delete this post",

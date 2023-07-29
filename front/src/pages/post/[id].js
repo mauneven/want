@@ -274,44 +274,53 @@ const PostDetails = ({
       <div className="container">
         <GoHomeButton />
         <div className="row p-2">
-          <div className="col-lg-6 p-4">
-            <div
-              ref={imageRef}
-              className="img-container"
-              onMouseMove={handleMouseMove}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              onClick={handleImageClick}
-              style={{
-                position: "relative",
-                backgroundImage: `url(${process.env.NEXT_PUBLIC_API_BASE_URL}/${mainImage})`,
-                backgroundSize: "contain",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                width: "100%",
-                height: "420px",
-              }}
-            >
-              {!mobileDevice && <div style={overlayStyle}></div>}
+          {post.photos && post.photos.length > 0 ? (
+            <div className="col-lg-6 p-4 ">
+              <div
+                ref={imageRef}
+                className="img-container"
+                onMouseMove={handleMouseMove}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onClick={handleImageClick}
+                style={{
+                  position: "relative",
+                  backgroundImage: `url(${process.env.NEXT_PUBLIC_API_BASE_URL}/${mainImage})`,
+                  backgroundSize: "contain",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center",
+                  width: "100%",
+                  height: "420px",
+                }}
+              >
+                {!mobileDevice && <div style={overlayStyle}></div>}
+              </div>
+              <div className="mt-3 d-flex">
+                {post.photos.map((photo, index) => (
+                  <img
+                    key={index}
+                    src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
+                    className="img-thumbnail mr-2"
+                    onMouseOver={() => handleThumbnailMouseOver(photo)}
+                    alt={post.title}
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      objectFit: "cover",
+                      cursor: "pointer",
+                    }}
+                  />
+                ))}
+              </div>
             </div>
-            <div className="mt-3 d-flex">
-              {post.photos.map((photo, index) => (
-                <img
-                  key={index}
-                  src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
-                  className="img-thumbnail mr-2"
-                  onMouseOver={() => handleThumbnailMouseOver(photo)}
-                  alt={post.title}
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    objectFit: "cover",
-                    cursor: "pointer",
-                  }}
-                />
-              ))}
+          ) : (
+            <div className="col-lg-6 p-4 d-flex justify-content-center align-items-center">
+              <div className="text-center">
+                <i className="bi bi-images display-1"></i>
+                <p>{t("postDetails.noPhotos")}</p>
+              </div>
             </div>
-          </div>
+          )}
           <div
             className="col-lg-6 p-0 "
             style={{ maxWidth: "100%", overflowWrap: "break-word" }}

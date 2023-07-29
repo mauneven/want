@@ -13,50 +13,48 @@ const CreatePostLocation = ({ onLatitudeChange, onLongitudeChange }) => {
   const [locationDetected, setLocationDetected] = useState(false);
 
   useEffect(() => {
+    // Check if latitude and longitude exist in localStorage
     const storedLatitude = localStorage.getItem('latitude');
     const storedLongitude = localStorage.getItem('longitude');
 
     if (storedLatitude && storedLongitude) {
       setLatitude(parseFloat(storedLatitude));
       setLongitude(parseFloat(storedLongitude));
+      setLocationDetected(true);
+      onLatitudeChange(parseFloat(storedLatitude));
+      onLongitudeChange(parseFloat(storedLongitude));
     } else {
-      requestLocation();
-    }
-  }, []);
-
-  const requestLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          try {
-            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
-            const data = await response.json();
-            const { city } = data.address;
+      // If not in localStorage, get location from geolocation
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
             setLatitude(lat);
             setLongitude(lng);
             onLatitudeChange(lat);
             onLongitudeChange(lng);
             setLocationDetected(true);
-            if (city) {
-              setSearchQuery(city);
+            try {
+              const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
+              const data = await response.json();
+              const { city } = data.address;
+              if (city) {
+                setSearchQuery(city);
+              }
+            } catch (error) {
+              console.error(error);
             }
-            // Guardar en localStorage
-            localStorage.setItem('latitude', lat);
-            localStorage.setItem('longitude', lng);
-          } catch (error) {
+          },
+          (error) => {
             console.error(error);
           }
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
-    } else {
-      console.error('Geolocation is not supported by this browser.');
+        );
+      } else {
+        console.error('Geolocation is not supported by this browser.');
+      }
     }
-  };
+  }, []);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -110,38 +108,7 @@ const CreatePostLocation = ({ onLatitudeChange, onLongitudeChange }) => {
     } catch (error) {
       console.error(error);
     }
-  };
-
-  const handleLocationDetection = async () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          try {
-            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
-            const data = await response.json();
-            const { city } = data.address;
-            setLatitude(lat);
-            setLongitude(lng);
-            onLatitudeChange(lat);
-            onLongitudeChange(lng);
-            setLocationDetected(true);
-            if (city) {
-              setSearchQuery(city);
-            }
-          } catch (error) {
-            console.error(error);
-          }
-        },
-        (error) => {
-          console.error(error);
-        }
-      );
-    } else {
-      console.error('Geolocation is not supported by this browser.');
-    }
-  };  
+  }; 
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {

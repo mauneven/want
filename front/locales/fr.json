@@ -41,7 +41,8 @@
   },
   "postDetails": {
     "makeAnOffer": "Faire une offre",
-    "publishedIn": "Publié dans"
+    "publishedIn": "Publié dans",
+    "noPhotos": "Le créateur de cette publication n'a pas ajouté de photos d'exemple."
   },
   "myPosts": {
     "deletePostTitle": "Supprimer cette publication",
