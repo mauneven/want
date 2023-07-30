@@ -183,7 +183,7 @@ export default function Notifications() {
               >
                 {notification.type === "offer" ? (
                   <>
-                    <span className="notification-type">New offer: </span>
+                    <span className="notification-type">{t("notifications.empty")} </span>
                     {notification.content}
                   </>
                 ) : notification.type === "message" ? (
