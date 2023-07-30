@@ -148,10 +148,9 @@ const options = {
 };
 
 const server = https.createServer(options, app);
-
 initializeWss(server);
 
-https.createServer(options, app).listen(4000, () => {
+server.listen(4000, () => {
   console.log('Server started on port 4000');
 });
 
