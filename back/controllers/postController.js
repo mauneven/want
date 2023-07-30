@@ -9,7 +9,8 @@ const { v4: uuidv4 } = require("uuid");
 const url = require("url");
 const User = require("../models/user");
 const geolib = require("geolib");
-
+const { getWss } = require("./webSocket");
+const WebSocket = require('ws');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -57,7 +58,7 @@ exports.createPost = async (req, res, next) => {
           return compressedImagePath;
         })
       );
-      
+
       req.files = compressedImagePaths.map((path) => ({ path }));
     }
 
@@ -176,22 +177,24 @@ exports.updatePost = async (req, res, next) => {
 
     if (deletedImages) {
       const deletedImagePaths = deletedImages.split(",");
-      await Promise.all(deletedImagePaths.map(async (imagePath) => {
-        const parsedUrl = url.parse(imagePath);
-        const localPath = parsedUrl.pathname;
-        const oldPhotoPath = path.join(__dirname, "..", localPath);
-        try {
-          await fs.promises.unlink(oldPhotoPath);
-          const index = post.photos.findIndex(photo => photo === localPath);
-          if (index !== -1) {
-            post.photos.splice(index, 1);
+      await Promise.all(
+        deletedImagePaths.map(async (imagePath) => {
+          const parsedUrl = url.parse(imagePath);
+          const localPath = parsedUrl.pathname;
+          const oldPhotoPath = path.join(__dirname, "..", localPath);
+          try {
+            await fs.promises.unlink(oldPhotoPath);
+            const index = post.photos.findIndex((photo) => photo === localPath);
+            if (index !== -1) {
+              post.photos.splice(index, 1);
+            }
+          } catch (err) {
+            console.error(
+              `Error deleting file ${oldPhotoPath}: ${err.message}`
+            );
           }
-        } catch (err) {
-          console.error(
-            `Error deleting file ${oldPhotoPath}: ${err.message}`
-          );
-        }
-      }));
+        })
+      );
     }
 
     await Promise.all(
@@ -249,6 +252,20 @@ exports.deletePost = async (req, res, next) => {
     // Eliminar las ofertas y notificaciones relacionadas con el post
     await Offer.deleteMany({ post: req.params.id });
     await Notification.deleteMany({ postId: req.params.id });
+
+    const wss = getWss();
+
+    // Enviar mensaje a través de WebSocket después de eliminar la publicación
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(
+          JSON.stringify({
+            type: "POST_DELETED",
+            postId: req.params.id,
+          })
+        );
+      }
+    });
 
     await exports.deletePostById(req.params.id);
     res.sendStatus(204);
@@ -478,7 +495,7 @@ exports.getPostById = async (req, res, next) => {
     }
     res.status(200).json(post);
   } catch (err) {
-    if (err.kind === 'ObjectId' && err.name === 'CastError') {
+    if (err.kind === "ObjectId" && err.name === "CastError") {
       return res.status(400).send("Invalid Post ID");
     }
     next(err);
