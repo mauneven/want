@@ -141,28 +141,29 @@ schedule.scheduleJob('0 */12 * * *', async () => {
 
 // para main
 
-const server = https.createServer(options, app);
-
-// para development
-/*
-const server = http.createServer(app);
-*/
-
-// Initialize WebSocket after the server starts listening
-initializeWss(server);
-
-// para la main
-
 const options = {
   key: fs.readFileSync('/etc/letsencrypt/live/want.com.co/privkey.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/live/want.com.co/fullchain.pem')
 };
 
+const server = https.createServer(options, app);
+
+initializeWss(server);
+
 https.createServer(options, app).listen(4000, () => {
   console.log('Server started on port 4000');
 });
-/*
+
+
 // para development
+/*
+
+const server = http.createServer(app);
+
+initializeWss(server);
+
 server.listen(4000, () => {
   console.log('Server started on port 4000');
-});*/
+});
+
+*/
