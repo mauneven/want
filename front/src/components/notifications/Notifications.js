@@ -181,7 +181,19 @@ export default function Notifications() {
                   !notification.isRead ? "bg-success text-white" : ""
                 }`}
               >
-                {notification.content}
+                {notification.type === "offer" ? (
+                  <>
+                    <span className="notification-type">New offer: </span>
+                    {notification.content}
+                  </>
+                ) : notification.type === "message" ? (
+                  <>
+                    <span className="notification-type">New message: </span>
+                    {notification.content}
+                  </>
+                ) : (
+                  notification.content
+                )}
               </div>
             ))
           ) : (
