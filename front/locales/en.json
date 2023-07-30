@@ -284,7 +284,6 @@
   "notifications": {
     "title": "Notifications",
     "empty": "Empty",
-    "newOffer":"New offer",
     "markAllRead": "Mark all as read",
     "markingRead": "Marking as read..."
   },

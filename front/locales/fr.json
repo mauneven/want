@@ -272,7 +272,6 @@
   "notifications": {
     "title": "Notifications",
     "empty": "Vide",
-    "newOffer":"Nouvelle offre",
     "markAllRead": "Marquer tout comme lu",
     "markingRead": "Marquage en cours..."
   },
