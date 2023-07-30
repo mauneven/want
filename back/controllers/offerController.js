@@ -189,6 +189,17 @@ exports.deleteOffer = async (req, res, next) => {
       await Notification.deleteOne({ _id: notification._id });
     }
 
+    // Enviar notificación de WebSocket
+    const wss = getWss();
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify({
+          type: 'OFFER_DELETED',
+          content: `Offer ${offer._id} has been deleted.`,
+        }));
+      }
+    });
+
     res.sendStatus(204);
   } catch (err) {
     next(err);

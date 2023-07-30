@@ -106,11 +106,15 @@ export default function Notifications() {
     ws.onclose = (event) => {
       console.log('WebSocket connection closed:', event);
     };
-  
+
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
       switch (message.type) {
         case 'NEW_OFFER':
+          updateNotifications();
+          break;
+        case 'OFFER_DELETED':
+          // Handle deleted offer here
           updateNotifications();
           break;
       }
