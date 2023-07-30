@@ -11,9 +11,13 @@ const notificationSchema = new Schema({
     ref: 'User',
     required: true
   },
-  postId: { // Añade este campo
+  postId: {
     type: Schema.Types.ObjectId,
     ref: 'Post'
+  },
+  type: {
+    type: String,
+    required: true
   },
   isRead: {
     type: Boolean,

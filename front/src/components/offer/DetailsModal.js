@@ -137,6 +137,7 @@ const DetailsModal = ({ show, onHide, offer }) => {
                     backgroundPosition: `${cursorPosition.x}% ${cursorPosition.y}%`,
                     width: '500px',
                     height: '500px',
+                    backgroundColor: "white",
                   }}
                 ></div>
               )}
