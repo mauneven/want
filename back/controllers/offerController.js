@@ -142,6 +142,7 @@ exports.sendNotification = async (recipientId, content, postId) => {
     content,
     recipient: recipientId,
     postId,
+    type : "offer",
   }); // Añade postId aquí
   await notification.save();
 };
