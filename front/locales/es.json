@@ -284,6 +284,7 @@
   "notifications": {
     "title": "Notificaciones",
     "empty": "Vacío",
+    "newOffer":"Nueva oferta",
     "markAllRead": "Marcar todo como leído",
     "markingRead": "Marcando como leído..."
   },
