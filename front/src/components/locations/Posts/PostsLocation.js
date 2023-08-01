@@ -17,7 +17,7 @@ const PostsLocation = ({
   const [searchResults, setSearchResults] = useState([]);
   const [locationDetected, setLocationDetected] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [radius, setRadius] = useState(15); // Valor predeterminado de radio: 5 km
+  const [radius, setRadius] = useState(10000000000); // Valor predeterminado de radio: 5 km
   const radiusOptions = [1, 2, 5, 10, 20, 30, 50, 80, 100, 10000000000]; // Opciones de radio en km
   const [locationName, setLocationName] = useState(null); // Nombre de la ubicación
   const [zoomLevel, setZoomLevel] = useState(11);
@@ -193,7 +193,7 @@ const PostsLocation = ({
     setRadius(selectedRadius);
     localStorage.setItem('radius', selectedRadius.toString());
 
-    let zoomLevel = 13; // Valor predeterminado de zoom
+    let zoomLevel = 15; // Valor predeterminado de zoom
     if (selectedRadius === 1) {
       zoomLevel = 14;
     } else if (selectedRadius === 5) {
@@ -414,7 +414,7 @@ const PostsLocation = ({
           <i className="bi bi-x-circle-fill m-2"></i>
           </button>
           <button
-            className="generic-button"
+            className="want-button"
             onClick={handleLocationSelection}
           >
             {t('postsLocation.apply')}
