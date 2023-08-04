@@ -63,6 +63,7 @@ html {
   position: absolute;
   top: 5px;
   left: 80px;
+  user-select: none;
 }
 
 .createdBy-photo {
@@ -132,6 +133,7 @@ html {
 
 .desktop-logo{
   max-height: 40px;
+  user-select: none;
 }
 
 .slider-button {
@@ -201,22 +203,27 @@ html {
 @media (max-width: 576px) {
   .mobile-logo{
     max-width: 400px;
+    user-select: none;
   }
   .want-logo-mobile{
     font-size: 15px;
+    user-select: none;
   }
   .text-categories-navbar{
     font-size: 9px;
+    user-select: none;
   }
   .mobile-logo-beta{
     top: 5px;
     left: 51px;
+    user-select: none;
   }
 }
 
 @media (max-width: 360px) {
   .search-bar-navbar {
     max-width: 190px;
+    user-select: none;
   }
 }
 
@@ -224,8 +231,10 @@ html {
   .mobile-logo-beta{
     top: 10px;
     left: 26px;
+    user-select: none;
   }
   .mobile-logo{
     font-size: 18px!important;
+    user-select: none;
   }
 }

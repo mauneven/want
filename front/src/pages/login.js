@@ -120,6 +120,9 @@ export default function Login() {
         router.push("/verify");
       } else {
         router.push("/");
+        localStorage.setItem("mainCategoryPreferences", JSON.stringify(responseData.mainCategoryCounts));
+        localStorage.setItem("subCategoryPreferences", JSON.stringify(responseData.subCategoryCounts));
+        localStorage.setItem("thirdCategoryPreferences", JSON.stringify(responseData.thirdCategoryCounts));
       }
     } else {
       if (response.status === 409) {

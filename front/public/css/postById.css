@@ -37,3 +37,9 @@
   border: none;
   background-size: cover;
 }
+
+@media (max-width: 606px) {
+.post-categories-button{
+  font-size: 11px;
+}
+}

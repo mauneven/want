@@ -75,6 +75,7 @@
         ),
       });
 
+
       if (resetPosts) {
         setPosts([]); // Eliminar los posts antiguos
       }

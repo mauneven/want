@@ -118,7 +118,7 @@ export default function MegaMenu({
         <div className="d-flex w-100">
           {!isMobile ? (
             <Navbar.Brand className="d-flex align-items-center m-0 p-0 col-3 justify-content-center">
-              <div className="fs-1 ms-2 want-color d-flex  m-0 w-100 d-flex">
+              <div className="fs-1 ms-2 want-color d-flex  m-0 w-100 d-flex ">
                 <p
                   className="desktop-logo align-items-center justify-content-center want-color m-0 divhover"
                   onClick={handleLogoClick}
@@ -139,7 +139,7 @@ export default function MegaMenu({
               className="divhover d-flex align-items-center m-0 p-0 col-3 justify-content-center"
             >
               <div className="fs-1 want-color d-flex  m-0 w-100 h-100 align-items-center want-color mobile-logo">
-                Want
+                <p className="p-0 m-0 mobile-logo">Want</p>
                 <p className="small text-small m-0 p-1 mobile-logo-beta">
                   BETA
                 </p>
@@ -151,7 +151,7 @@ export default function MegaMenu({
               className="d-flex m-0 w-100 p-0 border want-rounded text-center align-items-center justify-content-center "
               onSubmit={handleSearchSubmit}
             >
-              {getCategoryText() && (
+              {getCategoryText() && !isMobile && (
                 <div className="form-check m-0 d-flex align-items-center mr-2 border-end ms-2">
                   <input
                     className="form-check-input "
