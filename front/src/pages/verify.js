@@ -26,7 +26,6 @@ export default function Verify() {
       .then((data) => {
         if (data) {
           setUserData(data);
-          console.log(data);
         }
       });
   }, []);

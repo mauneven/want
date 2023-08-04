@@ -3,7 +3,6 @@ import ContentLoader from "react-content-loader";
 import { useRouter } from "next/router";
 import PostsLocation from "../locations/Posts/";
 import PostCategory from "../categories/PostCategory";
-import Link from "next/link";
 import { useCheckSession, useGetUserPreferences } from "@/utils/userEffects";
 import fetchPosts from "./postsList/PostsListsUtilities";
 import PostCard from "./postsList/PostCard";

@@ -359,43 +359,18 @@ exports.getAllPosts = async (req, res, next) => {
     const mainCategoryPreferences = JSON.parse(
       req.query.mainCategoryPreferences || "{}"
     );
-    const subCategoryPreferences = JSON.parse(
-      req.query.subCategoryPreferences || "{}"
-    );
-    const thirdCategoryPreferences = JSON.parse(
-      req.query.thirdCategoryPreferences || "{}"
-    );
 
     console.log("Gustos del usuario:");
     console.log("Main Category Preferences:", mainCategoryPreferences);
-    console.log("Sub Category Preferences:", subCategoryPreferences);
-    console.log("Third Category Preferences:", thirdCategoryPreferences);
 
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 10;
     const skip = (page - 1) * pageSize;
 
-    // Obtener las subcategorías con más vistas del usuario
-    const topSubCategories = Object.keys(subCategoryPreferences).sort(
-      (a, b) => subCategoryPreferences[b] - subCategoryPreferences[a]
-    );
-
-    // Verificar si se debe habilitar la lógica de subcategorías con más vistas
-    const enableTopSubCategories =
-      !req.query.searchTerm &&
-      !req.query.mainCategory &&
-      !req.query.subCategory &&
-      !req.query.thirdCategory &&
-      topSubCategories.length > 0;
-
-    let allPosts = [];
-
-    if (enableTopSubCategories) {
-      // Obtener los posts con las subcategorías con más vistas
-      const topSubCategoryPosts = await Post.find({
-        ...filters,
-        subCategory: { $in: topSubCategories },
-      }).populate({
+    // Obtener todos los posts sin filtrar por distancia
+    let allPosts = await Post.find(filters)
+      .sort({ createdAt: -1 })
+      .populate({
         path: "createdBy",
         select: "firstName totalPosts totalOffers lastName photo createdAt",
         populate: {
@@ -403,38 +378,6 @@ exports.getAllPosts = async (req, res, next) => {
           select: "_id",
         },
       });
-
-      allPosts.push(...topSubCategoryPosts);
-
-      // Obtener los posts más recientes que no están en las subcategorías con más vistas
-      const recentPosts = await Post.find({
-        ...filters,
-        subCategory: { $nin: topSubCategories },
-      })
-        .sort({ createdAt: -1 })
-        .populate({
-          path: "createdBy",
-          select: "firstName totalPosts totalOffers lastName photo createdAt",
-          populate: {
-            path: "reports",
-            select: "_id",
-          },
-        });
-
-      allPosts.push(...recentPosts);
-    } else {
-      // Obtener todos los posts sin filtrar por distancia
-      allPosts = await Post.find(filters)
-        .sort({ createdAt: -1 })
-        .populate({
-          path: "createdBy",
-          select: "firstName totalPosts totalOffers lastName photo createdAt",
-          populate: {
-            path: "reports",
-            select: "_id",
-          },
-        });
-    }
 
     // Filtrar los posts por distancia
     if (
@@ -469,8 +412,8 @@ exports.getAllPosts = async (req, res, next) => {
 
     // Ordenar los posts según los gustos del usuario
     allPosts.sort((a, b) => {
-      const aViews = subCategoryPreferences[a.subCategory] || 0;
-      const bViews = subCategoryPreferences[b.subCategory] || 0;
+      const aViews = mainCategoryPreferences[a.mainCategory] || 0;
+      const bViews = mainCategoryPreferences[b.mainCategory] || 0;
       return bViews - aViews;
     });
 

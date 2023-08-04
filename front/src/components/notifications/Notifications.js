@@ -117,7 +117,7 @@ export default function Notifications() {
     const ws = new WebSocket(`${process.env.NEXT_PUBLIC_WS_BASE_URL}/ws`);
 
     ws.onopen = () => {
-      console.log("WebSocket connection opened");
+      
     };
 
     ws.onerror = (error) => {

@@ -82,14 +82,11 @@ const EditPost = () => {
         if (checkSessionResponse.ok) {
           const data = await checkSessionResponse.json();
           setUser(data.user || null);
-          console.log(data);
-          console.log(postData);
           if (data.user._id && data.user._id !== postData.createdBy._id) {
             router.push("/");
           }
         } else if (checkSessionResponse.status === 401) {
           setUser(null);
-          console.log("not logged in");
         }
       } catch (error) {
         console.error("Error al verificar la sesión:", error);

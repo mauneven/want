@@ -103,11 +103,6 @@ const PostDetails = ({
         }
       );
 
-      if (response.ok) {
-        console.log("Preferencias del usuario actualizadas");
-      } else {
-        console.error("Error al actualizar las preferencias del usuario");
-      }
     } catch (error) {
       console.error("Error al actualizar las preferencias del usuario", error);
     }
@@ -143,8 +138,6 @@ const PostDetails = ({
       "thirdCategoryPreferences",
       JSON.stringify(thirdCategoryPreferences)
     );
-
-    console.log("Preferencias guardadas en el localStorage");
   };
 
   const isMobile = () => {
@@ -176,7 +169,6 @@ const PostDetails = ({
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Report success:", data);
       } else {
         console.error("Error al reportar el post:", response);
       }
@@ -359,13 +351,13 @@ const PostDetails = ({
             </div>
             <div className="d-flex">
               <button
-                className="generic-button m-1"
+                className="generic-button m-1 post-title post-categories-button"
                 onClick={() => handleCategoryButtonClick("mainCategory")}
               >
                 {t(`categories.${post.mainCategory}.name`)}
               </button>
               <button
-                className="generic-button m-1"
+                className="generic-button m-1 post-title post-categories-button"
                 onClick={() => handleCategoryButtonClick("subCategory")}
               >
                 {t(
@@ -373,7 +365,7 @@ const PostDetails = ({
                 )}
               </button>
               <button
-                className="generic-button m-1"
+                className="generic-button m-1 post-title post-categories-button"
                 onClick={() => handleCategoryButtonClick("thirdCategory")}
               >
                 {t(
