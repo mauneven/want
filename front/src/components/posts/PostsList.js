@@ -23,7 +23,7 @@ const PostsList = ({
   thirdCategory,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [pageSize, setPageSize] = useState(7);
+  const [pageSize, setPageSize] = useState(13);
   const [totalPosts, setTotalPosts] = useState(0);
   const initialPage = parseInt(localStorage.getItem("currentPage") || "1", 10);
   const [currentPage, setCurrentPage] = useState(initialPage);
