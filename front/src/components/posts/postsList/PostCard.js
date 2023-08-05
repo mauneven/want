@@ -16,7 +16,6 @@ const PostCard = ({ post, userReputation, photoIndex }) => {
           <div
             id={`carousel-${post._id}`}
             className="carousel slide img-post"
-            data-bs-ride="carousel"
             style={{ height: "200px", overflow: "hidden" }}
           >
             <Link href={`post/${post._id}`} className="carousel-inner">
