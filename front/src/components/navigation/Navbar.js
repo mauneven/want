@@ -38,7 +38,7 @@ export default function MegaMenu({
   const handleLogoClick = () => {
     clearSearchBar();
     localStorage.removeItem("currentPage");
-    localStorage.removeItem("scrollPosition")
+    localStorage.removeItem("scrollPosition");
     onResetAll(true);
     router.push("/");
   };
@@ -53,7 +53,7 @@ export default function MegaMenu({
         onSearchTermChange(newSearchTerm);
       }, 80); // 80 milisegundos de retraso
     }
-  };  
+  };
 
   useEffect(() => {
     const checkSession = async () => {
@@ -186,7 +186,9 @@ export default function MegaMenu({
                 <>
                   <Nav.Link
                     className="nav-item"
-                    onClick={() => {user ? router.push("/createPost") : router.push("/login") } }
+                    onClick={() => {
+                      user ? router.push("/createPost") : router.push("/login");
+                    }}
                   >
                     <button className="want-button border-selected want-rounded align-items-center">
                       {t("navbar.wantSomething")}
@@ -200,6 +202,16 @@ export default function MegaMenu({
                   <Notifications />
                 </div>
               ) : null}
+              {!user && isMobile && (
+                <>
+                  <button className="want-button">
+                    <i
+                      className="bi bi-person"
+                      onClick={() => router.push("/login")}
+                    ></i>
+                  </button>
+                </>
+              )}
               {!isMobile && (
                 <>
                   {user ? (

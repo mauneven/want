@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 const MobileMenu = () => {
   const { t } = useTranslation();
   const [isScrolledUp, setIsScrolledUp] = useState(true);
+  const [isVisible, setIsVisible] = useState(true);
   const router = useRouter();
   const [user, setUser] = useState(null);
 
@@ -40,6 +41,7 @@ const MobileMenu = () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const isUp = scrollTop < (window.lastScrollTop || 0);
       setIsScrolledUp(isUp);
+      setIsVisible(scrollTop === 0 || isUp);
       window.lastScrollTop = scrollTop;
     };
 
@@ -57,12 +59,12 @@ const MobileMenu = () => {
     <Navbar
       fixed="bottom"
       className={
-        isScrolledUp
+        isVisible
           ? "navbar-visible p-0 animate__animated animate__slideInUp"
-          : "navbar-hidden p-0"
+          : "navbar-hidden p-0 animate__animated animate__slideOutDown"
       }
     >
-      <div className=" w-100 p-0">
+      <div className="w-100 p-0">
         <div className="d-flex justify-content-center w-100">
           <div
             className="text-center divhover align-items-center m-1"
