@@ -25,6 +25,7 @@ const PostDetails = ({
   const imageRef = useRef(null);
   const zoomRef = useRef(null);
   const [isZoomVisible, setIsZoomVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showUserModal, setShowUserModal] = useState(false);
@@ -140,17 +141,6 @@ const PostDetails = ({
     );
   };
 
-  const isMobile = () => {
-    return (
-      typeof window !== "undefined" &&
-      (window.navigator.userAgent.match(/Mobile/) ||
-        window.navigator.userAgent.match(/Tablet/) ||
-        window.navigator.userAgent.match(
-          /iPad|iPod|iPhone|Android|BlackBerry|IEMobile/
-        ))
-    );
-  };
-
   const [mobileDevice, setMobileDevice] = useState(false);
 
   const handleReportPost = async (postId, description) => {
@@ -194,10 +184,6 @@ const PostDetails = ({
     setSelectedUser(user);
     setShowUserModal(true);
   };
-
-  useEffect(() => {
-    setMobileDevice(isMobile());
-  }, []);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -268,8 +254,19 @@ const PostDetails = ({
     display: isZoomVisible && !mobileDevice ? "block" : "none",
   };
 
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 1000);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1000);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   if (!post) {
-    return <p className="container mt-5">Loading...</p>;
+    return <p className="container mt-5"></p>;
   }
 
   return (
@@ -303,7 +300,7 @@ const PostDetails = ({
                   <img
                     key={index}
                     src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
-                    className={`img-thumbnail mr-2 ${isMobile ? "" : "post-title"}`}
+                    className={`img-thumbnail mr-2 ${isMobile ? "post-title" : ""}`}
                     onMouseOver={() => handleThumbnailMouseOver(photo)}
                     alt={post.title}
                     style={{
