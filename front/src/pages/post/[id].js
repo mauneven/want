@@ -303,7 +303,7 @@ const PostDetails = ({
                   <img
                     key={index}
                     src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
-                    className="img-thumbnail mr-2 post-title"
+                    className={`img-thumbnail mr-2 ${isMobile ? "" : "post-title"}`}
                     onMouseOver={() => handleThumbnailMouseOver(photo)}
                     alt={post.title}
                     style={{
