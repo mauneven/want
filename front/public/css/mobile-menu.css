@@ -1,5 +1,12 @@
+.navbar-visible {
+  visibility: visible;
+  transition: all 0.5s ease;
+}
+
 .navbar-hidden {
-  display: none;
+  visibility: hidden;
+  transform: translateY(100%);
+  transition: all 0.5s ease;
 }
 
 .mobile-menu-text {

@@ -298,12 +298,12 @@ const PostDetails = ({
               >
                 {!mobileDevice && <div style={overlayStyle}></div>}
               </div>
-              <div className="mt-3 d-flex">
+              <div className="mt-3 d-flex ">
                 {post.photos.map((photo, index) => (
                   <img
                     key={index}
                     src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${photo}`}
-                    className="img-thumbnail mr-2"
+                    className="img-thumbnail mr-2 post-title"
                     onMouseOver={() => handleThumbnailMouseOver(photo)}
                     alt={post.title}
                     style={{
@@ -325,7 +325,7 @@ const PostDetails = ({
             </div>
           )}
           <div
-            className="col-lg-6 p-0 "
+            className="col-lg-6 p-2 "
             style={{ maxWidth: "100%", overflowWrap: "break-word" }}
           >
             {!mobileDevice && isZoomVisible && (
