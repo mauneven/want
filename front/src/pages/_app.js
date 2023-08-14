@@ -91,7 +91,7 @@ export default function MyApp({ Component, pageProps }) {
 
         <div className="content-container">
           <Suspense fallback="Loading...">
-            <div className="want-container pt-3 pb-3">
+            <div className="want-container pt-2 pb-5">
               <Component
                 {...pageProps}
                 mainCategory={mainCategory}
@@ -113,7 +113,7 @@ export default function MyApp({ Component, pageProps }) {
 
         <footer className="footer-container pt-4">
           <div className="want-container">
-            {isMobile ? <MobileMenu /> : <Footer />}
+            <Footer />
           </div>
         </footer>
       </div>

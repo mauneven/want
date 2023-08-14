@@ -4,7 +4,6 @@ import { Navbar, Nav, NavDropdown, Form, FormControl } from "react-bootstrap";
 import { useRouter } from "next/router";
 import Notifications from "../notifications/Notifications";
 import { useTranslation } from "react-i18next";
-import LanguageSelector from "../language/LanguageSelector";
 
 export default function MegaMenu({
   mainCategory,
@@ -49,9 +48,9 @@ export default function MegaMenu({
     if (newSearchTerm !== "") {
       router.push("/");
       setTimeout(() => {
-        onKeepCategoriesChange(updatedKeepCategories); // Actualizar el valor de keepCategories aquí
+        onKeepCategoriesChange(updatedKeepCategories); 
         onSearchTermChange(newSearchTerm);
-      }, 80); // 80 milisegundos de retraso
+      }, 80); 
     }
   };
 
@@ -114,7 +113,7 @@ export default function MegaMenu({
 
   return (
     <>
-      <Navbar className="nav-borders w-100 p-1">
+      <Navbar className="nav-borders p-1">
         <div className="d-flex w-100">
           {!isMobile ? (
             <Navbar.Brand className="d-flex align-items-center m-0 p-0 col-3 justify-content-center">
@@ -196,27 +195,16 @@ export default function MegaMenu({
                   </Nav.Link>
                 </>
               )}
-              <LanguageSelector />
               {user ? (
                 <div className="d-flex align-items-center justify-content-center">
                   <Notifications />
                 </div>
               ) : null}
-              {!user && isMobile && (
-                <>
-                  <button className="want-button">
-                    <i
-                      className="bi bi-person"
-                      onClick={() => router.push("/login")}
-                    ></i>
-                  </button>
-                </>
-              )}
-              {!isMobile && (
                 <>
                   {user ? (
                     <NavDropdown
-                      className="nav-item want-rounded  "
+                      className="nav-item want-rounded custom-dropdown"
+                      
                       title={
                         <>
                           <img
@@ -260,15 +248,27 @@ export default function MegaMenu({
                       </NavDropdown.Item>
                     </NavDropdown>
                   ) : (
-                    <Nav.Link
+                    <>
+                    {isMobile ? (
+                      <>
+                        <button className="want-button">
+                          <i
+                            className="bi bi-person"
+                            onClick={() => router.push("/login")}
+                          ></i>
+                        </button>
+                      </>
+                    ) : (
+                      <Nav.Link
                       onClick={() => router.push("/login")}
                       className="nav-item"
                     >
                       <span className="nav-link">{t("navbar.login")}</span>
                     </Nav.Link>
-                  )}
+                    )}
+                    </>
+                  )}                  
                 </>
-              )}
             </Nav>
           </div>
         </div>
