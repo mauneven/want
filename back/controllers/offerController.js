@@ -7,8 +7,9 @@ const fs = require("fs");
 const sharp = require("sharp");
 const { v4: uuidv4 } = require("uuid");
 const User = require("../models/user");
-const WebSocket = require('ws');
-const { getWss } = require('./webSocket');
+const WebSocket = require("ws");
+const { getWss } = require("./webSocket");
+const nodemailer = require("nodemailer");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -27,14 +28,22 @@ exports.uploadPhotoMiddleware = upload;
 exports.createOffer = async (req, res, next) => {
   try {
     const wss = getWss();
-    const { title, description, price, countryCode, phoneNumber, contact, postId } = req.body;
+    const {
+      title,
+      description,
+      price,
+      countryCode,
+      phoneNumber,
+      contact,
+      postId,
+    } = req.body;
     const post = await Post.findById(postId);
 
     if (!post) {
-      return res.status(404).send('Post not found');
+      return res.status(404).send("Post not found");
     }
 
-    const photos = req.files.map(file => file.path);
+    const photos = req.files.map((file) => file.path);
     let compressedImagePaths = [];
 
     if (req.files.length > 0) {
@@ -43,7 +52,7 @@ exports.createOffer = async (req, res, next) => {
         path: file.path,
         originalname: file.originalname,
       }));
-    
+
       compressedImagePaths = await Promise.all(
         photoDetails.map(async (photo) => {
           const compressedImagePath = `uploads/${uuidv4()}.webp`;
@@ -56,9 +65,9 @@ exports.createOffer = async (req, res, next) => {
           return compressedImagePath;
         })
       );
-      
+
       req.files = compressedImagePaths.map((path) => ({ path }));
-    }    
+    }
 
     const offer = new Offer({
       title,
@@ -75,25 +84,63 @@ exports.createOffer = async (req, res, next) => {
 
     await offer.save();
 
+    const recipientUser = await User.findById(post.createdBy);
+    if (recipientUser) {
+      await sendOfferEmail(recipientUser.email, title, description);
+    }
+
     // Define notificationContent after initializing offer
     const notificationContent = `${offer.title}`;
 
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({
-          type: 'NEW_OFFER',
-          content: notificationContent,
-        }));
+        client.send(
+          JSON.stringify({
+            type: "NEW_OFFER",
+            content: notificationContent,
+          })
+        );
       }
     });
 
     // Incrementar contador de totalOffers del usuario
-    await User.findByIdAndUpdate(req.session.userId, { $inc: { totalOffers: 1 } });
+    await User.findByIdAndUpdate(req.session.userId, {
+      $inc: { totalOffers: 1 },
+    });
 
     await exports.sendNotification(post.createdBy, notificationContent, postId);
     res.status(201).json(offer);
   } catch (err) {
     next(err);
+  }
+};
+
+const sendOfferEmail = async (email, title, description) => {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "wanttests@gmail.com", // Tu dirección de correo
+      pass: "hgdxskaqpsunouin", // Tu contraseña
+    },
+  });
+
+  const mailOptions = {
+    from: `Want | You got a new offer "${title}" <wanttests@gmail.com>`,
+    to: email,
+    subject: `You got a new offer "${title}"`,
+    html: `
+      <p>You received a new offer on Want:</p>
+      <h2>${title}</h2>
+      <p>${description}</p>
+      <a href="https://want.com.co" style="background-color: #4CAF50; border: none; color: white; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;">View Offer</a>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Offer email sent");
+  } catch (err) {
+    console.error("Error sending offer email:", err);
   }
 };
 
@@ -142,7 +189,7 @@ exports.sendNotification = async (recipientId, content, postId) => {
     content,
     recipient: recipientId,
     postId,
-    type : "offer",
+    type: "offer",
   }); // Añade postId aquí
   await notification.save();
 };
@@ -194,10 +241,12 @@ exports.deleteOffer = async (req, res, next) => {
     const wss = getWss();
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({
-          type: 'OFFER_DELETED',
-          content: `Offer ${offer._id} has been deleted.`,
-        }));
+        client.send(
+          JSON.stringify({
+            type: "OFFER_DELETED",
+            content: `Offer ${offer._id} has been deleted.`,
+          })
+        );
       }
     });
 

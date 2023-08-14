@@ -140,7 +140,7 @@
   },
   "verificationPage": {
     "title": "Vérification",
-    "enterVerificationCodeMessage": "Entrez le code de vérification",
+    "enterVerificationCodeMessage": "Veuillez entrer le code de vérification que nous avons envoyé à votre adresse e-mail.",
     "verificationCodeLabel": "Code de vérification",
     "verificationCodePlaceholder": "Entrez le code de vérification",
     "resendVerificationButton": "Renvoyer le code de vérification",
