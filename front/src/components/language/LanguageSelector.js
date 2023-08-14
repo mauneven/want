@@ -43,13 +43,13 @@ export default function LanguageSelector() {
   ];
 
   return (
-    <div className="nav-item nav-link">
-      <button
-        className="want-rounded align-items-center nav-item border-selected want-button "
+    <div className="">
+      <div
+        className="align-items-center"
         onClick={() => setShowModal(true)}
       >
         {selectedLanguage ? selectedLanguage.toUpperCase() : ""}
-      </button>
+      </div>
 
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
@@ -66,7 +66,7 @@ export default function LanguageSelector() {
             {languageOptions.map((option) => (
               <button
                 key={option.code}
-                className="want-button want-rounded m-2"
+                className="want-button m-2"
                 onClick={() => handleChangeLanguage(option.code)}
               >
                 {option.label}

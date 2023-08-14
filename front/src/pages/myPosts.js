@@ -63,7 +63,7 @@ export default function MyPosts() {
 
   return (
     <>
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>{t("myPosts.deletePostTitle")}</Modal.Title>
         </Modal.Header>
@@ -81,10 +81,9 @@ export default function MyPosts() {
         
         <div className="row row-cols-1 row-cols-md-1 row-cols-lg-3 row-cols-xl-4 g-2">
           {posts.map((post) => {
-            const userReputation = 5 - 0.3 * post.createdBy.reports.length;
             let photoIndex = 0;
             return (
-              <div className='col d-flex p-2 m-1"'>
+              <div className='col d-flex p-2'>
                 <div className="p-0 card post-card divhover w-100 animate__fadeIn animate__animated">
                   {post.photos && post.photos.length > 0 ? (
                     <div

@@ -144,7 +144,7 @@ export default function ReceivedOffers() {
         onHide={() => setShowDetailsModal(false)}
         offer={selectedOffer}
       />
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>{t('receivedOffers.deleteOfferTitle')}</Modal.Title>
         </Modal.Header>

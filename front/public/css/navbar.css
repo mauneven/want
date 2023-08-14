@@ -6,6 +6,13 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
+.footer-fixed {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
 html {
   scroll-behavior: auto !important;
 }
@@ -92,8 +99,8 @@ html {
   border-radius: 10px;
   box-shadow: 0px 0px 15px -1px #00000042;
   position: absolute;
-  transform: translateX(-100%);
-  padding: 10px;
+  transform: translateX(-75%);
+  padding: 15px;
 }
 
 .dropdown-item{
@@ -198,6 +205,10 @@ html {
 
 .shadow-end {
   box-shadow: 4px 0 4px -4px rgba(0, 0, 0, 0.5); /* Agrega sombra al final */
+}
+
+.custom-dropdown .dropdown-toggle::after {
+  display: none;
 }
 
 @media (max-width: 576px) {
