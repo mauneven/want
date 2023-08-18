@@ -1,6 +1,6 @@
 # frontv2
 
-A new Flutter project.
+The new FrontEnd for Want on Flutter
 
 ## Getting Started
 
