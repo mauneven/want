@@ -8,7 +8,8 @@ class PostCard extends StatelessWidget {
   final String user;
   final String photoUrl;
 
-  const PostCard({super.key,
+  const PostCard({
+    super.key,
     required this.title,
     required this.description,
     required this.price,
@@ -29,19 +30,22 @@ class PostCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.network(
-            fullPhotoUrl,
-            height: 200,
-            width: double.infinity,
-            fit: BoxFit.cover,
-
+          Expanded(
+            child: Image.network(
+              fullPhotoUrl,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                ),
                 const SizedBox(height: 4),
                 Text(description),
                 const SizedBox(height: 4),
