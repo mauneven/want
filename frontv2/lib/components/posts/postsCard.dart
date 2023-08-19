@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../config/connections/api_config.dart';
 
 class PostCard extends StatelessWidget {
   final String title;
@@ -19,11 +20,12 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String fullPhotoUrl = "http://localhost:4000/$photoUrl";
+    final serverUrl = getServerUrl();
+    final String fullPhotoUrl = "$serverUrl/$photoUrl";
     final formattedPrice = NumberFormat('#,##0', 'en_US').format(price);
 
     return Card(
-      color: Color.fromRGBO(245, 245, 245, 1.0),
+      color: const Color.fromRGBO(245, 245, 245, 1.0),
       shadowColor: Colors.black,
       elevation: 3,
       child: Column(
@@ -70,7 +72,7 @@ class PostCard extends StatelessWidget {
   // Function to truncate text if it's too long
   String _truncateText(String text, int maxLength) {
     if (text.length > maxLength) {
-      return text.substring(0, maxLength) + "...";
+      return "${text.substring(0, maxLength)}...";
     }
     return text;
   }

@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import './components/navigation/bottom_navigation.dart';
 import './components/posts/postsCard.dart';
 import 'dart:convert';
+import './config/connections/api_config.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,7 +39,8 @@ class _MyHomePageState extends State<MyHomePage> {
   List<dynamic> _posts = [];
 
   Future<void> _fetchPosts() async {
-    final response = await http.get(Uri.parse('http://localhost:4000/api/posts'));
+    final serverUrl = getServerUrl();
+    final response = await http.get(Uri.parse('$serverUrl/api/posts'));
     if (response.statusCode == 200) {
       setState(() {
         _posts = json.decode(response.body)['posts'];
