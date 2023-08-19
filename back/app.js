@@ -24,12 +24,7 @@ const {initializeWss} = require ('./controllers/webSocket');
 
 app.use(cors({
   origin: [
-    'http://www.want.com.co:3000',
-    'https://www.want.com.co:3000',
-    'http://want.com.co',
     'https://want.com.co',
-    'http://35.225.113.125',
-    'https://35.225.113.125/',
     'http://localhost:3000',
   ],
   credentials: true
