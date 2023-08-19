@@ -22,19 +22,20 @@ class PostCard extends StatelessWidget {
     final formattedPrice = NumberFormat('#,##0', 'en_US').format(price);
 
     return Card(
-      color: Color.fromRGBO(245, 245, 245, 1.0),
+      color: const Color.fromRGBO(245, 245, 245, 1.0),
       shadowColor: Colors.black,
       surfaceTintColor: Colors.white,
       elevation: 3,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.network(
-            fullPhotoUrl,
-            height: 200,
-            width: double.infinity,
-            fit: BoxFit.cover,
-
+          AspectRatio(
+            aspectRatio: 1.5, // Puedes ajustar este valor según tus necesidades
+            child: Image.network(
+              fullPhotoUrl,
+              fit: BoxFit.cover,
+              width: double.infinity,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
