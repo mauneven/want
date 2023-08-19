@@ -67,7 +67,11 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: ListView.builder(
+      body: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: (MediaQuery.of(context).size.width ~/ 200).clamp(1, 6), // Ajusta este valor según tus necesidades
+          childAspectRatio: 0.8, // Ajusta este valor para cambiar la proporción de las tarjetas
+        ),
         itemCount: _posts.length,
         itemBuilder: (context, index) {
           final post = _posts[index];
