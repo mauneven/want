@@ -9,13 +9,13 @@ class PostCard extends StatelessWidget {
   final String photoUrl;
 
   const PostCard({
-    super.key,
+    Key? key,
     required this.title,
     required this.description,
     required this.price,
     required this.user,
     required this.photoUrl,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,6 @@ class PostCard extends StatelessWidget {
     return Card(
       color: Color.fromRGBO(245, 245, 245, 1.0),
       shadowColor: Colors.black,
-      surfaceTintColor: Colors.white,
       elevation: 3,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,12 +41,20 @@ class PostCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Truncated title
                 FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  child: Text(
+                    _truncateText(title, 18), // Adjust the max length as needed
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                 ),
                 const SizedBox(height: 4),
-                Text(description),
+                // Truncated description
+                Text(
+                  _truncateText(description, 60), // Adjust the max length as needed
+                  overflow: TextOverflow.ellipsis,
+                ),
                 const SizedBox(height: 4),
                 Text('\$$formattedPrice'),
                 const SizedBox(height: 4),
@@ -58,5 +65,13 @@ class PostCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  // Function to truncate text if it's too long
+  String _truncateText(String text, int maxLength) {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + "...";
+    }
+    return text;
   }
 }
