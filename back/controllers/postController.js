@@ -34,8 +34,6 @@ exports.createPost = async (req, res, next) => {
       latitude,
       longitude,
       mainCategory,
-      subCategory,
-      thirdCategory,
       price,
     } = req.body;
     const photos = req.files.map((file) => ({
@@ -78,8 +76,6 @@ exports.createPost = async (req, res, next) => {
       latitude: newLatitude,
       longitude: newLongitude,
       mainCategory,
-      subCategory,
-      thirdCategory,
       price,
       photos: compressedImagePaths || [],
     });
@@ -108,8 +104,6 @@ exports.updatePost = async (req, res, next) => {
       latitude,
       longitude,
       mainCategory,
-      subCategory,
-      thirdCategory,
       price,
       deletedImages,
     } = req.body;
@@ -147,8 +141,6 @@ exports.updatePost = async (req, res, next) => {
     }
 
     post.mainCategory = mainCategory;
-    post.subCategory = subCategory;
-    post.thirdCategory = thirdCategory;
     post.price = price;
 
     if (req.files.length > 0) {
@@ -340,12 +332,6 @@ exports.getAllPosts = async (req, res, next) => {
     // Filtrar por categoría
     if (req.query.mainCategory) {
       filters["mainCategory"] = req.query.mainCategory;
-    }
-    if (req.query.subCategory) {
-      filters["subCategory"] = req.query.subCategory;
-    }
-    if (req.query.thirdCategory) {
-      filters["thirdCategory"] = req.query.thirdCategory;
     }
 
     // Filtrar por término de búsqueda

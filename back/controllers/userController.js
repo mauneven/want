@@ -111,13 +111,13 @@ exports.updateUserPreferences = async (req, res, next) => {
       return;
     }
 
-    const { mainCategoryPreferences, subCategoryPreferences, thirdCategoryPreferences } = userPreferences;
+    const { mainCategoryPreferences } = userPreferences;
 
     const updateCounter = (counter, categories) => {
       if (Array.isArray(categories)) {
         categories.forEach((category) => {
-          const [mainCategory, subCategory, thirdCategory] = category.split('.');
-          const categoryKey = [mainCategory, subCategory, thirdCategory].filter(Boolean).join('.');
+          const [mainCategory] = category.split('.');
+          const categoryKey = [mainCategory].filter(Boolean).join('.');
 
           if (!counter[categoryKey]) {
             counter[categoryKey] = 1;
@@ -129,12 +129,8 @@ exports.updateUserPreferences = async (req, res, next) => {
     };    
 
     updateCounter(user.mainCategoryCounts, mainCategoryPreferences);
-    updateCounter(user.subCategoryCounts, subCategoryPreferences);
-    updateCounter(user.thirdCategoryCounts, thirdCategoryPreferences);
 
     user.markModified('mainCategoryCounts');
-    user.markModified('subCategoryCounts');
-    user.markModified('thirdCategoryCounts');
 
     await user.save();
 
@@ -156,8 +152,6 @@ exports.getUserPreferences = async (req, res, next) => {
 
     const preferences = {
       mainCategoryCounts: user.mainCategoryCounts,
-      subCategoryCounts: user.subCategoryCounts,
-      thirdCategoryCounts: user.thirdCategoryCounts
     };
 
     res.status(200).json(preferences);
