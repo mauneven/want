@@ -58,6 +58,7 @@ class PostsPageState extends State<PostsPage> {
       _currentPage = 1;
     });
     _fetchPosts();
+    _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.easeInOut); // Move scroll to the start
   }
 
   @override
