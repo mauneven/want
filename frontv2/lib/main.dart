@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import './components/navigation/bottom_navigation.dart';
 import './components/posts/posts.dart';
 import './components/search/search_page.dart';
+import 'components/auth/auth_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -56,6 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           PostsPage(key: _postsPageKey),
           SearchPage(onSearch: _onSearch),
+          AuthPage(),
           // Add other pages as needed
         ],
       ),
