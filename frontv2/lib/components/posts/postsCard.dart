@@ -27,6 +27,7 @@ class PostCard extends StatelessWidget {
     return Card(
       color: const Color.fromRGBO(245, 245, 245, 1.0),
       shadowColor: Colors.black,
+      surfaceTintColor: Colors.white10,
       elevation: 3,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
