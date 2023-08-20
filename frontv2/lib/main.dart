@@ -37,13 +37,29 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
   List<dynamic> _posts = [];
+  int _currentPage = 1;
+  bool _isLoading = false;
+  ScrollController _scrollController = ScrollController();
 
-  Future<void> _fetchPosts() async {
+  Future<void> _fetchPosts({bool append = false}) async {
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
     final serverUrl = getServerUrl();
-    final response = await http.get(Uri.parse('$serverUrl/api/posts'));
+    final response = await http.get(Uri.parse('$serverUrl/api/posts?page=$_currentPage'));
     if (response.statusCode == 200) {
+      final newPosts = json.decode(response.body)['posts'];
       setState(() {
-        _posts = json.decode(response.body)['posts'];
+        if (append) {
+          _posts.addAll(newPosts);
+        } else {
+          _posts = newPosts;
+        }
+        _isLoading = false;
+        _currentPage++;
       });
     } else {
       throw Exception('Failed to fetch posts');
@@ -54,6 +70,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _fetchPosts();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+        // Reached the bottom, load more posts
+        _fetchPosts(append: true);
+      }
+    });
   }
 
   void _onTabTapped(int index) {
@@ -70,9 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: GridView.builder(
+        controller: _scrollController,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: (MediaQuery.of(context).size.width ~/ 200).clamp(1, 6), // Ajusta este valor según tus necesidades
-          childAspectRatio: 0.8, // Ajusta este valor para cambiar la proporción de las tarjetas
+          crossAxisCount: (MediaQuery.of(context).size.width ~/ 200).clamp(1, 6), // Adjust this value as needed
+          childAspectRatio: 0.8, // Adjust this value to change the proportion of the cards
         ),
         itemCount: _posts.length,
         itemBuilder: (context, index) {
