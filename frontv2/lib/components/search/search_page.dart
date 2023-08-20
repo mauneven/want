@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 class SearchPage extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
+  final void Function(String searchTerm, int? mainCategory) onSearch;
+
+  SearchPage({required this.onSearch});
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +21,9 @@ class SearchPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
+            onSubmitted: (text) {
+              onSearch(text, null);
+            },
           ),
         ),
         Expanded(
@@ -30,8 +36,7 @@ class SearchPage extends StatelessWidget {
             itemBuilder: (context, index) {
               return ElevatedButton(
                 onPressed: () {
-                  // Handle category selection
-                  print('Selected category ${index + 1}');
+                  onSearch('', index + 1);
                 },
                 child: Text('Category ${index + 1}'),
               );

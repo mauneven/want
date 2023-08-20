@@ -35,15 +35,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
 
-  List<Widget> _pages = [
-    PostsPage(),
-    SearchPage(),
-    // Add other pages as needed
-  ];
+  final GlobalKey<PostsPageState> _postsPageKey = GlobalKey();
 
-  void _onTabTapped(int index) {
+  void _onSearch(String searchTerm, int? mainCategory) {
+    _postsPageKey.currentState?.search(searchTerm, mainCategory);
     setState(() {
-      _currentIndex = index;
+      _currentIndex = 0; // Switch to the posts page
     });
   }
 
@@ -54,10 +51,21 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: _pages[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: [
+          PostsPage(key: _postsPageKey),
+          SearchPage(onSearch: _onSearch),
+          // Add other pages as needed
+        ],
+      ),
       bottomNavigationBar: BottomNavigation(
         currentIndex: _currentIndex,
-        onTap: _onTabTapped,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
       ),
     );
   }
