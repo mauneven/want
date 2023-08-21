@@ -1,57 +1,61 @@
-const express = require('express');
-const session = require('express-session');
-const MongoStore = require('connect-mongo');
-const cors = require('cors');
-const userRoutes = require('./routes/userRoutes');
-const postRoutes = require('./routes/postRoutes');
-const reportRoutes = require('./routes/reportRoutes');
-const User = require('./models/user');
-const offerRoutes = require('./routes/offerRoutes');
-const docxRoutes = require('./routes/docxRoutes.js');
-const authController = require('./controllers/authController');
-const https = require('https');
-const http = require('http');
-const fs = require('fs');
-const schedule = require('node-schedule');
-const Report = require('./models/report');
-const Post = require('./models/post');
-const postController = require('./controllers/postController');
+const express = require("express");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const cors = require("cors");
+const userRoutes = require("./routes/userRoutes");
+const postRoutes = require("./routes/postRoutes");
+const reportRoutes = require("./routes/reportRoutes");
+const User = require("./models/user");
+const offerRoutes = require("./routes/offerRoutes");
+const docxRoutes = require("./routes/docxRoutes.js");
+const authController = require("./controllers/authController");
+const https = require("https");
+const http = require("http");
+const fs = require("fs");
+const schedule = require("node-schedule");
+const Report = require("./models/report");
+const Post = require("./models/post");
+const postController = require("./controllers/postController");
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const {getWss} = require ('./controllers/webSocket');
-const {initializeWss} = require ('./controllers/webSocket');
+const { getWss } = require("./controllers/webSocket");
+const { initializeWss } = require("./controllers/webSocket");
 
-app.use(cors({
-  origin: [
-    'https://want.com.co',
-    'http://localhost:3000',
-  ],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: ["https://want.com.co", "http://localhost:3000"],
+    credentials: true,
+  })
+);
 
-app.use('/uploads', express.static('uploads'));
-app.use(session({
-  secret: 'my-secret',
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: 'mongodb+srv://mauneven:admin123@want.oik7qz6.mongodb.net/want?retryWrites=true&w=majority',
-    autoRemove: 'native', // default
-    touchAfter: 24 * 3600, // time period in seconds, here it's 24 hours
-    ttl: 14 * 24 * 60 * 60, // = 14 days. Default
-    autoRemoveInterval: 10, // Value in minutes. Default
-    crypto: {
-      secret: 'squirrel',
-      algorithm: 'aes256',
-      encoding: 'hex'
+app.use("/uploads", express.static("uploads"));
+app.use(
+  session({
+    secret: "my-secret",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl:
+        "mongodb+srv://mauneven:admin123@want.oik7qz6.mongodb.net/want?retryWrites=true&w=majority",
+      autoRemove: "native",
+      touchAfter: 24 * 3600,
+      ttl: 14 * 24 * 60 * 60,
+      autoRemoveInterval: 10,
+      crypto: {
+        secret: "squirrel",
+        algorithm: "aes256",
+        encoding: "hex",
+      },
+    }),
+    cookie: {
+      maxAge: 14 * 24 * 60 * 60 * 1000,
+      httpOnly: false,
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // Cambio aquí
+      secure: process.env.NODE_ENV === "production", // Asegura la cookie en producción
     },
-  }),
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 14 * 24 * 60 * 60 * 1000 // = 14 days. Default
-  }
-}));
+  })
+);
 
 app.use(async (req, res, next) => {
   const userId = req.session.userId;
@@ -66,20 +70,20 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.use('/api', userRoutes);
-app.use('/api', postRoutes);
-app.use('/api', offerRoutes);
+app.use("/api", userRoutes);
+app.use("/api", postRoutes);
+app.use("/api", offerRoutes);
 app.use("/api", docxRoutes);
-app.use('/api', reportRoutes);
+app.use("/api", reportRoutes);
 app.use((err, req, res, next) => {
   console.error(err);
   if (!res.headersSent) {
-    res.status(500).send('Something broke!');
+    res.status(500).send("Something broke!");
   }
 });
 
 // Tarea para eliminar los reportes antiguos
-schedule.scheduleJob('0 */12 * * *', async () => {
+schedule.scheduleJob("0 */12 * * *", async () => {
   try {
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
@@ -94,12 +98,12 @@ schedule.scheduleJob('0 */12 * * *', async () => {
       await Report.deleteOne({ _id: report._id });
     }
   } catch (err) {
-    console.error('Error al eliminar los reportes antiguos:', err);
+    console.error("Error al eliminar los reportes antiguos:", err);
   }
 });
 
 // Tarea para eliminar los posts después de 30 días
-schedule.scheduleJob('0 */12 * * *', async () => {
+schedule.scheduleJob("0 */12 * * *", async () => {
   try {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -111,12 +115,12 @@ schedule.scheduleJob('0 */12 * * *', async () => {
       await postController.deletePostById(post._id);
     }
   } catch (err) {
-    console.error('Error al eliminar los posts antiguos:', err);
+    console.error("Error al eliminar los posts antiguos:", err);
   }
 });
 
 // Tarea para eliminar las cuentas después de 30 días
-schedule.scheduleJob('0 */12 * * *', async () => {
+schedule.scheduleJob("0 */12 * * *", async () => {
   try {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -130,14 +134,12 @@ schedule.scheduleJob('0 */12 * * *', async () => {
       await authController.deletionPass(user._id);
     }
   } catch (err) {
-    console.error('Error al eliminar las cuentas de usuario:', err);
+    console.error("Error al eliminar las cuentas de usuario:", err);
   }
 });
 
 // para main
-/*
-
-const options = {
+/*const options = {
   key: fs.readFileSync('/etc/letsencrypt/live/want.com.co/privkey.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/live/want.com.co/fullchain.pem')
 };
@@ -158,5 +160,5 @@ const server = http.createServer(app);
 initializeWss(server);
 
 server.listen(4000, () => {
-  console.log('Server started on port 4000');
+  console.log("Server started on port 4000");
 });
