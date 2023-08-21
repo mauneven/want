@@ -18,6 +18,9 @@ class AuthService {
     if (!kIsWeb) {
       dio.interceptors.add(CookieManager(cookieJar));
     } else {
+      dio.options.extra = {
+        'withCredentials': true,
+      };
       dio.interceptors.add(WebCookieManager());
     }
     loadCookies(); // Cargar cookies al iniciar el servicio
