@@ -4,10 +4,12 @@ import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../config/connections/api_config.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthService {
   final Dio dio;
   final CookieJar cookieJar;
+  final storage = FlutterSecureStorage();
 
   AuthService()
       : dio = Dio(),
@@ -18,15 +20,14 @@ class AuthService {
   Future<void> saveCookies() async {
     final cookies = await cookieJar.loadForRequest(Uri.parse(getServerUrl()));
     final cookiesList = cookies.map((cookie) => cookie.toString()).toList();
-    print('Cookies saved: $cookiesList'); // Imprime las cookies en la consola
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('cookies', cookiesList); // Guarda como lista de strings
+    print('Cookies saved: $cookiesList');
+    await storage.write(key: 'cookies', value: jsonEncode(cookiesList));
   }
 
   Future<void> loadCookies() async {
-    final prefs = await SharedPreferences.getInstance();
-    final cookiesStringList = prefs.getStringList('cookies');
-    if (cookiesStringList != null) {
+    final cookiesString = await storage.read(key: 'cookies');
+    if (cookiesString != null) {
+      final cookiesStringList = jsonDecode(cookiesString);
       final cookies = cookiesStringList.map((cookieString) => Cookie.fromSetCookieValue(cookieString)).toList();
       final uri = Uri.parse(getServerUrl());
       cookieJar.saveFromResponse(uri, cookies);
