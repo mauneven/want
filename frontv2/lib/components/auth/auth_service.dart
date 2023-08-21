@@ -27,8 +27,8 @@ class AuthService {
   Future<void> loadCookies() async {
     final cookiesString = await storage.read(key: 'cookies');
     if (cookiesString != null) {
-      final cookiesStringList = jsonDecode(cookiesString);
-      final cookies = cookiesStringList.map((cookieString) => Cookie.fromSetCookieValue(cookieString)).toList();
+      final cookiesStringList = jsonDecode(cookiesString) as List;
+      final cookies = cookiesStringList.map((cookieString) => Cookie.fromSetCookieValue(cookieString as String)).toList();
       final uri = Uri.parse(getServerUrl());
       cookieJar.saveFromResponse(uri, cookies);
     }
@@ -41,11 +41,12 @@ class AuthService {
     final response = await dio.getUri(uri);
 
     if (response.statusCode == 200) {
-      final responseData = json.decode(response.data);
+      final responseData = response.data;
       await saveCookies();
-      return responseData['loggedIn'];
-    } else {
-      return false;
+      if (responseData != null && responseData['loggedIn'] is bool) {
+        return responseData['loggedIn'];
+      }
     }
+    return false; // Retornar false si la clave 'loggedIn' no está presente o no es booleano
   }
 }
