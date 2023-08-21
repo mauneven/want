@@ -42,6 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _updateLoginStatus(bool status) {
     setState(() {
       _isLoggedIn = status;
+      _currentIndex = 0; // Puedes cambiar esto si quieres ir a otra página después de iniciar sesión
     });
   }
 

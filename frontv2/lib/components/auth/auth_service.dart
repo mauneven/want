@@ -40,11 +40,14 @@ class AuthService {
     final uri = Uri.parse('$serverUrl/api/user');
     final response = await dio.getUri(uri);
 
-    if (response.statusCode == 200) {
-      final responseData = response.data;
+    print('Response data: ${response.data}'); // Impresión de la respuesta para diagnóstico
+
+    if (response.statusCode == 200 && response.data is Map) {
+      final responseData = response.data as Map;
       await saveCookies();
-      if (responseData != null && responseData['loggedIn'] is bool) {
-        return responseData['loggedIn'];
+      final loggedIn = responseData['loggedIn'];
+      if (loggedIn is bool) {
+        return loggedIn;
       }
     }
     return false; // Retornar false si la clave 'loggedIn' no está presente o no es booleano
