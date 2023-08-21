@@ -45,11 +45,12 @@ class AuthService {
     if (response.statusCode == 200 && response.data is Map) {
       final responseData = response.data as Map;
       await saveCookies();
-      final loggedIn = responseData['loggedIn'];
-      if (loggedIn is bool) {
-        return loggedIn;
+      // Verifica la existencia del usuario en lugar de la clave 'loggedIn'
+      if (responseData['user'] != null) {
+        return true;
       }
     }
-    return false; // Retornar false si la clave 'loggedIn' no está presente o no es booleano
+    return false; // Retornar false si el usuario no está presente
   }
+
 }
