@@ -3,6 +3,7 @@ import './components/navigation/bottom_navigation.dart';
 import './components/posts/posts.dart';
 import './components/search/search_page.dart';
 import 'components/auth/auth_page.dart';
+import 'components/auth/auth_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,13 +36,32 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
-
   final GlobalKey<PostsPageState> _postsPageKey = GlobalKey();
+  bool _isLoggedIn = false;
+
+  void _updateLoginStatus(bool status) {
+    setState(() {
+      _isLoggedIn = status;
+    });
+  }
 
   void _onSearch(String searchTerm, int? mainCategory) {
     _postsPageKey.currentState?.search(searchTerm, mainCategory);
     setState(() {
       _currentIndex = 0; // Switch to the posts page
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final loggedIn = await AuthService().isLoggedIn();
+    setState(() {
+      _isLoggedIn = loggedIn;
     });
   }
 
@@ -57,16 +77,21 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           PostsPage(key: _postsPageKey),
           SearchPage(onSearch: _onSearch),
-          AuthPage(),
-          // Add other pages as needed
+          AuthPage(onLoginSuccess: _updateLoginStatus),
+          // Add other pages as needed based on the login status
         ],
       ),
       bottomNavigationBar: BottomNavigation(
+        isLoggedIn: _isLoggedIn,
         currentIndex: _currentIndex,
         onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
+          if (_isLoggedIn && index == 2) {
+            // Handle the "Create Post" logic here
+          } else {
+            setState(() {
+              _currentIndex = index;
+            });
+          }
         },
       ),
     );

@@ -4,6 +4,10 @@ import 'dart:convert';
 import '../../config/connections/api_config.dart';
 
 class AuthPage extends StatefulWidget {
+  final Function(bool) onLoginSuccess;
+
+  AuthPage({required this.onLoginSuccess});
+
   @override
   _AuthPageState createState() => _AuthPageState();
 }
@@ -20,8 +24,8 @@ class _AuthPageState extends State<AuthPage> {
   Future<void> _submit() async {
     final serverUrl = getServerUrl();
     final uri = Uri.parse(_isLoginMode
-        ? '$serverUrl/api/auth/login'
-        : '$serverUrl/api/auth/register');
+        ? '$serverUrl/api/login'
+        : '$serverUrl/api/register');
 
     final response = await http.post(uri, body: {
       'email': _emailController.text,
@@ -33,7 +37,7 @@ class _AuthPageState extends State<AuthPage> {
     });
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      // Handle success
+      widget.onLoginSuccess(true); // Call the callback function
       print('Login/Register successful');
     } else {
       // Handle error

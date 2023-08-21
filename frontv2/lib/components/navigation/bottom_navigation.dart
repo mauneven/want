@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
 class BottomNavigation extends StatelessWidget {
+  final bool isLoggedIn;
   final int currentIndex;
   final void Function(int) onTap;
 
-  BottomNavigation({required this.currentIndex, required this.onTap});
+  const BottomNavigation({super.key,
+    required this.isLoggedIn,
+    required this.currentIndex,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +18,8 @@ class BottomNavigation extends StatelessWidget {
       onTap: onTap,
       selectedItemColor: Colors.blue,
       unselectedItemColor: Colors.grey,
-      items: const [
+      items: isLoggedIn
+          ? const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: 'Home',
@@ -24,7 +30,7 @@ class BottomNavigation extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.add),
-          label: 'Create',
+          label: 'Create Post',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.chat),
@@ -33,6 +39,20 @@ class BottomNavigation extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
           label: 'Profile',
+        ),
+      ]
+          : const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.search),
+          label: 'Search',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Login',
         ),
       ],
     );

@@ -38,6 +38,7 @@ dependencies:
   http: ^1.1.0
   intl: ^0.18.1
   universal_io: ^2.2.2
+  cookie_jar: ^4.0.8
 
 dev_dependencies:
   flutter_test:
