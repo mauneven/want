@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontv2/components/auth/auth_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../config/connections/api_config.dart';
@@ -22,12 +23,15 @@ class _AuthPageState extends State<AuthPage> {
   final TextEditingController _birthdateController = TextEditingController();
 
   Future<void> _submit() async {
+    final authService = AuthService();
+    await authService.loadCookies(); // Cargar cookies antes de la solicitud
+
     final serverUrl = getServerUrl();
     final uri = Uri.parse(_isLoginMode
         ? '$serverUrl/api/login'
         : '$serverUrl/api/register');
 
-    final response = await http.post(uri, body: {
+    final response = await authService.dio.postUri(uri, data: {
       'email': _emailController.text,
       'password': _passwordController.text,
       if (!_isLoginMode) 'firstName': _firstNameController.text,
@@ -37,7 +41,8 @@ class _AuthPageState extends State<AuthPage> {
     });
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      widget.onLoginSuccess(true); // Call the callback function
+      await authService.saveCookies(); // Guardar cookies después de la solicitud
+      widget.onLoginSuccess(true); // Llamar a la función de devolución de llamada
       print('Login/Register successful');
     } else {
       // Handle error

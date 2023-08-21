@@ -59,7 +59,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _checkLoginStatus() async {
-    final loggedIn = await AuthService().isLoggedIn();
+    final authService = AuthService();
+    await authService.loadCookies(); // Cargar cookies antes de verificar
+    final loggedIn = await authService.isLoggedIn();
     setState(() {
       _isLoggedIn = loggedIn;
     });
