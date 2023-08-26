@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, Image, ScrollView, Dimensions, StyleSheet, ListRenderItemInfo } from 'react-native';
+import { View, FlatList, ListRenderItemInfo } from 'react-native';
 import axios from 'axios';
 import { useTheme } from '@react-navigation/native';
+import PostCard from '../components/posts/PostCard';
 
 interface Post {
   _id: string;
@@ -9,13 +10,7 @@ interface Post {
   title: string;
   description: string;
   photos: string[];
-  createdBy: {
-    photo: string;
-    firstName: string;
-  };
 }
-
-const { width } = Dimensions.get('window');
 
 const HomeScreen = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -49,46 +44,7 @@ const HomeScreen = () => {
   }, [page]);
 
   const renderPost = ({ item }: ListRenderItemInfo<Post>) => {
-    return (
-      <View style={[styles.card, { backgroundColor: colors.card }]}>
-        {item.photos && item.photos.length > 0 ? (
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false}
-            snapToInterval={width - 20} // Snap to each photo
-            decelerationRate="fast" // Stop at each photo
-          >
-            {item.photos.map((photo: string) => (
-              <Image
-                key={photo}
-                source={{ uri: `https://want.com.co/${photo}` }}
-                style={styles.photo}
-              />
-            ))}
-          </ScrollView>
-        ) : null}
-        <View style={{ padding: 10 }}>
-          <Text style={[styles.price, { color: colors.text }]} numberOfLines={1}>
-            ${item.price}
-          </Text>
-          <Text style={[styles.title, { color: colors.text }]} numberOfLines={2}>
-            {item.title}
-          </Text>
-          <Text style={{ color: colors.text }} numberOfLines={2}>
-            {item.description}
-          </Text>
-          <View style={styles.userInfo}>
-            <Image
-              source={{ uri: `https://want.com.co/${item.createdBy.photo}` }}
-              style={styles.userPhoto}
-            />
-            <Text style={{ marginLeft: 15, color: colors.text }}>
-              {item.createdBy.firstName}
-            </Text>
-          </View>
-        </View>
-      </View>
-    );
+    return <PostCard post={item} />;  // Utiliza el nuevo componente
   };
 
   const handleLoadMore = () => {
@@ -109,45 +65,5 @@ const HomeScreen = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  card: {
-    borderRadius: 10,
-    margin: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2.84,
-    elevation: 5,
-  },
-  photo: {
-    width: width - 20,
-    height: 200,
-    resizeMode: 'cover',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10
-  },
-  price: {
-    fontSize: 24,
-    fontWeight: 'bold'
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold'
-  },
-  userInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10
-  },
-  userPhoto: {
-    width: 50,
-    height: 50,
-    borderRadius: 25
-  }
-});
 
 export default HomeScreen;

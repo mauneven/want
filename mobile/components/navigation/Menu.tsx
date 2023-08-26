@@ -9,7 +9,7 @@ const Menu = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Search" component={SearchScreen} />
+      <Tab.Screen name="Login" component={SearchScreen} />
     </Tab.Navigator>
   );
 };
