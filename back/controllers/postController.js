@@ -346,9 +346,6 @@ exports.getAllPosts = async (req, res, next) => {
       req.query.mainCategoryPreferences || "{}"
     );
 
-    console.log("Gustos del usuario:");
-    console.log("Main Category Preferences:", mainCategoryPreferences);
-
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 10;
     const skip = (page - 1) * pageSize;

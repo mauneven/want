@@ -20,7 +20,7 @@ interface LocationFilter {
   radius: number;
 }
 
-interface SearchPosts{
+interface SearchPosts {
   searchTerm: String;
 }
 
@@ -93,14 +93,18 @@ const HomeScreen = () => {
   };
 
   return (
-    <View style={{ backgroundColor: colors.background }}>
-      <SearchPosts onSearch={handleSearch}/>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <SearchPosts onSearch={handleSearch} />
       <PostsLocation onFilterChange={handleLocationFilter} />
       <FlatList
         data={posts}
         renderItem={renderPost}
         keyExtractor={(item) => item._id}
-        ListEmptyComponent={() =><View><Text>No hay posts por mostrar</Text></View>}
+        ListEmptyComponent={() => (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontSize: 60, color: colors.text }}>No hay posts por mostrar</Text>
+          </View>
+        )}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.1}
       />

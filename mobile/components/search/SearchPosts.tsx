@@ -1,4 +1,3 @@
-// SearchPosts.tsx
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
 import { useTheme } from '@react-navigation/native';
@@ -18,12 +17,13 @@ const SearchPosts: React.FC<SearchPostsProps> = ({ onSearch }) => {
   return (
     <View style={styles.container}>
       <TextInput
-        style={{...styles.input, backgroundColor: colors.card, color: colors.text}}
+        style={{ ...styles.input, backgroundColor: colors.card, color: colors.text, borderColor: colors.border }}
+        placeholderTextColor={colors.text}
         placeholder="Buscar posts..."
         value={searchTerm}
         onChangeText={setSearchTerm}
       />
-      <Button title="Buscar" onPress={handleSearch} />
+      <Button title="Buscar" onPress={handleSearch} color={colors.primary} />
     </View>
   );
 };

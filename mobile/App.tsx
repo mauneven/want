@@ -4,7 +4,7 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/
 import Menu from './components/navigation/Menu';
 
 const App = () => {
-  const scheme = useColorScheme(); // Obtiene el tema actual del sistema
+  const scheme = useColorScheme();
 
   return (
     <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DarkTheme}>

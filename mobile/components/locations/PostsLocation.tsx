@@ -3,6 +3,7 @@ import { View, Modal, Button, TextInput, StyleSheet } from 'react-native';
 import MapView, { Marker, Circle, Region } from 'react-native-maps';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
+import { useTheme } from '@react-navigation/native';
 
 interface Location {
   latitude: number;
@@ -20,6 +21,7 @@ const PostsLocation: React.FC<PostsLocationProps> = ({ onFilterChange }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const mapRef = useRef<MapView | null>(null);
+  const { colors } = useTheme();
 
   useEffect(() => {
     // Get initial location
@@ -77,7 +79,7 @@ const PostsLocation: React.FC<PostsLocationProps> = ({ onFilterChange }) => {
 
   return (
     <View>
-      <Button title="Mostrar Mapa" onPress={() => setModalVisible(true)} />
+      <Button title="Mostrar Mapa" onPress={() => setModalVisible(true)} color={colors.primary} />
       <Modal
         animationType="slide"
         transparent={false}
@@ -86,10 +88,11 @@ const PostsLocation: React.FC<PostsLocationProps> = ({ onFilterChange }) => {
       >
         <View style={{ flex: 1 }}>
           <TextInput
-            style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+            style={{ height: 40, borderColor: colors.border, borderWidth: 1, color: colors.text, backgroundColor: colors.card }}
             onChangeText={text => handleSearchChange(text)}
             value={searchQuery}
             placeholder="Buscar ubicación"
+            placeholderTextColor={colors.text}  // Añadir esta línea
           />
           {searchResults.map((result, index) => (
             <Button key={index} title={result.display_name} onPress={() => handleSearchSelect(result)} />
