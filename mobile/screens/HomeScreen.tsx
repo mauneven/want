@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, FlatList, ListRenderItemInfo } from 'react-native';
+import { View, FlatList, ListRenderItemInfo, Text } from 'react-native';
 import axios from 'axios';
 import { useTheme } from '@react-navigation/native';
 import PostCard from '../components/posts/PostCard';
 import PostsLocation from '../components/locations/PostsLocation';
+import SearchPosts from '../components/search/SearchPosts';
 
 interface Post {
   _id: string;
@@ -19,12 +20,18 @@ interface LocationFilter {
   radius: number;
 }
 
+interface SearchPosts{
+  searchTerm: String;
+}
+
+
 const HomeScreen = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [locationFilter, setLocationFilter] = useState<LocationFilter | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const { colors } = useTheme();
 
   const fetchPosts = useCallback(async () => {
@@ -33,11 +40,14 @@ const HomeScreen = () => {
     setLoading(true);
     try {
       const url = `https://want.com.co/api/posts?page=${page}`;
-      const params = locationFilter ? {
-        latitude: locationFilter.latitude,
-        longitude: locationFilter.longitude,
-        radius: locationFilter.radius,
-      } : {};
+      const params = {
+        ...locationFilter ? {
+          latitude: locationFilter.latitude,
+          longitude: locationFilter.longitude,
+          radius: locationFilter.radius,
+        } : {},
+        searchTerm,
+      };
 
       const response = await axios.get(url, { params });
 
@@ -51,20 +61,26 @@ const HomeScreen = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, locationFilter, hasMore, loading]);
+  }, [page, locationFilter, searchTerm, hasMore, loading]);
 
   useEffect(() => {
     if (page === 1) {
       setPosts([]); // Clear existing posts if page is reset
     }
     fetchPosts();
-  }, [page, locationFilter]);
+  }, [page, locationFilter, searchTerm]);
 
   const handleLocationFilter = (newFilter: LocationFilter) => {
     setLocationFilter(newFilter);
     setPage(1);  // Reset pagination
     setHasMore(true); // Reset hasMore flag
   };
+
+  const handleSearch = (term: string) => {
+    setSearchTerm(term);
+    setPage(1);
+    setHasMore(true);
+  }
 
   const renderPost = ({ item }: ListRenderItemInfo<Post>) => {
     return <PostCard post={item} />;
@@ -78,11 +94,13 @@ const HomeScreen = () => {
 
   return (
     <View style={{ backgroundColor: colors.background }}>
+      <SearchPosts onSearch={handleSearch}/>
       <PostsLocation onFilterChange={handleLocationFilter} />
       <FlatList
         data={posts}
         renderItem={renderPost}
         keyExtractor={(item) => item._id}
+        ListEmptyComponent={() =><View><Text>No hay posts por mostrar</Text></View>}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.1}
       />

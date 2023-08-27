@@ -101,6 +101,7 @@ const PostsLocation: React.FC<PostsLocationProps> = ({ onFilterChange }) => {
             <Picker.Item label="1 km" value={1} />
             <Picker.Item label="5 km" value={5} />
             <Picker.Item label="10 km" value={10} />
+            <Picker.Item label="100 km" value={100} />
             {/* Add more as needed */}
           </Picker>
           {currentLocation && (
