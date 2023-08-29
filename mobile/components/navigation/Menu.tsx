@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../../screens/HomeScreen';
-import SearchScreen from '../../screens/SearchScreen';
+import LoginScreen from '../../screens/LoginScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -9,7 +9,7 @@ const Menu = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Login" component={SearchScreen} />
+      <Tab.Screen name="Login" component={LoginScreen} />
     </Tab.Navigator>
   );
 };
