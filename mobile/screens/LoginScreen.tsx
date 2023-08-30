@@ -19,7 +19,7 @@ type User = {
     phone?: string;
 };
 
-const LoginScreen = () => {
+const LoginScreen = ({ onUpdate }: { onUpdate: () => void }) => {
     const { colors } = useTheme();
     const [user, setUser] = useState<User>({ email: '', password: '' });
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -48,6 +48,7 @@ const LoginScreen = () => {
             if (cookie) {
                 await AsyncStorage.setItem('cookie', cookie);
                 setIsLoggedIn(true);
+                onUpdate();
             }
         } catch (e) {
             console.error('Error al iniciar sesión:', e);
@@ -70,6 +71,7 @@ const LoginScreen = () => {
             });
             await AsyncStorage.removeItem("cookie");
             setIsLoggedIn(false);
+            onUpdate();
         } catch (e) {
             console.error("Error al cerrar sesión:", e);
         }
