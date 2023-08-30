@@ -20,36 +20,31 @@ interface LocationFilter {
   radius: number;
 }
 
-interface SearchPosts {
-  searchTerm: String;
-}
-
-
 const HomeScreen = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [locationFilter, setLocationFilter] = useState<LocationFilter | null>(null);
+  const [initialFetchDone, setInitialFetchDone] = useState(false);  // Nuevo estado
   const [searchTerm, setSearchTerm] = useState<string>('');
   const { colors } = useTheme();
 
   const fetchPosts = useCallback(async () => {
-    if (!hasMore || loading) return;
+    if (!hasMore || loading || !locationFilter) return;
 
     setLoading(true);
     try {
       const url = `https://want.com.co/api/posts?page=${page}`;
       const params = {
-        ...locationFilter ? {
-          latitude: locationFilter.latitude,
-          longitude: locationFilter.longitude,
-          radius: locationFilter.radius,
-        } : {},
+        latitude: locationFilter.latitude,
+        longitude: locationFilter.longitude,
+        radius: locationFilter.radius,
         searchTerm,
       };
 
       const response = await axios.get(url, { params });
+      setInitialFetchDone(true);  // Actualizamos el estado al realizar el primer fetch
 
       if (response.data.posts.length > 0) {
         setPosts(prevPosts => [...prevPosts, ...response.data.posts]);
@@ -64,23 +59,25 @@ const HomeScreen = () => {
   }, [page, locationFilter, searchTerm, hasMore, loading]);
 
   useEffect(() => {
-    if (page === 1) {
-      setPosts([]); // Clear existing posts if page is reset
+    if (locationFilter) {
+      if (page === 1) {
+        setPosts([]);
+      }
+      fetchPosts();
     }
-    fetchPosts();
   }, [page, locationFilter, searchTerm]);
 
   const handleLocationFilter = (newFilter: LocationFilter) => {
     setLocationFilter(newFilter);
-    setPage(1);  // Reset pagination
-    setHasMore(true); // Reset hasMore flag
+    setPage(1);
+    setHasMore(true);
   };
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
     setPage(1);
     setHasMore(true);
-  }
+  };
 
   const renderPost = ({ item }: ListRenderItemInfo<Post>) => {
     return <PostCard post={item} />;
@@ -102,7 +99,9 @@ const HomeScreen = () => {
         keyExtractor={(item) => item._id}
         ListEmptyComponent={() => (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ fontSize: 60, color: colors.text }}>No hay posts por mostrar</Text>
+            <Text style={{ fontSize: 60, color: colors.text }}>
+              {initialFetchDone ? 'No hay posts por mostrar' : 'Obteniendo posts en tu zona'}
+            </Text>
           </View>
         )}
         onEndReached={handleLoadMore}
