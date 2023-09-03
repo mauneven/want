@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, Dimensions, StyleSheet } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-
+import { BASE_URL } from '../../endpoints/api';
 interface PostCardProps {
   post: {
     _id: string;
@@ -29,7 +29,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           {post.photos.map((photo) => (
             <Image
               key={photo}
-              source={{ uri: `https://want.com.co/${photo}` }}
+              source={{ uri: `${BASE_URL}/${photo}` }}
               style={styles.photo}
             />
           ))}

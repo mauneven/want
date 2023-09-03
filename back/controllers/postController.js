@@ -60,7 +60,7 @@ exports.createPost = async (req, res, next) => {
       req.files = compressedImagePaths.map((path) => ({ path }));
     }
 
-    // Desplazar las coordenadas dentro de un radio de 5 km
+    // Desplazar las coordenadas dentro de un radio de 1 km
     const newPosition = geolib.computeDestinationPoint(
       { latitude, longitude },
       1000, //  1000 metros

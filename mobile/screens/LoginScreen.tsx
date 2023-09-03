@@ -9,6 +9,7 @@ import {
 import { useTheme } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_BASE_URL } from '../endpoints/api';
 
 type User = {
     email: string;
@@ -29,7 +30,7 @@ const LoginScreen = ({ onUpdate }: { onUpdate: () => void }) => {
         (async () => {
             const cookie = await AsyncStorage.getItem('cookie');
             if (cookie) {
-                const res = await axios.get('https://want.com.co/api/user', {
+                const res = await axios.get(`${API_BASE_URL}/user`, {
                     headers: { Cookie: cookie },
                 });
                 if (res.data) {
@@ -41,7 +42,7 @@ const LoginScreen = ({ onUpdate }: { onUpdate: () => void }) => {
 
     const handleLogin = async () => {
         try {
-            const res = await axios.post('https://want.com.co/api/login', user, {
+            const res = await axios.post(`${API_BASE_URL}/login`, user, {
                 withCredentials: true,
             });
             const cookie = res.headers['set-cookie']?.[0];
@@ -57,7 +58,7 @@ const LoginScreen = ({ onUpdate }: { onUpdate: () => void }) => {
 
     const handleRegister = async () => {
         try {
-            await axios.post('https://want.com.co/api/register', user);
+            await axios.post(`${API_BASE_URL}/register`, user);
             handleLogin();
         } catch (e) {
             console.error('Error al registrarse:', e);
@@ -66,7 +67,7 @@ const LoginScreen = ({ onUpdate }: { onUpdate: () => void }) => {
 
     const handleLogout = async () => {
         try {
-            await axios.post("https://want.com.co/api/logout", {}, {
+            await axios.post(`${API_BASE_URL}/logout`, {}, {
                 headers: { Cookie: await AsyncStorage.getItem("cookie") },
             });
             await AsyncStorage.removeItem("cookie");

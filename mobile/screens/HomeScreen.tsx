@@ -5,6 +5,7 @@ import { useTheme } from '@react-navigation/native';
 import PostCard from '../components/posts/PostCard';
 import PostsLocation from '../components/locations/PostsLocation';
 import SearchPosts from '../components/search/SearchPosts';
+import { API_BASE_URL } from '../endpoints/api';
 
 interface Post {
   _id: string;
@@ -35,7 +36,7 @@ const HomeScreen = () => {
 
     setLoading(true);
     try {
-      const url = `https://want.com.co/api/posts?page=${page}`;
+      const url = `${API_BASE_URL}/posts?page=${page}`;
       const params = {
         latitude: locationFilter.latitude,
         longitude: locationFilter.longitude,

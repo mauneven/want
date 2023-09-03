@@ -65,13 +65,19 @@ const PostsLocation: React.FC<PostsLocationProps> = ({ onFilterChange }) => {
   useEffect(() => {
     (async () => {
       const savedLocation = await AsyncStorage.getItem('savedLocation');
+      const savedRadius = await AsyncStorage.getItem('savedRadius');
+  
       if (savedLocation) {
         setCurrentLocation(JSON.parse(savedLocation));
       } else {
         setPermissionModalVisible(true);
       }
+  
+      if (savedRadius) {
+        setRadius(JSON.parse(savedRadius));
+      }
     })();
-  }, []);
+  }, []);  
 
   const handlePermissionResponse = (userResponse: boolean) => {
     if (userResponse) {
@@ -100,9 +106,10 @@ const PostsLocation: React.FC<PostsLocationProps> = ({ onFilterChange }) => {
     setSearchResults([]);
   };
 
-  const handleRadiusChange = (value: number) => {
+  const handleRadiusChange = async (value: number) => {
     setRadius(value);
-  };
+    await AsyncStorage.setItem('savedRadius', JSON.stringify(value));
+  };  
 
   useEffect(() => {
     if (currentLocation && radius) {
@@ -131,8 +138,11 @@ const PostsLocation: React.FC<PostsLocationProps> = ({ onFilterChange }) => {
             <Button key={index} title={result.display_name} onPress={() => handleSearchSelect(result)} />
           ))}
           <Picker selectedValue={radius} onValueChange={(itemValue) => handleRadiusChange(itemValue)}>
-            <Picker.Item label="1 km" value={1000} />
-            <Picker.Item label="5 km" value={5000} />
+            <Picker.Item label="1 km" value={1} />
+            <Picker.Item label="5 km" value={5} />
+            <Picker.Item label="10 km" value={10} />
+            <Picker.Item label="100 km" value={100} />
+            <Picker.Item label="All" value={10000000000000000000000000} />
           </Picker>
           {currentLocation && (
             <MapView
@@ -145,7 +155,7 @@ const PostsLocation: React.FC<PostsLocationProps> = ({ onFilterChange }) => {
               }}
             >
               <Marker coordinate={currentLocation} />
-              <Circle center={currentLocation} radius={radius} />
+              <Circle center={currentLocation} radius={radius * 1000} />
             </MapView>
           )}
           <Button title="Cerrar Mapa" onPress={() => setModalVisible(false)} />
