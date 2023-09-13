@@ -27,7 +27,7 @@ export const dynamicStyles = (colors: LoginThemeColors) => StyleSheet.create({
     padding: 10,
     margin: 10,
     color: colors.text,
-    width: 355
+    width: 335
   },
   buttonText: {
     fontSize: 18,

@@ -14,7 +14,8 @@ import { useTheme } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_BASE_URL } from "../endpoints/api";
-import { dynamicStyles, LoginThemeColors } from "./styles/LoginScreenStyles";
+import { dynamicStyles, LoginThemeColors } from "../styles/LoginScreenStyles";
+import DateInput from "../components/login/DateInput";
 
 type User = {
   email: string;
@@ -39,6 +40,10 @@ const LoginScreen = ({ onUpdate }: { onUpdate: () => void }) => {
   const [user, setUser] = useState<User>({ email: "", password: "" });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isRegisterMode, setIsRegisterMode] = useState(false);
+  const handleBirthdayChange = (day: string) => {
+    // Aquí puedes procesar el día si es necesario
+    setUser({ ...user, birthday: day });
+  };
 
   useEffect(() => {
     (async () => {
@@ -74,6 +79,7 @@ const LoginScreen = ({ onUpdate }: { onUpdate: () => void }) => {
     try {
       await axios.post(`${API_BASE_URL}/register`, user);
       handleLogin();
+      onUpdate();
     } catch (e) {
       console.error("Error al registrarse:", e);
     }
@@ -127,10 +133,10 @@ const LoginScreen = ({ onUpdate }: { onUpdate: () => void }) => {
     >
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
-        scrollEnabled={isKeyboardVisible} 
+        scrollEnabled={isKeyboardVisible}
       >
         <View style={styles.container}>
-        <Text style={styles.titleText}>
+          <Text style={styles.titleText}>
             {isRegisterMode ? "REGISTER" : "WELCOME"}
           </Text>
           {isLoggedIn ? (
@@ -177,13 +183,7 @@ const LoginScreen = ({ onUpdate }: { onUpdate: () => void }) => {
                     value={user.lastName}
                     onChangeText={(lastName) => setUser({ ...user, lastName })}
                   />
-                  <TextInput
-                    style={styles.inputField}
-                    placeholder="Cumpleaños (YYYY-MM-DD)"
-                    placeholderTextColor={extendedColors.text}
-                    value={user.birthday}
-                    onChangeText={(birthday) => setUser({ ...user, birthday })}
-                  />
+                  <DateInput onDateChange={handleBirthdayChange} themeColors={extendedColors} />
                   <TextInput
                     style={styles.inputField}
                     placeholder="Teléfono"
