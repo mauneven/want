@@ -44,4 +44,10 @@ export const dynamicStyles = (colors: LoginThemeColors) => StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
+  label: {
+    fontSize: 14,
+    color: colors.text,
+    textAlign: 'left',
+    marginLeft: 15,
+  },
 });

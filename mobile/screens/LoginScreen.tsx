@@ -183,6 +183,7 @@ const LoginScreen = ({ onUpdate }: { onUpdate: () => void }) => {
                     value={user.lastName}
                     onChangeText={(lastName) => setUser({ ...user, lastName })}
                   />
+                  <Text style={styles.label}>Fecha de nacimiento</Text>
                   <DateInput onDateChange={handleBirthdayChange} themeColors={extendedColors} />
                   <TextInput
                     style={styles.inputField}

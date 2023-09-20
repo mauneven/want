@@ -4,8 +4,9 @@ var BASE_URL: String;
 if (__DEV__) {
     // Mao ip 192.168.1.3
     // Brayan ip 192.168.1.19
+    // for dev on baseurl `http://${IP_ADDRESS}:4000`
     const IP_ADDRESS = '192.168.1.3';
-    BASE_URL = `http://${IP_ADDRESS}:4000`;
+    BASE_URL = 'https://want.com.co';
 } else {
     // Modo producción
     BASE_URL = 'https://want.com.co';
