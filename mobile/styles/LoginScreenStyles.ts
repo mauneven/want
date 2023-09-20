@@ -1,4 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
 
 interface ThemeColors {
   background: string;
@@ -17,37 +19,37 @@ export const dynamicStyles = (colors: LoginThemeColors) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    padding: 20,
-    justifyContent: 'center'
+    padding: width * 0.03, 
+    justifyContent: 'center',
   },
   inputField: {
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 10,
-    padding: 10,
-    margin: 10,
+    padding: width * 0.02, 
+    margin: height * 0.01, 
     color: colors.text,
-    width: 335
+    width: width * 0.9, 
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: width * 0.05, 
     color: colors.buttonText,
     backgroundColor: colors.buttonBackground,
-    padding: 10,
-    margin: 5,
+    padding: width * 0.02, 
+    margin: height * 0.005, 
     textAlign: 'center',
     borderRadius: 10,
   },
   titleText: {
-    fontSize: 36,
+    fontSize: width * 0.1, 
     color: colors.text,
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: height * 0.02, 
   },
   label: {
-    fontSize: 14,
+    fontSize: width * 0.035, 
     color: colors.text,
     textAlign: 'left',
-    marginLeft: 15,
+    marginLeft: width * 0.04, 
   },
 });
