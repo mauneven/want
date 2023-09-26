@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Image, FlatList, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Image, FlatList, Alert } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '@react-navigation/native';
 import { API_BASE_URL, BASE_URL } from '../endpoints/api';
-
+import { dynamicStyles, ProfileThemeColors } from '../styles/ProfileScreenStyles'; // Si este es el nombre de tu archivo de estilos
+import MyPostsCard from '../components/Profile/MyPostsCard';
 interface User {
   firstName: string;
   lastName: string;
@@ -22,8 +23,17 @@ interface Post {
 
 const ProfileScreen = ({ onUpdate }: { onUpdate: () => void }) => {
   const { colors } = useTheme();
+  const extendedColors: ProfileThemeColors = {
+    background: colors.background,
+    text: colors.text,
+    border: colors.border,
+    buttonText: colors.text,
+    buttonBackground: colors.primary // Ajusta según tus necesidades
+  };
+  const styles = dynamicStyles(extendedColors);
   const [user, setUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -89,12 +99,12 @@ const ProfileScreen = ({ onUpdate }: { onUpdate: () => void }) => {
       <View style={styles.header}>
         <Image source={{ uri: photoUrl }} style={styles.userImage} />
         <View style={styles.userInfo}>
-          <Text style={{ ...styles.userName, color: colors.text }}>{user?.firstName} {user?.lastName}</Text>
+          <Text style={styles.userName}>{user?.firstName} {user?.lastName}</Text>
           <TouchableOpacity style={styles.editButton}>
-            <Text>Editar Perfil</Text>
+            <Text style={{ color: colors.text }}>Editar Perfil</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <Text>Cerrar sesión</Text>
+            <Text style={{ color: colors.text }}>Cerrar sesión</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -102,78 +112,12 @@ const ProfileScreen = ({ onUpdate }: { onUpdate: () => void }) => {
         data={posts}
         keyExtractor={item => item._id}
         renderItem={({ item }) => (
-          <View style={styles.postContainer}>
-            <Image source={{ uri: `${BASE_URL}/${item.photos[0]}` }} style={styles.postImage} />
-            <Text style={styles.postTitle}>{item.title}</Text>
-            <Text style={styles.postPrice}>${item.price.toLocaleString()}</Text>
-            <TouchableOpacity onPress={() => Alert.alert("Eliminar", "¿Quieres eliminar este post?", [
-              { text: "Cancelar" },
-              { text: "Eliminar", onPress: () => handleDeletePost(item._id) }
-            ])}>
-              <Text>Eliminar</Text>
-            </TouchableOpacity>
-          </View>
+          <MyPostsCard post={item} handleDeletePost={handleDeletePost} />
         )}
       />
     </View>
   );
-};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: 'white',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  userImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-  },
-  userInfo: {
-    alignItems: 'flex-end',
-  },
-  userName: {
-    fontSize: 18,
-    marginBottom: 8,
-  },
-  editButton: {
-    padding: 8,
-    backgroundColor: 'lightgray',
-    borderRadius: 5,
-    marginBottom: 8,
-  },
-  logoutButton: {
-    padding: 8,
-    backgroundColor: 'red',
-    borderRadius: 5,
-  },
-  postContainer: {
-    marginBottom: 16,
-    backgroundColor: 'white',
-    padding: 16,
-    borderRadius: 5,
-  },
-  postImage: {
-    width: '100%',
-    height: 150,
-    borderRadius: 5,
-    marginBottom: 8,
-  },
-  postTitle: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  postPrice: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});
+};
 
 export default ProfileScreen;

@@ -41,7 +41,6 @@ const LoginScreen = ({ onUpdate }: { onUpdate: () => void }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const handleBirthdayChange = (day: string) => {
-    // Aquí puedes procesar el día si es necesario
     setUser({ ...user, birthday: day });
   };
 

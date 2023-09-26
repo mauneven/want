@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image, ScrollView, Dimensions, StyleSheet } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { BASE_URL } from '../../endpoints/api';
-interface PostCardProps {
+interface HomePostsCard {
   post: {
     _id: string;
     price: number;
@@ -14,7 +14,7 @@ interface PostCardProps {
 
 const { width } = Dimensions.get('window');
 
-const PostCard: React.FC<PostCardProps> = ({ post }) => {
+const HomePostsCard: React.FC<HomePostsCard> = ({ post }) => {
   const { colors } = useTheme();
 
   return (
@@ -80,4 +80,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostCard;
+export default HomePostsCard;

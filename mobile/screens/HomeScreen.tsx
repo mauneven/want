@@ -2,10 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, FlatList, ListRenderItemInfo, Text } from 'react-native';
 import axios from 'axios';
 import { useTheme } from '@react-navigation/native';
-import PostCard from '../components/posts/PostCard';
-import PostsLocation from '../components/locations/PostsLocation';
-import SearchPosts from '../components/search/SearchPosts';
+import PostsLocation from '../components/Home/PostsLocation';
+import SearchPosts from '../components/Home/SearchPosts';
 import { API_BASE_URL } from '../endpoints/api';
+import HomePostsCard from '../components/Home/HomePostsCard';
 
 interface Post {
   _id: string;
@@ -81,7 +81,7 @@ const HomeScreen = () => {
   };
 
   const renderPost = ({ item }: ListRenderItemInfo<Post>) => {
-    return <PostCard post={item} />;
+    return <HomePostsCard post={item} />;
   };
 
   const handleLoadMore = () => {
