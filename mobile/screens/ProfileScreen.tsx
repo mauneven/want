@@ -96,7 +96,7 @@ const ProfileScreen = ({ onUpdate }: { onUpdate: () => void }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, {backgroundColor: colors.card}]}>
         <Image source={{ uri: photoUrl }} style={styles.userImage} />
         <View style={styles.userInfo}>
           <Text style={styles.userName}>{user?.firstName} {user?.lastName}</Text>

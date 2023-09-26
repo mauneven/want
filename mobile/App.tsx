@@ -7,7 +7,7 @@ const App = () => {
   const scheme = useColorScheme();
 
   return (
-    <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DarkTheme}>
       <Menu />
     </NavigationContainer>
   );
