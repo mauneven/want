@@ -5,22 +5,14 @@ import {
   Alert,
   ScrollView
 } from 'react-native';
-import { useTheme } from '@react-navigation/native';
 import { API_BASE_URL } from '../endpoints/api';
-import { CreatePostThemeColors, dynamicStyles } from '../styles/CreatePostScreenStyles';
+import { dynamicStyles } from '../styles/CreatePostScreenStyles';
+import { UniversalStyles } from '../styles/UniversalStyles';
 import { CreatePostInputs } from '../components/CreatePost/CreatePostInputs';
 
 export const CreatePostScreen = () => {
-  const { colors } = useTheme();
-  const extendedColors: CreatePostThemeColors = {
-    background: colors.background,
-    text: colors.text,
-    border: colors.border,
-    buttonText: colors.text,
-    buttonBackground: colors.primary
-  };
 
-  const styles = dynamicStyles(extendedColors);
+  const styles = dynamicStyles();
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [mainCategory, setMainCategory] = useState<string>('');
@@ -81,8 +73,9 @@ export const CreatePostScreen = () => {
   };
 
   return (
+    <ScrollView >
     <View style={styles.container}>
-      <ScrollView >
+      
       <CreatePostInputs
           title={title}
           setTitle={setTitle}
@@ -101,7 +94,7 @@ export const CreatePostScreen = () => {
           styles={styles}
         />
         <Button title="Crear Publicación" onPress={handleCreatePost} />
-      </ScrollView>
     </View>
+    </ScrollView>
   );
 };

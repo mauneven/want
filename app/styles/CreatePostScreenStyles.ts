@@ -1,21 +1,22 @@
 import { StyleSheet, Dimensions } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
-interface ThemeColors {
-    background: string;
-    text: string;
-    border: string;
-}
+const extendColors = () => {
+    const { colors } = useTheme();
+    return {
+      background: colors.background,
+      text: colors.text,
+      border: colors.border,
+      buttonText: colors.text,
+      buttonBackground: colors.primary
+    };
+  };
 
-interface ButtonColors {
-    buttonText: string;
-    buttonBackground: string;
-}
-
-export type CreatePostThemeColors = ThemeColors & ButtonColors;
-
-export const dynamicStyles = (colors: CreatePostThemeColors) => StyleSheet.create({
+export const dynamicStyles = () => {
+    const colors = extendColors();
+    return StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.background,
@@ -100,7 +101,7 @@ export const dynamicStyles = (colors: CreatePostThemeColors) => StyleSheet.creat
         },
         shadowOpacity: 0.1,
         shadowRadius: 2.84,
-        elevation: 5,  // Añadido para Android
+        elevation: 5, 
     },
     postImage: {
         width: width - 20,
@@ -167,4 +168,4 @@ export const dynamicStyles = (colors: CreatePostThemeColors) => StyleSheet.creat
     deletePhotoText: {
         color: colors.text,
     }
-});
+})};
