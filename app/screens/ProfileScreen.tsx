@@ -4,7 +4,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '@react-navigation/native';
 import { API_BASE_URL, BASE_URL } from '../endpoints/api';
-import { dynamicStyles, ProfileThemeColors } from '../styles/ProfileScreenStyles'; // Si este es el nombre de tu archivo de estilos
+import { dynamicStyles, ProfileThemeColors } from '../styles/ProfileScreenStyles';
 import MyPostsCard from '../components/Profile/MyPostsCard';
 interface User {
   firstName: string;

@@ -1,46 +1,33 @@
-
 import React, { useState } from 'react';
 import {
   View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image,
   Button,
   Alert,
-  StyleSheet,
+  ScrollView
 } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 import { API_BASE_URL } from '../endpoints/api';
-
-const MAX_PHOTO_SIZE_MB = 5;
-const MAX_TOTAL_PHOTOS_MB = 20;
+import { CreatePostThemeColors, dynamicStyles } from '../styles/CreatePostScreenStyles';
+import { CreatePostInputs } from '../components/CreatePost/CreatePostInputs';
 
 export const CreatePostScreen = () => {
+  const { colors } = useTheme();
+  const extendedColors: CreatePostThemeColors = {
+    background: colors.background,
+    text: colors.text,
+    border: colors.border,
+    buttonText: colors.text,
+    buttonBackground: colors.primary
+  };
+
+  const styles = dynamicStyles(extendedColors);
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [mainCategory, setMainCategory] = useState<string>('');
   const [subCategory, setSubCategory] = useState<string>('');
   const [thirdCategory, setThirdCategory] = useState<string>('');
   const [price, setPrice] = useState<string>('');
-  const [photos, setPhotos] = useState<string[]>([]); // Using string for URIs of photos
-
-  const handleTitleChange = (value: string) => {
-    setTitle(value.slice(0, 60));
-  };
-
-  const handleDescriptionChange = (value: string) => {
-    setDescription(value.slice(0, 600));
-  };
-
-  const handlePriceChange = (value: string) => {
-    setPrice(value.slice(0, 11));
-  };
-
-  const handleDeletePhoto = (index: number) => {
-    const newPhotos = [...photos];
-    newPhotos.splice(index, 1);
-    setPhotos(newPhotos);
-  };
+  const [photos, setPhotos] = useState<string[]>([]);
 
   const validateForm = (): boolean => {
     if (!title || !description || !mainCategory || !subCategory || !thirdCategory || !price) {
@@ -54,7 +41,6 @@ export const CreatePostScreen = () => {
     if (!validateForm()) {
       return;
     }
-
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
@@ -65,7 +51,12 @@ export const CreatePostScreen = () => {
     formData.append('thirdCategory', thirdCategory);
     formData.append('price', price);
     photos.forEach((photo, index) => {
-      formData.append('photos[]', photo);
+      const photoObj = {
+        uri: photo,
+        type: 'image/jpeg',
+        name: `photo_${index}.jpg`,
+      };
+      formData.append('photos[]', photoObj);
     });
 
     try {
@@ -73,106 +64,44 @@ export const CreatePostScreen = () => {
         method: 'POST',
         headers: {
           Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
         },
         body: formData,
       });
-
+      
       if (!response.ok) {
         const error = await response.text();
         throw new Error(error);
       }
 
-      Alert.alert('Éxito', 'Publicación creada con éxito.');
-    } catch (error) {
+      Alert.alert('Success', 'Created.');
+    } catch (error: any) {
       Alert.alert('Error', error.message);
-    }
+    }    
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Crear Publicación</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Título"
-        value={title}
-        onChangeText={handleTitleChange}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Descripción"
-        value={description}
-        onChangeText={handleDescriptionChange}
-        multiline={true}
-      />
-      {/* Asumiendo que quieres inputs para las categorías */}
-      <TextInput
-        style={styles.input}
-        placeholder="Categoría Principal"
-        value={mainCategory}
-        onChangeText={setMainCategory}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Subcategoría"
-        value={subCategory}
-        onChangeText={setSubCategory}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Tercera Categoría"
-        value={thirdCategory}
-        onChangeText={setThirdCategory}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Precio"
-        value={price}
-        onChangeText={handlePriceChange}
-        keyboardType="number-pad"
-      />
-      {/* Aquí deberías agregar la lógica para subir imágenes */}
-      {photos.map((photo, index) => (
-        <View key={photo[index]} style={styles.photoContainer}>
-          <Image source={{ uri: photo }} style={styles.photo} />
-          <TouchableOpacity onPress={() => handleDeletePhoto(index)}>
-            <Text style={styles.deletePhotoText}>Eliminar</Text>
-          </TouchableOpacity>
-        </View>
-      ))}
-      <Button title="Crear Publicación" onPress={handleCreatePost} />
+      <ScrollView >
+      <CreatePostInputs
+          title={title}
+          setTitle={setTitle}
+          description={description}
+          setDescription={setDescription}
+          mainCategory={mainCategory}
+          setMainCategory={setMainCategory}
+          subCategory={subCategory}
+          setSubCategory={setSubCategory}
+          thirdCategory={thirdCategory}
+          setThirdCategory={setThirdCategory}
+          price={price}
+          setPrice={setPrice}
+          photos={photos}
+          setPhotos={setPhotos}
+          styles={styles}
+        />
+        <Button title="Crear Publicación" onPress={handleCreatePost} />
+      </ScrollView>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 15,
-    backgroundColor: 'white',
-  },
-  header: {
-    fontSize: 24,
-    marginBottom: 15,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 10,
-    fontSize: 18,
-    borderRadius: 6,
-    marginBottom: 15,
-  },
-  photoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  photo: {
-    width: 50,
-    height: 50,
-    marginRight: 10,
-  },
-  deletePhotoText: {
-    color: 'red',
-  },
-});
