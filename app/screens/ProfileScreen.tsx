@@ -6,6 +6,8 @@ import { useTheme } from '@react-navigation/native';
 import { API_BASE_URL, BASE_URL } from '../endpoints/api';
 import { dynamicStyles, ProfileThemeColors } from '../styles/ProfileScreenStyles';
 import MyPostsCard from '../components/Profile/MyPostsCard';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 interface User {
   firstName: string;
@@ -29,11 +31,15 @@ const ProfileScreen = ({ onUpdate }: { onUpdate: () => void }) => {
     text: colors.text,
     border: colors.border,
     buttonText: colors.text,
-    buttonBackground: colors.primary // Ajusta según tus necesidades
+    buttonBackground: colors.primary
   };
   const styles = dynamicStyles(extendedColors);
   const [user, setUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
+  const navigation = useNavigation<StackNavigationProp<any>>();
+  const handleEditProfile = () => {
+    navigation.navigate("Editar Perfil");
+  };
 
 
   useEffect(() => {
@@ -42,7 +48,7 @@ const ProfileScreen = ({ onUpdate }: { onUpdate: () => void }) => {
         const response = await axios.get(`${API_BASE_URL}/user`, {
           headers: { Cookie: await AsyncStorage.getItem("cookie") },
         });
-        
+
         if (response.data) {
           setUser(response.data.user);
         }
@@ -56,7 +62,7 @@ const ProfileScreen = ({ onUpdate }: { onUpdate: () => void }) => {
         const response = await axios.get(`${API_BASE_URL}/my-posts`, {
           headers: { Cookie: await AsyncStorage.getItem("cookie") },
         });
-        
+
         if (response.data) {
           setPosts(response.data);
         }
@@ -97,11 +103,11 @@ const ProfileScreen = ({ onUpdate }: { onUpdate: () => void }) => {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.header, {backgroundColor: colors.card}]}>
+      <View style={[styles.header, { backgroundColor: colors.card }]}>
         <Image source={{ uri: photoUrl }} style={styles.userImage} />
         <View style={styles.userInfo}>
           <Text style={styles.userName}>{user?.firstName} {user?.lastName}</Text>
-          <TouchableOpacity style={styles.editButton}>
+          <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
             <Text style={{ color: colors.text }}>Editar Perfil</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>

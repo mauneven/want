@@ -60,7 +60,7 @@ export const CreatePostScreen = () => {
         },
         body: formData,
       });
-      
+
       if (!response.ok) {
         const error = await response.text();
         throw new Error(error);
@@ -69,14 +69,14 @@ export const CreatePostScreen = () => {
       Alert.alert('Success', 'Created.');
     } catch (error: any) {
       Alert.alert('Error', error.message);
-    }    
+    }
   };
 
   return (
     <ScrollView >
-    <View style={styles.container}>
-      
-      <CreatePostInputs
+      <View style={styles.container}>
+
+        <CreatePostInputs
           title={title}
           setTitle={setTitle}
           description={description}
@@ -94,7 +94,7 @@ export const CreatePostScreen = () => {
           styles={styles}
         />
         <Button title="Crear Publicación" onPress={handleCreatePost} />
-    </View>
+      </View>
     </ScrollView>
   );
 };
