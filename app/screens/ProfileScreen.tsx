@@ -6,6 +6,7 @@ import { useTheme } from '@react-navigation/native';
 import { API_BASE_URL, BASE_URL } from '../endpoints/api';
 import { dynamicStyles, ProfileThemeColors } from '../styles/ProfileScreenStyles';
 import MyPostsCard from '../components/Profile/MyPostsCard';
+
 interface User {
   firstName: string;
   lastName: string;
