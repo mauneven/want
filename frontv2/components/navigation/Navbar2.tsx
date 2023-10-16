@@ -9,7 +9,10 @@ import {
   Avatar,
   Modal,
   Text,
-  Button
+  Button,
+  ActionIcon,
+  useMantineColorScheme,
+  useComputedColorScheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
@@ -18,6 +21,8 @@ import {
   IconLogout,
   IconList,
   IconUser,
+  IconSun,
+  IconMoon,
 } from "@tabler/icons-react";
 import classes from "./HeaderSearch.module.css";
 import { useEffect, useState } from "react";
@@ -36,6 +41,11 @@ export function HeaderSearch() {
   const [user, setUser] = useState<User | null>(null);
   const [openedModal, { open, close }] = useDisclosure(false);
   const router = useRouter();
+
+  const { setColorScheme } = useMantineColorScheme();
+  const computedColorScheme = useComputedColorScheme("light", {
+    getInitialValueInEffect: true,
+  });
 
   useEffect(() => {
     const checkSession = async () => {
@@ -67,20 +77,20 @@ export function HeaderSearch() {
   const logout = async () => {
     try {
       const response = await fetch(endpoints.logout, {
-        method: 'POST',
-        credentials: 'include',
+        method: "POST",
+        credentials: "include",
       });
 
       if (response.ok) {
-        localStorage.removeItem('user');
+        localStorage.removeItem("user");
       } else {
-        console.error('Error log out:', response.status, response.statusText);
+        console.error("Error log out:", response.status, response.statusText);
       }
 
       // Redirigimos a la página principal
-      window.location.replace('/');
+      window.location.replace("/");
     } catch (error) {
-      console.error('Error log out', error);
+      console.error("Error log out", error);
     }
   };
 
@@ -108,8 +118,12 @@ export function HeaderSearch() {
           blur: 3,
         }}
       >
-        <Text>You will have to login again if you Want to use your account</Text>
-        <Group><Button onClick={logout}>Logout</Button></Group>
+        <Text>
+          You will have to login again if you Want to use your account
+        </Text>
+        <Group>
+          <Button onClick={logout}>Logout</Button>
+        </Group>
       </Modal>
       <div className={classes.inner}>
         <Group>
@@ -189,12 +203,33 @@ export function HeaderSearch() {
                 >
                   Logout
                 </Menu.Item>
+                <Group justify="center">
+                  <ActionIcon
+                    onClick={() =>
+                      setColorScheme(
+                        computedColorScheme === "light" ? "dark" : "light"
+                      )
+                    }
+                    variant="default"
+                    size="xl"
+                    aria-label="Toggle color scheme"
+                  >
+                    <IconSun
+                      className={(classes.icon, classes.light)}
+                      stroke={1.5}
+                    />
+                    <IconMoon
+                      className={(classes.icon, classes.dark)}
+                      stroke={1.5}
+                    />
+                  </ActionIcon>
+                </Group>
               </Menu.Dropdown>
             </Menu>
           ) : (
             <Group ml={50} gap={5} className={classes.links} visibleFrom="sm">
-            <Login />
-          </Group>
+              <Login />
+            </Group>
           )}
         </Group>
       </div>

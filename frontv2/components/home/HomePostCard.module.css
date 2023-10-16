@@ -1,0 +1,41 @@
+.price {
+  color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+}
+
+.carousel {
+  @mixin hover {
+    .carouselControls {
+      opacity: 1;
+    }
+  }
+}
+
+.carouselControls {
+  transition: opacity 150ms ease;
+  opacity: 0;
+}
+
+.carouselIndicator {
+  width: rem(4px);
+  height: rem(4px);
+  transition: width 250ms ease;
+
+  &[data-active] {
+    width: rem(16px);
+  }
+}
+
+.HomePostCard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; 
+  justify-content: space-between;
+}
+
+.singleCard {
+  display: flex;
+  min-width: 100px;
+  max-width: 300px; 
+  min-height: 400px;
+  max-height: 600px;
+}
