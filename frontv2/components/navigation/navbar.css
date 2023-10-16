@@ -1,0 +1,39 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+  }
+  
+  .navbar-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .navbar-search {
+    padding: 0.5rem;
+    border: 1px solid var(--foreground-color);
+    border-radius: var(--border-radius);
+    background-color: var(--primary-color-universal);
+    color: rgb(var(--foreground-rgb));
+    border-radius: var(--border-radius-universal);
+  }
+  
+  .navbar-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 1px solid var(--border-radius);
+    cursor: pointer;
+  }
+  
+  .navbar-btn-login {
+    background-color: var(--tile-end-rgb);
+    color: rgb(var(--foreground-rgb));
+  }
+  
+  .navbar-btn-theme {
+    background-color: var(--callout-rgb);
+    color: rgb(var(--foreground-rgb));
+    margin-left: 1rem;
+    border: 1px solid var(--foreground-color);
+  }  

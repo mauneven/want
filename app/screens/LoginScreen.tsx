@@ -68,6 +68,7 @@ const LoginScreen = ({ onUpdate }: { onUpdate: () => void }) => {
         await AsyncStorage.setItem("cookie", cookie);
         setIsLoggedIn(true);
         onUpdate();
+        console.log(cookie)
       }
     } catch (e) {
       console.error("Error al iniciar sesión:", e);

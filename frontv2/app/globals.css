@@ -1,0 +1,30 @@
+/* Variables universales */
+:root {
+  --border-radius-universal: 25px;
+}
+
+/* Tema Claro */
+[data-theme="light"] {
+  --primary-color-universal: #ffffff;
+  --secondary-color-universal: #d6dbdc;
+  --shadow-color-universal: #000000;
+  --foreground-color: #000000;
+  --background-color-start: #d6dbdc;
+  --background-color-end: #ffffff;
+}
+
+/* Tema Oscuro */
+[data-theme="dark"] {
+  --primary-color-universal: #000000;
+  --secondary-color-universal: #000000;
+  --shadow-color-universal: #ffffff;
+  --foreground-color: #ffffff;
+  --background-color-start: #000000;
+  --background-color-end: #000000;
+}
+
+body {
+  color: var(--foreground-color);
+  background: var(--primary-color-universal);
+  border-radius: var(--border-radius-universal);
+}
