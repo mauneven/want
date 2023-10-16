@@ -37,3 +37,11 @@
     margin-left: 1rem;
     border: 1px solid var(--foreground-color);
   }  
+
+  .navbar-user-photo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+  }  

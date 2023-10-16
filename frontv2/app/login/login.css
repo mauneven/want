@@ -1,0 +1,57 @@
+.login-container {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    background-color: var(--primary-color-universal);
+    border-radius: var(--border-radius-universal);
+    box-shadow: 0px 4px 12px rgba(var(--shadow-color-universal), 0.15);
+    border: 1px solid var(--foreground-color);
+  }
+
+  .div-input{
+    display: grid;
+  }
+  
+  .form-input {
+    width: auto;
+    border-radius: var(--border-radius-universal);
+    background-color: var(--background-color-end);
+    color: var(--foreground-color);
+    font-size: 1rem;
+    transition: background-color 0.3s;
+    border: 1px solid var(--foreground-color);
+    padding: 5px;
+    margin-top: 10px;
+  }
+  
+  .form-input:focus {
+    outline: none;
+    background-color: var(--background-color-end);
+  }
+  
+  .submit-btn, .toggle-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: var(--border-radius-universal);
+    background-color: var(--secondary-color-universal);
+    color: var(--foreground-color);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .submit-btn:hover, .toggle-btn:hover {
+    background-color: var(--background-color-end);
+  }
+  
+  .alert {
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #f44336; /* Rojo para el error */
+    color: #ffffff;
+    border-radius: var(--border-radius-universal);
+    text-align: center;
+  }  
