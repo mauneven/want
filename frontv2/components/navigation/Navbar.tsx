@@ -14,31 +14,21 @@ interface User {
 const Navbar = () => {
   const [theme, setTheme] = useState('light');
   const [user, setUser] = useState<User | null>(null);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownVisible(!dropdownVisible);
+  };
+
+  const closeDropdown = () => {
+    setDropdownVisible(false);
+  };
 
   useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const response = await fetch(endpoints.user, { method: 'GET', credentials: 'include' });
+    window.addEventListener('click', closeDropdown);
+    return () => window.removeEventListener('click', closeDropdown);
+  }, []);
 
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data.user || null);
-          console.log("si ves esto 2 veces es normal en DEV")
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        console.error("Error al verificar la sesión:", error);
-      }
-    };
-
-    // Asegurar que hay un tema definido al cargar el componente
-    if (!document.documentElement.getAttribute('data-theme')) {
-      document.documentElement.setAttribute('data-theme', 'light');
-    }
-
-    checkSession();
-}, []);
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
@@ -61,12 +51,22 @@ const Navbar = () => {
       />
 
       <div>
-        {user ? (
-          <img 
-            src={user.photo ? `https://want.com.co/${user.photo}` : '/icons/person-circle.svg'}
-            alt="Profile"
-            className="navbar-user-photo"
-          />
+      {user ? (
+          <div className="navbar-user-container" onClick={(e) => { e.stopPropagation(); toggleDropdown(); }}>
+            <img 
+              src={user.photo ? `https://want.com.co/${user.photo}` : '/icons/person-circle.svg'}
+              alt="Profile"
+              className="navbar-user-photo"
+            />
+            {dropdownVisible && (
+              <div className="navbar-dropdown">
+                <button>Profile</button>
+                <button>Posts</button>
+                <button>Conversations</button>
+                <button>Logout</button>
+              </div>
+            )}
+          </div>
         ) : (
           <Link href={'/login'}>
             <button className="navbar-btn navbar-btn-login">
