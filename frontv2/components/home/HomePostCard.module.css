@@ -24,18 +24,3 @@
     width: rem(16px);
   }
 }
-
-.HomePostCard {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px; 
-  justify-content: space-between;
-}
-
-.singleCard {
-  display: flex;
-  min-width: 100px;
-  max-width: 300px; 
-  min-height: 400px;
-  max-height: 600px;
-}

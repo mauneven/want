@@ -1,8 +1,10 @@
-'use client'
-import React, { useState, useEffect } from 'react';
+"use client";
+
+import React, { useState, useEffect } from "react";
 import HomePostCard from "@/components/home/HomePostCard";
-import { Container} from '@mantine/core';
+import { Container, Flex } from "@mantine/core";
 import endpoints from "./connections/enpoints/endpoints";
+import classes from "./globals.module.css";
 
 interface User {
   _id: string;
@@ -37,14 +39,14 @@ export default function Home() {
 
   useEffect(() => {
     fetch(endpoints.posts)
-      .then(response => response.json())
-      .then(data => setPosts(data.posts))
-      .catch(error => console.error("Error fetching posts:", error));
+      .then((response) => response.json())
+      .then((data) => setPosts(data.posts))
+      .catch((error) => console.error("Error fetching posts:", error));
   }, []);
 
   return (
-    <Container>
-      {posts.map(post => (
+    <Container fluid classNames={{ root: classes.container }}>
+      {posts.map((post) => (
         <HomePostCard key={post._id} post={post} />
       ))}
     </Container>
