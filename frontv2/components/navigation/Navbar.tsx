@@ -23,7 +23,7 @@ const Navbar = () => {
         if (response.ok) {
           const data = await response.json();
           setUser(data.user || null);
-          console.log("si ves esto 2 veces en dev es normal",data)
+          console.log("si ves esto 2 veces es normal en DEV")
         } else {
           setUser(null);
         }
@@ -32,8 +32,13 @@ const Navbar = () => {
       }
     };
 
+    // Asegurar que hay un tema definido al cargar el componente
+    if (!document.documentElement.getAttribute('data-theme')) {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+
     checkSession();
-  }, []);
+}, []);
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
