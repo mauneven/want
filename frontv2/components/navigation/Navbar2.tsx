@@ -193,8 +193,8 @@ export function HeaderSearch() {
             </Menu>
           ) : (
             <Group ml={50} gap={5} className={classes.links} visibleFrom="sm">
-              <Login/>
-            </Group>
+            <Login />
+          </Group>
           )}
         </Group>
       </div>
