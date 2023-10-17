@@ -20,6 +20,7 @@ export default function Profile() {
   const [user, setUser] = useState<User | null>(null);
   const [myPosts, setMyPosts] = useState<Post[]>([]);
 
+  // Fetch para obtener datos del perfil del usuario
   useEffect(() => {
     fetch(endpoints.user, { credentials: "include" })
       .then((response) => {
@@ -34,16 +35,24 @@ export default function Profile() {
       .catch((error) => {
         console.error("Error:", error);
       });
+  }, []);
 
+  // Fetch separado para obtener los posts del usuario
+  useEffect(() => {
     fetch(endpoints.myposts, { credentials: "include" })
       .then((response) => response.json())
       .then((data) => {
-        setMyPosts(data.posts);
+        console.log("Posts Data:", data); // Añadido para verificar la respuesta
+        setMyPosts(data);
       })
       .catch((error) => {
         console.error("Error fetching user posts:", error);
       });
   }, []);
+
+
+  console.log("Rendering Profile with posts:", myPosts)
+
 
   return (
     <Container>
@@ -94,7 +103,11 @@ export default function Profile() {
           </Group>
         </Paper>
       </Group>
-      <Group>
+      <Text mt="md" ta="center" c="xl" fz="xl">
+                    My Posts
+                  </Text>
+      <Group mt="md" align="center" justify="center">
+        
         {myPosts &&
           myPosts.map((post) => <MyPostCard key={post._id} post={post} />)}
       </Group>
