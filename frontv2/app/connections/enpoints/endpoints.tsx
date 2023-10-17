@@ -6,6 +6,7 @@ export const endpoints = {
     logout: `${environments.BASE_URL_API}/logout`,
     user: `${environments.BASE_URL_API}/user`,
     posts: `${environments.BASE_URL_API}/posts`,
+    myposts: `${environments.BASE_URL_API}/my-posts`,
 }
 
 export default endpoints;

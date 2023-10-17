@@ -3,7 +3,6 @@
 import {
   Autocomplete,
   Group,
-  Burger,
   rem,
   Menu,
   Avatar,
@@ -13,6 +12,7 @@ import {
   ActionIcon,
   useMantineColorScheme,
   useComputedColorScheme,
+  Flex,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
@@ -112,7 +112,9 @@ export function Navbar() {
       </Modal>
       <div className={classes.inner}>
         <Group>
-          <Button onClick={() => router.push('/')} variant="transparent"><h1>Want </h1></Button>
+          <Button onClick={() => router.push("/")} variant="transparent">
+            <h1>Want </h1>
+          </Button>
         </Group>
         <Autocomplete
           className={classes.search}
@@ -156,10 +158,9 @@ export function Navbar() {
               <Menu.Dropdown>
                 <Menu.Item
                   leftSection={
-                    <IconUser
-                     style={{ width: rem(14), height: rem(14) }} />
+                    <IconUser style={{ width: rem(14), height: rem(14) }} />
                   }
-                  onClick={() => router.push('/login')}
+                  onClick={() => router.push("/profile")}
                 >
                   Profile
                 </Menu.Item>
@@ -179,6 +180,35 @@ export function Navbar() {
                 >
                   Posts
                 </Menu.Item>
+                <Flex
+                  onClick={() =>
+                    setColorScheme(
+                      computedColorScheme === "light" ? "dark" : "light"
+                    )
+                  }
+                  align={"center"}
+                >
+                    <ActionIcon
+                    variant="transparent"
+                    color="default"
+                    size="md"
+                    aria-label="Toggle color scheme"
+                    p={5}
+                    ml={6}
+                  >
+                    <IconSun
+                      className={(classes.icon, classes.light)}
+                      stroke={1.2}
+                    />
+                    <IconMoon
+                      className={(classes.icon, classes.dark)}
+                      stroke={1.2}
+                    />
+                  </ActionIcon>
+                  <Button p={0} justify="left" variant="transparent" color="default" >
+                    <Text size="14">Change theme</Text>
+                  </Button>
+                </Flex>
                 <Menu.Divider />
                 <Menu.Item
                   color="red"
@@ -186,30 +216,10 @@ export function Navbar() {
                     <IconLogout style={{ width: rem(14), height: rem(14) }} />
                   }
                   onClick={open}
+                  ml={2}
                 >
                   Logout
                 </Menu.Item>
-                <Group justify="center">
-                  <ActionIcon
-                    onClick={() =>
-                      setColorScheme(
-                        computedColorScheme === "light" ? "dark" : "light"
-                      )
-                    }
-                    variant="default"
-                    size="xl"
-                    aria-label="Toggle color scheme"
-                  >
-                    <IconSun
-                      className={(classes.icon, classes.light)}
-                      stroke={1.5}
-                    />
-                    <IconMoon
-                      className={(classes.icon, classes.dark)}
-                      stroke={1.5}
-                    />
-                  </ActionIcon>
-                </Group>
               </Menu.Dropdown>
             </Menu>
           ) : (

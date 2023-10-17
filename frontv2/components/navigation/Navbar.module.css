@@ -36,6 +36,7 @@
 .icon {
   width: rem(22px);
   height: rem(22px);
+  border: none;
 }
 
 .dark {
