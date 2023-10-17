@@ -146,13 +146,13 @@ const Login = () => {
             </>
           )}
           <Group justify="center" mt="xl">
-            <Button type="submit" onClick={handleSubmit}>
+            <Button type="submit" variant="light" onClick={handleSubmit}>
               {isLogin ? "Login" : "Register"}
             </Button>
           </Group>
           <Text mt="md">
-            {isLogin ? "Don't have an account?" : "Already have an account?"}
-            <Button onClick={toggleForm} variant="link">
+            {isLogin ? "Don't have an account? " : "Already have an account? "}
+            <Button onClick={toggleForm} variant="light">
               {isLogin ? "Register" : "Login"}
             </Button>
           </Text>

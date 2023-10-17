@@ -43,7 +43,7 @@ export default function HomePostCard({ post }: { post: Post }) {
   ));
 
   return (
-    <Card radius="md" withBorder padding="xl">
+    <Card radius="md" withBorder padding="xl" shadow="sm">
       <Card.Section>
         <Carousel
           withIndicators

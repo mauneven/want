@@ -6,11 +6,11 @@ import '@mantine/hooks'
 import '@mantine/tiptap'
 
 import { MantineProvider, ColorSchemeScript } from '@mantine/core';
-import { HeaderSearch } from '@/components/navigation/Navbar2';
+import { Navbar } from '@/components/navigation/Navbar';
 
 export const metadata = {
-  title: 'My Mantine app',
-  description: 'I have followed setup instructions carefully',
+  title: 'Want',
+  description: 'Want',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -20,7 +20,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider defaultColorScheme='dark'><HeaderSearch/>{children}</MantineProvider>
+        <MantineProvider defaultColorScheme='dark'>
+            <Navbar/>{children}
+        </MantineProvider>
       </body>
     </html>
   );
