@@ -159,6 +159,7 @@ export default function Settings() {
                   setSelectedFile(file);
                   setIsFormDirty(true);
                 }}
+                accept="image/png,image/jpeg"
               >
                 Change photo
               </FileInput>
