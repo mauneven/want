@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Avatar,
   Text,
@@ -10,17 +10,11 @@ import {
   Title,
   Divider,
   Button,
-  Flex,
   Stack,
   Input,
-  FileInput,
-  Fieldset,
-  TextInput,
+  FileButton, // Reemplazamos FileInput con FileButton
 } from "@mantine/core";
 import endpoints from "@/app/connections/enpoints/endpoints";
-import { IconStarFilled } from "@tabler/icons-react";
-import MyPostCard, { Post } from "@/components/account/MyPostCard";
-import { useRouter } from "next/navigation";
 import { environments } from "@/app/connections/environments/environments";
 
 type User = {
@@ -45,12 +39,12 @@ export default function Settings() {
   const [year, setYear] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [photoURL, setPhotoURL] = useState<string>("");
-  const [initialDay, setInitialDay] = useState<string>(""); // Added initial state for day
-  const [initialMonth, setInitialMonth] = useState<string>(""); // Added initial state for month
-  const [initialYear, setInitialYear] = useState<string>(""); // Added initial state for year
+  const [initialDay, setInitialDay] = useState<string>("");
+  const [initialMonth, setInitialMonth] = useState<string>("");
+  const [initialYear, setInitialYear] = useState<string>("");
   const [isFormDirty, setIsFormDirty] = useState<boolean>(false);
   const [isUpdateClicked, setIsUpdateClicked] = useState<boolean>(false);
-  const router = useRouter();
+  const resetFileRef = useRef<() => void>(null); // Referencia para reiniciar el input de archivo
 
   useEffect(() => {
     fetch(endpoints.user, { credentials: "include" })
@@ -69,9 +63,9 @@ export default function Settings() {
         setDay(date.getDate().toString());
         setMonth((date.getMonth() + 1).toString());
         setYear(date.getFullYear().toString());
-        setInitialDay(date.getDate().toString()); // Store initial day
-        setInitialMonth((date.getMonth() + 1).toString()); // Store initial month
-        setInitialYear(date.getFullYear().toString()); // Store initial year
+        setInitialDay(date.getDate().toString());
+        setInitialMonth((date.getMonth() + 1).toString());
+        setInitialYear(date.getFullYear().toString());
         setPhotoURL(data.user.photo);
       })
       .catch((error) => {
@@ -85,9 +79,9 @@ export default function Settings() {
       lastName !== user?.lastName ||
       phone !== user?.phone.toString() ||
       selectedFile !== null ||
-      day !== initialDay || // Check if day is different from initial value
-      month !== initialMonth || // Check if month is different from initial value
-      year !== initialYear; // Check if year is different from initial value
+      day !== initialDay ||
+      month !== initialMonth ||
+      year !== initialYear;
     setIsFormDirty(isDirty);
   }, [firstName, lastName, phone, selectedFile, day, month, year]);
 
@@ -124,7 +118,8 @@ export default function Settings() {
       .finally(() => {
         setIsUpdateClicked(false);
         setIsFormDirty(false);
-        setSelectedFile(null); // Limpiar el archivo seleccionado
+        setSelectedFile(null);
+        resetFileRef.current?.(); // Reiniciar el input de archivo
       });
   };
 
@@ -152,17 +147,16 @@ export default function Settings() {
               radius={120}
             />
             <Stack align="left" justify="left">
-              <FileInput
-                placeholder="Change photo"
-                variant="default"
+              <FileButton
+                resetRef={resetFileRef}
                 onChange={(file: File | null) => {
                   setSelectedFile(file);
                   setIsFormDirty(true);
                 }}
                 accept="image/png,image/jpeg"
               >
-                Change photo
-              </FileInput>
+                {(props) => <Button {...props}>Change photo</Button>}
+              </FileButton>
               <Button variant="light" color="red">
                 Delete Photo
               </Button>
@@ -240,12 +234,13 @@ export default function Settings() {
                     setFirstName(user?.firstName || "");
                     setLastName(user?.lastName || "");
                     setPhone(user?.phone.toString() || "");
-                    setDay(initialDay); // Restore initial day value
-                    setMonth(initialMonth); // Restore initial month value
-                    setYear(initialYear); // Restore initial year value
+                    setDay(initialDay);
+                    setMonth(initialMonth);
+                    setYear(initialYear);
                     setSelectedFile(null);
                     setIsFormDirty(false);
                     setIsUpdateClicked(false);
+                    resetFileRef.current?.(); // Reiniciar el input de archivo
                   }}
                 >
                   Cancel
