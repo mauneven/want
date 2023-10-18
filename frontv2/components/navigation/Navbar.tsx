@@ -107,7 +107,13 @@ export function Navbar() {
           You will have to login again if you Want to use your account
         </Text>
         <Group>
-          <Button onClick={logout}>Logout</Button>
+          <Button 
+            variant="gradient"
+            gradient={{ from: 'red', to: 'orange', deg: 90 }} 
+            color="red" 
+            fullWidth 
+            justify="center"
+            onClick={logout}>Logout</Button>
         </Group>
       </Modal>
       <div className={classes.inner}>

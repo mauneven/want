@@ -69,7 +69,7 @@ export default function Account() {
   return (
     <Container fluid>
       <Group align="center" justify="center">
-        <Paper radius="md" withBorder p="xl" shadow="sm">
+        <Paper radius="md" withBorder p="xl" shadow="xl">
           <Group align="center" justify="center">
             <Stack align="center" p={20}>
               <Avatar
