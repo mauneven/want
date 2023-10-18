@@ -21,6 +21,7 @@ import endpoints from "@/app/connections/enpoints/endpoints";
 import { IconStarFilled } from "@tabler/icons-react";
 import MyPostCard, { Post } from "@/components/account/MyPostCard";
 import { useRouter } from "next/navigation";
+import { environments } from "@/app/connections/environments/environments";
 
 type User = {
   firstName: string;
@@ -34,7 +35,7 @@ type User = {
   birthdate: Date;
 };
 
-export default function settings() {
+export default function Settings() {
   const [user, setUser] = useState<User | null>(null);
   const [firstName, setFirstName] = useState<string>(""); // <-- New state
   const [lastName, setLastName] = useState<string>(""); // <-- New state
@@ -119,7 +120,7 @@ export default function settings() {
         <Paper radius="md" withBorder p="xl" shadow="xl" miw={300}>
           <Group justify="center" align="center" mb={20}>
             <Avatar
-              src={`https://want.com.co/${user?.photo}` || null}
+              src={`${environments.BASE_URL}/${user?.photo}` || null}
               size={120}
               radius={120}
             />

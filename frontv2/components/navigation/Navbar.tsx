@@ -27,6 +27,7 @@ import {
 import classes from "./Navbar.module.css";
 import { useEffect, useState } from "react";
 import endpoints from "@/app/connections/enpoints/endpoints";
+import { environments } from "@/app/connections/environments/environments";
 import { useRouter } from "next/navigation";
 import Login from "../login/Login";
 
@@ -156,7 +157,7 @@ export function Navbar() {
             >
               <Menu.Target>
                 <Avatar
-                  src={user.photo ? `https://want.com.co/${user.photo}` : null}
+                  src={user.photo ? `${environments.BASE_URL}/${user?.photo}` : null}
                   alt="it's me"
                 />
               </Menu.Target>
