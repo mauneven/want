@@ -37,14 +37,19 @@ type User = {
 
 export default function Settings() {
   const [user, setUser] = useState<User | null>(null);
-  const [firstName, setFirstName] = useState<string>(""); // <-- New state
-  const [lastName, setLastName] = useState<string>(""); // <-- New state
-  const [phone, setPhone] = useState<number | string>(""); // <-- New state
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
   const [day, setDay] = useState<string>("");
   const [month, setMonth] = useState<string>("");
   const [year, setYear] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [photoURL, setPhotoURL] = useState<string>("");
+  const [initialDay, setInitialDay] = useState<string>(""); // Added initial state for day
+  const [initialMonth, setInitialMonth] = useState<string>(""); // Added initial state for month
+  const [initialYear, setInitialYear] = useState<string>(""); // Added initial state for year
+  const [isFormDirty, setIsFormDirty] = useState<boolean>(false);
+  const [isUpdateClicked, setIsUpdateClicked] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -57,13 +62,16 @@ export default function Settings() {
       })
       .then((data) => {
         setUser(data.user);
-        setFirstName(data.user.firstName); // <-- Initialize state with user data
-        setLastName(data.user.lastName); // <-- Initialize state with user data
-        setPhone(data.user.phone); // <-- Initialize state with user data
+        setFirstName(data.user.firstName);
+        setLastName(data.user.lastName);
+        setPhone(data.user.phone.toString());
         const date = new Date(data.user.birthdate);
         setDay(date.getDate().toString());
         setMonth((date.getMonth() + 1).toString());
         setYear(date.getFullYear().toString());
+        setInitialDay(date.getDate().toString()); // Store initial day
+        setInitialMonth((date.getMonth() + 1).toString()); // Store initial month
+        setInitialYear(date.getFullYear().toString()); // Store initial year
         setPhotoURL(data.user.photo);
       })
       .catch((error) => {
@@ -71,11 +79,23 @@ export default function Settings() {
       });
   }, []);
 
+  useEffect(() => {
+    const isDirty =
+      firstName !== user?.firstName ||
+      lastName !== user?.lastName ||
+      phone !== user?.phone.toString() ||
+      selectedFile !== null ||
+      day !== initialDay || // Check if day is different from initial value
+      month !== initialMonth || // Check if month is different from initial value
+      year !== initialYear; // Check if year is different from initial value
+    setIsFormDirty(isDirty);
+  }, [firstName, lastName, phone, selectedFile, day, month, year]);
+
   const handleUpdateProfile = async () => {
     const formData = new FormData();
-    formData.append("firstName", firstName); // <-- Use the state directly
-    formData.append("lastName", lastName); // <-- Use the state directly
-    formData.append("phone", phone.toString()); // <-- Use the state directly
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("phone", phone);
     formData.append(
       "birthdate",
       new Date(`${year}-${month}-${day}`).toISOString()
@@ -83,7 +103,6 @@ export default function Settings() {
     if (selectedFile) {
       formData.append("photo", selectedFile);
     }
-    console.log(selectedFile)
 
     fetch(endpoints.updateuser, {
       method: "PUT",
@@ -91,9 +110,7 @@ export default function Settings() {
       credentials: "include",
     })
       .then((response) => {
-        if (
-          response.headers.get("Content-Type")?.includes("application/json")
-        ) {
+        if (response.headers.get("Content-Type")?.includes("application/json")) {
           return response.json();
         }
         return response.text();
@@ -103,8 +120,14 @@ export default function Settings() {
       })
       .catch((error) => {
         console.error("Error updating profile:", error);
+      })
+      .finally(() => {
+        setIsUpdateClicked(false);
+        setIsFormDirty(false);
+        setSelectedFile(null); // Limpiar el archivo seleccionado
       });
   };
+
   return (
     <Container fluid>
       <Divider
@@ -120,7 +143,11 @@ export default function Settings() {
         <Paper radius="md" withBorder p="xl" shadow="xl" miw={300}>
           <Group justify="center" align="center" mb={20}>
             <Avatar
-              src={`${environments.BASE_URL}/${user?.photo}` || null}
+              src={
+                selectedFile
+                  ? URL.createObjectURL(selectedFile)
+                  : `${environments.BASE_URL}/${user?.photo}` || null
+              }
               size={120}
               radius={120}
             />
@@ -130,6 +157,7 @@ export default function Settings() {
                 variant="default"
                 onChange={(file: File | null) => {
                   setSelectedFile(file);
+                  setIsFormDirty(true);
                 }}
               >
                 Change photo
@@ -142,43 +170,96 @@ export default function Settings() {
           <Stack>
             <Text>Name</Text>
             <Input
-              defaultValue={user?.firstName}
-              value={firstName} // <-- Bind input to state
-              onChange={(e) => setFirstName(e.target.value)} // <-- Update state on change
+              value={firstName}
+              onChange={(e) => {
+                setFirstName(e.target.value);
+                setIsFormDirty(true);
+              }}
             />
             <Text>Last Name</Text>
             <Input
-              defaultValue={user?.lastName}
-              value={lastName} // <-- Bind input to state
-              onChange={(e) => setLastName(e.target.value)} // <-- Update state on change
+              value={lastName}
+              onChange={(e) => {
+                setLastName(e.target.value);
+                setIsFormDirty(true);
+              }}
             />
             <Text>Phone</Text>
             <Input
-              defaultValue={user?.phone}
-              value={phone} // <-- Bind input to state
-              onChange={(e) => setPhone(e.target.value)} // <-- Update state on change
+              value={phone}
+              onChange={(e) => {
+                setPhone(e.target.value);
+                setIsFormDirty(true);
+              }}
             />
             <Text>Email</Text>
             <Input defaultValue={user?.email} disabled />
             <Text>Birthday</Text>
             <Group>
-              <Input
-                placeholder="DD"
-                value={day}
-                onChange={(e) => setDay(e.target.value)}
-              />
-              <Input
-                placeholder="MM"
-                value={month}
-                onChange={(e) => setMonth(e.target.value)}
-              />
-              <Input
-                placeholder="YYYY"
-                value={year}
-                onChange={(e) => setYear(e.target.value)}
-              />
+              <Stack>
+                <Text size="xs">Day</Text>
+                <Input
+                  placeholder="DD"
+                  value={day}
+                  onChange={(e) => {
+                    setDay(e.target.value);
+                    setIsFormDirty(true);
+                  }}
+                />
+              </Stack>
+              <Stack>
+                <Text size="xs">Month</Text>
+                <Input
+                  placeholder="MM"
+                  value={month}
+                  onChange={(e) => {
+                    setMonth(e.target.value);
+                    setIsFormDirty(true);
+                  }}
+                />
+              </Stack>
+              <Stack>
+                <Text size="xs">Year</Text>
+                <Input
+                  placeholder="YYYY"
+                  value={year}
+                  onChange={(e) => {
+                    setYear(e.target.value);
+                    setIsFormDirty(true);
+                  }}
+                />
+              </Stack>
             </Group>
-            <Button onClick={handleUpdateProfile}>Update Profile</Button>
+            <Stack>
+              {isFormDirty && (
+                <Button
+                  variant="light"
+                  color="red"
+                  onClick={() => {
+                    setFirstName(user?.firstName || "");
+                    setLastName(user?.lastName || "");
+                    setPhone(user?.phone.toString() || "");
+                    setDay(initialDay); // Restore initial day value
+                    setMonth(initialMonth); // Restore initial month value
+                    setYear(initialYear); // Restore initial year value
+                    setSelectedFile(null);
+                    setIsFormDirty(false);
+                    setIsUpdateClicked(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+              )}
+              {isFormDirty && (
+                <Button
+                  variant="light"
+                  onClick={handleUpdateProfile}
+                  disabled={isUpdateClicked}
+                >
+                  Update Profile
+                </Button>
+              )}
+            </Stack>
           </Stack>
         </Paper>
       </Group>
