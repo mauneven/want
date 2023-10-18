@@ -107,7 +107,6 @@ export default function Settings() {
       });
   
       if (response.ok) {
-        const data = await response.json();
         // Mostrar notificación de éxito
         Notifications.show({
           title: "Success",
@@ -115,10 +114,11 @@ export default function Settings() {
           color: "green",
           autoClose: 3000, // Cerrar automáticamente después de 3 segundos
         });
-        console.log(data);
       } else {
-        throw new Error("Error updating profile");
+        const data = await response.json();
+        throw new Error(data.message || "Error updating profile");
       }
+      
     } catch (error) {
       // Mostrar notificación de error
       Notifications.show({
