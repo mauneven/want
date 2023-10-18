@@ -10,6 +10,7 @@ import {
   Box,
   PasswordInput,
   Text,
+  Title,
 } from "@mantine/core";
 import { useForm, isNotEmpty, matchesField } from "@mantine/form";
 import endpoints from "@/app/connections/enpoints/endpoints";
@@ -104,6 +105,9 @@ const Login = () => {
         centered
         overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}
       >
+        <Title ta="center" size="h2">
+          {isLogin ? "Welcome back to Want!" : "Join Want!"}
+        </Title>
         <Box maw={340} mx="auto">
           <TextInput
             mt="md"

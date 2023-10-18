@@ -1,5 +1,4 @@
-"use client";
-
+'use client'
 import React, { useState, useEffect, useRef } from "react";
 import {
   Avatar,
@@ -12,10 +11,12 @@ import {
   Button,
   Stack,
   Input,
-  FileButton, // Reemplazamos FileInput con FileButton
+  FileButton,
 } from "@mantine/core";
+import { Notifications } from "@mantine/notifications"; // Importamos Notifications
 import endpoints from "@/app/connections/enpoints/endpoints";
 import { environments } from "@/app/connections/environments/environments";
+import '@mantine/notifications/styles.css';
 
 type User = {
   firstName: string;
@@ -44,7 +45,7 @@ export default function Settings() {
   const [initialYear, setInitialYear] = useState<string>("");
   const [isFormDirty, setIsFormDirty] = useState<boolean>(false);
   const [isUpdateClicked, setIsUpdateClicked] = useState<boolean>(false);
-  const resetFileRef = useRef<() => void>(null); // Referencia para reiniciar el input de archivo
+  const resetFileRef = useRef<() => void>(null);
 
   useEffect(() => {
     fetch(endpoints.user, { credentials: "include" })
@@ -97,34 +98,47 @@ export default function Settings() {
     if (selectedFile) {
       formData.append("photo", selectedFile);
     }
-
-    fetch(endpoints.updateuser, {
-      method: "PUT",
-      body: formData,
-      credentials: "include",
-    })
-      .then((response) => {
-        if (response.headers.get("Content-Type")?.includes("application/json")) {
-          return response.json();
-        }
-        return response.text();
-      })
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error("Error updating profile:", error);
-      })
-      .finally(() => {
-        setIsUpdateClicked(false);
-        setIsFormDirty(false);
-        setSelectedFile(null);
-        resetFileRef.current?.(); // Reiniciar el input de archivo
+  
+    try {
+      const response = await fetch(endpoints.updateuser, {
+        method: "PUT",
+        body: formData,
+        credentials: "include",
       });
+  
+      if (response.ok) {
+        const data = await response.json();
+        // Mostrar notificación de éxito
+        Notifications.show({
+          title: "Success",
+          message: "Profile updated successfully",
+          color: "green",
+          autoClose: 3000, // Cerrar automáticamente después de 3 segundos
+        });
+        console.log(data);
+      } else {
+        throw new Error("Error updating profile");
+      }
+    } catch (error) {
+      // Mostrar notificación de error
+      Notifications.show({
+        title: "Error",
+        message: "Error updating profile",
+        color: "red",
+        autoClose: 3000,
+      });
+      console.error("Error updating profile:", error);
+    } finally {
+      setIsUpdateClicked(false);
+      setIsFormDirty(false);
+      setSelectedFile(null);
+      resetFileRef.current?.();
+    }
   };
-
+  
   return (
     <Container fluid>
+      <Notifications /> {/* Agregamos el componente de notificaciones */}
       <Divider
         label={
           <Title fw={900} size="h2" mt={10} mb={10} ta="center">
@@ -155,7 +169,11 @@ export default function Settings() {
                 }}
                 accept="image/png,image/jpeg"
               >
-                {(props) => <Button {...props}>Change photo</Button>}
+                {(props) => (
+                  <Button variant="light" {...props}>
+                    Change photo
+                  </Button>
+                )}
               </FileButton>
               <Button variant="light" color="red">
                 Delete Photo
@@ -240,7 +258,7 @@ export default function Settings() {
                     setSelectedFile(null);
                     setIsFormDirty(false);
                     setIsUpdateClicked(false);
-                    resetFileRef.current?.(); // Reiniciar el input de archivo
+                    resetFileRef.current?.();
                   }}
                 >
                   Cancel
