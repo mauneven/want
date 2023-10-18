@@ -129,7 +129,10 @@ exports.verifyUser = async (req, res, next) => {
     const compareAsync = promisify(bcrypt.compare);
 
     // Compare the decrypted verification code with the encrypted code stored in the database
-    const isCodeValid = await compareAsync(verificationCode, user.verificationCode);
+    const isCodeValid = await compareAsync(
+      verificationCode,
+      user.verificationCode
+    );
     if (!isCodeValid) {
       return res.status(400).send("Invalid verification code");
     }

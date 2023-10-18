@@ -160,9 +160,9 @@ export function Navbar() {
                   leftSection={
                     <IconUser style={{ width: rem(14), height: rem(14) }} />
                   }
-                  onClick={() => router.push("/profile")}
+                  onClick={() => router.push("/account")}
                 >
-                  Profile
+                  Account
                 </Menu.Item>
                 <Menu.Item
                   leftSection={

@@ -1,10 +1,23 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Avatar, Text, Paper, Container, Group } from "@mantine/core";
+import {
+  Avatar,
+  Text,
+  Paper,
+  Container,
+  Group,
+  Title,
+  Divider,
+  Button,
+  Flex,
+  Stack,
+} from "@mantine/core";
 import endpoints from "../connections/enpoints/endpoints";
 import { IconStarFilled } from "@tabler/icons-react";
-import MyPostCard, { Post } from "@/components/profile/MyPostCard";
+import MyPostCard, { Post } from "@/components/account/MyPostCard";
+import classes from "../globals.module.css";
+import { useRouter } from "next/navigation";
 
 type User = {
   firstName: string;
@@ -16,9 +29,10 @@ type User = {
   totalOffers: number;
 };
 
-export default function Profile() {
+export default function Account() {
   const [user, setUser] = useState<User | null>(null);
   const [myPosts, setMyPosts] = useState<Post[]>([]);
+  const router = useRouter();
 
   // Fetch para obtener datos del perfil del usuario
   useEffect(() => {
@@ -50,25 +64,24 @@ export default function Profile() {
       });
   }, []);
 
-
-  console.log("Rendering Profile with posts:", myPosts)
-
+  console.log("Rendering Profile with posts:", myPosts);
 
   return (
-    <Container>
+    <Container fluid>
       <Group align="center" justify="center">
-        <Paper radius="md" withBorder p="sm" miw={280} shadow="sm">
+        <Paper radius="md" withBorder p="xl" shadow="sm">
           <Group align="center" justify="center">
-            <Group>
+            <Stack align="center" p={20}>
               <Avatar
                 src={`https://want.com.co/${user?.photo}` || null}
                 size={120}
                 radius={120}
                 mx="auto"
               />
-            </Group>
+              <Button onClick={() => router.push('/account/settings')} variant="default" fullWidth>Settings</Button>
+            </Stack>
             <Group display={"grid"}>
-              <Text ta="center" fz="xl" fw={500} mt="md">
+              <Text ta="center" fz="xl" fw={500} mt={0}>
                 {user ? `${user.firstName} ${user.lastName}` : ""}
               </Text>
               <Text ta="center" c="sm" fz="sm">
@@ -103,14 +116,19 @@ export default function Profile() {
           </Group>
         </Paper>
       </Group>
-      <Text mt="md" ta="center" c="xl" fz="xl">
-                    My Posts
-                  </Text>
-      <Group mt="md" align="center" justify="center">
-        
+      <Divider
+        label={
+          <Title fw={900} size="h1" mt={10} mb={10} ta="center">
+            Your Posts
+          </Title>
+        }
+        labelPosition="center"
+        m={20}
+      />
+      <Container p={0} fluid classNames={{ root: classes.container }}>
         {myPosts &&
           myPosts.map((post) => <MyPostCard key={post._id} post={post} />)}
-      </Group>
+      </Container>
     </Container>
   );
 }
