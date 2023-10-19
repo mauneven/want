@@ -78,7 +78,7 @@ export default function Account() {
                 radius={120}
                 mx="auto"
               />
-              <Button onClick={() => router.push('/account/settings')} variant="default" fullWidth>Settings</Button>
+              <Button onClick={() => router.push('/account/settings')} variant="light" fullWidth>Settings</Button>
             </Stack>
             <Group display={"grid"}>
               <Text ta="center" fz="xl" fw={500} mt={0}>

@@ -7,7 +7,7 @@ import '@mantine/tiptap'
 
 import { MantineProvider, ColorSchemeScript } from '@mantine/core';
 import { Navbar } from '@/components/navigation/Navbar';
-
+import { Footer } from '@/components/footer/Footer';
 export const metadata = {
   title: 'Want',
   description: 'Want',
@@ -22,6 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <MantineProvider defaultColorScheme='dark'>
             <Navbar/>{children}
+            <Footer/>
         </MantineProvider>
       </body>
     </html>
