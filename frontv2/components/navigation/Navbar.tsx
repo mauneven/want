@@ -220,10 +220,9 @@ export function Navbar() {
                 <Menu.Item
                   color="red"
                   leftSection={
-                    <IconLogout style={{ width: rem(14), height: rem(14) }} />
+                    <IconLogout style={{ width: rem(14), height: rem(14), marginLeft: rem(3)}} />
                   }
                   onClick={open}
-                  ml={2}
                 >
                   Logout
                 </Menu.Item>

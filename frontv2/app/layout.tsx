@@ -5,7 +5,7 @@ import '@mantine/dates'
 import '@mantine/hooks'
 import '@mantine/tiptap'
 
-import { MantineProvider, ColorSchemeScript } from '@mantine/core';
+import { MantineProvider, ColorSchemeScript, Container } from '@mantine/core';
 import { Navbar } from '@/components/navigation/Navbar';
 import { Footer } from '@/components/footer/Footer';
 export const metadata = {
@@ -21,7 +21,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <MantineProvider defaultColorScheme='dark'>
-            <Navbar/>{children}
+            <Navbar/>
+            <Container fluid pt={70} pb={40}>
+            {children}
+            </Container>
             <Footer/>
         </MantineProvider>
       </body>
