@@ -1,4 +1,5 @@
 'use client'
+
 import React, { useState, useEffect, useRef } from "react";
 import {
   Avatar,
@@ -13,7 +14,7 @@ import {
   Input,
   FileButton,
 } from "@mantine/core";
-import { Notifications } from "@mantine/notifications"; // Importamos Notifications
+import { Notifications } from "@mantine/notifications";
 import endpoints from "@/app/connections/enpoints/endpoints";
 import { environments } from "@/app/connections/environments/environments";
 import '@mantine/notifications/styles.css';
@@ -107,12 +108,11 @@ export default function Settings() {
       });
   
       if (response.ok) {
-        // Mostrar notificación de éxito
         Notifications.show({
           title: "Success",
           message: "Profile updated successfully",
           color: "green",
-          autoClose: 3000, // Cerrar automáticamente después de 3 segundos
+          autoClose: 3000,
         });
       } else {
         const data = await response.json();
@@ -120,7 +120,6 @@ export default function Settings() {
       }
       
     } catch (error) {
-      // Mostrar notificación de error
       Notifications.show({
         title: "Error",
         message: "Error updating profile",
@@ -138,7 +137,7 @@ export default function Settings() {
   
   return (
     <Container fluid>
-      <Notifications /> {/* Agregamos el componente de notificaciones */}
+      <Notifications />
       <Divider
         label={
           <Title fw={900} size="h2" mt={10} mb={10} ta="center">

@@ -1,3 +1,8 @@
+.globalContainer{
+  background-color: light-dark(#f1f1f1, var(--mantine-dark));
+}
+
+
 .container {
   display: grid;
   grid-template-columns: repeat(6, 1fr); 
