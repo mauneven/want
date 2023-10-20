@@ -1,13 +1,15 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { Button, Input, Modal, Paper, Stack, Text } from "@mantine/core";
 import { GoogleMap, LoadScript, MarkerF } from "@react-google-maps/api";
 
-const MapComponent: React.FC = () => {
+const MapComponent: React.FC<{ onLocationSelect?: Function }> = ({
+  onLocationSelect,
+}) => {
   const [opened, setOpened] = useState(false);
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
     null
   );
+  const defaultRadius = 5; // Radio por defecto
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [query, setQuery] = useState("");
 
@@ -24,6 +26,13 @@ const MapComponent: React.FC = () => {
       });
     } else {
       alert("Geolocation is not supported by this browser.");
+    }
+  };
+
+  const handleLocationSelect = () => {
+    if (location && onLocationSelect) {
+      onLocationSelect(location.lat, location.lng, defaultRadius);
+      setOpened(false);
     }
   };
 
@@ -102,18 +111,23 @@ const MapComponent: React.FC = () => {
         >
           {location && <MarkerF position={location} />}
         </GoogleMap>
+        <Button onClick={handleLocationSelect} variant="light">
+          Select Location
+        </Button>
       </Modal>
     </>
   );
 };
 
-const AppWithGoogleMap: React.FC = () => {
+const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({
+  onLocationSelect,
+}) => {
   return (
     <LoadScript
       googleMapsApiKey="AIzaSyD7noZo9tRRp0iHN5BQClJBEtOP6E8uoCc"
       libraries={["places"]}
     >
-      <MapComponent />
+      <MapComponent onLocationSelect={onLocationSelect} />
     </LoadScript>
   );
 };
