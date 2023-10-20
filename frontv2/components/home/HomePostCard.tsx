@@ -3,7 +3,7 @@
 import React from "react";
 import { Image, Card, Text, Group, Button, rem } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
-import { IconStar } from "@tabler/icons-react";
+import { IconArrowLeft, IconArrowRight, IconStar } from "@tabler/icons-react";
 import classes from "./HomePostCard.module.css";
 import "@mantine/carousel/styles.css";
 
@@ -48,6 +48,12 @@ export default function HomePostCard({ post }: { post: Post }) {
         <Carousel
           withIndicators
           loop
+          nextControlIcon={
+            <IconArrowRight style={{ width: rem(16), height: rem(16) }} />
+          }
+          previousControlIcon={
+            <IconArrowLeft style={{ width: rem(16), height: rem(16) }} />
+          }
           classNames={{
             root: classes.carousel,
             controls: classes.carouselControls,

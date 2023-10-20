@@ -5,10 +5,12 @@ import {
   Text,
   Group,
   Button,
+  rem
 } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import classes from "./MyPostCard.module.css";
 import "@mantine/carousel/styles.css";
+import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 
 interface User {
   _id: string;
@@ -57,6 +59,12 @@ export default function MyPostCard({ post }: { post: Post }) {
             <Carousel
               withIndicators
               loop
+              nextControlIcon={
+                <IconArrowRight style={{ width: rem(16), height: rem(16) }} />
+              }
+              previousControlIcon={
+                <IconArrowLeft style={{ width: rem(16), height: rem(16) }} />
+              }
               classNames={{
                 root: classes.carousel,
                 controls: classes.carouselControls,

@@ -272,6 +272,8 @@ export default function Settings() {
             </Group>
             <Stack>
               {isFormDirty && (
+                <>
+                <Divider/>
                 <Button
                   variant="light"
                   color="red"
@@ -290,8 +292,6 @@ export default function Settings() {
                 >
                   Cancel
                 </Button>
-              )}
-              {isFormDirty && (
                 <Button
                   variant="light"
                   onClick={handleUpdateProfile}
@@ -299,6 +299,7 @@ export default function Settings() {
                 >
                   Update Profile
                 </Button>
+                </>
               )}
             </Stack>
           </Stack>

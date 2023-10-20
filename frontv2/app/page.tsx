@@ -1,8 +1,10 @@
+
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
 import HomePostCard from "@/components/home/HomePostCard";
-import { Container } from "@mantine/core";
+import MapComponent from "../components/maps/mapComponent";
+import { Container, Text } from "@mantine/core";
 import endpoints from "./connections/enpoints/endpoints";
 import classes from "./globals.module.css";
 
@@ -78,7 +80,11 @@ export default function Home() {
     const documentHeight = document.documentElement.scrollHeight;
     const scrollTop = window.scrollY;
 
-    if (!loadingRef.current && !noMorePosts && windowHeight + scrollTop >= documentHeight - 200) {
+    if (
+      !loadingRef.current &&
+      !noMorePosts &&
+      windowHeight + scrollTop >= documentHeight - 200
+    ) {
       loadPosts();
     }
   };
@@ -91,12 +97,15 @@ export default function Home() {
   }, [noMorePosts]);
 
   return (
-    <Container fluid classNames={{ root: classes.container }}>
-      {posts.map((post) => (
-        <HomePostCard key={post._id} post={post} />
-      ))}
-      {noMorePosts && <p>There&apos;s no more posts to load</p>}
-      {loading && <p>Loading...</p>}
-    </Container>
+    <>
+      <MapComponent />
+      <Container mt="10" fluid classNames={{ root: classes.container }}>
+        {posts.map((post) => (
+          <HomePostCard key={post._id} post={post} />
+        ))}
+        {noMorePosts && <p>There&apos;s no more posts to load</p>}
+        {loading && <p>Loading...</p>}
+      </Container>
+    </>
   );
 }

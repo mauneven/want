@@ -1,7 +1,6 @@
 .globalContainer{
-  background-color: light-dark(#f1f1f1, var(--mantine-dark));
+  background-color: light-dark(#f1f1f1, #171717);
 }
-
 
 .container {
   display: grid;
