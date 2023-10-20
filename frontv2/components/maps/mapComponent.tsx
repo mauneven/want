@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, useEffect, useRef } from "react";
 import { Button, Input, Modal, Paper, Stack, Text } from "@mantine/core";
 import { GoogleMap, LoadScript, MarkerF } from "@react-google-maps/api";
@@ -122,7 +123,11 @@ const MapComponent: React.FC<{ onLocationSelect?: Function }> = ({
 const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({
   onLocationSelect,
 }) => {
-  return (
+  const isScriptLoaded = window.google && window.google.maps;
+
+  return isScriptLoaded ? (
+    <MapComponent onLocationSelect={onLocationSelect} />
+  ) : (
     <LoadScript
       googleMapsApiKey="AIzaSyD7noZo9tRRp0iHN5BQClJBEtOP6E8uoCc"
       libraries={["places"]}
