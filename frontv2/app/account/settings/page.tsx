@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React, { useState, useEffect, useRef } from "react";
 import {
@@ -17,7 +17,7 @@ import {
 import { Notifications } from "@mantine/notifications";
 import endpoints from "@/app/connections/enpoints/endpoints";
 import { environments } from "@/app/connections/environments/environments";
-import '@mantine/notifications/styles.css';
+import "@mantine/notifications/styles.css";
 
 type User = {
   firstName: string;
@@ -87,6 +87,34 @@ export default function Settings() {
     setIsFormDirty(isDirty);
   }, [firstName, lastName, phone, selectedFile, day, month, year]);
 
+  useEffect(() => {
+    refreshUserProfile();
+  }, []);
+
+  const refreshUserProfile = async () => {
+    try {
+      const response = await fetch(endpoints.user, { credentials: "include" });
+      if (!response.ok) {
+        throw new Error("Error fetching user profile");
+      }
+      const data = await response.json();
+      setUser(data.user);
+      setFirstName(data.user.firstName);
+      setLastName(data.user.lastName);
+      setPhone(data.user.phone.toString());
+      const date = new Date(data.user.birthdate);
+      setDay(date.getDate().toString());
+      setMonth((date.getMonth() + 1).toString());
+      setYear(date.getFullYear().toString());
+      setInitialDay(date.getDate().toString());
+      setInitialMonth((date.getMonth() + 1).toString());
+      setInitialYear(date.getFullYear().toString());
+      setPhotoURL(data.user.photo);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   const handleUpdateProfile = async () => {
     const formData = new FormData();
     formData.append("firstName", firstName);
@@ -99,14 +127,14 @@ export default function Settings() {
     if (selectedFile) {
       formData.append("photo", selectedFile);
     }
-  
+
     try {
       const response = await fetch(endpoints.updateuser, {
         method: "PUT",
         body: formData,
         credentials: "include",
       });
-  
+
       if (response.ok) {
         Notifications.show({
           title: "Success",
@@ -114,11 +142,11 @@ export default function Settings() {
           color: "green",
           autoClose: 3000,
         });
+        await refreshUserProfile();
       } else {
         const data = await response.json();
         throw new Error(data.message || "Error updating profile");
       }
-      
     } catch (error) {
       Notifications.show({
         title: "Error",
@@ -134,7 +162,7 @@ export default function Settings() {
       resetFileRef.current?.();
     }
   };
-  
+
   return (
     <Container fluid>
       <Notifications />
