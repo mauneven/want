@@ -86,7 +86,6 @@ export function Navbar() {
         console.error("Error log out:", response.status, response.statusText);
       }
 
-      // Redirigimos a la página principal
       window.location.replace("/");
     } catch (error) {
       console.error("Error log out", error);
