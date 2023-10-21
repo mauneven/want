@@ -1,15 +1,10 @@
-'use client'
 import React, { useState, useEffect, useRef } from "react";
 import { Button, Input, Modal, Paper, Stack, Text } from "@mantine/core";
 import { GoogleMap, LoadScript, MarkerF } from "@react-google-maps/api";
 
-const MapComponent: React.FC<{ onLocationSelect?: Function }> = ({
-  onLocationSelect,
-}) => {
+const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSelect }) => {
   const [opened, setOpened] = useState(false);
-  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
-    null
-  );
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const defaultRadius = 5; // Radio por defecto
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [query, setQuery] = useState("");
@@ -76,7 +71,9 @@ const MapComponent: React.FC<{ onLocationSelect?: Function }> = ({
     });
   };
 
-  return (
+  const isScriptLoaded = window.google && window.google.maps;
+
+  return isScriptLoaded ? (
     <>
       <Button onClick={fetchLocation} variant="light">
         Location
@@ -117,23 +114,11 @@ const MapComponent: React.FC<{ onLocationSelect?: Function }> = ({
         </Button>
       </Modal>
     </>
-  );
-};
-
-const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({
-  onLocationSelect,
-}) => {
-  const isScriptLoaded = window.google && window.google.maps;
-
-  return isScriptLoaded ? (
-    <MapComponent onLocationSelect={onLocationSelect} />
   ) : (
     <LoadScript
       googleMapsApiKey="AIzaSyD7noZo9tRRp0iHN5BQClJBEtOP6E8uoCc"
       libraries={["places"]}
-    >
-      <MapComponent onLocationSelect={onLocationSelect} />
-    </LoadScript>
+    />
   );
 };
 

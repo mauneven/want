@@ -49,14 +49,14 @@ export default function Home() {
     lat: number,
     lng: number,
     defaultRadius: number
-) => {
+  ) => {
     setLatitude(lat);
     setLongitude(lng);
     setRadius(defaultRadius);
     page.current = 1;
     setPosts([]);
     setNoMorePosts(false);
-};
+  };
 
   useEffect(() => {
     loadPosts();
@@ -65,25 +65,28 @@ export default function Home() {
   // Agrega longitud, latitud y radio a la query de la petición
   const loadPosts = () => {
     if (loadingRef.current || noMorePosts) return;
-
+  
     setLoading(true);
     loadingRef.current = true;
-
-    // Agrega longitude, latitude y radius a la query de la petición
-    const query = `?page=${page.current}&longitude=${longitude}&latitude=${latitude}&radius=${radius}`;
-
+  
+    // Construcción condicional de la query
+    let query = `?page=${page.current}`;
+    if(longitude !== null) query += `&longitude=${longitude}`;
+    if(latitude !== null) query += `&latitude=${latitude}`;
+    if(radius !== null) query += `&radius=${radius}`;
+  
     fetch(`${endpoints.posts}${query}`)
       .then((response) => response.json())
       .then((data) => {
         const newPosts = data.posts;
-
+  
         if (newPosts.length === 0) {
           setNoMorePosts(true);
         } else {
           setPosts((prevPosts) => [...prevPosts, ...newPosts]);
           page.current += 1;
         }
-
+  
         setLoading(false);
         loadingRef.current = false;
       })
@@ -93,7 +96,7 @@ export default function Home() {
         loadingRef.current = false;
       });
   };
-
+    
   const handleScroll = () => {
     const windowHeight = window.innerHeight;
     const documentHeight = document.documentElement.scrollHeight;
@@ -110,11 +113,9 @@ export default function Home() {
 
   useEffect(() => {
     if (latitude !== null && longitude !== null && radius !== null) {
-        loadPosts();
-        setPosts([]);
+      loadPosts();
     }
-}, [latitude, longitude, radius]);
-
+  }, [latitude, longitude, radius]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
