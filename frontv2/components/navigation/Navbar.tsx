@@ -13,6 +13,7 @@ import {
   useMantineColorScheme,
   useComputedColorScheme,
   Flex,
+  UnstyledButton,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
@@ -107,11 +108,11 @@ export function Navbar() {
           You will have to login again if you Want to use your account
         </Text>
         <Group>
-          <Button 
+          <Button
             variant="gradient"
-            gradient={{ from: 'red', to: 'orange', deg: 90 }} 
-            color="red" 
-            fullWidth 
+            gradient={{ from: 'red', to: 'orange', deg: 90 }}
+            color="red"
+            fullWidth
             justify="center"
             onClick={logout}>Logout</Button>
         </Group>
@@ -150,15 +151,16 @@ export function Navbar() {
               offset={20}
               position="bottom-end"
               withArrow
-              trigger="hover"
               openDelay={100}
               closeDelay={100}
             >
               <Menu.Target>
-                <Avatar
-                  src={user.photo ? `${environments.BASE_URL}/${user?.photo}` : null}
-                  alt="it's me"
-                />
+                <UnstyledButton>
+                  <Avatar
+                    src={user.photo ? `https://want.com.co/${user?.photo}` : null}
+                    alt="it's me"
+                  />
+                </UnstyledButton>
               </Menu.Target>
 
               <Menu.Dropdown>
@@ -194,7 +196,7 @@ export function Navbar() {
                   }
                   align={"center"}
                 >
-                    <ActionIcon
+                  <ActionIcon
                     variant="transparent"
                     color="default"
                     size="md"
@@ -219,7 +221,7 @@ export function Navbar() {
                 <Menu.Item
                   color="red"
                   leftSection={
-                    <IconLogout style={{ width: rem(14), height: rem(14), marginLeft: rem(3)}} />
+                    <IconLogout style={{ width: rem(14), height: rem(14), marginLeft: rem(3) }} />
                   }
                   onClick={open}
                 >

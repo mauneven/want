@@ -1,7 +1,9 @@
 'use client'
-import React, { useState, useRef } from "react";
+
+import React, { useState, useRef, useEffect } from "react";
 import { Button, Menu, Group, Input, Modal, Stack, Text } from "@mantine/core";
-import { GoogleMap, LoadScript, MarkerF, Circle } from "@react-google-maps/api";
+import { GoogleMap, LoadScript, MarkerF } from "@react-google-maps/api";
+import "./maps.css"
 
 const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSelect }) => {
   const [opened, setOpened] = useState(false);
@@ -12,8 +14,27 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
   const [query, setQuery] = useState("");
   const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY || "";
   const radiiOptions = [1, 5, 10, 20, 10000000000000000000000000000000000000000000000000000000];
+  const calculateCircleDiameter = (radiusInKm: number, lat: number, zoom: number) => {
+    const metersPerPixel = 156543.03392 * Math.cos(lat * Math.PI / 180) / Math.pow(2, zoom);
+    return 2 * radiusInKm * 1000 / metersPerPixel;
+  };
 
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [googleApiLoaded, setGoogleApiLoaded] = useState(false); // Variable de estado para rastrear si la API ya se ha cargado
+
+  useEffect(() => {
+    if (!googleApiLoaded) {
+      // Carga la API de Google Maps una vez
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        setGoogleApiLoaded(true);
+      };
+      document.head.appendChild(script);
+    }
+  }, [googleApiLoaded, apiKey]);
 
   const fetchLocation = () => {
     if (navigator.geolocation) {
@@ -89,10 +110,7 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
   };
 
   return (
-    <LoadScript
-      googleMapsApiKey={apiKey}
-      libraries={["places"]}
-    >
+    <div>
       <Button onClick={fetchLocation} variant="light">
         Location
       </Button>
@@ -119,35 +137,34 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
             </Button>
           </Stack>
         ))}
-        <GoogleMap
-          center={location || { lat: -34.397, lng: 150.644 }}
-          zoom={getZoomLevel(selectedRadius)}
-          mapContainerStyle={{ width: "100%", height: "400px" }}
-          options={{
-            streetViewControl: false,
-            mapTypeControl: false,
-            fullscreenControl: false,
-            zoomControl: false,
-            scrollwheel: false,
-            draggable: false
-          }}
-        >
-          {location && <MarkerF position={location} />}
-
-          {location && (
-            <Circle
-              center={location}
-              radius={selectedRadius * 1000}
-              options={{
-                strokeColor: "#FF0000",
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: "#FF0000",
-                fillOpacity: 0.35,
-              }}
-            />
-          )}
-        </GoogleMap>
+        {googleApiLoaded && (
+          <GoogleMap
+            center={location || { lat: -34.397, lng: 150.644 }}
+            zoom={getZoomLevel(selectedRadius)}
+            mapContainerStyle={{ width: "100%", height: "400px" }}
+            options={{
+              streetViewControl: false,
+              mapTypeControl: false,
+              fullscreenControl: false,
+              zoomControl: false,
+              scrollwheel: false,
+              draggable: false
+            }}
+          >
+            {location && <MarkerF position={location} />}
+            {location && (
+              <div
+                className="circle"
+                style={{
+                  top: '50%',
+                  left: '50%',
+                  width: `${calculateCircleDiameter(selectedRadius, location.lat, getZoomLevel(selectedRadius))}px`,
+                  height: `${calculateCircleDiameter(selectedRadius, location.lat, getZoomLevel(selectedRadius))}px`,
+                }}
+              ></div>
+            )}
+          </GoogleMap>
+        )}
         <Group pt={10} justify="end">
           <Menu shadow="md" width={150}>
             <Menu.Target>
@@ -166,7 +183,7 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
           </Button>
         </Group>
       </Modal>
-    </LoadScript>
+    </div>
   );
 };
 
