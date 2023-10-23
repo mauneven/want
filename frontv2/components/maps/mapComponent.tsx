@@ -1,13 +1,15 @@
 import React, { useState, useRef } from "react";
-import { Button, Input, Modal, Stack, Text } from "@mantine/core";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { Button, Menu, Group, Input, Modal, Stack, Text } from "@mantine/core";
+import { GoogleMap, LoadScript, MarkerF } from "@react-google-maps/api";
 
 const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSelect }) => {
   const [opened, setOpened] = useState(false);
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const defaultRadius = 5; // Radio por defecto
   const [searchResults, setSearchResults] = useState<string[]>([]);
+  const [selectedRadius, setSelectedRadius] = useState<number>(defaultRadius);
   const [query, setQuery] = useState("");
+  const radiiOptions = [1, 5, 10, 20];
 
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -27,7 +29,7 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
 
   const handleLocationSelect = () => {
     if (location && onLocationSelect) {
-      onLocationSelect(location.lat, location.lng, defaultRadius);
+      onLocationSelect(location.lat, location.lng, selectedRadius);
       setOpened(false);
     }
   };
@@ -106,11 +108,26 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
           mapContainerStyle={{ width: "100%", height: "400px" }}
           options={{ streetViewControl: false, mapTypeControl: false }}
         >
-          {location && <Marker position={location} />}
+          {location && <MarkerF position={location} />}
         </GoogleMap>
-        <Button onClick={handleLocationSelect} variant="light">
-          Select Location
-        </Button>
+        <Group pt={10} justify="end">
+          <Menu shadow="md" width={150}>
+            <Menu.Target>
+              <Button variant="light">{selectedRadius} km</Button>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              {radiiOptions.map((radius) => (
+                <Menu.Item key={radius} onClick={() => setSelectedRadius(radius)}>
+                  {radius} km
+                </Menu.Item>
+              ))}
+            </Menu.Dropdown>
+          </Menu>
+          <Button onClick={handleLocationSelect} variant="light">
+            Select Location
+          </Button>
+        </Group>
       </Modal>
     </LoadScript>
   );
