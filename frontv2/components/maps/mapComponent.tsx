@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Button, Input, Modal, Paper, Stack, Text } from "@mantine/core";
+import React, { useState, useRef } from "react";
+import { Button, Input, Modal, Stack, Text } from "@mantine/core";
 import { GoogleMap, LoadScript, MarkerF } from "@react-google-maps/api";
 
 const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSelect }) => {
@@ -40,7 +40,7 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
       clearTimeout(searchTimeoutRef.current);
     }
 
-    searchTimeoutRef.current = setTimeout(() => {
+    if (typeof window !== "undefined") {
       const autocompleteService = new google.maps.places.AutocompleteService();
       autocompleteService.getPlacePredictions(
         { input: value },
@@ -55,23 +55,25 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
           }
         }
       );
-    }, 500);
+    }
   };
 
   const handleSearchSelect = (value: string) => {
     setQuery(value);
     setSearchResults([]);
 
-    const geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ address: value }, (results, status) => {
-      if (status === "OK" && results) {
-        const coords = results[0].geometry.location;
-        setLocation({ lat: coords.lat(), lng: coords.lng() });
-      }
-    });
+    if (typeof window !== "undefined") {
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ address: value }, (results, status) => {
+        if (status === "OK" && results) {
+          const coords = results[0].geometry.location;
+          setLocation({ lat: coords.lat(), lng: coords.lng() });
+        }
+      });
+    }
   };
 
-  const isScriptLoaded = window.google && window.google.maps;
+  const isScriptLoaded = typeof window !== "undefined" && window.google && window.google.maps;
 
   return isScriptLoaded ? (
     <>
