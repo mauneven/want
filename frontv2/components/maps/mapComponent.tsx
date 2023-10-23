@@ -6,10 +6,11 @@ import { GoogleMap, LoadScript, MarkerF, Circle } from "@react-google-maps/api";
 const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSelect }) => {
   const [opened, setOpened] = useState(false);
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const defaultRadius = 5; // Radio por defecto
+  const defaultRadius = 5;
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedRadius, setSelectedRadius] = useState<number>(defaultRadius);
   const [query, setQuery] = useState("");
+  const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY || "";
   const radiiOptions = [1, 5, 10, 20, 10000000000000000000000000000000000000000000000000000000];
 
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -89,7 +90,7 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
 
   return (
     <LoadScript
-      googleMapsApiKey="AIzaSyD7noZo9tRRp0iHN5BQClJBEtOP6E8uoCc"
+      googleMapsApiKey={apiKey}
       libraries={["places"]}
     >
       <Button onClick={fetchLocation} variant="light">
