@@ -1,32 +1,44 @@
-import '@mantine/core/styles.css';
-import '@mantine/carousel';
-import '@mantine/code-highlight'
-import '@mantine/dates'
-import '@mantine/hooks'
-import '@mantine/tiptap'
+"use client"
 
-import { MantineProvider, ColorSchemeScript, Container } from '@mantine/core';
-import { Navbar } from '@/components/navigation/Navbar';
-import { Footer } from '@/components/footer/Footer';
-import classes from './globals.module.css'
-export const metadata = {
-  title: 'Want',
-  description: 'Want',
-};
+import "@mantine/core/styles.css";
+import "@mantine/carousel";
+import "@mantine/code-highlight";
+import "@mantine/dates";
+import "@mantine/hooks";
+import "@mantine/tiptap";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+import { MantineProvider, ColorSchemeScript, Container } from "@mantine/core";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { Navbar } from "@/components/navigation/Navbar";
+import { Footer } from "@/components/footer/Footer";
+import classes from "./globals.module.css";
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const queryClient = new QueryClient();
+
   return (
     <html lang="en">
       <head>
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider defaultColorScheme='dark'>
-            <Navbar/>
-            <Container fluid pt={70} pb={40} classNames={{root: classes.globalContainer}}>
-            {children}
+        <MantineProvider defaultColorScheme="dark">
+          <QueryClientProvider client={queryClient}>
+            <Navbar />
+            <Container
+              fluid
+              pt={70}
+              pb={40}
+              classNames={{ root: classes.globalContainer }}
+            >
+              {children}
             </Container>
-            <Footer/>
+            <Footer />
+          </QueryClientProvider>
         </MantineProvider>
       </body>
     </html>

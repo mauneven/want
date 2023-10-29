@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { useInfiniteQuery } from "react-query";
 import HomePostCard from "@/components/home/HomePostCard";
 import AppWithGoogleMap from "../components/maps/mapComponent";
-import { Container, Text } from "@mantine/core";
+import { Container } from "@mantine/core";
 import endpoints from "./connections/enpoints/endpoints";
 import classes from "./globals.module.css";
 
@@ -35,15 +36,36 @@ interface Post {
   __v: number;
 }
 
+interface PostResponse {
+  totalPosts: number;
+  posts: Post[];
+  nextPage: number | null;
+}
+
+const fetchPosts = async (
+  page: number = 1,
+  longitude: number | null,
+  latitude: number | null,
+  radius: number | null
+): Promise<PostResponse> => {
+  let query = `?page=${page}`;
+  if (longitude !== null) query += `&longitude=${longitude}`;
+  if (latitude !== null) query += `&latitude=${latitude}`;
+  if (radius !== null) query += `&radius=${radius}`;
+
+  const response = await fetch(`${endpoints.posts}${query}`);
+  if (!response.ok) {
+    throw new Error("Error fetching posts");
+  }
+  return response.json();
+};
+
 export default function Home() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [noMorePosts, setNoMorePosts] = useState(false);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [radius, setRadius] = useState<number | null>(null);
-  const page = useRef(1);
-  const loadingRef = useRef(false);
+  
+  const isFetching = useRef(false); // Usamos una referencia para rastrear el estado de carga
 
   const handleLocationSelect = (
     lat: number,
@@ -53,86 +75,65 @@ export default function Home() {
     setLatitude(lat);
     setLongitude(lng);
     setRadius(defaultRadius);
-    page.current = 1;
-    setPosts([]);
-    setNoMorePosts(false);
   };
 
-  useEffect(() => {
-    loadPosts();
-  }, []);
-
-  // Agrega longitud, latitud y radio a la query de la petición
-  const loadPosts = () => {
-    if (loadingRef.current || noMorePosts) return;
-  
-    setLoading(true);
-    loadingRef.current = true;
-  
-    // Construcción condicional de la query
-    let query = `?page=${page.current}`;
-    if(longitude !== null) query += `&longitude=${longitude}`;
-    if(latitude !== null) query += `&latitude=${latitude}`;
-    if(radius !== null) query += `&radius=${radius}`;
-  
-    fetch(`${endpoints.posts}${query}`)
-      .then((response) => response.json())
-      .then((data) => {
-        const newPosts = data.posts;
-  
-        if (newPosts.length === 0) {
-          setNoMorePosts(true);
-        } else {
-          setPosts((prevPosts) => [...prevPosts, ...newPosts]);
-          page.current += 1;
+  const {
+    data,
+    error,
+    fetchNextPage,
+    isLoading,
+    hasNextPage,
+  } = useInfiniteQuery<PostResponse, Error>(
+    ["posts", longitude, latitude, radius],
+    ({ pageParam = 1 }) => fetchPosts(pageParam, longitude, latitude, radius),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        const totalPagesLoaded = allPages.reduce((acc, page) => acc + page.posts.length, 0);
+        if (totalPagesLoaded < lastPage.totalPosts) {
+          return allPages.length + 1;
         }
-  
-        setLoading(false);
-        loadingRef.current = false;
-      })
-      .catch((error) => {
-        console.error("Error fetching posts:", error);
-        setLoading(false);
-        loadingRef.current = false;
-      });
-  };
-    
+        return null;
+      },
+      keepPreviousData: true,
+    }
+  );
+
   const handleScroll = () => {
     const windowHeight = window.innerHeight;
     const documentHeight = document.documentElement.scrollHeight;
     const scrollTop = window.scrollY;
 
-    if (
-      !loadingRef.current &&
-      !noMorePosts &&
-      windowHeight + scrollTop >= documentHeight - 200
-    ) {
-      loadPosts();
+    // Verificamos si ya se está cargando y si hay más páginas por cargar
+    if (!isLoading && !isFetching.current && hasNextPage && windowHeight + scrollTop >= documentHeight - 200) {
+      isFetching.current = true; // Marcamos que estamos cargando
+      fetchNextPage().then(() => {
+        isFetching.current = false; // Restablecemos después de cargar
+      });
     }
   };
-
-  useEffect(() => {
-    if (latitude !== null && longitude !== null && radius !== null) {
-      loadPosts();
-    }
-  }, [latitude, longitude, radius]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [noMorePosts]);
+  }, [isLoading, hasNextPage]);
 
   return (
     <>
       <AppWithGoogleMap onLocationSelect={handleLocationSelect} />
       <Container mt="10" fluid classNames={{ root: classes.container }}>
-        {posts.map((post) => (
-          <HomePostCard key={post._id} post={post} />
-        ))}
-        {noMorePosts && <p>There&apos;s no more posts to load</p>}
-        {loading && <p>Loading...</p>}
+        {data?.pages.flatMap((page) =>
+          page.posts.map((post) => <HomePostCard key={post._id} post={post} />)
+        )}
+
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : !hasNextPage ? (
+          <p>There&apos;s no more posts to load</p>
+        ) : null}
+
+        {error && <p>Error fetching posts: {error.message}</p>}
       </Container>
     </>
   );
