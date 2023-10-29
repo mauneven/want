@@ -65,7 +65,7 @@ export default function Home() {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [radius, setRadius] = useState<number | null>(null);
   
-  const isFetching = useRef(false); // Usamos una referencia para rastrear el estado de carga
+  const isFetching = useRef(false);
 
   const handleLocationSelect = (
     lat: number,
@@ -94,7 +94,10 @@ export default function Home() {
         }
         return null;
       },
-      keepPreviousData: true,
+      keepPreviousData: true, // mantiene la data anterior mientras se cargan nuevas páginas
+      refetchOnWindowFocus: false, // no vuelve a buscar datos cuando la ventana recupera el foco
+      refetchOnReconnect: false, // no vuelve a buscar datos cuando se recupera la conexión
+      staleTime: 5 * 60 * 1000, // el tiempo (en ms) que los datos se consideran "frescos" y no se refetch de inmediato
     }
   );
 
