@@ -40,56 +40,65 @@ const Login = () => {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-    
-    const { email, password, confirmPassword, firstName, lastName, phone, birthdate } = form.values;
-    
+
+    const {
+      email,
+      password,
+      confirmPassword,
+      firstName,
+      lastName,
+      phone,
+      birthdate,
+    } = form.values;
+
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
-    
-    if (!isLogin) {
-      if (password !== confirmPassword) {
-        window.scrollTo(0, 0); // Scroll to the top
-        return;
-      }
-    
-      if (!passwordRegex.test(password)) {
-        window.scrollTo(0, 0); // Scroll to the top
-        return;
-      }
+
+    if (!passwordRegex.test(password)) {
+      window.scrollTo(0, 0); // Scroll to the top
+      return;
     }
-    
+
+    if (!isLogin && password !== confirmPassword) {
+      window.scrollTo(0, 0); // Scroll to the top
+      return;
+    }
+
     const data = {
       email,
       password,
-      ...(isLogin ? {} : { firstName, lastName, phone, birthdate }),
+      firstName,
+      lastName,
+      phone,
+      birthdate,
     };
-    const response = await fetch(
-      isLogin ? endpoints.login : endpoints.register,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    );
+
+    const endpoint = isLogin ? endpoints.login : endpoints.register;
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
 
     if (response.ok) {
+      // Registration or Login successful
       const responseData = await response.json();
-      if (!responseData.isVerified) {
-        
-      } else {
-        localStorage.setItem("mainCategoryPreferences", JSON.stringify(responseData.mainCategoryCounts));
-        localStorage.setItem("subCategoryPreferences", JSON.stringify(responseData.subCategoryCounts));
-        localStorage.setItem("thirdCategoryPreferences", JSON.stringify(responseData.thirdCategoryCounts));
-        close();
-        window.location.replace('/');
-    }
+      // Handle the response as needed
+      // You might want to redirect the user or perform other actions
     } else {
-      if (response.status === 409) {
+      // Registration or Login failed
+      if (!isLogin && response.status === 409) {
+        // User already exists (for registration)
+        // Handle the error message or UI feedback here
       } else if (response.headers.get("Content-Type") === "application/json") {
+        // Handle other server-side errors here
         const responseData = await response.json();
+        // You can show error messages to the user based on the responseData
       } else {
+        // Handle unexpected errors
       }
 
       window.scrollTo(0, 0);

@@ -37,7 +37,7 @@ app.use(
     saveUninitialized: false,
     store: MongoStore.create({
       mongoUrl:
-        "mongodb+srv://mauneven:admin123@want.oik7qz6.mongodb.net/want?retryWrites=true&w=majority",
+        "mongodb+srv://development:6BEaPzIzIb2CMSom@cluster0.jhnshdi.mongodb.net/?retryWrites=true&w=majority",
       autoRemove: "native",
       touchAfter: 24 * 3600,
       ttl: 14 * 24 * 60 * 60,

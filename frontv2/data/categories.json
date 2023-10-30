@@ -1,0 +1,49 @@
+{
+  "categories": [
+    {
+      "id": "Electronics",
+      "name": {
+        "en": "Electronics",
+        "es": "Electrónica",
+        "fr": "Électronique"
+      },
+      "icon": "IconCreditCard"
+    },
+    {
+      "id": "Clothing",
+      "name": {
+        "en": "Clothing",
+        "es": "Ropa",
+        "fr": "Vêtements"
+      },
+      "icon": "IconBuildingBank"
+    },
+    {
+      "id": "HomeAndGarden",
+      "name": {
+        "en": "Home and Garden",
+        "es": "Hogar y Jardín",
+        "fr": "Maison et Jardin"
+      },
+      "icon": "IconRepeat"
+    },
+    {
+      "id": "Books",
+      "name": {
+        "en": "Books",
+        "es": "Libros",
+        "fr": "Livres"
+      },
+      "icon": "IconReceiptRefund"
+    },
+    {
+      "id": "SportsAndOutdoors",
+      "name": {
+        "en": "Sports and Outdoors",
+        "es": "Deportes y Aire Libre",
+        "fr": "Sports et Plein Air"
+      },
+      "icon": "IconReceipt"
+    }
+  ]
+}
