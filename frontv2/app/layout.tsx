@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import "@mantine/core/styles.css";
 import "@mantine/carousel";
@@ -13,13 +13,13 @@ import { Navbar } from "@/components/navigation/Navbar";
 import { Footer } from "@/components/footer/Footer";
 import classes from "./globals.module.css";
 
+const queryClient = new QueryClient();
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const queryClient = new QueryClient();
-
   return (
     <html lang="en">
       <head>
