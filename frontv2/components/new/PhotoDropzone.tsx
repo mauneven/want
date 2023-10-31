@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Group, Text, rem, Image, SimpleGrid, ActionIcon } from '@mantine/core';
+import { Group, Text, rem, Image, ActionIcon } from '@mantine/core';
 import { IconCloudUpload, IconPhoto, IconX } from '@tabler/icons-react';
-import { Dropzone, DropzoneProps, MIME_TYPES, FileWithPath } from '@mantine/dropzone';
+import { Dropzone, MIME_TYPES, FileWithPath, DropzoneProps } from '@mantine/dropzone';
 import { notifications } from '@mantine/notifications';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import '@mantine/notifications/styles.css';
 
 export function PhotoDropzone(props: Partial<DropzoneProps>) {
@@ -12,32 +13,6 @@ export function PhotoDropzone(props: Partial<DropzoneProps>) {
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
-  const previews = files.map((file, index) => {
-    const imageUrl = URL.createObjectURL(file);
-    return (
-      <div key={index} style={{ position: 'relative' }}>
-        <Image
-          src={imageUrl}
-          alt={`Preview ${index}`}
-          onLoad={() => URL.revokeObjectURL(imageUrl)}
-          width={160}
-          height={160}
-          style={{ marginRight: '10px', marginBottom: '10px' }}
-        />
-        <ActionIcon
-          size="md"
-          radius="xl"
-          variant="gradient"
-          gradient={{ from: 'red', to: 'orange', deg: 90 }}
-          style={{ position: 'absolute', top: 5, right: 5 }}
-          onClick={() => removeFile(index)}
-        >
-          <IconX />
-        </ActionIcon>
-      </div>
-    );
-  });
-
   const handleDrop = (acceptedFiles: FileWithPath[]) => {
     const availableSlots = 4 - files.length;
     const filesToAdd = acceptedFiles.slice(0, availableSlots);
@@ -46,7 +21,7 @@ export function PhotoDropzone(props: Partial<DropzoneProps>) {
       notifications.show({
         title: 'Attention',
         message: 'Only a maximum of 4 photos are allowed. Extra photos have been ignored.',
-        color: 'red'
+        color: 'red',
       });
     }
 
@@ -54,9 +29,21 @@ export function PhotoDropzone(props: Partial<DropzoneProps>) {
     props.onUploadPhotos([...files, ...filesToAdd]);
   };
 
+  const onDragEnd = (result: DropResult) => {
+    if (!result.destination) {
+      return;
+    }
+
+    const items = Array.from(files);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setFiles(items);
+  };
+
   return (
     <>
-      {files.length <= 3 && ( 
+      {files.length < 4 && (
         <Dropzone
           onDrop={handleDrop}
           maxSize={3 * 1024 ** 2}
@@ -94,9 +81,63 @@ export function PhotoDropzone(props: Partial<DropzoneProps>) {
           </Group>
         </Dropzone>
       )}
-      <SimpleGrid cols={2} mt={20}>
-        {previews}
-      </SimpleGrid>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="dropzone" direction="horizontal">
+          {(provided) => (
+            <div 
+              ref={provided.innerRef} 
+              {...provided.droppableProps}
+              style={{
+                display: 'flex',
+                justifyContent: 'center', // Centrar las imágenes horizontalmente
+                flexWrap: 'nowrap', // Evitar que se envuelvan a la siguiente línea
+                gap: '10px',
+                marginTop: '20px',
+              }}
+            >
+              {files.map((file, index) => {
+                const imageUrl = URL.createObjectURL(file);
+                return (
+                  <Draggable key={file.name} draggableId={file.name} index={index}>
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        style={{ 
+                          position: 'relative', 
+                          width: '160px', 
+                          height: '160px',
+                          ...provided.draggableProps.style 
+                        }}
+                      >
+                        <Image
+                          src={imageUrl}
+                          alt={`Preview ${index}`}
+                          onLoad={() => URL.revokeObjectURL(imageUrl)}
+                          width={160}
+                          height={160}
+                        />
+                        <ActionIcon
+                          size="md"
+                          radius="xl"
+                          variant="gradient"
+                          gradient={{ from: 'red', to: 'orange', deg: 90 }}
+                          style={{ position: 'absolute', top: 5, right: 5 }}
+                          onClick={() => removeFile(index)}
+                        >
+                          <IconX />
+                        </ActionIcon>
+                      </div>
+                    )}
+                  </Draggable>
+                );
+              })}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </>
   );
 }
