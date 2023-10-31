@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { Button, Menu, Group, Input, Modal, Stack, Text } from "@mantine/core";
-import { GoogleMap, LoadScript, MarkerF } from "@react-google-maps/api";
+import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import "./maps.css"
 
 const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSelect }) => {
@@ -12,7 +12,7 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedRadius, setSelectedRadius] = useState<number>(defaultRadius);
   const [query, setQuery] = useState("");
-  const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY || "";
+  const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY ?? "";
   const radiiOptions = [1, 5, 10, 20, 10000000000000000000000000000000000000000000000000000000];
   const calculateCircleDiameter = (radiusInKm: number, lat: number, zoom: number) => {
     const metersPerPixel = 156543.03392 * Math.cos(lat * Math.PI / 180) / Math.pow(2, zoom);
@@ -139,7 +139,7 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
         ))}
         {googleApiLoaded && (
           <GoogleMap
-            center={location || { lat: -34.397, lng: 150.644 }}
+            center={location ?? { lat: -34.397, lng: 150.644 }}
             zoom={getZoomLevel(selectedRadius)}
             mapContainerStyle={{ width: "100%", height: "400px" }}
             options={{

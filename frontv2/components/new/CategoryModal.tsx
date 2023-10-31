@@ -6,12 +6,9 @@ import {
   Text,
   SimpleGrid,
   UnstyledButton,
-  Anchor,
-  Group,
-  useMantineTheme,
 } from "@mantine/core";
 import classes from "./categoryModal.module.css";
-import categoriesData from "@/data/categories.json"; // Importa el JSON
+import categoriesData from "@/data/categories.json";
 
 export default function CategoryModal() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -34,12 +31,6 @@ export default function CategoryModal() {
         title="Select a category"
       >
         <Card withBorder radius="md" className={classes.card}>
-          <Group justify="space-between">
-            <Text className={classes.title}>Categories</Text>
-            <Anchor size="xs" c="dimmed" style={{ lineHeight: 1 }}>
-              + 21 other services
-            </Anchor>
-          </Group>
           <SimpleGrid cols={3} mt="md">
             {items}
           </SimpleGrid>
@@ -47,7 +38,7 @@ export default function CategoryModal() {
       </Modal>
 
       <Button variant="light" mt={20} onClick={open}>
-        Select a Category
+        Select a Category <Text c={"red"} pl={4}>*</Text>
       </Button>
     </>
   );
