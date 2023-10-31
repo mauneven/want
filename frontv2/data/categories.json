@@ -7,7 +7,7 @@
         "es": "Electrónica",
         "fr": "Électronique"
       },
-      "icon": "IconCreditCard"
+      "icon": "/icons/phone.svg"
     },
     {
       "id": "Clothing",
@@ -16,7 +16,7 @@
         "es": "Ropa",
         "fr": "Vêtements"
       },
-      "icon": "IconBuildingBank"
+      "icon": "/icons/clothes.svg"
     },
     {
       "id": "HomeAndGarden",
@@ -25,25 +25,7 @@
         "es": "Hogar y Jardín",
         "fr": "Maison et Jardin"
       },
-      "icon": "IconRepeat"
-    },
-    {
-      "id": "Books",
-      "name": {
-        "en": "Books",
-        "es": "Libros",
-        "fr": "Livres"
-      },
-      "icon": "IconReceiptRefund"
-    },
-    {
-      "id": "SportsAndOutdoors",
-      "name": {
-        "en": "Sports and Outdoors",
-        "es": "Deportes y Aire Libre",
-        "fr": "Sports et Plein Air"
-      },
-      "icon": "IconReceipt"
+      "icon": "/icons/garden.svg"
     }
   ]
 }

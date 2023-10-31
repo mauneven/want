@@ -23,3 +23,7 @@
       transform: scale(1.05);
     }
   }
+
+  .category-icon {
+    filter: invert(100%);
+  }  

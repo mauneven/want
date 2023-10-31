@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button, Modal, Input, Stack } from "@mantine/core";
 
-const PostLocation: React.FC = () => {
+const PostLocation: React.FC<{
+  onLocationSelect?: (lat: number, lng: number) => void;
+}> = ({ onLocationSelect }) => {
   const [opened, setOpened] = useState(false);
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [query, setQuery] = useState("");
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY ?? "";
@@ -24,9 +27,9 @@ const PostLocation: React.FC = () => {
       setIsMobile(window.innerWidth <= 768);
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -40,7 +43,7 @@ const PostLocation: React.FC = () => {
 
     const autocompleteService = new google.maps.places.AutocompleteService();
     autocompleteService.getPlacePredictions(
-      { input: value },
+      { input: value, types: ['(cities)'] },
       (predictions, status) => {
         if (
           status === google.maps.places.PlacesServiceStatus.OK &&
@@ -57,17 +60,29 @@ const PostLocation: React.FC = () => {
   const handleSearchSelect = (value: string) => {
     setQuery(value);
     setSearchResults([]);
+    setSelectedCity(value.split(",")[0]);
+
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ address: value }, (results, status) => {
+      if (status === "OK" && results) {
+        const coords = results[0].geometry.location;
+
+        if (onLocationSelect) {
+          onLocationSelect(coords.lat(), coords.lng());
+        }
+      }
+    });
   };
 
   return (
     <div>
-      <Button mt={20} mb={20} onClick={() => setOpened(true)} variant="light">
-        Location
+      <Button mt={4} mb={20} onClick={() => setOpened(true)} variant="light">
+        {selectedCity ?? "Select a city"}
       </Button>
       <Modal
         opened={opened}
         onClose={() => setOpened(false)}
-        title="Verify the location"
+        title="Search a city"
         size={isMobile ? "100%" : "30%"}
         centered
         overlayProps={{
@@ -80,6 +95,7 @@ const PostLocation: React.FC = () => {
           value={query}
           onChange={handleSearchChange}
           style={{ width: "100%", marginBottom: "1em" }}
+          placeholder="Write a city name here like"
         />
         {searchResults.map((result) => (
           <Stack key={result}>

@@ -1,10 +1,12 @@
 "use client";
 
 import { MantineProvider, ColorSchemeScript, Container } from "@mantine/core";
+import { Notifications } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Navbar } from "@/components/navigation/Navbar";
 import { Footer } from "@/components/footer/Footer";
 import classes from "./globals.module.css";
+import '@mantine/notifications/styles.css';
 import "@mantine/core/styles.css";
 import "@mantine/code-highlight";
 import "@mantine/carousel";
@@ -26,6 +28,7 @@ export default function RootLayout({
       </head>
       <body>
         <MantineProvider defaultColorScheme="dark">
+        <Notifications position="bottom-right" />
           <QueryClientProvider client={queryClient}>
             <Navbar />
             <Container
