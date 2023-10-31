@@ -30,6 +30,7 @@ const New = () => {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
+  const [photoOrder, setPhotoOrder] = useState<number[]>([]);
 
   const handleLocationSelect = (lat: number, lng: number) => {
     setLocation({ lat, lng });
@@ -41,6 +42,11 @@ const New = () => {
 
   const handleUploadPhotos = (photos: FileWithPath[]) => {
     setUploadedPhotos(photos);
+    // Generar un nuevo orden para las fotos (0, 1, 2, 3) si se seleccionan fotos nuevas
+    const newOrder = Array.from({ length: 4 }, (_, i) => i).filter(
+      (index) => uploadedPhotos[index] || photos[index]
+    );
+    setPhotoOrder(newOrder);
   };
 
   const handlePostSubmit = async () => {
@@ -53,8 +59,11 @@ const New = () => {
       formData.append("mainCategory", selectedCategory?.id ?? "");
       formData.append("price", price);
 
-      for (let i = 0; i < uploadedPhotos.length; i++) {
-        formData.append("photos[]", uploadedPhotos[i], uploadedPhotos[i].name);
+      for (let i = 0; i < photoOrder.length; i++) {
+        const index = photoOrder[i];
+        if (uploadedPhotos[index]) {
+          formData.append("photos[]", uploadedPhotos[index], uploadedPhotos[index].name);
+        }
       }
 
       const response = await fetch(endpoints.createPost, {

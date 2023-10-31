@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Group, Text, rem, Image, ActionIcon } from '@mantine/core';
+import { Group, Text, rem, Image, ActionIcon, Flex } from '@mantine/core';
 import { IconCloudUpload, IconPhoto, IconX } from '@tabler/icons-react';
 import { Dropzone, MIME_TYPES, FileWithPath, DropzoneProps } from '@mantine/dropzone';
 import { notifications } from '@mantine/notifications';
@@ -10,7 +10,16 @@ export function PhotoDropzone(props: Partial<DropzoneProps>) {
   const [files, setFiles] = useState<FileWithPath[]>([]);
 
   const removeFile = (index: number) => {
-    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    setFiles((prevFiles) => {
+      const updatedFiles = [...prevFiles];
+      updatedFiles.splice(index, 1);
+      return updatedFiles;
+    });
+  };
+
+  const updateFilesOrder = (newFilesOrder: FileWithPath[]) => {
+    setFiles(newFilesOrder);
+    props.onUploadPhotos(newFilesOrder);
   };
 
   const handleDrop = (acceptedFiles: FileWithPath[]) => {
@@ -25,8 +34,7 @@ export function PhotoDropzone(props: Partial<DropzoneProps>) {
       });
     }
 
-    setFiles((prevFiles) => [...prevFiles, ...filesToAdd]);
-    props.onUploadPhotos([...files, ...filesToAdd]);
+    updateFilesOrder([...files, ...filesToAdd]);
   };
 
   const onDragEnd = (result: DropResult) => {
@@ -38,7 +46,7 @@ export function PhotoDropzone(props: Partial<DropzoneProps>) {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
-    setFiles(items);
+    updateFilesOrder(items);
   };
 
   return (
@@ -84,16 +92,16 @@ export function PhotoDropzone(props: Partial<DropzoneProps>) {
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="dropzone" direction="horizontal">
           {(provided) => (
-            <div 
+            <Flex
               ref={provided.innerRef} 
               {...provided.droppableProps}
               style={{
                 display: 'flex',
-                justifyContent: 'center', // Centrar las imágenes horizontalmente
-                flexWrap: 'nowrap', // Evitar que se envuelvan a la siguiente línea
-                gap: '10px',
+                justifyContent: 'left', // Centrar las imágenes horizontalmente
+                gap: '20px',
                 marginTop: '20px',
               }}
+              w={"100%"}
             >
               {files.map((file, index) => {
                 const imageUrl = URL.createObjectURL(file);
@@ -134,7 +142,7 @@ export function PhotoDropzone(props: Partial<DropzoneProps>) {
                 );
               })}
               {provided.placeholder}
-            </div>
+            </Flex>
           )}
         </Droppable>
       </DragDropContext>
