@@ -47,9 +47,13 @@ const New = () => {
         withAsterisk
         mt="md"
       />
-      <CateogoryModal onSelectCategory={handleSelectCategory} selectedCategoryName={selectedCategory?.name.en || null}/>
+      <CateogoryModal onSelectCategory={handleSelectCategory} selectedCategoryName={selectedCategory?.name.en ?? null}/>
+      <Flex mt={10}>
+      <Text fw={500} size="sm">Location</Text><Text ml={5} size="md" c={"red"}>*</Text>
+      </Flex>
+      <PostLocation onLocationSelect={handleLocationSelect} />
       <Textarea
-        pt={10}
+        mb={20}
         size="sm"
         label="Description"
         autosize
@@ -57,13 +61,10 @@ const New = () => {
         maxRows={8}
         placeholder="Discribe what you Want"
       />
-      <Flex mt={10}>
-      <Text fw={500} size="sm">Location</Text><Text ml={5} size="md" c={"red"}>*</Text>
-      </Flex>
-      <PostLocation onLocationSelect={handleLocationSelect} />
+      <Text fw={500} mb={4} size="sm">Add upto 4 photos if you Want</Text>
       <PhotoDropzone/>
-      <Button mt={20} variant="light" w={100} type="submit">
-        Submit
+      <Button mt={20} variant="light" fullWidth type="submit">
+        Post what i want!
       </Button>
     </Paper>
   );
