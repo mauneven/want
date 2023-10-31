@@ -51,6 +51,7 @@ export function PhotoDropzone(props: Partial<DropzoneProps>) {
     }
 
     setFiles((prevFiles) => [...prevFiles, ...filesToAdd]);
+    props.onUploadPhotos([...files, ...filesToAdd]);
   };
 
   return (

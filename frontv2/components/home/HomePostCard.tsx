@@ -38,7 +38,7 @@ interface Post {
 export default function HomePostCard({ post }: { post: Post }) {
   const slides = post.photos.map((photo) => (
     <Carousel.Slide key={photo}>
-      <Image src={`https://want.com.co/${photo}`} height={150} />
+      <Image src={`http://localhost:4000/${photo}`} height={150} />
     </Carousel.Slide>
   ));
 
