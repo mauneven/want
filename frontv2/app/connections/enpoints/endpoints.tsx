@@ -9,7 +9,7 @@ export const endpoints = {
     posts: `${environments.BASE_URL_API}/posts`,
     myposts: `${environments.BASE_URL_API}/my-posts`,
     createPost: `${environments.BASE_URL_API}/posts`,
-
+    updatePost: `${environments.BASE_URL_API}/posts`,
 }
 
 export default endpoints;

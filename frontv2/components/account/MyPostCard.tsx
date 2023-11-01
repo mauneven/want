@@ -7,6 +7,7 @@ import {
   Button,
   rem
 } from "@mantine/core";
+import Link from "next/link";
 import { Carousel } from "@mantine/carousel";
 import classes from "./MyPostCard.module.css";
 import "@mantine/carousel/styles.css";
@@ -44,7 +45,7 @@ export default function MyPostCard({ post }: { post: Post }) {
 
   const slides = post.photos.map((photo) => (
     <Carousel.Slide key={photo}>
-      <Image src={`https://want.com.co/${photo}`} height={150} />
+      <Image src={`http://localhost:4000/${photo}`} height={150} />
     </Carousel.Slide>
   ));
 
@@ -90,7 +91,7 @@ export default function MyPostCard({ post }: { post: Post }) {
                 {" "}
               </Text>
             </div>
-            <Button radius="md">Offer</Button>
+            <Button component={Link} href={`/update/${post._id}`} radius="md">Edit this post</Button>
           </Group>
         </Card>
   );

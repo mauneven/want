@@ -88,14 +88,14 @@ export function PhotoDropzone(props: PhotoDropzoneProps) {
               />
             </Dropzone.Idle>
 
-            <Group>
+            <div>
               <Text size="xl" inline>
                 Drag images here or click to select files
               </Text>
               <Text size="sm" c="dimmed" inline mt={7}>
                 Attach as many files as you like, each file should not exceed 5mb
               </Text>
-            </Group>
+            </div>
           </Group>
         </Dropzone>
       )}
@@ -111,7 +111,6 @@ export function PhotoDropzone(props: PhotoDropzoneProps) {
                 gap: '20px',
                 marginTop: '20px',
               }}
-              w={"100%"}
             >
               {files.map((file, index) => {
                 const imageUrl = URL.createObjectURL(file);

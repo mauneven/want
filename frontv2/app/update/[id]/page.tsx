@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   TextInput,
@@ -10,18 +10,14 @@ import {
   Paper,
   Text,
   Flex,
-  Tooltip,
 } from "@mantine/core";
-import "@mantine/dropzone/styles.css";
 import CateogoryModal from "@/components/new/CategoryModal";
 import { PhotoDropzone } from "@/components/new/PhotoDropzone";
 import PostLocation from "@/components/new/PostLocation";
 import { FileWithPath } from "@mantine/dropzone";
-import endpoints from "../connections/enpoints/endpoints";
-import { notifications } from "@mantine/notifications";
-import { useRouter } from "next/navigation";
+import endpoints from "@/app/connections/enpoints/endpoints";
 
-const New = () => {
+const Update = () => {
   const [selectedCategory, setSelectedCategory] = useState<{
     id: string;
     name: { en: string };
@@ -35,7 +31,33 @@ const New = () => {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [photoOrder, setPhotoOrder] = useState<number[]>([]);
-  const router = useRouter();
+  const [postId, setPostId] = useState<string | null>(null); // Add postId state
+
+  // Fetch post data based on the postId when the component mounts
+  useEffect(() => {
+    // You can fetch the post data using postId from the URL
+    const postIdFromURL = window.location.pathname.split("/").pop();
+    setPostId(postIdFromURL);
+
+    // Use postId to fetch the post data and populate the form fields
+    // You can make a fetch request to the backend to get the post data
+    // and populate the form fields with the fetched data
+    if (postIdFromURL) {
+      // Fetch the post data based on postIdFromURL and populate the form fields
+      // Example:
+      // fetch(`${endpoints.getPost}/${postIdFromURL}`)
+      //   .then((response) => response.json())
+      //   .then((data) => {
+      //     setTitle(data.title);
+      //     setPrice(data.price);
+      //     setDescription(data.description);
+      //     // Set other fields as needed
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error fetching post data: ", error);
+      //   });
+    }
+  }, []);
 
   const handleLocationSelect = (lat: number, lng: number) => {
     setLocation({ lat, lng });
@@ -56,14 +78,7 @@ const New = () => {
     setPhotoOrder(newOrder);
   };
 
-  const isDataValid = !!title && !!price && !!selectedCategory && !!location;
-
   const handlePostSubmit = async () => {
-    if (!isDataValid) {
-      console.error("Por favor, complete todos los campos requeridos.");
-      return;
-    }
-
     try {
       const formData = new FormData();
       formData.append("title", title);
@@ -73,8 +88,8 @@ const New = () => {
       formData.append("mainCategory", selectedCategory?.id ?? "");
       formData.append("price", price);
 
-      for (const element of photoOrder) {
-        const index = element;
+      for (let i = 0; i < photoOrder.length; i++) {
+        const index = photoOrder[i];
         if (uploadedPhotos[index]) {
           formData.append(
             "photos[]",
@@ -84,8 +99,8 @@ const New = () => {
         }
       }
 
-      const response = await fetch(endpoints.createPost, {
-        method: "POST",
+      const response = await fetch(`${endpoints.updatePost}/${postId}`, {
+        method: "PUT", // Use the appropriate HTTP method for updating a post
         headers: {
           Accept: "application/json",
         },
@@ -94,45 +109,23 @@ const New = () => {
       });
 
       if (response.ok) {
-        console.log("El post se creó exitosamente");
-        notifications.show({
-          title: "Éxito",
-          message: "El post se creó exitosamente",
-          color: "green",
-        });
-        router.push("/");
+        console.log("The post was updated successfully");
       } else {
-        console.error("Error al crear el post");
+        console.error("Error updating the post");
       }
     } catch (error) {
-      console.error("Error al crear el post:", error);
+      console.error("Error updating the post:", error);
     }
   };
-
-  let tooltipMessage = isDataValid
-    ? "Click to post your request"
-    : "You need to complete: ";
-
-  const missingFields = [];
-  if (!title) missingFields.push("Title");
-  if (!price) missingFields.push("Price");
-  if (!selectedCategory) missingFields.push("Category");
-  if (!location) missingFields.push("Location");
-
-  if (missingFields.length === 1) {
-    tooltipMessage += missingFields[0];
-  } else if (missingFields.length > 1) {
-    tooltipMessage += missingFields.join(", ");
-  }
 
   return (
     <Paper shadow="xl" p={20} maw={700} mx="auto" withBorder radius={"md"}>
       <Title ta="center" size="h2">
-        {"Post what you Want !"}
+        {"Update Post"}
       </Title>
       <TextInput
         label="Title"
-        placeholder="Give a title to what you Want"
+        placeholder="Give a title to your post"
         withAsterisk
         mt="md"
         value={title}
@@ -140,7 +133,7 @@ const New = () => {
       />
       <NumberInput
         label="Price"
-        placeholder="How much would you pay for what you Want?"
+        placeholder="Enter the price"
         prefix="$ "
         thousandSeparator=","
         withAsterisk
@@ -168,34 +161,25 @@ const New = () => {
         autosize
         minRows={4}
         maxRows={8}
-        placeholder="Describe what you Want"
+        placeholder="Describe your post"
         value={description}
         onChange={(event) => setDescription(event.currentTarget.value)}
       />
       <Text fw={500} mb={4} size="sm">
-        Add up to 4 photos if you Want
+        Add up to 4 photos
       </Text>
       <PhotoDropzone onUploadPhotos={handleUploadPhotos} />
-      {isDataValid ? (
-        <Button
-          mt={20}
-          variant="light"
-          fullWidth
-          type="submit"
-          onClick={handlePostSubmit}
-          disabled={!isDataValid}
-        >
-          Post what I want!
-        </Button>
-      ) : (
-        <Tooltip label={tooltipMessage}>
-          <Button mt={20} variant="light" fullWidth disabled={!isDataValid}>
-            Post what I want!
-          </Button>
-        </Tooltip>
-      )}
+      <Button
+        mt={20}
+        variant="light"
+        fullWidth
+        type="submit"
+        onClick={handlePostSubmit}
+      >
+        Update Post
+      </Button>
     </Paper>
   );
 };
 
-export default New;
+export default Update;
