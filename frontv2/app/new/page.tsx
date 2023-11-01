@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import React, { useState } from "react";
 import {
   Button,
@@ -8,13 +9,13 @@ import {
   Textarea,
   Paper,
   Text,
-  Flex
+  Flex,
 } from "@mantine/core";
 import "@mantine/dropzone/styles.css";
 import CateogoryModal from "@/components/new/CategoryModal";
 import { PhotoDropzone } from "@/components/new/PhotoDropzone";
 import PostLocation from "@/components/new/PostLocation";
-import { FileWithPath } from '@mantine/dropzone';
+import { FileWithPath } from "@mantine/dropzone";
 import endpoints from "../connections/enpoints/endpoints";
 
 const New = () => {
@@ -36,13 +37,15 @@ const New = () => {
     setLocation({ lat, lng });
   };
 
-  const handleSelectCategory = (category: { id: string; name: { en: string } }) => {
+  const handleSelectCategory = (category: {
+    id: string;
+    name: { en: string };
+  }) => {
     setSelectedCategory(category);
   };
 
   const handleUploadPhotos = (photos: FileWithPath[]) => {
     setUploadedPhotos(photos);
-    // Generar un nuevo orden para las fotos (0, 1, 2, 3) si se seleccionan fotos nuevas
     const newOrder = Array.from({ length: 4 }, (_, i) => i).filter(
       (index) => uploadedPhotos[index] || photos[index]
     );
@@ -62,7 +65,11 @@ const New = () => {
       for (let i = 0; i < photoOrder.length; i++) {
         const index = photoOrder[i];
         if (uploadedPhotos[index]) {
-          formData.append("photos[]", uploadedPhotos[index], uploadedPhotos[index].name);
+          formData.append(
+            "photos[]",
+            uploadedPhotos[index],
+            uploadedPhotos[index].name
+          );
         }
       }
 
@@ -76,10 +83,8 @@ const New = () => {
       });
 
       if (response.ok) {
-        // Puedes realizar alguna acción o redirección aquí si es necesario
         console.log("El post se creó exitosamente");
       } else {
-        // Manejar errores si es necesario
         console.error("Error al crear el post");
       }
     } catch (error) {
@@ -107,12 +112,20 @@ const New = () => {
         thousandSeparator=","
         withAsterisk
         mt="md"
-        value={price}
-        onChange={(value) => setPrice(value)}
+        value={price.toString()}
+        onChange={(value) => setPrice(value.toString())}
       />
-      <CateogoryModal onSelectCategory={handleSelectCategory} selectedCategoryName={selectedCategory?.name.en ?? null}/>
+      <CateogoryModal
+        onSelectCategory={handleSelectCategory}
+        selectedCategoryName={selectedCategory?.name.en ?? null}
+      />
       <Flex mt={10}>
-      <Text fw={500} size="sm">Location</Text><Text ml={5} size="md" c={"red"}>*</Text>
+        <Text fw={500} size="sm">
+          Location
+        </Text>
+        <Text ml={5} size="md" c={"red"}>
+          *
+        </Text>
       </Flex>
       <PostLocation onLocationSelect={handleLocationSelect} />
       <Textarea
@@ -126,9 +139,17 @@ const New = () => {
         value={description}
         onChange={(event) => setDescription(event.currentTarget.value)}
       />
-      <Text fw={500} mb={4} size="sm">Add up to 4 photos if you Want</Text>
+      <Text fw={500} mb={4} size="sm">
+        Add up to 4 photos if you Want
+      </Text>
       <PhotoDropzone onUploadPhotos={handleUploadPhotos} />
-      <Button mt={20} variant="light" fullWidth type="submit" onClick={handlePostSubmit}>
+      <Button
+        mt={20}
+        variant="light"
+        fullWidth
+        type="submit"
+        onClick={handlePostSubmit}
+      >
         Post what I want!
       </Button>
     </Paper>

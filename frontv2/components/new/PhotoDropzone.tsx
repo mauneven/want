@@ -1,12 +1,18 @@
+"use client"
+
 import React, { useState } from 'react';
 import { Group, Text, rem, Image, ActionIcon, Flex } from '@mantine/core';
 import { IconCloudUpload, IconPhoto, IconX } from '@tabler/icons-react';
-import { Dropzone, MIME_TYPES, FileWithPath, DropzoneProps } from '@mantine/dropzone';
+import { Dropzone, MIME_TYPES, FileWithPath } from '@mantine/dropzone';
 import { notifications } from '@mantine/notifications';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import '@mantine/notifications/styles.css';
 
-export function PhotoDropzone(props: Partial<DropzoneProps>) {
+interface PhotoDropzoneProps {
+  onUploadPhotos: (photos: FileWithPath[]) => void;
+}
+
+export function PhotoDropzone(props: PhotoDropzoneProps) {
   const [files, setFiles] = useState<FileWithPath[]>([]);
 
   const removeFile = (index: number) => {
@@ -49,9 +55,10 @@ export function PhotoDropzone(props: Partial<DropzoneProps>) {
     updateFilesOrder(items);
   };
 
+  const isBrowser = typeof window !== 'undefined';
   return (
     <>
-      {files.length < 4 && (
+      {isBrowser && files.length < 4 && (
         <Dropzone
           onDrop={handleDrop}
           maxSize={3 * 1024 ** 2}
@@ -97,7 +104,7 @@ export function PhotoDropzone(props: Partial<DropzoneProps>) {
               {...provided.droppableProps}
               style={{
                 display: 'flex',
-                justifyContent: 'left', // Centrar las imágenes horizontalmente
+                justifyContent: 'left',
                 gap: '20px',
                 marginTop: '20px',
               }}

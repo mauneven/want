@@ -1,5 +1,13 @@
+"use client";
+
 import React, { useState, useEffect, useRef } from "react";
 import { Button, Modal, Input, Stack } from "@mantine/core";
+
+declare global {
+  interface Window {
+    google: typeof google;
+  }
+}
 
 const PostLocation: React.FC<{
   onLocationSelect?: (lat: number, lng: number) => void;
@@ -8,7 +16,11 @@ const PostLocation: React.FC<{
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth <= 768);
+  }, []);
 
   const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY ?? "";
 
@@ -20,7 +32,7 @@ const PostLocation: React.FC<{
     script.async = true;
     script.defer = true;
     document.head.appendChild(script);
-  }, [apiKey]);
+  }, [apiKey]);  
 
   useEffect(() => {
     const handleResize = () => {
@@ -33,6 +45,26 @@ const PostLocation: React.FC<{
     };
   }, []);
 
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.google) {
+      const autocompleteService =
+        new window.google.maps.places.AutocompleteService();
+      autocompleteService.getPlacePredictions(
+        { input: query, types: ["(cities)"] },
+        (predictions, status) => {
+          if (
+            status === window.google.maps.places.PlacesServiceStatus.OK &&
+            predictions
+          ) {
+            setSearchResults(
+              predictions.slice(0, 3).map((pred) => pred.description)
+            );
+          }
+        }
+      );
+    }
+  }, [query]);
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setQuery(value);
@@ -41,20 +73,23 @@ const PostLocation: React.FC<{
       clearTimeout(searchTimeoutRef.current);
     }
 
-    const autocompleteService = new google.maps.places.AutocompleteService();
-    autocompleteService.getPlacePredictions(
-      { input: value, types: ['(cities)'] },
-      (predictions, status) => {
-        if (
-          status === google.maps.places.PlacesServiceStatus.OK &&
-          predictions
-        ) {
-          setSearchResults(
-            predictions.slice(0, 3).map((pred) => pred.description)
-          );
+    if (typeof window !== "undefined" && window.google) {
+      const autocompleteService =
+        new window.google.maps.places.AutocompleteService();
+      autocompleteService.getPlacePredictions(
+        { input: value, types: ["(cities)"] },
+        (predictions, status) => {
+          if (
+            status === window.google.maps.places.PlacesServiceStatus.OK &&
+            predictions
+          ) {
+            setSearchResults(
+              predictions.slice(0, 3).map((pred) => pred.description)
+            );
+          }
         }
-      }
-    );
+      );
+    }
   };
 
   const handleSearchSelect = (value: string) => {
@@ -62,16 +97,18 @@ const PostLocation: React.FC<{
     setSearchResults([]);
     setSelectedCity(value.split(",")[0]);
 
-    const geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ address: value }, (results, status) => {
-      if (status === "OK" && results) {
-        const coords = results[0].geometry.location;
+    if (typeof window !== "undefined" && window.google) {
+      const geocoder = new window.google.maps.Geocoder();
+      geocoder.geocode({ address: value }, (results, status) => {
+        if (status === "OK" && results) {
+          const coords = results[0].geometry.location;
 
-        if (onLocationSelect) {
-          onLocationSelect(coords.lat(), coords.lng());
+          if (onLocationSelect) {
+            onLocationSelect(coords.lat(), coords.lng());
+          }
         }
-      }
-    });
+      });
+    }
   };
 
   return (
