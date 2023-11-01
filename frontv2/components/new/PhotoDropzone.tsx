@@ -1,6 +1,4 @@
-"use client"
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Group, Text, rem, Image, ActionIcon, Flex } from '@mantine/core';
 import { IconCloudUpload, IconPhoto, IconX } from '@tabler/icons-react';
 import { Dropzone, MIME_TYPES, FileWithPath } from '@mantine/dropzone';
@@ -14,6 +12,12 @@ interface PhotoDropzoneProps {
 
 export function PhotoDropzone(props: PhotoDropzoneProps) {
   const [files, setFiles] = useState<FileWithPath[]>([]);
+  const [isBrowser, setIsBrowser] = useState(false);
+
+  useEffect(() => {
+    // Asegurarse de que este código se ejecute solo en el lado del cliente
+    setIsBrowser(typeof window !== 'undefined');
+  }, []);
 
   const removeFile = (index: number) => {
     setFiles((prevFiles) => {
@@ -55,7 +59,6 @@ export function PhotoDropzone(props: PhotoDropzoneProps) {
     updateFilesOrder(items);
   };
 
-  const isBrowser = typeof window !== 'undefined';
   return (
     <>
       {isBrowser && files.length < 4 && (
@@ -85,14 +88,14 @@ export function PhotoDropzone(props: PhotoDropzoneProps) {
               />
             </Dropzone.Idle>
 
-            <div>
+            <Group>
               <Text size="xl" inline>
                 Drag images here or click to select files
               </Text>
               <Text size="sm" c="dimmed" inline mt={7}>
                 Attach as many files as you like, each file should not exceed 5mb
               </Text>
-            </div>
+            </Group>
           </Group>
         </Dropzone>
       )}
