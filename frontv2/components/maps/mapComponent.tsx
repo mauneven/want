@@ -17,7 +17,7 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
   const radiiOptions = [1, 5, 10, 20, 50];
 
   const SECRET_KEY = 'your_secret_key_here';
-  function decryptData(encryptedData:any) {
+  function decryptData(encryptedData: any) {
     const bytes = AES.decrypt(encryptedData, SECRET_KEY);
     return JSON.parse(bytes.toString(Utf8));
   }
@@ -52,6 +52,12 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
   }, [googleApiLoaded, apiKey]);
 
   const fetchLocation = () => {
+    const encryptedLocation = localStorage.getItem('location');
+    if (encryptedLocation) {
+      const decryptedLocation = decryptData(encryptedLocation);
+      setLocation({ lat: decryptedLocation.latitude, lng: decryptedLocation.longitude });
+      setSelectedRadius(decryptedLocation.radio || 5);
+    }
     setOpened(true);
   };
 
@@ -65,6 +71,8 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
         return 11;
       case 20:
         return 10;
+      case 50:
+        return 9;
       default:
         return 1;
     }
@@ -79,7 +87,6 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
         radio: selectedRadius
       }), SECRET_KEY).toString();
       localStorage.setItem('location', encryptedLocation);
-
       setOpened(false);
     }
   };
