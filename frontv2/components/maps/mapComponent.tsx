@@ -3,24 +3,43 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Button, Menu, Group, Input, Modal, Stack, Text } from "@mantine/core";
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
-import "./maps.css"
+import "./maps.css";
+import AES from 'crypto-js/aes';
+import Utf8 from 'crypto-js/enc-utf8';
 
 const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSelect }) => {
   const [opened, setOpened] = useState(false);
+  // La ubicación inicial y el radio se leerán desde localStorage
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const defaultRadius = 5;
+  const [selectedRadius, setSelectedRadius] = useState<number>(5); // radio por defecto
   const [searchResults, setSearchResults] = useState<string[]>([]);
-  const [selectedRadius, setSelectedRadius] = useState<number>(defaultRadius);
   const [query, setQuery] = useState("");
   const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY ?? "";
-  const radiiOptions = [1, 5, 10, 20, 10000000000000000000000000000000000000000000000000000000];
+  const radiiOptions = [1, 5, 10, 20, 50]; // Opciones de   radio actualizadas
+
+  // Función para desencriptar datos
+  const SECRET_KEY = 'your_secret_key_here'; // Reemplazar con tu clave secreta real
+  function decryptData(encryptedData:any) {
+    const bytes = AES.decrypt(encryptedData, SECRET_KEY);
+    return JSON.parse(bytes.toString(Utf8)); // Utilizar Utf8 para la conversión
+  }
   const calculateCircleDiameter = (radiusInKm: number, lat: number, zoom: number) => {
     const metersPerPixel = 156543.03392 * Math.cos(lat * Math.PI / 180) / Math.pow(2, zoom);
     return 2 * radiusInKm * 1000 / metersPerPixel;
   };
 
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const [googleApiLoaded, setGoogleApiLoaded] = useState(false); // Variable de estado para rastrear si la API ya se ha cargado
+  const [googleApiLoaded, setGoogleApiLoaded] = useState(false);
+
+  useEffect(() => {
+    // Intentar leer la ubicación encriptada y el radio de localStorage
+    const encryptedLocation = localStorage.getItem('location');
+    if (encryptedLocation) {
+      const decryptedLocation = decryptData(encryptedLocation);
+      setLocation({ lat: decryptedLocation.latitude, lng: decryptedLocation.longitude });
+      setSelectedRadius(decryptedLocation.radio || 5);
+    }
+  }, []);
 
   useEffect(() => {
     if (!googleApiLoaded) {
@@ -37,17 +56,7 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
   }, [googleApiLoaded, apiKey]);
 
   const fetchLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setLocation({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-        setOpened(true);
-      });
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
+    setOpened(true);
   };
 
   const getZoomLevel = (radius: number) => {
@@ -68,6 +77,15 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
   const handleLocationSelect = () => {
     if (location && onLocationSelect) {
       onLocationSelect(location.lat, location.lng, selectedRadius);
+
+      // Actualizar la ubicación en localStorage si el usuario cambia la ubicación
+      const encryptedLocation = AES.encrypt(JSON.stringify({
+        latitude: location.lat,
+        longitude: location.lng,
+        radio: selectedRadius
+      }), SECRET_KEY).toString();
+      localStorage.setItem('location', encryptedLocation);
+
       setOpened(false);
     }
   };

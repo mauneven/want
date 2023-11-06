@@ -13,6 +13,7 @@ import "@mantine/carousel";
 import "@mantine/tiptap";
 import "@mantine/dates";
 import "@mantine/hooks";
+import WelcomeModal from "@/components/home/WelcomeModal";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ export default function RootLayout({
         <MantineProvider defaultColorScheme="dark">
         <Notifications position="bottom-right" />
           <QueryClientProvider client={queryClient}>
+            <WelcomeModal/>
             <Navbar />
             <Container
               fluid
