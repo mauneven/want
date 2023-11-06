@@ -10,31 +10,36 @@ interface PhotoDropzoneProps {
   onUploadPhotos: (photos: FileWithPath[]) => void;
 }
 
+interface FileWithId {
+  file: FileWithPath;
+  id: string;
+}
+
 export function PhotoDropzone(props: PhotoDropzoneProps) {
-  const [files, setFiles] = useState<FileWithPath[]>([]);
+  const [files, setFiles] = useState<FileWithId[]>([]);
   const [isBrowser, setIsBrowser] = useState(false);
 
   useEffect(() => {
-    // Asegurarse de que este código se ejecute solo en el lado del cliente
     setIsBrowser(typeof window !== 'undefined');
   }, []);
 
-  const removeFile = (index: number) => {
-    setFiles((prevFiles) => {
-      const updatedFiles = [...prevFiles];
-      updatedFiles.splice(index, 1);
-      return updatedFiles;
-    });
+  const removeFile = (fileId: string) => {
+    setFiles((prevFiles) => prevFiles.filter(file => file.id !== fileId));
   };
 
-  const updateFilesOrder = (newFilesOrder: FileWithPath[]) => {
+  const updateFilesOrder = (newFilesOrder: FileWithId[]) => {
     setFiles(newFilesOrder);
-    props.onUploadPhotos(newFilesOrder);
+    props.onUploadPhotos(newFilesOrder.map(fileWithId => fileWithId.file));
   };
 
   const handleDrop = (acceptedFiles: FileWithPath[]) => {
     const availableSlots = 4 - files.length;
-    const filesToAdd = acceptedFiles.slice(0, availableSlots);
+    const filesToAdd = acceptedFiles
+      .slice(0, availableSlots)
+      .map(file => ({
+        file,
+        id: `file-${Date.now()}-${file.name}`
+      }));
 
     if (filesToAdd.length < acceptedFiles.length) {
       notifications.show({
@@ -103,7 +108,7 @@ export function PhotoDropzone(props: PhotoDropzoneProps) {
         <Droppable droppableId="dropzone" direction="horizontal">
           {(provided) => (
             <Flex
-              ref={provided.innerRef} 
+              ref={provided.innerRef}
               {...provided.droppableProps}
               style={{
                 display: 'flex',
@@ -112,20 +117,20 @@ export function PhotoDropzone(props: PhotoDropzoneProps) {
                 marginTop: '20px',
               }}
             >
-              {files.map((file, index) => {
-                const imageUrl = URL.createObjectURL(file);
+              {files.map((fileWithId, index) => {
+                const imageUrl = URL.createObjectURL(fileWithId.file);
                 return (
-                  <Draggable key={file.name} draggableId={file.name} index={index}>
+                  <Draggable key={fileWithId.id} draggableId={fileWithId.id} index={index}>
                     {(provided) => (
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        style={{ 
-                          position: 'relative', 
-                          width: '160px', 
+                        style={{
+                          position: 'relative',
+                          width: '160px',
                           height: '160px',
-                          ...provided.draggableProps.style 
+                          ...provided.draggableProps.style
                         }}
                       >
                         <Image
@@ -141,7 +146,7 @@ export function PhotoDropzone(props: PhotoDropzoneProps) {
                           variant="gradient"
                           gradient={{ from: 'red', to: 'orange', deg: 90 }}
                           style={{ position: 'absolute', top: 5, right: 5 }}
-                          onClick={() => removeFile(index)}
+                          onClick={() => removeFile(fileWithId.id)}
                         >
                           <IconX />
                         </ActionIcon>
@@ -157,4 +162,4 @@ export function PhotoDropzone(props: PhotoDropzoneProps) {
       </DragDropContext>
     </>
   );
-}
+} 
