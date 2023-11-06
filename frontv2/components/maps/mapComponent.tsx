@@ -9,19 +9,17 @@ import Utf8 from 'crypto-js/enc-utf8';
 
 const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSelect }) => {
   const [opened, setOpened] = useState(false);
-  // La ubicación inicial y el radio se leerán desde localStorage
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [selectedRadius, setSelectedRadius] = useState<number>(5); // radio por defecto
+  const [selectedRadius, setSelectedRadius] = useState<number>(5);
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY ?? "";
-  const radiiOptions = [1, 5, 10, 20, 50]; // Opciones de   radio actualizadas
+  const radiiOptions = [1, 5, 10, 20, 50];
 
-  // Función para desencriptar datos
-  const SECRET_KEY = 'your_secret_key_here'; // Reemplazar con tu clave secreta real
+  const SECRET_KEY = 'your_secret_key_here';
   function decryptData(encryptedData:any) {
     const bytes = AES.decrypt(encryptedData, SECRET_KEY);
-    return JSON.parse(bytes.toString(Utf8)); // Utilizar Utf8 para la conversión
+    return JSON.parse(bytes.toString(Utf8));
   }
   const calculateCircleDiameter = (radiusInKm: number, lat: number, zoom: number) => {
     const metersPerPixel = 156543.03392 * Math.cos(lat * Math.PI / 180) / Math.pow(2, zoom);
@@ -32,7 +30,6 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
   const [googleApiLoaded, setGoogleApiLoaded] = useState(false);
 
   useEffect(() => {
-    // Intentar leer la ubicación encriptada y el radio de localStorage
     const encryptedLocation = localStorage.getItem('location');
     if (encryptedLocation) {
       const decryptedLocation = decryptData(encryptedLocation);
@@ -43,7 +40,6 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
 
   useEffect(() => {
     if (!googleApiLoaded) {
-      // Carga la API de Google Maps una vez
       const script = document.createElement("script");
       script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
       script.async = true;
@@ -77,8 +73,6 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
   const handleLocationSelect = () => {
     if (location && onLocationSelect) {
       onLocationSelect(location.lat, location.lng, selectedRadius);
-
-      // Actualizar la ubicación en localStorage si el usuario cambia la ubicación
       const encryptedLocation = AES.encrypt(JSON.stringify({
         latitude: location.lat,
         longitude: location.lng,
