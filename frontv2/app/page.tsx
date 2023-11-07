@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import React, { useState, useEffect, useRef } from "react";
 import { useInfiniteQuery } from "react-query";
@@ -48,10 +48,6 @@ const fetchPosts = async (
   latitude: number | null,
   radius: number | null
 ): Promise<PostResponse> => {
-  if (longitude === null || latitude === null || radius === null) {
-    throw new Error("Missing location data");
-  }
-
   let query = `?page=${page}`;
   query += `&longitude=${longitude}`;
   query += `&latitude=${latitude}`;
@@ -85,7 +81,7 @@ export default function Home() {
     data,
     error,
     fetchNextPage,
-    isLoading,
+    isLoading: isPostsLoading,
     hasNextPage,
   } = useInfiniteQuery<PostResponse, Error>(
     ["posts", longitude, latitude, radius],
@@ -102,6 +98,7 @@ export default function Home() {
       refetchOnWindowFocus: false, 
       refetchOnReconnect: false,
       staleTime: 5 * 60 * 1000,
+      enabled: longitude !== null && latitude !== null && radius !== null, // Habilitar la consulta de posts solo cuando los valores de ubicación estén disponibles.
     }
   );
 
@@ -110,7 +107,7 @@ export default function Home() {
     const documentHeight = document.documentElement.scrollHeight;
     const scrollTop = window.scrollY;
 
-    if (!isLoading && !isFetching.current && hasNextPage && windowHeight + scrollTop >= documentHeight - 200) {
+    if (!isPostsLoading && !isFetching.current && hasNextPage && windowHeight + scrollTop >= documentHeight - 200) {
       isFetching.current = true;
       fetchNextPage().then(() => {
         isFetching.current = false;
@@ -123,7 +120,7 @@ export default function Home() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [isLoading, hasNextPage]);
+  }, [isPostsLoading, hasNextPage]);
 
   return (
     <>
@@ -133,7 +130,7 @@ export default function Home() {
           page.posts.map((post) => <HomePostCard key={post._id} post={post} />)
         )}
 
-        {isLoading ? (
+        {(longitude === null || latitude === null || radius === null) ? (
           <p>Loading...</p>
         ) : !hasNextPage ? (
           <p>There&apos;s no more posts to load</p>

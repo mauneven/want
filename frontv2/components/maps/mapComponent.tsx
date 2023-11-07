@@ -1,5 +1,4 @@
 'use client'
-
 import React, { useState, useRef, useEffect } from "react";
 import { Button, Menu, Group, Input, Modal, Stack, Text } from "@mantine/core";
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
@@ -17,6 +16,7 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
   const radiiOptions = [1, 5, 10, 20, 50, 100000000000000000000000000000000000000000000000000000000000000000];
 
   const SECRET_KEY = 'your_secret_key_here';
+
   function decryptData(encryptedData: any) {
     const bytes = AES.decrypt(encryptedData, SECRET_KEY);
     return JSON.parse(bytes.toString(Utf8));
@@ -36,29 +36,11 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
       setLocation({ lat: decryptedLocation.latitude, lng: decryptedLocation.longitude });
       setSelectedRadius(decryptedLocation.radio || 5);
 
-      // Enviar la información al componente padre
       if (onLocationSelect) {
         onLocationSelect(decryptedLocation.latitude, decryptedLocation.longitude, decryptedLocation.radio);
       }
     }
   };
-
-  useEffect(() => {
-    updateLocationFromLocalStorage();
-
-    // Agregar un EventListener para escuchar cambios en localStorage 'location'
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'location') {
-        updateLocationFromLocalStorage();
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, [onLocationSelect]);
 
   useEffect(() => {
     const encryptedLocation = localStorage.getItem('location');
@@ -99,6 +81,20 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
       document.head.appendChild(script);
     }
   }, [googleApiLoaded, apiKey]);
+
+  useEffect(() => {
+    // Espera hasta que exista el valor 'location' en el localStorage
+    const waitForLocation = () => {
+      const encryptedLocation = localStorage.getItem('location');
+      if (!encryptedLocation) {
+        setTimeout(waitForLocation, 1000); // Revisa cada segundo si el valor 'location' está disponible
+      } else {
+        updateLocationFromLocalStorage();
+      }
+    };
+
+    waitForLocation(); // Inicia el proceso de espera
+  }, []); // No hay dependencias, solo se ejecuta una vez al montar el componente
 
   const fetchLocation = () => {
     const encryptedLocation = localStorage.getItem('location');
@@ -214,6 +210,7 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
               streetViewControl: false,
               mapTypeControl: false,
               fullscreenControl: false,
+              clickableIcons: false,
               zoomControl: false,
               scrollwheel: false,
               draggable: false
