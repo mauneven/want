@@ -14,7 +14,7 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY ?? "";
-  const radiiOptions = [1, 5, 10, 20, 50];
+  const radiiOptions = [1, 5, 10, 20, 50, 100000000000000000000000000000000000000000000000000000000000000000];
 
   const SECRET_KEY = 'your_secret_key_here';
   function decryptData(encryptedData: any) {
@@ -29,6 +29,37 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [googleApiLoaded, setGoogleApiLoaded] = useState(false);
 
+  const updateLocationFromLocalStorage = () => {
+    const encryptedLocation = localStorage.getItem('location');
+    if (encryptedLocation) {
+      const decryptedLocation = decryptData(encryptedLocation);
+      setLocation({ lat: decryptedLocation.latitude, lng: decryptedLocation.longitude });
+      setSelectedRadius(decryptedLocation.radio || 5);
+
+      // Enviar la información al componente padre
+      if (onLocationSelect) {
+        onLocationSelect(decryptedLocation.latitude, decryptedLocation.longitude, decryptedLocation.radio);
+      }
+    }
+  };
+
+  useEffect(() => {
+    updateLocationFromLocalStorage();
+
+    // Agregar un EventListener para escuchar cambios en localStorage 'location'
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'location') {
+        updateLocationFromLocalStorage();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [onLocationSelect]);
+
   useEffect(() => {
     const encryptedLocation = localStorage.getItem('location');
     if (encryptedLocation) {
@@ -36,7 +67,25 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
       setLocation({ lat: decryptedLocation.latitude, lng: decryptedLocation.longitude });
       setSelectedRadius(decryptedLocation.radio || 5);
     }
-  }, []);
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'location') {
+        const decryptedLocation = decryptData(e.newValue);
+        setLocation({ lat: decryptedLocation.latitude, lng: decryptedLocation.longitude });
+        setSelectedRadius(decryptedLocation.radio || 5);
+
+        if (onLocationSelect) {
+          onLocationSelect(decryptedLocation.latitude, decryptedLocation.longitude, decryptedLocation.radio);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [onLocationSelect]);
 
   useEffect(() => {
     if (!googleApiLoaded) {
