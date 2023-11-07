@@ -48,10 +48,14 @@ const fetchPosts = async (
   latitude: number | null,
   radius: number | null
 ): Promise<PostResponse> => {
+  if (longitude === null || latitude === null || radius === null) {
+    throw new Error("Missing location data");
+  }
+
   let query = `?page=${page}`;
-  if (longitude !== null) query += `&longitude=${longitude}`;
-  if (latitude !== null) query += `&latitude=${latitude}`;
-  if (radius !== null) query += `&radius=${radius}`;
+  query += `&longitude=${longitude}`;
+  query += `&latitude=${latitude}`;
+  query += `&radius=${radius}`;
 
   const response = await fetch(`${endpoints.posts}${query}`);
   if (!response.ok) {
@@ -94,10 +98,10 @@ export default function Home() {
         }
         return null;
       },
-      keepPreviousData: true, // mantiene la data anterior mientras se cargan nuevas páginas
-      refetchOnWindowFocus: false, // no vuelve a buscar datos cuando la ventana recupera el foco
-      refetchOnReconnect: false, // no vuelve a buscar datos cuando se recupera la conexión
-      staleTime: 5 * 60 * 1000, // el tiempo (en ms) que los datos se consideran "frescos" y no se refetch de inmediato
+      keepPreviousData: true,
+      refetchOnWindowFocus: false, 
+      refetchOnReconnect: false,
+      staleTime: 5 * 60 * 1000,
     }
   );
 
@@ -106,11 +110,10 @@ export default function Home() {
     const documentHeight = document.documentElement.scrollHeight;
     const scrollTop = window.scrollY;
 
-    // Verificamos si ya se está cargando y si hay más páginas por cargar
     if (!isLoading && !isFetching.current && hasNextPage && windowHeight + scrollTop >= documentHeight - 200) {
-      isFetching.current = true; // Marcamos que estamos cargando
+      isFetching.current = true;
       fetchNextPage().then(() => {
-        isFetching.current = false; // Restablecemos después de cargar
+        isFetching.current = false;
       });
     }
   };
