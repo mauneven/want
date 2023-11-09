@@ -3,10 +3,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useInfiniteQuery } from "react-query";
 import HomePostCard from "@/components/home/HomePostCard";
-import AppWithGoogleMap from "../components/maps/mapComponent";
 import { Container } from "@mantine/core";
 import endpoints from "./connections/enpoints/endpoints";
 import classes from "./globals.module.css";
+import PostsLocation from "../components/maps/mapComponent";
 
 interface User {
   _id: string;
@@ -124,7 +124,7 @@ export default function Home() {
 
   return (
     <>
-      <AppWithGoogleMap onLocationSelect={handleLocationSelect} />
+      <PostsLocation onLocationSelect={handleLocationSelect} />
       <Container mt="10" fluid classNames={{ root: classes.container }}>
         {data?.pages.flatMap((page) =>
           page.posts.map((post) => <HomePostCard key={post._id} post={post} />)

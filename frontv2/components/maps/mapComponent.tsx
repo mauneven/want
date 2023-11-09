@@ -6,7 +6,7 @@ import "./maps.css";
 import AES from 'crypto-js/aes';
 import Utf8 from 'crypto-js/enc-utf8';
 
-const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSelect }) => {
+const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSelect }) => {
   const [opened, setOpened] = useState(false);
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [selectedRadius, setSelectedRadius] = useState<number>(5);
@@ -14,6 +14,7 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
   const [query, setQuery] = useState("");
   const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY ?? "";
   const radiiOptions = [1, 5, 10, 20, 50, 100000000000000000000000000000000000000000000000000000000000000000];
+  const [cityName, setCityName] = useState("");
 
   const SECRET_KEY = 'your_secret_key_here';
 
@@ -41,6 +42,29 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
       }
     }
   };
+
+  const getCityName = (lat: number, lng: number) => {
+    if (googleApiLoaded) {
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+        if (status === "OK" && results) {
+          for (let i = 0; i < results[0].address_components.length; i++) {
+            const component = results[0].address_components[i];
+            if (component.types.includes("locality")) {
+              setCityName(component.long_name);
+              break;
+            }
+          }
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (location && googleApiLoaded) {
+      getCityName(location.lat, location.lng);
+    }
+  }, [location, googleApiLoaded]);
 
   useEffect(() => {
     const encryptedLocation = localStorage.getItem('location');
@@ -83,18 +107,17 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
   }, [googleApiLoaded, apiKey]);
 
   useEffect(() => {
-    // Espera hasta que exista el valor 'location' en el localStorage
     const waitForLocation = () => {
       const encryptedLocation = localStorage.getItem('location');
       if (!encryptedLocation) {
-        setTimeout(waitForLocation, 1000); // Revisa cada segundo si el valor 'location' está disponible
+        setTimeout(waitForLocation, 1000);
       } else {
         updateLocationFromLocalStorage();
       }
     };
 
-    waitForLocation(); // Inicia el proceso de espera
-  }, []); // No hay dependencias, solo se ejecuta una vez al montar el componente
+    waitForLocation();
+  }, []);
 
   const fetchLocation = () => {
     const encryptedLocation = localStorage.getItem('location');
@@ -176,7 +199,7 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
   return (
     <div>
       <Button onClick={fetchLocation} variant="light">
-        Location
+        {cityName ? `${cityName} · ${selectedRadius} km` : "Select Location"}
       </Button>
       <Modal
         opened={opened}
@@ -252,4 +275,4 @@ const AppWithGoogleMap: React.FC<{ onLocationSelect?: Function }> = ({ onLocatio
   );
 };
 
-export default AppWithGoogleMap;
+export default PostsLocation;
