@@ -119,8 +119,8 @@ export function Navbar() {
       </Modal>
       <div className={classes.inner}>
         <Group>
-          <Button onClick={() => router.push("/")} variant="transparent">
-            <h1>Want </h1>
+          <Button p={0} onClick={() => router.push("/")} variant="transparent">
+            <h1>Want</h1>
           </Button>
         </Group>
         <Autocomplete
@@ -157,7 +157,7 @@ export function Navbar() {
               <Menu.Target>
                 <UnstyledButton>
                   <Avatar
-                    src={user.photo ? `https://want.com.co/${user?.photo}` : null}
+                    src={user.photo ? `${environments.BASE_URL}/${user?.photo}` : null}
                     alt="it's me"
                   />
                 </UnstyledButton>

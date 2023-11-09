@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Image, Card, Text, Group, Button, rem } from "@mantine/core";
+import { Image, Card, Text, Group, Button, rem, Flex } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import { IconArrowLeft, IconArrowRight, IconStar } from "@tabler/icons-react";
 import classes from "./HomePostCard.module.css";
@@ -43,7 +43,7 @@ export default function HomePostCard({ post }: { post: Post }) {
   ));
 
   return (
-    <Card radius="md" withBorder padding="xl" shadow="sm">
+    <Card radius="md" withBorder padding="sm" shadow="sm" >
       <Card.Section>
         <Carousel
           withIndicators
@@ -64,30 +64,22 @@ export default function HomePostCard({ post }: { post: Post }) {
         </Carousel>
       </Card.Section>
 
-      <Group justify="space-between" mt="lg">
+      <Group>
+        <Text fz="xl" span fw={500} className={classes.price}>
+          ${post.price}
+        </Text>
         <Text fw={500} fz="lg">
           {post.title}
         </Text>
+      </Group>
 
+      <Group justify="space-between" mt="lg">
         <Group gap={5}>
           <IconStar style={{ width: rem(16), height: rem(16) }} />
           <Text fz="xs" fw={500}>
             4.78
           </Text>
         </Group>
-      </Group>
-
-      <Group justify="space-between" mt="md">
-        <div>
-          <Text fz="xl" span fw={500} className={classes.price}>
-            ${post.price}
-          </Text>
-          <Text span fz="sm" c="dimmed">
-            {" "}
-          </Text>
-        </div>
-
-        <Button radius="md">Offer</Button>
       </Group>
     </Card>
   );

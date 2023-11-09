@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useInfiniteQuery } from "react-query";
 import HomePostCard from "@/components/home/HomePostCard";
-import { Container } from "@mantine/core";
+import { Container, Flex, Group } from "@mantine/core";
 import endpoints from "./connections/enpoints/endpoints";
 import classes from "./globals.module.css";
 import PostsLocation from "../components/maps/mapComponent";
@@ -64,7 +64,7 @@ export default function Home() {
   const [longitude, setLongitude] = useState<number | null>(null);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [radius, setRadius] = useState<number | null>(null);
-  
+
   const isFetching = useRef(false);
 
   const handleLocationSelect = (
@@ -95,10 +95,10 @@ export default function Home() {
         return null;
       },
       keepPreviousData: true,
-      refetchOnWindowFocus: false, 
+      refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       staleTime: 5 * 60 * 1000,
-      enabled: longitude !== null && latitude !== null && radius !== null, // Habilitar la consulta de posts solo cuando los valores de ubicación estén disponibles.
+      enabled: longitude !== null && latitude !== null && radius !== null,
     }
   );
 
@@ -125,18 +125,21 @@ export default function Home() {
   return (
     <>
       <PostsLocation onLocationSelect={handleLocationSelect} />
-      <Container mt="10" fluid classNames={{ root: classes.container }}>
-        {data?.pages.flatMap((page) =>
-          page.posts.map((post) => <HomePostCard key={post._id} post={post} />)
-        )}
+      <Container mt="10" p={0} fluid>
+        <Group>
+          <Flex gap={30} classNames={{ root: classes.container }}>
+            {data?.pages.flatMap((page) =>
+              page.posts.map((post) => <HomePostCard key={post._id} post={post} />)
+            )}
+          </Flex>
+          {(longitude === null || latitude === null || radius === null) ? (
+            <p>Loading...</p>
+          ) : !hasNextPage ? (
+            <p>There&apos;s no more posts to load</p>
+          ) : null}
 
-        {(longitude === null || latitude === null || radius === null) ? (
-          <p>Loading...</p>
-        ) : !hasNextPage ? (
-          <p>There&apos;s no more posts to load</p>
-        ) : null}
-
-        {error && <p>Error fetching posts: {error.message}</p>}
+          {error && <p>Error fetching posts: {error.message}</p>}
+        </Group>
       </Container>
     </>
   );

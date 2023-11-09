@@ -107,6 +107,7 @@ const PostLocation: React.FC<{
         }
       });
     }
+    setOpened(false);
   };
 
   return (

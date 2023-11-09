@@ -29,9 +29,9 @@ export default function RootLayout({
       </head>
       <body>
         <MantineProvider defaultColorScheme="dark">
-        <Notifications position="bottom-right" />
+          <Notifications position="bottom-right" />
           <QueryClientProvider client={queryClient}>
-            <WelcomeModal/>
+            <WelcomeModal />
             <Navbar />
             <Container
               fluid
