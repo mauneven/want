@@ -35,7 +35,6 @@ export default function Account() {
   const [myPosts, setMyPosts] = useState<Post[]>([]);
   const router = useRouter();
 
-  // Fetch para obtener datos del perfil del usuario
   useEffect(() => {
     fetch(endpoints.user, { credentials: "include" })
       .then((response) => {
@@ -52,12 +51,10 @@ export default function Account() {
       });
   }, []);
 
-  // Fetch separado para obtener los posts del usuario
   useEffect(() => {
     fetch(endpoints.myposts, { credentials: "include" })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Posts Data:", data); // Añadido para verificar la respuesta
         setMyPosts(data);
       })
       .catch((error) => {

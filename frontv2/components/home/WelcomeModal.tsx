@@ -5,7 +5,7 @@ import AES from 'crypto-js/aes';
 
 const SECRET_KEY = 'your_secret_key_here';
 
-function encryptData( data: any) {
+function encryptData(data: any) {
   return AES.encrypt(JSON.stringify(data), SECRET_KEY).toString();
 }
 
@@ -32,25 +32,36 @@ export default function WelcomeModal() {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const locationData = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            radio: 5, // default radius value
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+            radio: 5,
+            cityName: ''
           };
           localStorage.setItem('location', encryptData(locationData));
           localStorage.setItem('isNewUser', 'false');
           close();
         },
         async () => {
-          const locationData = await fetchLocation();
-          locationData.radio = 5; // default radius value
+          const fullLocationData = await fetchLocation();
+          const locationData = {
+            lat: fullLocationData.latitude,
+            lng: fullLocationData.longitude,
+            radio: 5,
+            cityName: ''
+          };
           localStorage.setItem('location', encryptData(locationData));
           localStorage.setItem('isNewUser', 'false');
           close();
         }
       );
     } else {
-      const locationData = await fetchLocation();
-      locationData.radio = 5; // default radius value
+      const fullLocationData = await fetchLocation();
+      const locationData = {
+        lat: fullLocationData.latitude,
+        lng: fullLocationData.longitude,
+        radio: 5,
+        cityName: ''
+      };
       localStorage.setItem('location', encryptData(locationData));
       localStorage.setItem('isNewUser', 'false');
       close();
@@ -58,8 +69,13 @@ export default function WelcomeModal() {
   };
 
   const handleContinueWithoutPermission = async () => {
-    const locationData = await fetchLocation();
-    locationData.radio = 5; // default radius value
+    const fullLocationData = await fetchLocation();
+    const locationData = {
+      lat: fullLocationData.latitude,
+      lng: fullLocationData.longitude,
+      radio: 5,
+      cityName: ''
+    };
     localStorage.setItem('location', encryptData(locationData));
     localStorage.setItem('isNewUser', 'false');
     close();
@@ -72,7 +88,7 @@ export default function WelcomeModal() {
         close();
         localStorage.setItem('isNewUser', 'false');
       }}
-      title="Welcome To WANT"
+      title="Welcome To Want"
       overlayProps={{
         backgroundOpacity: 0.55,
         blur: 3,

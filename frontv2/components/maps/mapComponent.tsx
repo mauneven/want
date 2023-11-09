@@ -34,24 +34,35 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSe
     const encryptedLocation = localStorage.getItem('location');
     if (encryptedLocation) {
       const decryptedLocation = decryptData(encryptedLocation);
-      setLocation({ lat: decryptedLocation.latitude, lng: decryptedLocation.longitude });
-      setSelectedRadius(decryptedLocation.radio || 5);
-
-      if (onLocationSelect) {
-        onLocationSelect(decryptedLocation.latitude, decryptedLocation.longitude, decryptedLocation.radio);
+      const lat = parseFloat(decryptedLocation.lat);
+      const lng = parseFloat(decryptedLocation.lng);
+  
+      if (isNaN(lat) || isNaN(lng)) {
+        console.error('Invalid latitude or longitude values:', decryptedLocation);
+      } else {
+        setLocation({ lat, lng });
+        setSelectedRadius(parseInt(decryptedLocation.radio) || 5);
+        setCityName(decryptedLocation.cityName || "");
+  
+        if (onLocationSelect) {
+          onLocationSelect(lat, lng, decryptedLocation.radio, decryptedLocation.cityName);
+        }
       }
     }
-  };
+  };  
 
   const getCityName = (lat: number, lng: number) => {
-    if (googleApiLoaded) {
+    if (!cityName && googleApiLoaded) {
       const geocoder = new google.maps.Geocoder();
       geocoder.geocode({ location: { lat, lng } }, (results, status) => {
         if (status === "OK" && results) {
           for (let i = 0; i < results[0].address_components.length; i++) {
             const component = results[0].address_components[i];
             if (component.types.includes("locality")) {
-              setCityName(component.long_name);
+              const newCityName = component.long_name;
+              setCityName(newCityName);
+              const encryptedLocation = AES.encrypt(JSON.stringify({ ...location, cityName: newCityName }), SECRET_KEY).toString();
+              localStorage.setItem('location', encryptedLocation);
               break;
             }
           }
@@ -115,9 +126,9 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSe
         updateLocationFromLocalStorage();
       }
     };
-
+  
     waitForLocation();
-  }, []);
+  }, []);  
 
   const fetchLocation = () => {
     const encryptedLocation = localStorage.getItem('location');
@@ -126,6 +137,7 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSe
       setLocation({ lat: decryptedLocation.latitude, lng: decryptedLocation.longitude });
       setSelectedRadius(decryptedLocation.radio || 5);
     }
+    updateLocationFromLocalStorage();
     setOpened(true);
   };
 
@@ -149,11 +161,14 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSe
   const handleLocationSelect = () => {
     if (location && onLocationSelect) {
       onLocationSelect(location.lat, location.lng, selectedRadius);
-      const encryptedLocation = AES.encrypt(JSON.stringify({
-        latitude: location.lat,
-        longitude: location.lng,
-        radio: selectedRadius
-      }), SECRET_KEY).toString();
+      const locationData = {
+        lat: location.lat,
+        lng: location.lng,
+        radio: selectedRadius,
+        cityName: cityName
+      };
+      
+      const encryptedLocation = AES.encrypt(JSON.stringify(locationData), SECRET_KEY).toString();
       localStorage.setItem('location', encryptedLocation);
       setOpened(false);
     }
