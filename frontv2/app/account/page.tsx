@@ -18,6 +18,7 @@ import { IconStarFilled } from "@tabler/icons-react";
 import MyPostCard, { Post } from "@/components/account/MyPostCard";
 import classes from "../globals.module.css";
 import { useRouter } from "next/navigation";
+import { environments } from "../connections/environments/environments";
 
 type User = {
   firstName: string;
@@ -73,7 +74,7 @@ export default function Account() {
           <Group align="center" justify="center">
             <Stack align="center" p={20}>
               <Avatar
-                src={`https://want.com.co/${user?.photo}` || null}
+                src={`${environments.BASE_URL}/${user?.photo}` || null}
                 size={120}
                 radius={120}
                 mx="auto"
@@ -125,9 +126,11 @@ export default function Account() {
         labelPosition="center"
         m={20}
       />
-      <Container p={0} fluid classNames={{ root: classes.container }}>
-        {myPosts &&
-          myPosts.map((post) => <MyPostCard key={post._id} post={post} />)}
+      <Container mt="10" p={0} fluid>
+        <Flex gap={30} classNames={{ root: classes.container }}>
+          {myPosts &&
+            myPosts.map((post) => <MyPostCard key={post._id} post={post} />)}
+        </Flex>
       </Container>
     </Container>
   );
