@@ -1,73 +1,97 @@
-'use client'
+"use client";
 import React, { useState, useRef, useEffect } from "react";
 import { Button, Menu, Group, Input, Modal, Stack, Text } from "@mantine/core";
 import { GoogleMap, MarkerF } from "@react-google-maps/api";
 import "./maps.css";
-import AES from 'crypto-js/aes';
-import Utf8 from 'crypto-js/enc-utf8';
+import AES from "crypto-js/aes";
+import Utf8 from "crypto-js/enc-utf8";
 
-const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSelect }) => {
+const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({
+  onLocationSelect,
+}) => {
   const [opened, setOpened] = useState(false);
-  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
+    null
+  );
   const [selectedRadius, setSelectedRadius] = useState<number>(5);
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY ?? "";
-  const radiiOptions = [1, 5, 10, 20, 50, 100000000000000000000000000000000000000000000000000000000000000000];
+  const radiiOptions = [
+    1, 5, 10, 20, 50,
+    100000000000000000000000000000000000000000000000000000000000000000,
+  ];
   const [cityName, setCityName] = useState("");
 
-  const SECRET_KEY = 'your_secret_key_here';
+  const SECRET_KEY = "your_secret_key_here";
 
   function decryptData(encryptedData: any) {
     const bytes = AES.decrypt(encryptedData, SECRET_KEY);
     return JSON.parse(bytes.toString(Utf8));
   }
-  const calculateCircleDiameter = (radiusInKm: number, lat: number, zoom: number) => {
-    const metersPerPixel = 156543.03392 * Math.cos(lat * Math.PI / 180) / Math.pow(2, zoom);
-    return 2 * radiusInKm * 1000 / metersPerPixel;
+  const calculateCircleDiameter = (
+    radiusInKm: number,
+    lat: number,
+    zoom: number
+  ) => {
+    const metersPerPixel =
+      (156543.03392 * Math.cos((lat * Math.PI) / 180)) / Math.pow(2, zoom);
+    return (2 * radiusInKm * 1000) / metersPerPixel;
   };
 
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [googleApiLoaded, setGoogleApiLoaded] = useState(false);
 
   const updateLocationFromLocalStorage = () => {
-    const encryptedLocation = localStorage.getItem('location');
+    const encryptedLocation = localStorage.getItem("location");
     if (encryptedLocation) {
       const decryptedLocation = decryptData(encryptedLocation);
       const lat = parseFloat(decryptedLocation.lat);
       const lng = parseFloat(decryptedLocation.lng);
-  
+
       if (isNaN(lat) || isNaN(lng)) {
-        console.error('Invalid latitude or longitude values:', decryptedLocation);
+        console.error(
+          "Invalid latitude or longitude values:",
+          decryptedLocation
+        );
       } else {
         setLocation({ lat, lng });
         setSelectedRadius(parseInt(decryptedLocation.radio) || 5);
         setCityName(decryptedLocation.cityName || "");
-  
+
         if (onLocationSelect) {
-          onLocationSelect(lat, lng, decryptedLocation.radio, decryptedLocation.cityName);
+          onLocationSelect(
+            lat,
+            lng,
+            decryptedLocation.radio,
+            decryptedLocation.cityName
+          );
         }
       }
     }
-  };  
+  };
 
   const getCityName = (lat: number, lng: number) => {
     if (!cityName && googleApiLoaded) {
       const geocoder = new google.maps.Geocoder();
       geocoder.geocode({ location: { lat, lng } }, (results, status) => {
         if (status === "OK" && results) {
-          for (let i = 0; i < results[0].address_components.length; i++) {
-            const component = results[0].address_components[i];
+          for (const element of results[0].address_components) {
+            const component = element;
             if (component.types.includes("locality")) {
               const newCityName = component.long_name;
               setCityName(newCityName);
-              const encryptedLocation = AES.encrypt(JSON.stringify({ ...location, cityName: newCityName }), SECRET_KEY).toString();
-              localStorage.setItem('location', encryptedLocation);
+              const encryptedLocation = AES.encrypt(
+                JSON.stringify({ ...location, cityName: newCityName }),
+                SECRET_KEY
+              ).toString();
+              localStorage.setItem("location", encryptedLocation);
               break;
             }
           }
         }
       });
+      updateLocationFromLocalStorage();
     }
   };
 
@@ -78,29 +102,39 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSe
   }, [location, googleApiLoaded]);
 
   useEffect(() => {
-    const encryptedLocation = localStorage.getItem('location');
+    const encryptedLocation = localStorage.getItem("location");
     if (encryptedLocation) {
       const decryptedLocation = decryptData(encryptedLocation);
-      setLocation({ lat: decryptedLocation.latitude, lng: decryptedLocation.longitude });
+      setLocation({
+        lat: decryptedLocation.latitude,
+        lng: decryptedLocation.longitude,
+      });
       setSelectedRadius(decryptedLocation.radio || 5);
     }
 
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'location') {
+      if (e.key === "location") {
         const decryptedLocation = decryptData(e.newValue);
-        setLocation({ lat: decryptedLocation.latitude, lng: decryptedLocation.longitude });
+        setLocation({
+          lat: decryptedLocation.latitude,
+          lng: decryptedLocation.longitude,
+        });
         setSelectedRadius(decryptedLocation.radio || 5);
 
         if (onLocationSelect) {
-          onLocationSelect(decryptedLocation.latitude, decryptedLocation.longitude, decryptedLocation.radio);
+          onLocationSelect(
+            decryptedLocation.latitude,
+            decryptedLocation.longitude,
+            decryptedLocation.radio
+          );
         }
       }
     };
 
-    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, [onLocationSelect]);
 
@@ -119,22 +153,25 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSe
 
   useEffect(() => {
     const waitForLocation = () => {
-      const encryptedLocation = localStorage.getItem('location');
+      const encryptedLocation = localStorage.getItem("location");
       if (!encryptedLocation) {
         setTimeout(waitForLocation, 1000);
       } else {
         updateLocationFromLocalStorage();
       }
     };
-  
+
     waitForLocation();
-  }, []);  
+  }, []);
 
   const fetchLocation = () => {
-    const encryptedLocation = localStorage.getItem('location');
+    const encryptedLocation = localStorage.getItem("location");
     if (encryptedLocation) {
       const decryptedLocation = decryptData(encryptedLocation);
-      setLocation({ lat: decryptedLocation.latitude, lng: decryptedLocation.longitude });
+      setLocation({
+        lat: decryptedLocation.latitude,
+        lng: decryptedLocation.longitude,
+      });
       setSelectedRadius(decryptedLocation.radio || 5);
     }
     updateLocationFromLocalStorage();
@@ -165,11 +202,14 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSe
         lat: location.lat,
         lng: location.lng,
         radio: selectedRadius,
-        cityName: cityName
+        cityName: cityName,
       };
-      
-      const encryptedLocation = AES.encrypt(JSON.stringify(locationData), SECRET_KEY).toString();
-      localStorage.setItem('location', encryptedLocation);
+
+      const encryptedLocation = AES.encrypt(
+        JSON.stringify(locationData),
+        SECRET_KEY
+      ).toString();
+      localStorage.setItem("location", encryptedLocation);
       setOpened(false);
     }
   };
@@ -251,7 +291,7 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSe
               clickableIcons: false,
               zoomControl: false,
               scrollwheel: false,
-              draggable: false
+              draggable: false,
             }}
           >
             {location && <MarkerF position={location} />}
@@ -259,10 +299,18 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSe
               <div
                 className="circle"
                 style={{
-                  top: '50%',
-                  left: '50%',
-                  width: `${calculateCircleDiameter(selectedRadius, location.lat, getZoomLevel(selectedRadius))}px`,
-                  height: `${calculateCircleDiameter(selectedRadius, location.lat, getZoomLevel(selectedRadius))}px`,
+                  top: "50%",
+                  left: "50%",
+                  width: `${calculateCircleDiameter(
+                    selectedRadius,
+                    location.lat,
+                    getZoomLevel(selectedRadius)
+                  )}px`,
+                  height: `${calculateCircleDiameter(
+                    selectedRadius,
+                    location.lat,
+                    getZoomLevel(selectedRadius)
+                  )}px`,
                 }}
               ></div>
             )}
@@ -275,7 +323,10 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({ onLocationSe
             </Menu.Target>
             <Menu.Dropdown>
               {radiiOptions.map((radius) => (
-                <Menu.Item key={radius} onClick={() => setSelectedRadius(radius)}>
+                <Menu.Item
+                  key={radius}
+                  onClick={() => setSelectedRadius(radius)}
+                >
                   {radius} km
                 </Menu.Item>
               ))}
