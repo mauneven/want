@@ -8,6 +8,7 @@ import PostLocation from '@/components/update/PostLocation';
 import { PhotoDropzone } from '@/components/update/PhotoDropzone';
 import CategoryModal from '@/components/update/CategoryModal';
 import { FileWithPath } from '@mantine/dropzone';
+import { environments } from '@/app/connections/environments/environments';
 
 const UpdatePost = () => {
   const router = useRouter();
@@ -22,10 +23,13 @@ const UpdatePost = () => {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [photoOrder, setPhotoOrder] = useState<number[]>([]);
+  const [deletedPhotos, setDeletedPhotos] = useState([]);
+  const [initialImages, setInitialImages] = useState<string[]>([]);
   const [initialLatitude, setInitialLatitude] = useState<number | null>(null);
   const [initialLongitude, setInitialLongitude] = useState<number | null>(null);
   const [initialCategory, setInitialCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<{
+
     id: string;
     name: { en: string };
   } | null>(null);
@@ -54,6 +58,8 @@ const UpdatePost = () => {
         setDescription(data.description || "");
         setInitialLatitude(Number(data.latitude) || null);
         setInitialLongitude(Number(data.longitude) || null);
+        const initialImageUrls = data.photos.map((photo: any) => `${environments.BASE_URL}/${photo}`);
+        setInitialImages(initialImageUrls);
         setInitialCategory(data.mainCategory || "");
       } catch (error) {
         console.error(error);
@@ -63,7 +69,7 @@ const UpdatePost = () => {
     if (id) {
       fetchPost();
     }
-  }, [id, location]);
+  }, [id]);
 
   const handleLocationSelect = (lat: number, lng: number) => {
     setLocation({ lat, lng });
@@ -78,40 +84,56 @@ const UpdatePost = () => {
     console.log("la categoria es", category.id)
   };
 
-  const handleUploadPhotos = (photos: FileWithPath[]) => {
+  const handleUploadPhotos = (photos, deleted) => {
     setUploadedPhotos(photos);
+    setDeletedPhotos(deleted);
     const newOrder = Array.from({ length: 4 }, (_, i) => i).filter(
       (index) => uploadedPhotos[index] || photos[index]
     );
     setPhotoOrder(newOrder);
-  };
+  };  
 
-  const isDataValid = !!title && !!price && !!selectedCategory && !!location;
+  const isDataValid =
+    !!title &&
+    !!price &&
+    (selectedCategory ? selectedCategory.id !== post.mainCategory : !!initialCategory) &&
+    (location ? (location.lat !== initialLatitude || location.lng !== initialLongitude) : (initialLatitude !== null && initialLongitude !== null));
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setPost({ ...post, [name]: value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
+
+    const formData = new FormData();
+
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('latitude', location ? location.lat.toString() : (initialLatitude ? initialLatitude.toString() : ''));
+    formData.append('longitude', location ? location.lng.toString() : (initialLongitude ? initialLongitude.toString() : ''));
+    formData.append('mainCategory', selectedCategory ? selectedCategory.id : initialCategory);
+    formData.append('price', price);
+    formData.append('deletedImages', deletedPhotos.join(','));
+
+    for (const element of photoOrder) {
+      const index = element;
+      const file = uploadedPhotos[index];
+      if (file && file instanceof File) {
+        formData.append("photos[]", file, file.name);
+      }
+    }    
 
     try {
       const response = await fetch(`${endpoints.updatePost}/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(post),
+        body: formData,
+        credentials: 'include',
       });
 
       if (!response.ok) {
         throw new Error('Error updating post');
       }
 
-      router.push(`/posts/${id}`);
+      router.push('/account');
     } catch (error) {
-      console.error(error);
+      console.error('Error:', error);
     }
   };
 
@@ -187,7 +209,11 @@ const UpdatePost = () => {
         <Text fw={500} mb={4} size="sm">
           Add up to 4 photos if you Want
         </Text>
-        <PhotoDropzone onUploadPhotos={handleUploadPhotos} />
+        <PhotoDropzone
+          onUploadPhotos={handleUploadPhotos}
+          initialImages={initialImages ?? null}
+          deletedPhotos={deletedPhotos}
+        />
         {isDataValid ? (
           <Button
             mt={20}
@@ -195,8 +221,9 @@ const UpdatePost = () => {
             fullWidth
             type="submit"
             disabled={!isDataValid}
+            onClick={handleSubmit}
           >
-            Post what I want!
+            Update what I want!
           </Button>
         ) : (
           <Tooltip label={tooltipMessage}>

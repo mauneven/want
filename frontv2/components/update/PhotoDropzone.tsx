@@ -7,7 +7,9 @@ import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea
 import '@mantine/notifications/styles.css';
 
 interface PhotoDropzoneProps {
-  onUploadPhotos: (photos: FileWithPath[]) => void;
+  onUploadPhotos: (photos: FileWithPath[], deleted: string[]) => void;
+  initialImages: string[];
+  deletedPhotos: string[];
 }
 
 interface FileWithId {
@@ -15,7 +17,11 @@ interface FileWithId {
   id: string;
 }
 
-export function PhotoDropzone(props: PhotoDropzoneProps) {
+interface ExtendedFileWithPath extends FileWithPath {
+  preview: string;
+}
+
+export function PhotoDropzone(props: Readonly<PhotoDropzoneProps>) {
   const [files, setFiles] = useState<FileWithId[]>([]);
   const [isBrowser, setIsBrowser] = useState(false);
 
@@ -23,23 +29,37 @@ export function PhotoDropzone(props: PhotoDropzoneProps) {
     setIsBrowser(typeof window !== 'undefined');
   }, []);
 
+  useEffect(() => {
+    if (props.initialImages && props.initialImages.length > 0) {
+      const initialFiles = props.initialImages.map((url) => ({
+        file: { ...new File([], ''), preview: url },
+        id: `initial-${url}`
+      }));
+      setFiles(initialFiles);
+    }
+  }, [props.initialImages]);
+
   const removeFile = (fileId: string) => {
-    setFiles((prevFiles) => prevFiles.filter(file => file.id !== fileId));
-  };
+    setFiles(prevFiles => prevFiles.filter(file => file.id !== fileId));
+    const deletedPhoto = files.find(file => file.id === fileId);
+    if (deletedPhoto) {
+      props.onUploadPhotos(files.filter(file => file.id !== fileId).map(file => file.file), [...props.deletedPhotos, deletedPhoto.file.preview]);
+    }
+  };  
 
   const updateFilesOrder = (newFilesOrder: FileWithId[]) => {
     setFiles(newFilesOrder);
-    props.onUploadPhotos(newFilesOrder.map(fileWithId => fileWithId.file));
+    props.onUploadPhotos(newFilesOrder.map(fileWithId => fileWithId.file), props.deletedPhotos);
   };
-
+  
   const handleDrop = (acceptedFiles: FileWithPath[]) => {
     const availableSlots = 4 - files.length;
     const filesToAdd = acceptedFiles
-      .slice(0, availableSlots)
-      .map(file => ({
-        file,
-        id: `file-${Date.now()}-${file.name}`
-      }));
+    .slice(0, availableSlots)
+    .map(file => ({
+      file,
+      id: `file-${Date.now()}-${file.name}`
+    }));  
 
     if (filesToAdd.length < acceptedFiles.length) {
       notifications.show({
@@ -118,7 +138,10 @@ export function PhotoDropzone(props: PhotoDropzoneProps) {
               }}
             >
               {files.map((fileWithId, index) => {
-                const imageUrl = URL.createObjectURL(fileWithId.file);
+                const imageUrl = (typeof fileWithId.file === 'string')
+                  ? fileWithId.file // Para imágenes iniciales
+                  : (fileWithId.file as ExtendedFileWithPath).preview || URL.createObjectURL(fileWithId.file);
+
                 return (
                   <Draggable key={fileWithId.id} draggableId={fileWithId.id} index={index}>
                     {(provided) => (
@@ -136,7 +159,11 @@ export function PhotoDropzone(props: PhotoDropzoneProps) {
                         <Image
                           src={imageUrl}
                           alt={`Preview ${index}`}
-                          onLoad={() => URL.revokeObjectURL(imageUrl)}
+                          onLoad={() => {
+                            if (typeof fileWithId.file !== 'string') {
+                              URL.revokeObjectURL(imageUrl);
+                            }
+                          }}
                           width={160}
                           height={160}
                         />
