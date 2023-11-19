@@ -42,15 +42,21 @@ export function PhotoDropzone(props: Readonly<PhotoDropzoneProps>) {
   }, [props.initialImages]);
 
   const removeFile = (fileId: string) => {
-    setFiles((prevFiles) => prevFiles.filter((file) => file.id !== fileId));
-    const deletedPhoto = files.find((file) => file.id === fileId);
-    if (deletedPhoto && typeof deletedPhoto.file !== "string") {
-      props.onUploadPhotos(
-        files
-          .filter((file) => file.id !== fileId && typeof file.file !== "string")
-          .map((file) => file.file as FileWithPath),
-        [...props.deletedPhotos, (deletedPhoto.file as FileWithPath).name]
-      );
+    const fileToRemove = files.find(file => file.id === fileId);
+    if (fileToRemove) {
+      setFiles(prevFiles => prevFiles.filter(file => file.id !== fileId));
+      if (typeof fileToRemove.file === 'string') { // Es una URL de una imagen existente
+        props.onUploadPhotos(
+          files.filter(file => file.id !== fileId).map(file => file.file as FileWithPath),
+          [...props.deletedPhotos, fileToRemove.file] // Añadir la URL a las fotos eliminadas
+        );
+      } else {
+        // Solo actualizar las fotos subidas si se eliminó una foto subida
+        props.onUploadPhotos(
+          files.filter(file => file.id !== fileId && typeof file.file !== 'string').map(file => file.file as FileWithPath),
+          props.deletedPhotos
+        );
+      }
     }
   };
 
