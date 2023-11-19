@@ -18,7 +18,7 @@ interface FileWithId {
 }
 
 interface ExtendedFileWithPath extends FileWithPath {
-  preview: string;
+  preview?: string;
 }
 
 export function PhotoDropzone(props: Readonly<PhotoDropzoneProps>) {

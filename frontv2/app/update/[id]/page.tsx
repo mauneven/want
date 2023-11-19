@@ -1,14 +1,24 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import endpoints from '@/app/connections/enpoints/endpoints';
-import { Flex, NumberInput, Paper, TextInput, Title, Text, Textarea, Button, Tooltip } from '@mantine/core';
-import PostLocation from '@/components/update/PostLocation';
-import { PhotoDropzone } from '@/components/update/PhotoDropzone';
-import CategoryModal from '@/components/update/CategoryModal';
-import { FileWithPath } from '@mantine/dropzone';
-import { environments } from '@/app/connections/environments/environments';
+import { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+import endpoints from "@/app/connections/enpoints/endpoints";
+import {
+  Flex,
+  NumberInput,
+  Paper,
+  TextInput,
+  Title,
+  Text,
+  Textarea,
+  Button,
+  Tooltip,
+} from "@mantine/core";
+import PostLocation from "@/components/update/PostLocation";
+import { PhotoDropzone } from "@/components/update/PhotoDropzone";
+import CategoryModal from "@/components/update/CategoryModal";
+import { FileWithPath } from "@mantine/dropzone";
+import { environments } from "@/app/connections/environments/environments";
 
 const UpdatePost = () => {
   const router = useRouter();
@@ -23,25 +33,24 @@ const UpdatePost = () => {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [photoOrder, setPhotoOrder] = useState<number[]>([]);
-  const [deletedPhotos, setDeletedPhotos] = useState([]);
+  const [deletedPhotos, setDeletedPhotos] = useState<string[]>([]);
   const [initialImages, setInitialImages] = useState<string[]>([]);
   const [initialLatitude, setInitialLatitude] = useState<number | null>(null);
   const [initialLongitude, setInitialLongitude] = useState<number | null>(null);
   const [initialCategory, setInitialCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<{
-
     id: string;
     name: { en: string };
   } | null>(null);
 
   const [post, setPost] = useState({
-    title: '',
-    description: '',
+    title: "",
+    description: "",
     latitude: 0,
     longitude: 0,
-    mainCategory: '',
+    mainCategory: "",
     price: 0,
-    deletedImages: '',
+    deletedImages: "",
   });
 
   useEffect(() => {
@@ -49,7 +58,7 @@ const UpdatePost = () => {
       try {
         const response = await fetch(`${endpoints.getPost}/${id}`);
         if (!response.ok) {
-          throw new Error('Post not found');
+          throw new Error("Post not found");
         }
         const data = await response.json();
         setPost(data);
@@ -58,7 +67,9 @@ const UpdatePost = () => {
         setDescription(data.description || "");
         setInitialLatitude(Number(data.latitude) || null);
         setInitialLongitude(Number(data.longitude) || null);
-        const initialImageUrls = data.photos.map((photo: any) => `${environments.BASE_URL}/${photo}`);
+        const initialImageUrls = data.photos.map(
+          (photo: any) => `${environments.BASE_URL}/${photo}`
+        );
         setInitialImages(initialImageUrls);
         setInitialCategory(data.mainCategory || "");
       } catch (error) {
@@ -73,7 +84,7 @@ const UpdatePost = () => {
 
   const handleLocationSelect = (lat: number, lng: number) => {
     setLocation({ lat, lng });
-    console.log("la localizacion es", lat, lng)
+    console.log("la localizacion es", lat, lng);
   };
 
   const handleSelectCategory = (category: {
@@ -81,36 +92,57 @@ const UpdatePost = () => {
     name: { en: string };
   }) => {
     setSelectedCategory(category);
-    console.log("la categoria es", category.id)
+    console.log("la categoria es", category.id);
   };
 
-  const handleUploadPhotos = (photos, deleted) => {
+  const handleUploadPhotos = (photos: FileWithPath[], deleted: string[]) => {
     setUploadedPhotos(photos);
     setDeletedPhotos(deleted);
     const newOrder = Array.from({ length: 4 }, (_, i) => i).filter(
       (index) => uploadedPhotos[index] || photos[index]
     );
     setPhotoOrder(newOrder);
-  };  
+  };
 
   const isDataValid =
     !!title &&
     !!price &&
-    (selectedCategory ? selectedCategory.id !== post.mainCategory : !!initialCategory) &&
-    (location ? (location.lat !== initialLatitude || location.lng !== initialLongitude) : (initialLatitude !== null && initialLongitude !== null));
+    (selectedCategory
+      ? selectedCategory.id !== post.mainCategory
+      : !!initialCategory) &&
+    (location
+      ? location.lat !== initialLatitude || location.lng !== initialLongitude
+      : initialLatitude !== null && initialLongitude !== null);
 
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
     const formData = new FormData();
 
-    formData.append('title', title);
-    formData.append('description', description);
-    formData.append('latitude', location ? location.lat.toString() : (initialLatitude ? initialLatitude.toString() : ''));
-    formData.append('longitude', location ? location.lng.toString() : (initialLongitude ? initialLongitude.toString() : ''));
-    formData.append('mainCategory', selectedCategory ? selectedCategory.id : initialCategory);
-    formData.append('price', price);
-    formData.append('deletedImages', deletedPhotos.join(','));
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append(
+      "latitude",
+      location
+        ? location.lat.toString()
+        : initialLatitude
+        ? initialLatitude.toString()
+        : ""
+    );
+    formData.append(
+      "longitude",
+      location
+        ? location.lng.toString()
+        : initialLongitude
+        ? initialLongitude.toString()
+        : ""
+    );
+    formData.append(
+      "mainCategory",
+      selectedCategory ? selectedCategory.id : initialCategory
+    );
+    formData.append("price", price);
+    formData.append("deletedImages", deletedPhotos.join(","));
 
     for (const element of photoOrder) {
       const index = element;
@@ -118,22 +150,22 @@ const UpdatePost = () => {
       if (file && file instanceof File) {
         formData.append("photos[]", file, file.name);
       }
-    }    
+    }
 
     try {
       const response = await fetch(`${endpoints.updatePost}/${id}`, {
-        method: 'PUT',
+        method: "PUT",
         body: formData,
-        credentials: 'include',
+        credentials: "include",
       });
 
       if (!response.ok) {
-        throw new Error('Error updating post');
+        throw new Error("Error updating post");
       }
 
-      router.push('/account');
+      router.push("/account");
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
 
@@ -156,7 +188,15 @@ const UpdatePost = () => {
   return (
     <>
       <Button variant="light">Volver a mi perfil</Button>
-      <Paper shadow="xl" mt={"5"} p={20} maw={700} mx="auto" withBorder radius={"md"}>
+      <Paper
+        shadow="xl"
+        mt={"5"}
+        p={20}
+        maw={700}
+        mx="auto"
+        withBorder
+        radius={"md"}
+      >
         <Title ta="center" size="h2">
           {"Update what you Want !"}
         </Title>
