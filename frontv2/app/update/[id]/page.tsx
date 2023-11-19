@@ -149,9 +149,7 @@ const UpdatePost = () => {
     formData.append("price", price);
     formData.append("deletedImages", deletedPhotos.join(","));
 
-    photoOrderIds.forEach((photoId, index) => {
-      formData.append(`photoOrder[${index}]`, photoId);
-    });
+    formData.append("photoOrder", JSON.stringify(photoOrderIds));
 
     for (const element of photoOrder) {
       const index = element;
