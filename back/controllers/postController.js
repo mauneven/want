@@ -137,14 +137,19 @@ exports.updatePost = async (req, res, next) => {
     post.mainCategory = mainCategory;
     post.price = price;
 
+    // Nueva lógica para manejar el orden de las fotos
+    const photoOrder = JSON.parse(req.body.photoOrder);
+    let newPhotos = []; // Para almacenar las rutas de las nuevas fotos
+
     if (req.files.length > 0) {
+      // Procesar y almacenar nuevas fotos
       const photos = req.files.map((file) => ({
         type: file.mimetype,
         path: file.path,
         originalname: file.originalname,
       }));
 
-      const compressedImagePaths = await Promise.all(
+      newPhotos = await Promise.all(
         photos.map(async (photo) => {
           const compressedImagePath = `uploads/${uuidv4()}.webp`;
           const fileBuffer = await fs.promises.readFile(photo.path);
@@ -156,10 +161,22 @@ exports.updatePost = async (req, res, next) => {
           return compressedImagePath;
         })
       );
-      req.files = compressedImagePaths.map((path) => ({ path }));
-
-      post.photos = [...post.photos, ...compressedImagePaths];
     }
+
+    console.log(photoOrder);
+
+    // Reordenar las fotos existentes y las nuevas según `photoOrder`
+    const reorderedPhotos = photoOrder
+      .map((photoId, index) => {
+        if (photoId.startsWith("initial-")) {
+          return post.photos.find((p) => p.includes(photoId.split("/").pop()));
+        } else if (photoId.startsWith("file-") && newPhotos[index]) {
+          return newPhotos[index];
+        }
+      })
+      .filter((p) => p); // Filtrar elementos no definidos
+
+    post.photos = reorderedPhotos;
 
     if (deletedImages) {
       const deletedImagePaths = deletedImages.split(",");
