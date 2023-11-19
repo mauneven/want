@@ -15,6 +15,7 @@ interface PhotoDropzoneProps {
   onUploadPhotos: (photos: FileWithPath[], deleted: string[]) => void;
   initialImages: string[];
   deletedPhotos: string[];
+  onOrderChange: (newOrder: ImageFile[]) => void;
 }
 
 interface ImageFile {
@@ -62,6 +63,7 @@ export function PhotoDropzone(props: Readonly<PhotoDropzoneProps>) {
 
   const updateFilesOrder = (newFilesOrder: ImageFile[]) => {
     setFiles(newFilesOrder);
+    props.onOrderChange(newFilesOrder);
     props.onUploadPhotos(
       newFilesOrder
         .filter((fileWithId) => typeof fileWithId.file !== "string")

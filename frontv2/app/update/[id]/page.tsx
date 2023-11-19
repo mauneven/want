@@ -20,6 +20,12 @@ import CategoryModal from "@/components/update/CategoryModal";
 import { FileWithPath } from "@mantine/dropzone";
 import { environments } from "@/app/connections/environments/environments";
 
+interface ImageFile {
+  file: FileWithPath | string;
+  id: string;
+  isNew?: boolean;
+}
+
 const UpdatePost = () => {
   const router = useRouter();
   const searchParams = useParams();
@@ -32,7 +38,7 @@ const UpdatePost = () => {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-  const [photoOrder, setPhotoOrder] = useState<number[]>([]);
+  const [photoOrder, setPhotoOrder] = useState<string[]>([]);
   const [deletedPhotos, setDeletedPhotos] = useState<string[]>([]);
   const [initialImages, setInitialImages] = useState<string[]>([]);
   const [initialLatitude, setInitialLatitude] = useState<number | null>(null);
@@ -98,10 +104,16 @@ const UpdatePost = () => {
   const handleUploadPhotos = (photos: FileWithPath[], deleted: string[]) => {
     setUploadedPhotos(photos);
     setDeletedPhotos(deleted);
-    const newOrder = Array.from({ length: 4 }, (_, i) => i).filter(
-      (index) => uploadedPhotos[index] || photos[index]
-    );
-    setPhotoOrder(newOrder);
+    const newOrder = photos.map((_, index) => `new-${index}`); // Generar IDs para nuevas fotos
+    setPhotoOrder([
+      ...initialImages.map((_, index) => `initial-${index}`),
+      ...newOrder,
+    ]);
+  };
+
+  const handlePhotoOrderChange = (newOrder: ImageFile[]) => {
+    const order = newOrder.map((file) => file.id);
+    setPhotoOrder(order);
   };
 
   const isDataValid =
@@ -144,13 +156,16 @@ const UpdatePost = () => {
     formData.append("price", price);
     formData.append("deletedImages", deletedPhotos.join(","));
 
-    for (const element of photoOrder) {
-      const index = element;
-      const file = uploadedPhotos[index];
+    photoOrder.forEach((photoId) => {
+      let file;
+      if (photoId.startsWith("new-")) {
+        const index = parseInt(photoId.split("-")[1]);
+        file = uploadedPhotos[index];
+      }
       if (file && file instanceof File) {
         formData.append("photos[]", file, file.name);
       }
-    }
+    });
 
     try {
       const response = await fetch(`${endpoints.updatePost}/${id}`, {
@@ -250,6 +265,7 @@ const UpdatePost = () => {
         <PhotoDropzone
           onUploadPhotos={handleUploadPhotos}
           initialImages={initialImages ?? null}
+          onOrderChange={handlePhotoOrderChange}
           deletedPhotos={deletedPhotos}
         />
         {isDataValid ? (
