@@ -176,8 +176,6 @@ const UpdatePost = () => {
   const missingFields = [];
   if (!title) missingFields.push("Title");
   if (!price) missingFields.push("Price");
-  if (!selectedCategory) missingFields.push("Category");
-  if (!location) missingFields.push("Location");
 
   if (missingFields.length === 1) {
     tooltipMessage += missingFields[0];
