@@ -20,12 +20,6 @@ import CategoryModal from "@/components/update/CategoryModal";
 import { FileWithPath } from "@mantine/dropzone";
 import { environments } from "@/app/connections/environments/environments";
 
-interface ImageFile {
-  file: FileWithPath | string;
-  id: string;
-  isNew?: boolean;
-}
-
 const UpdatePost = () => {
   const router = useRouter();
   const searchParams = useParams();
@@ -38,7 +32,8 @@ const UpdatePost = () => {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-  const [photoOrder, setPhotoOrder] = useState<string[]>([]);
+  const [photoOrder, setPhotoOrder] = useState<number[]>([]);
+  const [photoOrderIds, setPhotoOrderIds] = useState<string[]>([]);
   const [deletedPhotos, setDeletedPhotos] = useState<string[]>([]);
   const [initialImages, setInitialImages] = useState<string[]>([]);
   const [initialLatitude, setInitialLatitude] = useState<number | null>(null);
@@ -101,19 +96,17 @@ const UpdatePost = () => {
     console.log("la categoria es", category.id);
   };
 
+  const handlePhotoOrderUpdate = (orderIds: string[]) => {
+    setPhotoOrderIds(orderIds);
+  };  
+
   const handleUploadPhotos = (photos: FileWithPath[], deleted: string[]) => {
     setUploadedPhotos(photos);
     setDeletedPhotos(deleted);
-    const newOrder = photos.map((_, index) => `new-${index}`); // Generar IDs para nuevas fotos
-    setPhotoOrder([
-      ...initialImages.map((_, index) => `initial-${index}`),
-      ...newOrder,
-    ]);
-  };
-
-  const handlePhotoOrderChange = (newOrder: ImageFile[]) => {
-    const order = newOrder.map((file) => file.id);
-    setPhotoOrder(order);
+    const newOrder = Array.from({ length: 4 }, (_, i) => i).filter(
+      (index) => uploadedPhotos[index] || photos[index]
+    );
+    setPhotoOrder(newOrder);
   };
 
   const isDataValid =
@@ -156,16 +149,17 @@ const UpdatePost = () => {
     formData.append("price", price);
     formData.append("deletedImages", deletedPhotos.join(","));
 
-    photoOrder.forEach((photoId) => {
-      let file;
-      if (photoId.startsWith("new-")) {
-        const index = parseInt(photoId.split("-")[1]);
-        file = uploadedPhotos[index];
-      }
+    photoOrderIds.forEach((photoId, index) => {
+      formData.append(`photoOrder[${index}]`, photoId);
+    });
+
+    for (const element of photoOrder) {
+      const index = element;
+      const file = uploadedPhotos[index];
       if (file && file instanceof File) {
         formData.append("photos[]", file, file.name);
       }
-    });
+    }
 
     try {
       const response = await fetch(`${endpoints.updatePost}/${id}`, {
@@ -197,6 +191,9 @@ const UpdatePost = () => {
   } else if (missingFields.length > 1) {
     tooltipMessage += missingFields.join(", ");
   }
+
+      console.log(photoOrderIds)
+      console.log("eliminadas: ", deletedPhotos)
 
   return (
     <>
@@ -265,8 +262,8 @@ const UpdatePost = () => {
         <PhotoDropzone
           onUploadPhotos={handleUploadPhotos}
           initialImages={initialImages ?? null}
-          onOrderChange={handlePhotoOrderChange}
           deletedPhotos={deletedPhotos}
+          onUpdatePhotoOrder={handlePhotoOrderUpdate}
         />
         {isDataValid ? (
           <Button

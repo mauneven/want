@@ -62,7 +62,6 @@ export default function Account() {
       });
   }, []);
 
-  console.log("Rendering Profile with posts:", myPosts);
 
   return (
     <Container fluid>

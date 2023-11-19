@@ -13,9 +13,9 @@ import "@mantine/notifications/styles.css";
 
 interface PhotoDropzoneProps {
   onUploadPhotos: (photos: FileWithPath[], deleted: string[]) => void;
+  onUpdatePhotoOrder: (order: string[]) => void;
   initialImages: string[];
   deletedPhotos: string[];
-  onOrderChange: (newOrder: ImageFile[]) => void;
 }
 
 interface ImageFile {
@@ -43,27 +43,25 @@ export function PhotoDropzone(props: Readonly<PhotoDropzoneProps>) {
   }, [props.initialImages]);
 
   const removeFile = (fileId: string) => {
-    const fileToRemove = files.find(file => file.id === fileId);
-    if (fileToRemove) {
-      setFiles(prevFiles => prevFiles.filter(file => file.id !== fileId));
-      if (typeof fileToRemove.file === 'string') { // Es una URL de una imagen existente
-        props.onUploadPhotos(
-          files.filter(file => file.id !== fileId).map(file => file.file as FileWithPath),
-          [...props.deletedPhotos, fileToRemove.file] // Añadir la URL a las fotos eliminadas
-        );
-      } else {
-        // Solo actualizar las fotos subidas si se eliminó una foto subida
-        props.onUploadPhotos(
-          files.filter(file => file.id !== fileId && typeof file.file !== 'string').map(file => file.file as FileWithPath),
-          props.deletedPhotos
-        );
-      }
+    const newFiles = files.filter(file => file.id !== fileId);
+    setFiles(newFiles);
+  
+    let newDeletedPhotos = props.deletedPhotos;
+    const deletedPhoto = files.find(file => file.id === fileId);
+    if (deletedPhoto && typeof deletedPhoto.file === 'string') {
+      // Agregar el nombre del archivo a la lista de fotos eliminadas
+      newDeletedPhotos = [...props.deletedPhotos, deletedPhoto.file];
     }
-  };
+  
+    props.onUploadPhotos(
+      newFiles.filter(file => typeof file.file !== 'string').map(file => file.file as FileWithPath),
+      newDeletedPhotos
+    );
+    props.onUpdatePhotoOrder(newFiles.map(file => file.id));
+  };  
 
   const updateFilesOrder = (newFilesOrder: ImageFile[]) => {
     setFiles(newFilesOrder);
-    props.onOrderChange(newFilesOrder);
     props.onUploadPhotos(
       newFilesOrder
         .filter((fileWithId) => typeof fileWithId.file !== "string")
@@ -79,7 +77,7 @@ export function PhotoDropzone(props: Readonly<PhotoDropzoneProps>) {
       id: `file-${Date.now()}-${file.name}`,
       isNew: true,
     }));
-
+  
     if (filesToAdd.length < acceptedFiles.length) {
       notifications.show({
         title: "Attention",
@@ -88,21 +86,24 @@ export function PhotoDropzone(props: Readonly<PhotoDropzoneProps>) {
         color: "red",
       });
     }
-
-    updateFilesOrder([...files, ...filesToAdd]);
+  
+    const newFilesOrder = [...files, ...filesToAdd];
+    updateFilesOrder(newFilesOrder);
+    props.onUpdatePhotoOrder(newFilesOrder.map(file => file.id));
   };
-
+  
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
       return;
     }
-
+  
     const items = Array.from(files);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
-
+  
     updateFilesOrder(items);
-  };
+    props.onUpdatePhotoOrder(items.map(item => item.id));
+  };  
 
   return (
     <>

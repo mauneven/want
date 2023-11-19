@@ -10,7 +10,7 @@ const url = require("url");
 const User = require("../models/user");
 const geolib = require("geolib");
 const { getWss } = require("./webSocket");
-const WebSocket = require('ws');
+const WebSocket = require("ws");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -28,14 +28,8 @@ exports.uploadPhotoMiddleware = upload;
 
 exports.createPost = async (req, res, next) => {
   try {
-    const {
-      title,
-      description,
-      latitude,
-      longitude,
-      mainCategory,
-      price,
-    } = req.body;
+    const { title, description, latitude, longitude, mainCategory, price } =
+      req.body;
     const photos = req.files.map((file) => ({
       type: file.mimetype,
       path: file.path,
