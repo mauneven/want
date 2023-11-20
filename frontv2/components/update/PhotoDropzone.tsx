@@ -43,22 +43,23 @@ export function PhotoDropzone(props: Readonly<PhotoDropzoneProps>) {
   }, [props.initialImages]);
 
   const removeFile = (fileId: string) => {
-    const newFiles = files.filter(file => file.id !== fileId);
+    const newFiles = files.filter((file) => file.id !== fileId);
     setFiles(newFiles);
-  
+
     let newDeletedPhotos = props.deletedPhotos;
-    const deletedPhoto = files.find(file => file.id === fileId);
-    if (deletedPhoto && typeof deletedPhoto.file === 'string') {
-      // Agregar el nombre del archivo a la lista de fotos eliminadas
+    const deletedPhoto = files.find((file) => file.id === fileId);
+    if (deletedPhoto && typeof deletedPhoto.file === "string") {
       newDeletedPhotos = [...props.deletedPhotos, deletedPhoto.file];
     }
-  
+
     props.onUploadPhotos(
-      newFiles.filter(file => typeof file.file !== 'string').map(file => file.file as FileWithPath),
+      newFiles
+        .filter((file) => typeof file.file !== "string")
+        .map((file) => file.file as FileWithPath),
       newDeletedPhotos
     );
-    props.onUpdatePhotoOrder(newFiles.map(file => file.id));
-  };  
+    props.onUpdatePhotoOrder(newFiles.map((file) => file.id));
+  };
 
   const updateFilesOrder = (newFilesOrder: ImageFile[]) => {
     setFiles(newFilesOrder);
@@ -77,7 +78,7 @@ export function PhotoDropzone(props: Readonly<PhotoDropzoneProps>) {
       id: `file-${Date.now()}-${file.name}`,
       isNew: true,
     }));
-  
+
     if (filesToAdd.length < acceptedFiles.length) {
       notifications.show({
         title: "Attention",
@@ -86,24 +87,24 @@ export function PhotoDropzone(props: Readonly<PhotoDropzoneProps>) {
         color: "red",
       });
     }
-  
+
     const newFilesOrder = [...files, ...filesToAdd];
     updateFilesOrder(newFilesOrder);
-    props.onUpdatePhotoOrder(newFilesOrder.map(file => file.id));
+    props.onUpdatePhotoOrder(newFilesOrder.map((file) => file.id));
   };
-  
+
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {
       return;
     }
-  
+
     const items = Array.from(files);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
-  
+
     updateFilesOrder(items);
-    props.onUpdatePhotoOrder(items.map(item => item.id));
-  };  
+    props.onUpdatePhotoOrder(items.map((item) => item.id));
+  };
 
   return (
     <>
@@ -202,8 +203,12 @@ export function PhotoDropzone(props: Readonly<PhotoDropzoneProps>) {
                           ...provided.draggableProps.style,
                         }}
                       >
-                        <Image src={imageUrl} alt={`Preview ${index}`}                           width={160}
-                          height={160} />
+                        <Image
+                          src={imageUrl}
+                          alt={`Preview ${index}`}
+                          width={160}
+                          height={160}
+                        />
                         <ActionIcon
                           size="md"
                           radius="xl"

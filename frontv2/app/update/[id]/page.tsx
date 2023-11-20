@@ -190,9 +190,6 @@ const UpdatePost = () => {
     tooltipMessage += missingFields.join(", ");
   }
 
-      console.log(photoOrderIds)
-      console.log("eliminadas: ", deletedPhotos)
-
   return (
     <>
       <Button variant="light">Volver a mi perfil</Button>
