@@ -49,7 +49,7 @@ export default function HomePostCard({ post }: { post: Post }) {
   ));
 
   return (
-    <Card radius="md" withBorder padding="sm" shadow="sm">
+    <Card radius="md" withBorder padding="sm" className={classes.HomePostCard} >
       <Card.Section>
         <Carousel
           withIndicators
