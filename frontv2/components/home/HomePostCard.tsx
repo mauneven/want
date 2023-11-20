@@ -40,12 +40,16 @@ export default function HomePostCard({ post }: { post: Post }) {
   const router = useRouter();
   const slides = post.photos.map((photo) => (
     <Carousel.Slide key={photo}>
-      <Image src={`http://localhost:4000/${photo}`} height={150} />
+      <Image
+        onClick={() => router.push(`/post/${post._id}`)}
+        src={`http://localhost:4000/${photo}`}
+        height={150}
+      />
     </Carousel.Slide>
   ));
 
   return (
-    <Card radius="md" withBorder padding="sm" shadow="sm" onClick={() => router.push(`/post/${post._id}`)}>
+    <Card radius="md" withBorder padding="sm" shadow="sm">
       <Card.Section>
         <Carousel
           withIndicators
@@ -66,22 +70,13 @@ export default function HomePostCard({ post }: { post: Post }) {
         </Carousel>
       </Card.Section>
 
-      <Group>
+      <Group onClick={() => router.push(`/post/${post._id}`)}>
         <Text fz="xl" span fw={500} className={classes.price}>
           ${post.price}
         </Text>
         <Text fw={500} fz="lg">
           {post.title}
         </Text>
-      </Group>
-
-      <Group justify="space-between" mt="lg">
-        <Group gap={5}>
-          <IconStar style={{ width: rem(16), height: rem(16) }} />
-          <Text fz="xs" fw={500}>
-            4.78
-          </Text>
-        </Group>
       </Group>
     </Card>
   );
