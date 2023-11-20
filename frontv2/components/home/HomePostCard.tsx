@@ -6,6 +6,7 @@ import { Carousel } from "@mantine/carousel";
 import { IconArrowLeft, IconArrowRight, IconStar } from "@tabler/icons-react";
 import classes from "./HomePostCard.module.css";
 import "@mantine/carousel/styles.css";
+import { useRouter } from "next/navigation";
 
 interface User {
   _id: string;
@@ -36,6 +37,7 @@ interface Post {
 }
 
 export default function HomePostCard({ post }: { post: Post }) {
+  const router = useRouter();
   const slides = post.photos.map((photo) => (
     <Carousel.Slide key={photo}>
       <Image src={`http://localhost:4000/${photo}`} height={150} />
@@ -43,7 +45,7 @@ export default function HomePostCard({ post }: { post: Post }) {
   ));
 
   return (
-    <Card radius="md" withBorder padding="sm" shadow="sm" >
+    <Card radius="md" withBorder padding="sm" shadow="sm" onClick={() => router.push(`/post/${post._id}`)}>
       <Card.Section>
         <Carousel
           withIndicators

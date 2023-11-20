@@ -157,17 +157,21 @@ exports.updatePost = async (req, res, next) => {
       );
     }
 
-    const reorderedPhotos = photoOrder
-      .map((photoId, index) => {
-        if (photoId.startsWith("initial-")) {
-          return post.photos.find((p) => p.includes(photoId.split("/").pop()));
-        } else if (photoId.startsWith("file-") && newPhotos[index]) {
-          return newPhotos[index];
-        }
-      })
-      .filter((p) => p);
+    if (photoOrder.length > 0) {
+      const reorderedPhotos = photoOrder
+        .map((photoId, index) => {
+          if (photoId.startsWith("initial-")) {
+            return post.photos.find((p) =>
+              p.includes(photoId.split("/").pop())
+            );
+          } else if (photoId.startsWith("file-") && newPhotos[index]) {
+            return newPhotos[index];
+          }
+        })
+        .filter((p) => p);
 
-    post.photos = reorderedPhotos;
+      post.photos = reorderedPhotos;
+    }
 
     if (deletedImages) {
       const deletedImagePaths = deletedImages.split(",");
