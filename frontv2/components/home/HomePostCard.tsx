@@ -74,7 +74,7 @@ export default function HomePostCard({ post }: { post: Post }) {
           </Carousel>
         </Card.Section>
       ) : (
-        <Group justify="center" style={{ height: "135px" }}>
+        <Group justify="center" style={{ height: "135px" }} onClick={() => router.push(`/post/${post._id}`)}>
           <Text className={classes.title}>{post.title}</Text>
         </Group>
       )}
