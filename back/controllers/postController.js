@@ -10,7 +10,7 @@ const url = require("url");
 const User = require("../models/user");
 const geolib = require("geolib");
 const { getWss } = require("./webSocket");
-const WebSocket = require('ws');
+const WebSocket = require("ws");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -28,16 +28,8 @@ exports.uploadPhotoMiddleware = upload;
 
 exports.createPost = async (req, res, next) => {
   try {
-    const {
-      title,
-      description,
-      latitude,
-      longitude,
-      mainCategory,
-      subCategory,
-      thirdCategory,
-      price,
-    } = req.body;
+    const { title, description, latitude, longitude, mainCategory, price } =
+      req.body;
     const photos = req.files.map((file) => ({
       type: file.mimetype,
       path: file.path,
@@ -62,11 +54,10 @@ exports.createPost = async (req, res, next) => {
       req.files = compressedImagePaths.map((path) => ({ path }));
     }
 
-    // Desplazar las coordenadas dentro de un radio de 5 km
     const newPosition = geolib.computeDestinationPoint(
       { latitude, longitude },
-      1000, //  1000 metros
-      Math.random() * 360 // Ángulo aleatorio en grados
+      1000,
+      Math.random() * 360
     );
     const newLatitude = newPosition.latitude;
     const newLongitude = newPosition.longitude;
@@ -78,14 +69,11 @@ exports.createPost = async (req, res, next) => {
       latitude: newLatitude,
       longitude: newLongitude,
       mainCategory,
-      subCategory,
-      thirdCategory,
       price,
       photos: compressedImagePaths || [],
     });
     await post.save();
 
-    // Incrementar contador de totalPosts del usuario
     await User.findByIdAndUpdate(req.session.userId, {
       $inc: { totalPosts: 1 },
     });
@@ -108,8 +96,6 @@ exports.updatePost = async (req, res, next) => {
       latitude,
       longitude,
       mainCategory,
-      subCategory,
-      thirdCategory,
       price,
       deletedImages,
     } = req.body;
@@ -130,16 +116,14 @@ exports.updatePost = async (req, res, next) => {
     post.title = title;
     post.description = description;
 
-    // Convertir las coordenadas a número para hacer una comparación precisa
     const newLatitude = Number(latitude);
     const newLongitude = Number(longitude);
 
-    // Solo se desplazan las coordenadas si son diferentes a las existentes
     if (post.latitude !== newLatitude || post.longitude !== newLongitude) {
       const newPosition = geolib.computeDestinationPoint(
         { latitude: newLatitude, longitude: newLongitude },
-        1000, // 1000 metros
-        Math.random() * 360 // Ángulo aleatorio en grados
+        1000,
+        Math.random() * 360
       );
 
       post.latitude = newPosition.latitude;
@@ -147,9 +131,10 @@ exports.updatePost = async (req, res, next) => {
     }
 
     post.mainCategory = mainCategory;
-    post.subCategory = subCategory;
-    post.thirdCategory = thirdCategory;
     post.price = price;
+
+    const photoOrder = JSON.parse(req.body.photoOrder);
+    let newPhotos = [];
 
     if (req.files.length > 0) {
       const photos = req.files.map((file) => ({
@@ -158,7 +143,7 @@ exports.updatePost = async (req, res, next) => {
         originalname: file.originalname,
       }));
 
-      const compressedImagePaths = await Promise.all(
+      newPhotos = await Promise.all(
         photos.map(async (photo) => {
           const compressedImagePath = `uploads/${uuidv4()}.webp`;
           const fileBuffer = await fs.promises.readFile(photo.path);
@@ -170,9 +155,22 @@ exports.updatePost = async (req, res, next) => {
           return compressedImagePath;
         })
       );
-      req.files = compressedImagePaths.map((path) => ({ path }));
+    }
 
-      post.photos = [...post.photos, ...compressedImagePaths];
+    if (photoOrder.length > 0) {
+      const reorderedPhotos = photoOrder
+        .map((photoId, index) => {
+          if (photoId.startsWith("initial-")) {
+            return post.photos.find((p) =>
+              p.includes(photoId.split("/").pop())
+            );
+          } else if (photoId.startsWith("file-") && newPhotos[index]) {
+            return newPhotos[index];
+          }
+        })
+        .filter((p) => p);
+
+      post.photos = reorderedPhotos;
     }
 
     if (deletedImages) {
@@ -229,14 +227,11 @@ exports.deletePost = async (req, res, next) => {
       return res.status(401).send("You are not authorized to delete this post");
     }
 
-    // Buscar todas las ofertas asociadas con este post
     const offers = await Offer.find({ post: req.params.id });
 
-    // Eliminar las fotos de las ofertas asociadas con este post
     for (const offer of offers) {
       if (offer.photos) {
         for (const photo of offer.photos) {
-          // Añade este bucle para iterar sobre el array de fotos
           try {
             const imagePath = path.join(__dirname, "..", photo);
             fs.unlinkSync(imagePath);
@@ -249,13 +244,11 @@ exports.deletePost = async (req, res, next) => {
       }
     }
 
-    // Eliminar las ofertas y notificaciones relacionadas con el post
     await Offer.deleteMany({ post: req.params.id });
     await Notification.deleteMany({ postId: req.params.id });
 
     const wss = getWss();
 
-    // Enviar mensaje a través de WebSocket después de eliminar la publicación
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
         client.send(
@@ -277,16 +270,13 @@ exports.deletePost = async (req, res, next) => {
 exports.deletePostById = async (postId) => {
   const post = await Post.findById(postId);
 
-  // Verificar si el post ya ha sido eliminado
   if (!post) {
     console.log("Post already deleted");
     return;
   }
 
-  // Buscar todas las ofertas asociadas con este post
   const offers = await Offer.find({ post: postId });
 
-  // Eliminar las fotos de las ofertas asociadas con este post
   for (const offer of offers) {
     if (offer.photos) {
       for (const photo of offer.photos) {
@@ -302,11 +292,9 @@ exports.deletePostById = async (postId) => {
     }
   }
 
-  // Eliminar las ofertas y notificaciones relacionadas con el post
   await Offer.deleteMany({ post: postId });
   await Notification.deleteMany({ postId });
 
-  // Eliminar las imágenes del post
   if (post.photos) {
     for (const photo of post.photos) {
       try {
@@ -337,18 +325,10 @@ exports.getAllPosts = async (req, res, next) => {
   try {
     const filters = {};
 
-    // Filtrar por categoría
     if (req.query.mainCategory) {
       filters["mainCategory"] = req.query.mainCategory;
     }
-    if (req.query.subCategory) {
-      filters["subCategory"] = req.query.subCategory;
-    }
-    if (req.query.thirdCategory) {
-      filters["thirdCategory"] = req.query.thirdCategory;
-    }
 
-    // Filtrar por término de búsqueda
     if (req.query.searchTerm) {
       filters["$or"] = [
         { title: { $regex: req.query.searchTerm, $options: "i" } },
@@ -360,14 +340,10 @@ exports.getAllPosts = async (req, res, next) => {
       req.query.mainCategoryPreferences || "{}"
     );
 
-    console.log("Gustos del usuario:");
-    console.log("Main Category Preferences:", mainCategoryPreferences);
-
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 10;
     const skip = (page - 1) * pageSize;
 
-    // Obtener todos los posts sin filtrar por distancia
     let allPosts = await Post.find(filters)
       .sort({ createdAt: -1 })
       .populate({
@@ -379,7 +355,6 @@ exports.getAllPosts = async (req, res, next) => {
         },
       });
 
-    // Filtrar los posts por distancia
     if (
       req.query.latitude &&
       req.query.longitude &&
@@ -392,7 +367,7 @@ exports.getAllPosts = async (req, res, next) => {
         latitude: parseFloat(req.query.latitude),
         longitude: parseFloat(req.query.longitude),
       };
-      const radius = parseFloat(req.query.radius) * 1000; // Convertir a metros
+      const radius = parseFloat(req.query.radius) * 1000;
 
       allPosts = allPosts.filter((post) => {
         if (!isNaN(post.latitude) && !isNaN(post.longitude)) {
@@ -401,7 +376,7 @@ exports.getAllPosts = async (req, res, next) => {
             longitude: parseFloat(post.longitude),
           };
 
-          const distance = geolib.getDistance(userLocation, postLocation, 1); // Especificar la precisión decimal para evitar errores
+          const distance = geolib.getDistance(userLocation, postLocation, 1);
 
           return distance <= radius;
         }
@@ -410,14 +385,12 @@ exports.getAllPosts = async (req, res, next) => {
       });
     }
 
-    // Ordenar los posts según los gustos del usuario
     allPosts.sort((a, b) => {
       const aViews = mainCategoryPreferences[a.mainCategory] || 0;
       const bViews = mainCategoryPreferences[b.mainCategory] || 0;
       return bViews - aViews;
     });
 
-    // Obtener los posts paginados
     const posts = allPosts.slice(skip, skip + pageSize);
     const totalPosts = allPosts.length;
 

@@ -1,0 +1,31 @@
+{
+  "categories": [
+    {
+      "id": "Electronics",
+      "name": {
+        "en": "Electronics",
+        "es": "Electrónica",
+        "fr": "Électronique"
+      },
+      "icon": "/icons/phone.svg"
+    },
+    {
+      "id": "Clothing",
+      "name": {
+        "en": "Clothing",
+        "es": "Ropa",
+        "fr": "Vêtements"
+      },
+      "icon": "/icons/clothes.svg"
+    },
+    {
+      "id": "HomeAndGarden",
+      "name": {
+        "en": "Home and Garden",
+        "es": "Hogar y Jardín",
+        "fr": "Maison et Jardin"
+      },
+      "icon": "/icons/garden.svg"
+    }
+  ]
+}

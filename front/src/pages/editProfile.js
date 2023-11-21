@@ -19,7 +19,7 @@ const EditProfile = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    validations(router); 
+    validations(router);
   }, []);
 
   useEffect(() => {
@@ -55,19 +55,19 @@ const EditProfile = () => {
   const validateImageFile = (file) => {
     const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
     const maxSize = 50 * 1024 * 1024; // 50 MB
-  
+
     if (!allowedExtensions.exec(file.name)) {
       alert(t('editProfile.invalidImageFileType'));
       return false;
     }
-  
+
     if (file.size > maxSize) {
       alert(t('editProfile.imageFileSizeExceeded'));
       return false;
     }
-  
+
     return true;
-  };  
+  };
 
   const handleDeleteAccount = async () => {
     if (window.confirm(t('editProfile.deleteAccountConfirmation'))) {
@@ -76,7 +76,7 @@ const EditProfile = () => {
           method: 'DELETE',
           credentials: 'include',
         });
-  
+
         if (response.ok) {
           router.push('/logout');
         } else {
@@ -86,8 +86,8 @@ const EditProfile = () => {
         console.error(t('editProfile.deleteAccountError'), error);
       }
     }
-  };  
-  
+  };
+
   const handlePhotoChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -99,7 +99,7 @@ const EditProfile = () => {
         const renamedFile = new File([file], fileName, { type: file.type });
         setPhoto(renamedFile);
         setEditingField('photo');
-  
+
         const formData = new FormData();
         formData.append('photo', renamedFile);
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/me/photo`, {
@@ -112,7 +112,7 @@ const EditProfile = () => {
         }
       }
     }
-  };  
+  };
 
   const handleCancel = () => {
     setFirstName(user.firstName);
@@ -159,12 +159,12 @@ const EditProfile = () => {
     { name: 'phone', label: t('editProfile.phone'), type: 'text', value: phone, onChange: (e) => setPhone(e.target.value), required: true },
     { name: 'birthdate', label: t('editProfile.birthdate'), type: 'date', value: birthdate, onChange: (e) => setBirthdate(e.target.value), required: true }
   ];
-  
+
   const photoUrl = typeof File !== 'undefined' && photo instanceof File ? URL.createObjectURL(photo) : (user?.photo ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.photo}` : "/icons/person-circle.svg");
 
   return (
     <div className="container">
-      <GoHomeButton/>
+      <GoHomeButton />
       <h1 className='my-4'>{t('editProfile.checkEditProfile')}</h1>
       <div className="card want-rounded my-4">
         <div className="card-body">
@@ -247,9 +247,9 @@ const EditProfile = () => {
       <div className="my-5 card p-3">
         <h3 className="text-danger">{t('editProfile.deleteAccount')}</h3>
         <div>
-        <button className="want-button-danger " onClick={handleDeleteAccount}>
-          {t('editProfile.deleteAccount')}
-        </button>
+          <button className="want-button-danger " onClick={handleDeleteAccount}>
+            {t('editProfile.deleteAccount')}
+          </button>
         </div>
       </div>
     </div>

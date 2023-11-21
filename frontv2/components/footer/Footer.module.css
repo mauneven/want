@@ -1,0 +1,24 @@
+.footer {
+  position: fixed;
+  bottom: 0;
+  background-color: light-dark(#FFFFFF, #1a1b1e);
+  width: 100%;
+  margin-top: rem(20px);
+  border-top: rem(1px) solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5));
+}
+
+.inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 100) {
+    flex-direction: column;
+  }
+}
+
+.links {
+  @media (max-width: 10) {
+    margin-top: var(--mantine-spacing-sm);
+  }
+}
