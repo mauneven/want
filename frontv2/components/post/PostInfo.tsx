@@ -43,16 +43,19 @@ interface PostInfoProps {
 const PostInfo: React.FC<PostInfoProps> = ({ post }) => {
   return (
     <SimpleGrid cols={{ base: 1, sm: 2 }} spacing={{ base: 10, sm: "xl" }}>
-      <Group>
-        <Carousel withIndicators>
+      <Group justify="center">
+        <Carousel align={"center"} withIndicators>
           {post.photos.map((photo, index) => (
             <Carousel.Slide key={index}>
-              <div
+              <Group
                 style={{
-                  display: "flex",
+                  display: "grid",
                   justifyContent: "center",
                   alignItems: "center",
                   height: "100%",
+                  width:"100%",
+                  padding:"auto",
+                  margin:"auto"
                 }}
               >
                 <img
@@ -64,11 +67,11 @@ const PostInfo: React.FC<PostInfoProps> = ({ post }) => {
                     objectFit: "contain",
                   }}
                 />
-              </div>
+              </Group>
             </Carousel.Slide>
           ))}
         </Carousel>
-      </Group>
+        </Group>
       <Paper withBorder shadow="lg" p="xl">
         <Stack gap="xl">
           <Title>{post.title}</Title>
