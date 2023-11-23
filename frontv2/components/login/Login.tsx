@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
@@ -84,23 +84,13 @@ const Login = () => {
     });
 
     if (response.ok) {
-      // Registration or Login successful
-      const responseData = await response.json();
-      // Handle the response as needed
-      // You might want to redirect the user or perform other actions
-    } else {
-      // Registration or Login failed
-      if (!isLogin && response.status === 409) {
-        // User already exists (for registration)
-        // Handle the error message or UI feedback here
-      } else if (response.headers.get("Content-Type") === "application/json") {
-        // Handle other server-side errors here
-        const responseData = await response.json();
-        // You can show error messages to the user based on the responseData
+      if (isLogin) {
+        location.reload();
       } else {
-        // Handle unexpected errors
+        window.location.href = '/verify'; // Redirect to /verify and reload the page
       }
-
+    } else {
+      // Handle other response scenarios here
       window.scrollTo(0, 0);
     }
   };
