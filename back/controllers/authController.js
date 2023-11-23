@@ -111,7 +111,6 @@ exports.verifyUser = async (req, res, next) => {
   try {
     const { verificationCode } = req.body;
 
-    // Check if verificationCode is provided
     if (!verificationCode) {
       return res.status(400).send("Verification code is required");
     }
@@ -119,25 +118,15 @@ exports.verifyUser = async (req, res, next) => {
     const user = await User.findOne({
       verificationCodeExpires: { $gt: Date.now() },
     });
-  
-    // Asegúrate de que el código de verificación y el código encriptado del usuario sean cadenas
-    const verificationCodeStr = String(verificationCode); // Convertir a cadena si es necesario
-    const userVerificationCodeStr = String(user.verificationCode); // Convertir a cadena si es necesario
 
-
-    // Turn bcrypt.compare into a function that returns a promise
-    const compareAsync = promisify(bcrypt.compare);
-  
-    // Compara el código de verificación con el código almacenado
-    const isCodeValid = await compareAsync(
-      verificationCodeStr,
-      userVerificationCodeStr
-    );
-    
-    // Check if a user with a valid verificationCodeExpires is found
     if (!user) {
       return res.status(400).send("Invalid verification code");
     }
+
+    const isCodeValid = await bcrypt.compare(
+      String(verificationCode),
+      String(user.verificationCode)
+    );
 
     if (!isCodeValid) {
       return res.status(400).send("Invalid verification code");

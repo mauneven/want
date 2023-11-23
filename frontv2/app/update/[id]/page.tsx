@@ -192,7 +192,7 @@ const UpdatePost = () => {
 
   return (
     <>
-      <Button variant="light">Volver a mi perfil</Button>
+      <Button onClick={() => router.push("/account")} variant="light">Go back to my profile</Button>
       <Paper
         shadow="xl"
         mt={"5"}
