@@ -113,11 +113,11 @@ export default function Verify() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  
+
     const data = {
       verificationCode,
     };
-  
+
     const response = await fetch(`${environments.BASE_URL}/api/verify`, {
       method: "POST",
       credentials: "include",
@@ -126,13 +126,15 @@ export default function Verify() {
       },
       body: JSON.stringify(data),
     });
-  
+
     if (response.ok) {
-      // Verifica si hay una página anterior en el historial y que no sea la misma página actual
-      if (window.history.length > 1 && document.referrer.indexOf(window.location.host) !== -1) {
+      if (
+        window.history.length > 1 &&
+        document.referrer.indexOf(window.location.host) !== -1
+      ) {
         router.back();
       } else {
-        router.push('/'); // Redirige a la página de inicio si no hay historial previo
+        router.push("/");
       }
     } else if (response.status === 400) {
       setAlertMessage("Incorrect code. Please try again.");
@@ -140,24 +142,24 @@ export default function Verify() {
       const responseData = await response.json();
       setAlertMessage(responseData.error || "Invalid token. Please try again.");
     }
-  };  
+  };
 
   return (
     <Group align="center" justify="center">
       <Paper radius="md" withBorder p="xl" shadow="xl" miw={300}>
-          <Stack>
-            <Title fw={600} maw={400}>
-              You created your account! but you need to verify it.
-            </Title>
-            <Text size="sm" maw={400}>
-              We have sent you a 6-digit verification code on your mail, please
-              enter it.
-            </Text>
-            <Text c="dimmed" maw={400} size="xs">
-              These codes only work for 30 minutes. If this time passes, you
-              will need to request a new one.
-            </Text>
-            <form onSubmit={handleSubmit}>
+        <Stack>
+          <Title fw={600} maw={400}>
+            You created your account! but you need to verify it.
+          </Title>
+          <Text size="sm" maw={400}>
+            We have sent you a 6-digit verification code on your mail, please
+            enter it.
+          </Text>
+          <Text c="dimmed" maw={400} size="xs">
+            These codes only work for 30 minutes. If this time passes, you will
+            need to request a new one.
+          </Text>
+          <form onSubmit={handleSubmit}>
             <NumberInput
               label="Verification Code"
               withAsterisk
@@ -168,13 +170,21 @@ export default function Verify() {
               max={999999}
               required
               value={verificationCode}
-              onChange={(value) => setVerificationCode(value)}
+              onChange={(value) =>
+                setVerificationCode(value ? Number(value) : undefined)
+              }
             />
-            <Button type="submit" variant="light">Verify my account!</Button>
+            <Button type="submit" variant="light">
+              Verify my account!
+            </Button>
           </form>
 
           <Divider label="Need a new code?" />
-          <Button variant="light" color="grey" onClick={handleResendVerification}>
+          <Button
+            variant="light"
+            color="grey"
+            onClick={handleResendVerification}
+          >
             Send a new verification code
           </Button>
 

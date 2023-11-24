@@ -17,12 +17,8 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const apiKey = process.env.NEXT_PUBLIC_MAPS_API_KEY ?? "";
-  const radiiOptions = [
-    1, 5, 10, 20, 50,
-    100000000000000000000000000000000000000000000000000000000000000000,
-  ];
+  const radiiOptions = [1, 5, 10, 20, 50];
   const [cityName, setCityName] = useState("");
-
   const SECRET_KEY = "your_secret_key_here";
 
   function decryptData(encryptedData: any) {
@@ -72,27 +68,37 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({
   };
 
   const getCityName = (lat: number, lng: number) => {
-    if (!cityName && googleApiLoaded) {
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ location: { lat, lng } }, (results, status) => {
-        if (status === "OK" && results) {
-          for (const element of results[0].address_components) {
-            const component = element;
-            if (component.types.includes("locality")) {
-              const newCityName = component.long_name;
-              setCityName(newCityName);
-              const encryptedLocation = AES.encrypt(
-                JSON.stringify({ ...location, cityName: newCityName }),
-                SECRET_KEY
-              ).toString();
-              localStorage.setItem("location", encryptedLocation);
-              break;
-            }
-          }
-        }
-      });
-      updateLocationFromLocalStorage();
-    }
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+      if (status === "OK" && results && results[0]) {
+        const newCityName =
+          results[0].address_components.find((component) =>
+            component.types.includes("locality")
+          )?.long_name || "";
+
+        setCityName(newCityName);
+        saveLocationToLocalStorage(lat, lng, newCityName);
+      }
+    });
+  };
+
+  const saveLocationToLocalStorage = (
+    lat: Number,
+    lng: Number,
+    cityName: String
+  ) => {
+    const locationData = {
+      lat,
+      lng,
+      radio: selectedRadius,
+      cityName,
+    };
+
+    const encryptedLocation = AES.encrypt(
+      JSON.stringify(locationData),
+      SECRET_KEY
+    ).toString();
+    localStorage.setItem("location", encryptedLocation);
   };
 
   useEffect(() => {
@@ -140,14 +146,18 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({
 
   useEffect(() => {
     if (!googleApiLoaded) {
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
-      script.async = true;
-      script.defer = true;
-      script.onload = () => {
+      if (window.google && window.google.maps) {
         setGoogleApiLoaded(true);
-      };
-      document.head.appendChild(script);
+      } else if (
+        !document.querySelector(`[src*="maps.googleapis.com/maps/api/js"]`)
+      ) {
+        const script = document.createElement("script");
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+        script.async = true;
+        script.defer = true;
+        script.onload = () => setGoogleApiLoaded(true);
+        document.head.appendChild(script);
+      }
     }
   }, [googleApiLoaded, apiKey]);
 
@@ -198,18 +208,7 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({
   const handleLocationSelect = () => {
     if (location && onLocationSelect) {
       onLocationSelect(location.lat, location.lng, selectedRadius);
-      const locationData = {
-        lat: location.lat,
-        lng: location.lng,
-        radio: selectedRadius,
-        cityName: cityName,
-      };
-
-      const encryptedLocation = AES.encrypt(
-        JSON.stringify(locationData),
-        SECRET_KEY
-      ).toString();
-      localStorage.setItem("location", encryptedLocation);
+      saveLocationToLocalStorage(location.lat, location.lng, cityName);
       setOpened(false);
     }
   };
@@ -247,6 +246,13 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({
       if (status === "OK" && results) {
         const coords = results[0].geometry.location;
         setLocation({ lat: coords.lat(), lng: coords.lng() });
+        const newCityName =
+          results[0].address_components.find((component) =>
+            component.types.includes("locality")
+          )?.long_name || "";
+
+        setCityName(newCityName);
+        saveLocationToLocalStorage(coords.lat(), coords.lng(), newCityName);
       }
     });
   };
@@ -281,7 +287,7 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({
         ))}
         {googleApiLoaded && (
           <GoogleMap
-            center={location ?? { lat: -34.397, lng: 150.644 }}
+            center={location ?? { lat: 0, lng: 0 }}
             zoom={getZoomLevel(selectedRadius)}
             mapContainerStyle={{ width: "100%", height: "400px" }}
             options={{
@@ -333,7 +339,7 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({
             </Menu.Dropdown>
           </Menu>
           <Button onClick={handleLocationSelect} variant="light">
-            Select Location
+            Select This Location
           </Button>
         </Group>
       </Modal>

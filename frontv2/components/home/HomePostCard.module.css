@@ -30,11 +30,11 @@
 
 .title {
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limita el texto a dos líneas */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-height: 3.2rem; /* Ajusta esto según el tamaño de la fuente y el espacio entre líneas */
+  max-height: 3.2rem;
 }
 
 .HomePostCard {
