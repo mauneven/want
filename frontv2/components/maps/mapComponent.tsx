@@ -13,6 +13,10 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
     null
   );
+  const [tempLocation, setTempLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
   const [selectedRadius, setSelectedRadius] = useState<number>(5);
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [query, setQuery] = useState("");
@@ -175,6 +179,9 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({
   }, []);
 
   const fetchLocation = () => {
+    setTempLocation(null);
+    setSearchResults([]);
+    setQuery("");
     const encryptedLocation = localStorage.getItem("location");
     if (encryptedLocation) {
       const decryptedLocation = decryptData(encryptedLocation);
@@ -206,9 +213,10 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({
   };
 
   const handleLocationSelect = () => {
-    if (location && onLocationSelect) {
-      onLocationSelect(location.lat, location.lng, selectedRadius);
-      saveLocationToLocalStorage(location.lat, location.lng, cityName);
+    if (tempLocation && onLocationSelect) {
+      setLocation(tempLocation);
+      onLocationSelect(tempLocation.lat, tempLocation.lng, selectedRadius);
+      saveLocationToLocalStorage(tempLocation.lat, tempLocation.lng, cityName);
       setOpened(false);
     }
   };
@@ -245,14 +253,7 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({
     geocoder.geocode({ address: value }, (results, status) => {
       if (status === "OK" && results) {
         const coords = results[0].geometry.location;
-        setLocation({ lat: coords.lat(), lng: coords.lng() });
-        const newCityName =
-          results[0].address_components.find((component) =>
-            component.types.includes("locality")
-          )?.long_name || "";
-
-        setCityName(newCityName);
-        saveLocationToLocalStorage(coords.lat(), coords.lng(), newCityName);
+        setTempLocation({ lat: coords.lat(), lng: coords.lng() });
       }
     });
   };
@@ -287,7 +288,7 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({
         ))}
         {googleApiLoaded && (
           <GoogleMap
-            center={location ?? { lat: 0, lng: 0 }}
+            center={tempLocation ?? location ?? { lat: 0, lng: 0 }}
             zoom={getZoomLevel(selectedRadius)}
             mapContainerStyle={{ width: "100%", height: "400px" }}
             options={{
@@ -300,7 +301,7 @@ const PostsLocation: React.FC<{ onLocationSelect?: Function }> = ({
               draggable: false,
             }}
           >
-            {location && <MarkerF position={location} />}
+            {location && <MarkerF position={tempLocation ?? location} />}
             {location && (
               <div
                 className="circle"
