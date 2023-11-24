@@ -5,7 +5,6 @@ import { Image, Card, Text, rem, Stack, Group } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import { IconArrowLeft, IconArrowRight, IconStar } from "@tabler/icons-react";
 import classes from "./HomePostCard.module.css";
-import "@mantine/carousel/styles.css";
 import { useRouter } from "next/navigation";
 
 interface User {

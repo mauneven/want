@@ -3,7 +3,6 @@ import { Image, Card, Text, Group, Button, rem } from "@mantine/core";
 import Link from "next/link";
 import { Carousel } from "@mantine/carousel";
 import classes from "./MyPostCard.module.css";
-import "@mantine/carousel/styles.css";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import DeletePostConfirm from "./DeletePostConfirm";
 

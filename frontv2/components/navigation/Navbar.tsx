@@ -145,6 +145,8 @@ export function Navbar() {
         />
         <Group>
           {user ? (
+            <>
+            <Button variant="light" onClick={() => router.push("/new")}>I Want Something!</Button>
             <Menu
               shadow="md"
               width={200}
@@ -229,6 +231,7 @@ export function Navbar() {
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
+            </>
           ) : (
             <Group ml={50} gap={5} className={classes.links} visibleFrom="sm">
               <Login />

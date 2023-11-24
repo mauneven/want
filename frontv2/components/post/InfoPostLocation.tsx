@@ -60,7 +60,7 @@ const PostInfoMap: React.FC<{ lat: number; lng: number }> = ({ lat, lng }) => {
   return (
     <Group>
       <Text fw={700} size="xl">
-        {cityName || null}
+        {`${cityName} • The location is approximated` || null}
       </Text>
       {googleApiLoaded && location && (
         <GoogleMap

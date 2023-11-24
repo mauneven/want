@@ -3,13 +3,14 @@
   margin-bottom: rem(12px);
   background-color: var(--mantine-color-body);
   border-bottom: rem(1px) solid
-  light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+    light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
   padding-left: var(--mantine-spacing-md);
   padding-right: var(--mantine-spacing-md);
   position: fixed;
   z-index: 10;
   width: 100%;
   padding-inline: 4%;
+  background-color: light-dark(#ffffff, #010001);
 }
 
 .inner {

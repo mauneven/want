@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   NumberFormatter,
   Text,
@@ -41,11 +41,28 @@ interface PostInfoProps {
 }
 
 const PostInfo: React.FC<PostInfoProps> = ({ post }) => {
-  const hasPhotos = post.photos.length > 0;
+  const [photosLoaded, setPhotosLoaded] = useState(false);
+
+  useEffect(() => {
+    const imagePromises = post.photos.map((photo) =>
+      new Promise<void>((resolve) => {
+        const img = new Image();
+        img.src = `${environments.BASE_URL}/${photo}`;
+        img.onload = () => resolve();
+      })
+    );
+
+    Promise.all(imagePromises).then(() => {
+      setPhotosLoaded(true);
+    });
+  }, [post.photos]);
+
+  // Verifica si hay más de una imagen para mostrar el Carousel
+  const shouldRenderCarousel = post.photos.length > 1;
 
   return (
     <Group justify="center" grow>
-      {hasPhotos && (
+      {photosLoaded && shouldRenderCarousel && (
         <Group justify="center" style={{ width: "50%" }}>
           <Carousel align="center" withIndicators>
             {post.photos.map((photo, index) => (
