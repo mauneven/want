@@ -1,6 +1,4 @@
-"use client";
-
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import {
   Modal,
@@ -12,59 +10,113 @@ import {
   Title,
   Stack,
   NumberInput,
+  Alert,
 } from "@mantine/core";
-import { useForm, isNotEmpty, matchesField } from "@mantine/form";
+import { useForm } from "@mantine/form";
 import endpoints from "@/app/connections/enpoints/endpoints";
+import { IconInfoCircle } from "@tabler/icons-react";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [opened, { open, close }] = useDisclosure(false);
-  const toggleForm = () => setIsLogin(!isLogin);
-  const [day, setDay] = useState('');
-  const [month, setMonth] = useState('');
-  const [year, setYear] = useState('');
+  const toggleForm = () => {
+    setIsLogin(!isLogin);
+    resetErrors();
+  };
+  const [day, setDay] = useState("");
+  const [month, setMonth] = useState("");
+  const [year, setYear] = useState("");
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
+  const [dayError, setDayError] = useState("");
+  const [monthError, setMonthError] = useState("");
+  const [yearError, setYearError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const icon = <IconInfoCircle />;
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertDescription, setAlertDescription] = useState("");
 
   const form = useForm({
     initialValues: {
       email: "",
       password: "",
-      confirmPassword: "",
       firstName: "",
       lastName: "",
       phone: "",
       birthdate: "",
     },
-    validate: {
-      email: isNotEmpty("Email cannot be empty"),
-      password: isNotEmpty("Password cannot be empty"),
-      confirmPassword: matchesField("password", "Passwords do not match"),
-      // Add additional validations as needed
-    },
   });
 
-  const handleSubmit = async (event: any) => {
+  const resetErrors = () => {
+    setEmailError("");
+    setPasswordError("");
+    setFirstNameError("");
+    setLastNameError("");
+    setDayError("");
+    setMonthError("");
+    setYearError("");
+    setPhoneError("");
+  };
 
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
-    const birthdate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T00:00:00.000+00:00`;
+    const birthdate = `${year}-${month.padStart(2, "0")}-${day.padStart(
+      2,
+      "0"
+    )}T00:00:00.000+00:00`;
 
-    const {
-      email,
-      password,
-      confirmPassword,
-      firstName,
-      lastName,
-      phone,
-    } = form.values;
+    const { email, password, firstName, lastName, phone } = form.values;
 
-    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
-
-    if (!passwordRegex.test(password)) {
-      window.scrollTo(0, 0); // Scroll to the top
+    if (isLogin) {
+      if (!email || !password) {
+        setEmailError(!email ? "Email is required" : "");
+        setPasswordError(!password ? "Password is required" : "");
+        return;
+      }
+    } else {
+      if (
+        !email ||
+        !password ||
+        !firstName ||
+        !lastName ||
+        !day ||
+        !month ||
+        !year ||
+        !phone
+      ) {
+        setEmailError(!email ? "Email is required" : "");
+        setPasswordError(!password ? "Password is required" : "");
+        setFirstNameError(!firstName ? "First Name is required" : "");
+        setLastNameError(!lastName ? "Last Name is required" : "");
+        setDayError(!day ? "A day is required" : "");
+        setMonthError(!month ? "A month is required" : "");
+        setYearError(!year ? "A year is required" : "");
+        setPhoneError(!phone ? "Phone is required" : "");
+        setAlertTitle("Incomplete Fields");
+        setAlertDescription(
+          "Please ensure all required fields are filled out."
+        );
+        setAlertVisible(true);
+        setTimeout(() => {
+          setAlertVisible(false);
+        }, 3000);
+      }
       return;
     }
 
-    if (!isLogin && password !== confirmPassword) {
-      window.scrollTo(0, 0); // Scroll to the top
+    if (
+      emailError ||
+      passwordError ||
+      firstNameError ||
+      lastNameError ||
+      dayError ||
+      monthError ||
+      yearError ||
+      phoneError
+    ) {
       return;
     }
 
@@ -88,15 +140,32 @@ const Login = () => {
       body: JSON.stringify(data),
     });
 
-    if (response.ok) {
+    if (response.status === 401) {
+      setAlertTitle("Your email or password are wrong");
+      setAlertDescription("Validate and try again.");
+      setAlertVisible(true);
+    } else if (response.status === 409) {
+      setAlertTitle("User already exists");
+      setAlertDescription("Please use a different email.");
+      setAlertVisible(true);
+    } else {
+      setEmailError("");
+      setPasswordError("");
+      if (!isLogin) {
+        setFirstNameError("");
+        setLastNameError("");
+        setPhoneError("");
+      }
       if (isLogin) {
         location.reload();
       } else {
         window.location.href = "/verify";
       }
-    } else {
-      window.scrollTo(0, 0);
     }
+
+    setTimeout(() => {
+      setAlertVisible(false);
+    }, 3000);
   };
 
   return (
@@ -114,34 +183,48 @@ const Login = () => {
         </Title>
         <Stack mx="auto">
           <TextInput
-            mt="md"
             label="Email"
             placeholder="Email"
-            {...form.getInputProps("email")}
+            value={form.values.email}
+            onChange={(event) => {
+              form.setFieldValue("email", event.currentTarget.value);
+              setEmailError("");
+            }}
+            error={emailError}
           />
           <PasswordInput
             label="Password"
             placeholder="Password"
-            {...form.getInputProps("password")}
+            value={form.values.password}
+            onChange={(event) => {
+              form.setFieldValue("password", event.currentTarget.value);
+              setPasswordError("");
+            }}
+            error={passwordError}
           />
           {!isLogin && (
             <>
-              <PasswordInput
-                label="Confirm Password"
-                placeholder="Confirm Password"
-                {...form.getInputProps("confirmPassword")}
-              />
               <TextInput
                 label="First Name"
                 placeholder="First Name"
-                {...form.getInputProps("firstName")}
+                value={form.values.firstName}
+                onChange={(event) => {
+                  form.setFieldValue("firstName", event.currentTarget.value);
+                  setFirstNameError("");
+                }}
+                error={firstNameError}
               />
               <TextInput
                 label="Last Name"
                 placeholder="Last Name"
-                {...form.getInputProps("lastName")}
+                value={form.values.lastName}
+                onChange={(event) => {
+                  form.setFieldValue("lastName", event.currentTarget.value);
+                  setLastNameError("");
+                }}
+                error={lastNameError}
               />
-              <Group justify="space-between" grow={true}>
+              <Group justify="space_between" grow={true}>
                 <Stack gap={4}>
                   <Text size="xs">Day</Text>
                   <NumberInput
@@ -149,10 +232,16 @@ const Login = () => {
                     max={31}
                     allowDecimal={false}
                     clampBehavior="strict"
+                    allowNegative={false}
                     placeholder="DD"
                     hideControls
                     maxLength={2}
-                    onChange={(value) => setDay(value.toString())}
+                    value={day}
+                    onChange={(value) => {
+                      setDay(value.toString());
+                      setDayError("");
+                    }}
+                    error={dayError}
                   />
                 </Stack>
                 <Stack gap={4}>
@@ -162,10 +251,16 @@ const Login = () => {
                     max={12}
                     allowDecimal={false}
                     clampBehavior="strict"
+                    allowNegative={false}
                     placeholder="MM"
                     hideControls
                     maxLength={2}
-                    onChange={(value) => setMonth(value.toString())}
+                    value={month}
+                    onChange={(value) => {
+                      setMonth(value.toString());
+                      setMonthError("");
+                    }}
+                    error={monthError}
                   />
                 </Stack>
                 <Stack gap={4}>
@@ -174,20 +269,36 @@ const Login = () => {
                     min={1905}
                     max={2006}
                     allowDecimal={false}
-                    clampBehavior="blur"
                     placeholder="YYYY"
+                    clampBehavior="blur"
+                    allowNegative={false}
                     hideControls
                     maxLength={4}
-                    onChange={(value) => setYear(value.toString())}
+                    value={year}
+                    onChange={(value) => {
+                      setYear(value.toString());
+                      setYearError("");
+                    }}
+                    error={yearError}
                   />
                 </Stack>
               </Group>
               <TextInput
                 label="Phone"
                 placeholder="Phone"
-                {...form.getInputProps("phone")}
+                value={form.values.phone}
+                onChange={(event) => {
+                  form.setFieldValue("phone", event.currentTarget.value);
+                  setPhoneError("");
+                }}
+                error={phoneError}
               />
             </>
+          )}
+          {alertVisible && (
+            <Alert variant="light" color="red" title={alertTitle} icon={icon}>
+              {alertDescription}
+            </Alert>
           )}
           <Group justify="center" mt="xl">
             <Button type="submit" variant="light" onClick={handleSubmit}>
