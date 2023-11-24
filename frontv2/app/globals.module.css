@@ -1,5 +1,15 @@
+.custom-body {
+  font-family: var(--mantine-font-family);
+  font-size: var(--mantine-font-size-md);
+  line-height: var(--mantine-line-height);
+  background-color: var(#0b0b0a);
+  color: var(--mantine-color-text);
+  -webkit-font-smoothing: var(--mantine-webkit-font-smoothing);
+  -moz-osx-font-smoothing: var(--mantine-moz-font-smoothing);
+}
+
 .globalContainer {
-  background-color: light-dark(#f1f1f1, #171717);
+  background-color: light-dark(#f1f1f1b9, #010001);
   padding: 4%;
 }
 

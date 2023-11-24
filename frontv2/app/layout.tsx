@@ -14,6 +14,7 @@ import "@mantine/tiptap";
 import "@mantine/dates";
 import "@mantine/hooks";
 import WelcomeModal from "@/components/home/WelcomeModal";
+import "@mantine/carousel/styles.css";
 
 const queryClient = new QueryClient();
 

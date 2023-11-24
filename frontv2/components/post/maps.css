@@ -1,0 +1,8 @@
+.circle {
+    position: absolute;
+    background-color: light-dark(rgba(0, 132, 255, 0.35),rgba(255, 0, 0, 0.35) ) ; /* fill color */
+    border: 2px solid light-dark(rgba(2, 40, 75, 0.35), rgba(255, 0, 0, 0.35) ); /* border color */
+    border-radius: 50%; /* make it a circle */
+    transform: translate(-50%, -50%); /* centering */
+    /* The width and height will be set dynamically based on the selected radius */
+  }  

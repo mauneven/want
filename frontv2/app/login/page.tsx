@@ -1,135 +1,173 @@
 "use client";
 
-import React, { FormEvent, useState } from "react";
+import { useState } from "react";
+import { useDisclosure } from "@mantine/hooks";
+import {
+  Modal,
+  Button,
+  TextInput,
+  Group,
+  Box,
+  PasswordInput,
+  Text,
+  Title,
+  Paper,
+} from "@mantine/core";
+import { useForm, isNotEmpty, matchesField } from "@mantine/form";
+import endpoints from "@/app/connections/enpoints/endpoints";
 import { useRouter } from "next/navigation";
-import endpoints from "../connections/enpoints/endpoints";
-import "./login.css";
 
-const Login: React.FC = () => {
+const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [birthdate, setBirthdate] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
+  const toggleForm = () => setIsLogin(!isLogin);
   const router = useRouter();
+  const form = useForm({
+    initialValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      firstName: "",
+      lastName: "",
+      phone: "",
+      birthdate: "",
+    },
+    validate: {
+      email: isNotEmpty("Email cannot be empty"),
+      password: isNotEmpty("Password cannot be empty"),
+      confirmPassword: matchesField("password", "Passwords do not match"),
+      // Add additional validations as needed
+    },
+  });
 
-  const toggleForm = () => {
-    setIsLogin(!isLogin);
-  };
+  const handleSubmit = async (event: any) => {
+    event.preventDefault();
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setError(null);
+    const {
+      email,
+      password,
+      confirmPassword,
+      firstName,
+      lastName,
+      phone,
+      birthdate,
+    } = form.values;
 
-    const endpoint = isLogin ? endpoints.login : endpoints.register;
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+
+    if (!passwordRegex.test(password)) {
+      window.scrollTo(0, 0); // Scroll to the top
+      return;
+    }
+
+    if (!isLogin && password !== confirmPassword) {
+      window.scrollTo(0, 0); // Scroll to the top
+      return;
+    }
+
     const data = {
       email,
       password,
-      ...(isLogin ? {} : { firstName, lastName, phone, birthdate }),
+      firstName,
+      lastName,
+      phone,
+      birthdate,
     };
+
+    const endpoint = isLogin ? endpoints.login : endpoints.register;
 
     const response = await fetch(endpoint, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-      credentials: "include",
     });
 
     if (response.ok) {
-      router.push("/");
-    } else {
+      // Registration or Login successful
       const responseData = await response.json();
-      setError(responseData.error || "Something went wrong.");
+      
+      router.back();
+      location.reload();
+    } else {
+      // Registration or Login failed
+      if (!isLogin && response.status === 409) {
+        // User already exists (for registration)
+        // Handle the error message or UI feedback here
+      } else if (response.headers.get("Content-Type") === "application/json") {
+        // Handle other server-side errors here
+        const responseData = await response.json();
+        // You can show error messages to the user based on the responseData
+      } else {
+        // Handle unexpected errors
+      }
+
+      window.scrollTo(0, 0);
     }
   };
 
   return (
-    <div className="login-container">
-      <form onSubmit={handleSubmit}>
-        <div className="div-input">
-          <input
-            type="email"
+    <>
+      <Paper>
+        <Title ta="center" size="h2">
+          {isLogin ? "Welcome back to Want!" : "Join Want!"}
+        </Title>
+        <Box maw={340} mx="auto">
+          <TextInput
+            mt="md"
+            label="Email"
             placeholder="Email"
-            className="form-input"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
+            {...form.getInputProps("email")}
           />
-        </div>
-        <div className="div-input">
-          <input
+          <PasswordInput
+            label="Password"
             placeholder="Password"
-            type="password"
-            className="form-input"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
+            {...form.getInputProps("password")}
           />
-        </div>
-        {!isLogin && (
-          <>
-            <div className="div-input">
-              <input
-                type="text"
+          {!isLogin && (
+            <>
+              <PasswordInput
+                label="Confirm Password"
+                placeholder="Confirm Password"
+                {...form.getInputProps("confirmPassword")}
+              />
+              <TextInput
+                label="First Name"
                 placeholder="First Name"
-                className="form-input"
-                id="firstName"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                required
+                {...form.getInputProps("firstName")}
               />
-            </div>
-            <div className="div-input">
-              <input
-                type="text"
+              <TextInput
+                label="Last Name"
                 placeholder="Last Name"
-                className="form-input"
-                id="lastName"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                required
+                {...form.getInputProps("lastName")}
               />
-            </div>
-            <div  className="div-input">
-              <input
-                type="tel"
+              <TextInput
+                label="Phone"
                 placeholder="Phone"
-                className="form-input"
-                id="phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                required
+                {...form.getInputProps("phone")}
               />
-            </div>
-            <div  className="div-input">
-              <input
+              <TextInput
+                label="Birthdate"
                 placeholder="Birthdate"
-                type="date"
-                className="form-input"
-                id="birthdate"
-                value={birthdate}
-                onChange={(e) => setBirthdate(e.target.value)}
-                required
+                {...form.getInputProps("birthdate")}
               />
-            </div>
-          </>
-        )}
-        {error && <div className="alert">{error}</div>}
-        <button type="submit" className="submit-btn">
-          {isLogin ? "Login" : "Register"}
-        </button>
-        <button type="button" onClick={toggleForm} className="toggle-btn">
-          {isLogin ? "Switch to Register" : "Switch to Login"}
-        </button>
-      </form>
-    </div>
+            </>
+          )}
+          <Group justify="center" mt="xl">
+            <Button type="submit" variant="light" onClick={handleSubmit}>
+              {isLogin ? "Login" : "Register"}
+            </Button>
+          </Group>
+          <Text mt="md">
+            {isLogin ? "Don't have an account? " : "Already have an account? "}
+            <Button onClick={toggleForm} variant="light">
+              {isLogin ? "Register" : "Login"}
+            </Button>
+          </Text>
+        </Box>
+      </Paper>
+    </>
   );
 };
 

@@ -62,6 +62,16 @@ export default function Account() {
       });
   }, []);
 
+  const refreshPosts = () => {
+    fetch(endpoints.myposts, { credentials: "include" })
+      .then((response) => response.json())
+      .then((data) => {
+        setMyPosts(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching user posts:", error);
+      });
+  };
 
   return (
     <Container fluid>
@@ -70,12 +80,18 @@ export default function Account() {
           <Group align="center" justify="center">
             <Stack align="center" p={20}>
               <Avatar
-                src={`${environments.BASE_URL}/${user?.photo}` || null}
+                src={`${environments.BASE_URL}/${user?.photo}`}
                 size={120}
                 radius={120}
                 mx="auto"
               />
-              <Button onClick={() => router.push('/account/settings')} variant="light" fullWidth>Settings</Button>
+              <Button
+                onClick={() => router.push("/account/settings")}
+                variant="light"
+                fullWidth
+              >
+                Settings
+              </Button>
             </Stack>
             <Group display={"grid"}>
               <Text ta="center" fz="xl" fw={500} mt={0}>
@@ -125,7 +141,14 @@ export default function Account() {
       <Container mt="10" p={0} fluid>
         <Flex gap={30} classNames={{ root: classes.container }}>
           {myPosts &&
-            myPosts.map((post) => <MyPostCard key={post._id} post={post} />)}
+            myPosts.map((post) => (
+              <MyPostCard
+                key={post._id}
+                onPostDelete={refreshPosts}
+                post={post}
+              />
+            ))}
+            
         </Flex>
       </Container>
     </Container>

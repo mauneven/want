@@ -6,10 +6,12 @@ import PostInfo from "@/components/post/PostInfo";
 import { useParams } from "next/navigation";
 
 interface User {
+  createdAt: Date;
   firstName: string;
   lastName: string;
   photo: string;
   totalPosts: number;
+  reports: Array<any>;
 }
 
 interface Post {

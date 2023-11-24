@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
@@ -7,10 +7,11 @@ import {
   Button,
   TextInput,
   Group,
-  Box,
   PasswordInput,
   Text,
   Title,
+  Stack,
+  NumberInput,
 } from "@mantine/core";
 import { useForm, isNotEmpty, matchesField } from "@mantine/form";
 import endpoints from "@/app/connections/enpoints/endpoints";
@@ -19,6 +20,9 @@ const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [opened, { open, close }] = useDisclosure(false);
   const toggleForm = () => setIsLogin(!isLogin);
+  const [day, setDay] = useState('');
+  const [month, setMonth] = useState('');
+  const [year, setYear] = useState('');
 
   const form = useForm({
     initialValues: {
@@ -39,7 +43,9 @@ const Login = () => {
   });
 
   const handleSubmit = async (event: any) => {
+
     event.preventDefault();
+    const birthdate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T00:00:00.000+00:00`;
 
     const {
       email,
@@ -48,7 +54,6 @@ const Login = () => {
       firstName,
       lastName,
       phone,
-      birthdate,
     } = form.values;
 
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
@@ -84,23 +89,12 @@ const Login = () => {
     });
 
     if (response.ok) {
-      // Registration or Login successful
-      const responseData = await response.json();
-      // Handle the response as needed
-      // You might want to redirect the user or perform other actions
-    } else {
-      // Registration or Login failed
-      if (!isLogin && response.status === 409) {
-        // User already exists (for registration)
-        // Handle the error message or UI feedback here
-      } else if (response.headers.get("Content-Type") === "application/json") {
-        // Handle other server-side errors here
-        const responseData = await response.json();
-        // You can show error messages to the user based on the responseData
+      if (isLogin) {
+        location.reload();
       } else {
-        // Handle unexpected errors
+        window.location.href = "/verify";
       }
-
+    } else {
       window.scrollTo(0, 0);
     }
   };
@@ -112,12 +106,13 @@ const Login = () => {
         opened={opened}
         onClose={close}
         centered
+        size={"md"}
         overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}
       >
         <Title ta="center" size="h2">
           {isLogin ? "Welcome back to Want!" : "Join Want!"}
         </Title>
-        <Box maw={340} mx="auto">
+        <Stack mx="auto">
           <TextInput
             mt="md"
             label="Email"
@@ -146,15 +141,51 @@ const Login = () => {
                 placeholder="Last Name"
                 {...form.getInputProps("lastName")}
               />
+              <Group justify="space-between" grow={true}>
+                <Stack gap={4}>
+                  <Text size="xs">Day</Text>
+                  <NumberInput
+                    min={1}
+                    max={31}
+                    allowDecimal={false}
+                    clampBehavior="strict"
+                    placeholder="DD"
+                    hideControls
+                    maxLength={2}
+                    onChange={(value) => setDay(value.toString())}
+                  />
+                </Stack>
+                <Stack gap={4}>
+                  <Text size="xs">Month</Text>
+                  <NumberInput
+                    min={1}
+                    max={12}
+                    allowDecimal={false}
+                    clampBehavior="strict"
+                    placeholder="MM"
+                    hideControls
+                    maxLength={2}
+                    onChange={(value) => setMonth(value.toString())}
+                  />
+                </Stack>
+                <Stack gap={4}>
+                  <Text size="xs">Year</Text>
+                  <NumberInput
+                    min={1905}
+                    max={2006}
+                    allowDecimal={false}
+                    clampBehavior="blur"
+                    placeholder="YYYY"
+                    hideControls
+                    maxLength={4}
+                    onChange={(value) => setYear(value.toString())}
+                  />
+                </Stack>
+              </Group>
               <TextInput
                 label="Phone"
                 placeholder="Phone"
                 {...form.getInputProps("phone")}
-              />
-              <TextInput
-                label="Birthdate"
-                placeholder="Birthdate"
-                {...form.getInputProps("birthdate")}
               />
             </>
           )}
@@ -169,7 +200,7 @@ const Login = () => {
               {isLogin ? "Register" : "Login"}
             </Button>
           </Text>
-        </Box>
+        </Stack>
       </Modal>
     </>
   );
