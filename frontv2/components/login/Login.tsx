@@ -62,13 +62,25 @@ const Login = () => {
   };
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
+
     event.preventDefault();
+
+    function isValidDate(year: number, month: number, day: number) {
+      const date = new Date(year, month - 1, day);
+      return (
+        date.getFullYear() === year &&
+        date.getMonth() === month - 1 &&
+        date.getDate() === day
+      );
+    }
     const birthdate = `${year}-${month.padStart(2, "0")}-${day.padStart(
       2,
       "0"
     )}T00:00:00.000+00:00`;
 
     const { email, password, firstName, lastName, phone } = form.values;
+
+    console.log(email,password,firstName,lastName,phone, birthdate)
 
     if (isLogin) {
       if (!email || !password) {
@@ -77,6 +89,16 @@ const Login = () => {
         return;
       }
     } else {
+
+      if (!isValidDate(parseInt(year), parseInt(month), parseInt(day))) {
+        setAlertTitle("You have entered an inexisting date");
+        setAlertDescription("Check if your birthday already exists");
+        setAlertVisible(true);
+        setTimeout(() => {
+          setAlertVisible(false);
+        }, 5000);
+        return;
+      }
       if (
         !email ||
         !password ||
@@ -102,9 +124,9 @@ const Login = () => {
         setAlertVisible(true);
         setTimeout(() => {
           setAlertVisible(false);
-        }, 3000);
+        }, 5000);
+        return;
       }
-      return;
     }
 
     if (
@@ -165,7 +187,7 @@ const Login = () => {
 
     setTimeout(() => {
       setAlertVisible(false);
-    }, 3000);
+    }, 5000);
   };
 
   return (
