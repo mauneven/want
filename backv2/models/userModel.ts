@@ -16,7 +16,7 @@ interface IUser extends Document {
   reports: string[];
   createdAt: Date;
   verificationCode: string;
-  verificationCodeExpires: Date;
+  verificationCodeExpires: Date | null;
   photo: string;
 }
 
@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
   reports: [String],
   createdAt: { type: Date, default: Date.now },
   verificationCode: String,
-  verificationCodeExpires: Date,
+  verificationCodeExpires: { type: Date, default: null },
   photo: String,
 });
 

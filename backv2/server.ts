@@ -1,14 +1,14 @@
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import connectDB from './db/dbConfig';
-import userSchema from './schemas/userSchema';
-import userResolver from './resolvers/userResolver';
+import registerSchema from './schemas/Auth/registerSchema';
+import registerResolver from './resolvers/Auth/registerResolver';
 
 async function startServer() {
   const app = express();
   const server = new ApolloServer({
-    typeDefs: userSchema,
-    resolvers: userResolver,
+    typeDefs: registerSchema,
+    resolvers: registerResolver,
   });
 
   await server.start();
