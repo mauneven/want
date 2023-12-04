@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
+import { useMutation, gql } from "@apollo/client";
 import {
   Modal,
   Button,
@@ -12,8 +13,8 @@ import {
   NumberInput,
   Alert,
 } from "@mantine/core";
+import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 import { useForm } from "@mantine/form";
-import endpoints from "@/app/connections/enpoints/endpoints";
 import { IconInfoCircle } from "@tabler/icons-react";
 
 const Login = () => {
@@ -61,11 +62,39 @@ const Login = () => {
     setPhoneError("");
   };
 
-  const handleSubmit = async (event: { preventDefault: () => void }) => {
+  const REGISTER_USER = gql`
+    mutation RegisterUser(
+      $email: String!
+      $password: String!
+      $firstName: String!
+      $lastName: String!
+      $birthdate: String!
+    ) {
+      register(
+        input: {
+          email: $email
+          password: $password
+          firstName: $firstName
+          lastName: $lastName
+          birthdate: $birthdate
+        }
+      ) {
+        id
+        email
+        firstName
+        lastName
+        birthdate
+        isVerified
+      }
+    }
+  `;
 
+  const [registerUser] = useMutation(REGISTER_USER);
+
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
-    function isValidDate(year: number, month: number, day: number) {
+    function isValidDate(year: number, month: number, day: number | undefined) {
       const date = new Date(year, month - 1, day);
       return (
         date.getFullYear() === year &&
@@ -73,14 +102,8 @@ const Login = () => {
         date.getDate() === day
       );
     }
-    const birthdate = `${year}-${month.padStart(2, "0")}-${day.padStart(
-      2,
-      "0"
-    )}T00:00:00.000+00:00`;
 
     const { email, password, firstName, lastName, phone } = form.values;
-
-    console.log(email,password,firstName,lastName,phone, birthdate)
 
     if (isLogin) {
       if (!email || !password) {
@@ -89,7 +112,6 @@ const Login = () => {
         return;
       }
     } else {
-
       if (!isValidDate(parseInt(year), parseInt(month), parseInt(day))) {
         setAlertTitle("You have entered an inexisting date");
         setAlertDescription("Check if your birthday already exists");
@@ -142,52 +164,28 @@ const Login = () => {
       return;
     }
 
-    const data = {
-      email,
-      password,
-      firstName,
-      lastName,
-      phone,
-      birthdate,
-    };
+    const birthdate = `${year}-${month.padStart(2, "0")}-${day.padStart(
+      2,
+      "0"
+    )}T00:00:00.000+00:00`;
+    loadDevMessages();
+    loadErrorMessages();
 
-    const endpoint = isLogin ? endpoints.login : endpoints.register;
+    try {
+      const { data } = await registerUser({
+        variables: {
+          email,
+          password,
+          firstName,
+          lastName,
+          birthdate,
+        },
+      });
 
-    const response = await fetch(endpoint, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (response.status === 401) {
-      setAlertTitle("Your email or password are wrong");
-      setAlertDescription("Validate and try again.");
-      setAlertVisible(true);
-    } else if (response.status === 409) {
-      setAlertTitle("User already exists");
-      setAlertDescription("Please use a different email.");
-      setAlertVisible(true);
-    } else {
-      setEmailError("");
-      setPasswordError("");
-      if (!isLogin) {
-        setFirstNameError("");
-        setLastNameError("");
-        setPhoneError("");
-      }
-      if (isLogin) {
-        location.reload();
-      } else {
-        window.location.href = "/verify";
-      }
+      console.log("Registro exitoso:", data.register);
+    } catch (error) {
+      console.error("Error en el registro:", error);
     }
-
-    setTimeout(() => {
-      setAlertVisible(false);
-    }, 5000);
   };
 
   return (
