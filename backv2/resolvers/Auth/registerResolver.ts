@@ -1,6 +1,9 @@
 import { IResolvers } from "@graphql-tools/utils";
-import bcrypt from 'bcrypt';
-import { generateVerificationCode, sendVerificationEmail } from './VerificationResolver';
+import bcrypt from "bcrypt";
+import {
+  generateVerificationCode,
+  sendVerificationEmail,
+} from "./VerificationResolver";
 import User, { IUser } from "../../models/userModel";
 
 interface RegisterArgs {
@@ -13,27 +16,18 @@ interface RegisterArgs {
 
 const registerResolver: IResolvers = {
   Mutation: {
-    register: async (_, args: RegisterArgs): Promise<IUser> => {
+    register: async (_, { input }): Promise<IUser> => {
       try {
-        const {
-          email,
-          password,
-          firstName,
-          lastName,
-          birthdate,
-        } = args;
+        const { email, password, firstName, lastName, birthdate } = input;
 
-        // Check if user already exists
         const userExists = await User.findOne({ email });
         if (userExists) {
           throw new Error("User already exists");
         }
 
-        // Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Create user
         const user = new User({
           email,
           password: hashedPassword,
@@ -42,19 +36,17 @@ const registerResolver: IResolvers = {
           birthdate,
         });
 
-        // Generate verification token
-        const token = generateVerificationCode(); // Generate a random 6-digit verification code
+        const token = generateVerificationCode(); 
 
-        // Encrypt verification code
-        const encryptedToken = await bcrypt.hash(token, salt);
+        const tokenString = String(token);
+        
+        const encryptedToken = await bcrypt.hash(tokenString, salt);
 
-        // Assign encrypted verification code and expiration time to the user
         user.verificationCode = encryptedToken;
         user.verificationCodeExpires = new Date(Date.now() + 1800000); // Verification code expires in 30 minutes
 
         await user.save();
 
-        // Send verification email
         await sendVerificationEmail(email, token);
 
         return user;

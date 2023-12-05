@@ -4,6 +4,7 @@ const registerSchema = gql`
   type User {
     id: ID!
     email: String
+    password: String
     firstName: String
     lastName: String
     birthdate: String
