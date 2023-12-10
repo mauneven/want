@@ -14,7 +14,7 @@ async function startServer() {
 
   app.use(
     cors({
-      origin: new RegExp("/*/"),
+      origin: "http://localhost:3000",
       credentials: true,
     })
   );
@@ -47,7 +47,6 @@ async function startServer() {
     typeDefs: [registerSchema, loginSchema],
     resolvers: [registerResolver, loginResolver],
     context: ({ req }) => ({ req }),
-
   });
 
   await server.start();

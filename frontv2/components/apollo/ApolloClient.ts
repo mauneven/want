@@ -8,6 +8,7 @@ const createApolloClient = () => {
   return new ApolloClient({
     link: httpLink,
     cache: new InMemoryCache(),
+    credentials: "include",
   });
 };
 
