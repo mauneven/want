@@ -16,6 +16,7 @@ import {
 import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 import { useForm } from "@mantine/form";
 import { IconInfoCircle } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -39,6 +40,7 @@ const Login = () => {
   const icon = <IconInfoCircle />;
   const [alertTitle, setAlertTitle] = useState("");
   const [alertDescription, setAlertDescription] = useState("");
+  const router = useRouter();
 
   const form = useForm({
     initialValues: {
@@ -61,6 +63,21 @@ const Login = () => {
     setYearError("");
     setPhoneError("");
   };
+  
+  const LOGIN_USER = gql`
+    mutation LoginUser($email: String!, $password: String!) {
+      login(input: { email: $email, password: $password }) {
+        id
+        email
+        firstName
+        lastName
+        birthdate
+        isVerified
+      }
+    }
+  `;
+
+  const [loginUser] = useMutation(LOGIN_USER);
 
   const REGISTER_USER = gql`
     mutation RegisterUser(
@@ -91,9 +108,32 @@ const Login = () => {
 
   const [registerUser] = useMutation(REGISTER_USER);
 
-  const handleSubmit = async (event: { preventDefault: () => void }) => {
-    event.preventDefault();
+  const handleForgotPassword = () => {
+    router.push("/forgotPassword");
+    close();
+  };
 
+  const handleLogin = async () => {
+    const { email, password } = form.values;
+
+    if (!email || !password) {
+      setEmailError(!email ? "Email is required" : "");
+      setPasswordError(!password ? "Password is required" : "");
+      return;
+    }
+
+    try {
+      const { data } = await loginUser({
+        variables: { email, password },
+      });
+
+      console.log("Inicio de sesión exitoso:", data.login);
+    } catch (error) {
+      console.error("Error en el inicio de sesión:", error);
+    }
+  };
+
+  const handleRegister = async () => {
     function isValidDate(year: number, month: number, day: number | undefined) {
       const date = new Date(year, month - 1, day);
       return (
@@ -105,86 +145,89 @@ const Login = () => {
 
     const { email, password, firstName, lastName, phone } = form.values;
 
-    if (isLogin) {
-      if (!email || !password) {
-        setEmailError(!email ? "Email is required" : "");
-        setPasswordError(!password ? "Password is required" : "");
-        return;
-      }
-    } else {
-      if (!isValidDate(parseInt(year), parseInt(month), parseInt(day))) {
-        setAlertTitle("You have entered an inexisting date");
-        setAlertDescription("Check if your birthday already exists");
-        setAlertVisible(true);
-        setTimeout(() => {
-          setAlertVisible(false);
-        }, 5000);
-        return;
-      }
-      if (
-        !email ||
-        !password ||
-        !firstName ||
-        !lastName ||
-        !day ||
-        !month ||
-        !year ||
-        !phone
-      ) {
-        setEmailError(!email ? "Email is required" : "");
-        setPasswordError(!password ? "Password is required" : "");
-        setFirstNameError(!firstName ? "First Name is required" : "");
-        setLastNameError(!lastName ? "Last Name is required" : "");
-        setDayError(!day ? "A day is required" : "");
-        setMonthError(!month ? "A month is required" : "");
-        setYearError(!year ? "A year is required" : "");
-        setPhoneError(!phone ? "Phone is required" : "");
-        setAlertTitle("Incomplete Fields");
-        setAlertDescription(
-          "Please ensure all required fields are filled out."
-        );
-        setAlertVisible(true);
-        setTimeout(() => {
-          setAlertVisible(false);
-        }, 5000);
-        return;
-      }
+    if (!isValidDate(parseInt(year), parseInt(month), parseInt(day))) {
+      setAlertTitle("You have entered an inexisting date");
+      setAlertDescription("Check if your birthday already exists");
+      setAlertVisible(true);
+      setTimeout(() => {
+        setAlertVisible(false);
+      }, 5000);
+      return;
     }
-
     if (
-      emailError ||
-      passwordError ||
-      firstNameError ||
-      lastNameError ||
-      dayError ||
-      monthError ||
-      yearError ||
-      phoneError
+      !email ||
+      !password ||
+      !firstName ||
+      !lastName ||
+      !day ||
+      !month ||
+      !year ||
+      !phone
     ) {
+      setEmailError(!email ? "Email is required" : "");
+      setPasswordError(!password ? "Password is required" : "");
+      setFirstNameError(!firstName ? "First Name is required" : "");
+      setLastNameError(!lastName ? "Last Name is required" : "");
+      setDayError(!day ? "A day is required" : "");
+      setMonthError(!month ? "A month is required" : "");
+      setYearError(!year ? "A year is required" : "");
+      setPhoneError(!phone ? "Phone is required" : "");
+      setAlertTitle("Incomplete Fields");
+      setAlertDescription(
+        "Please ensure all required fields are filled out."
+      );
+      setAlertVisible(true);
+      setTimeout(() => {
+        setAlertVisible(false);
+      }, 5000);
       return;
     }
 
-    const birthdate = `${year}-${month.padStart(2, "0")}-${day.padStart(
-      2,
-      "0"
-    )}T00:00:00.000+00:00`;
-    loadDevMessages();
-    loadErrorMessages();
+  if (
+    emailError ||
+    passwordError ||
+    firstNameError ||
+    lastNameError ||
+    dayError ||
+    monthError ||
+    yearError ||
+    phoneError
+  ) {
+    return;
+  }
 
-    try {
-      const { data } = await registerUser({
-        variables: {
-          email,
-          password,
-          firstName,
-          lastName,
-          birthdate,
-        },
-      });
+  const birthdate = `${year}-${month.padStart(2, "0")}-${day.padStart(
+    2,
+    "0"
+  )}T00:00:00.000+00:00`;
+  loadDevMessages();
+  loadErrorMessages();
 
-      console.log("Registro exitoso:", data.register);
-    } catch (error) {
-      console.error("Error en el registro:", error);
+  try {
+    const { data } = await registerUser({
+      variables: {
+        email,
+        password,
+        firstName,
+        lastName,
+        birthdate,
+      },
+    });
+
+    console.log("Registro exitoso:", data.register);
+  } catch (error) {
+    console.error("Error en el registro:", error);
+  }
+
+  };
+
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+
+    if (isLogin) {
+      handleLogin();
+    } else {
+      handleRegister();
     }
   };
 
@@ -331,6 +374,9 @@ const Login = () => {
               {isLogin ? "Register" : "Login"}
             </Button>
           </Text>
+          <Button onClick={handleForgotPassword} variant="transparent">
+            Forgot your password?
+          </Button>
         </Stack>
       </Modal>
     </>

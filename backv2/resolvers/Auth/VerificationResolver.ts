@@ -48,7 +48,7 @@ const verificationResolver: IResolvers = {
         const encryptedCode = await bcrypt.hash(code, salt);
 
         user.verificationCode = encryptedCode;
-        user.verificationCodeExpires = new Date(Date.now() + 1800000); // Verification code expires in 30 minutes
+        user.verificationCodeExpires = new Date(Date.now() + 1800000);
         await user.save();
 
         await sendVerificationEmail(email, code);
@@ -107,7 +107,7 @@ const verificationResolver: IResolvers = {
 };
 
 const generateVerificationCode = (): string => {
-  return Math.floor(100000 + Math.random() * 900000).toString(); // Generate a random 6-digit verification code
+  return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
 const sendVerificationEmail = async (

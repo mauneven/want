@@ -1,4 +1,4 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose from 'mongoose';
 
 interface IUser extends Document {
   email: string;
@@ -18,6 +18,8 @@ interface IUser extends Document {
   verificationCode: string;
   verificationCodeExpires: Date | null;
   photo: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpires?: Date | null;
 }
 
 const userSchema = new mongoose.Schema({
@@ -38,6 +40,8 @@ const userSchema = new mongoose.Schema({
   verificationCode: String,
   verificationCodeExpires: { type: Date, default: null },
   photo: String,
+  resetPasswordToken: { type: String, default: null },
+  resetPasswordExpires: { type: Date, default: null },
 });
 
 const User = mongoose.model<IUser>('User', userSchema);

@@ -6,14 +6,6 @@ import {
 } from "./VerificationResolver";
 import User, { IUser } from "../../models/userModel";
 
-interface RegisterArgs {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  birthdate: string;
-}
-
 const registerResolver: IResolvers = {
   Mutation: {
     register: async (_, { input }): Promise<IUser> => {
@@ -43,7 +35,7 @@ const registerResolver: IResolvers = {
         const encryptedToken = await bcrypt.hash(tokenString, salt);
 
         user.verificationCode = encryptedToken;
-        user.verificationCodeExpires = new Date(Date.now() + 1800000); // Verification code expires in 30 minutes
+        user.verificationCodeExpires = new Date(Date.now() + 1800000);
 
         await user.save();
 
