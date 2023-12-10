@@ -16,6 +16,8 @@ async function startServer() {
     cors({
       origin: "http://localhost:3000",
       credentials: true,
+      methods: "POST", // Allow only POST requests
+      allowedHeaders: ["Content-Type", "Authorization"], // Add headers as needed
     })
   );
 
@@ -44,13 +46,13 @@ async function startServer() {
   );
 
   const server = new ApolloServer({
-    typeDefs: [registerSchema, loginSchema],
-    resolvers: [registerResolver, loginResolver],
+    typeDefs: [loginSchema, registerSchema],
+    resolvers: [loginResolver, registerResolver],
     context: ({ req }) => ({ req }),
   });
 
   await server.start();
-  server.applyMiddleware({ app });
+  server.applyMiddleware({ app, cors: false });
 
   await connectDB();
 
