@@ -22,17 +22,7 @@ const loginResolver: IResolvers = {
 
         req.session.userId = user._id;
 
-        return {
-            ...user.toJSON(),
-            password: user.password,
-            phone: user.phone,
-            role: user.role,
-            totalPosts: user.totalPosts,
-            totalOffers: user.totalOffers,
-            isDeleted: user.isDeleted,
-            isBlocked: user.isBlocked,
-            reports: user.reports,
-        };
+        return user;
 
     } catch (err) {
         throw err;
