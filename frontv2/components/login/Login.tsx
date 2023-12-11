@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation, gql } from "@apollo/client";
 import {
@@ -17,6 +17,12 @@ import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 import { useForm } from "@mantine/form";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
+import { useAppData } from "../provider/AppDataContext";
+
+interface User {
+  photo?: string;
+  [key: string]: any;
+}
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -41,6 +47,19 @@ const Login = () => {
   const [alertTitle, setAlertTitle] = useState("");
   const [alertDescription, setAlertDescription] = useState("");
   const router = useRouter();
+  const { userInfo, onUserInfoChange } = useAppData();
+  const [user, setUser] = useState<User | null>(null);
+
+  
+  useEffect(() => {
+    console.log('Información del usuario en login:', userInfo);
+    if (userInfo && userInfo.getUserData) {
+      setUser(userInfo.getUserData);
+    } else {
+      setUser(null);
+    }
+  }, [userInfo]);
+
 
   const form = useForm({
     initialValues: {
@@ -123,6 +142,7 @@ const Login = () => {
         variables: { email, password },
       });
 
+      onUserInfoChange();
       console.log("Inicio de sesión exitoso:", data.login);
     } catch (error) {
       console.error("Error en el inicio de sesión:", error);
@@ -210,6 +230,7 @@ const Login = () => {
       },
     });
 
+    onUserInfoChange();
     console.log("Registro exitoso:", data.register);
   } catch (error) {
     console.error("Error en el registro:", error);

@@ -27,11 +27,10 @@ import {
 } from "@tabler/icons-react";
 import classes from "./Navbar.module.css";
 import { useEffect, useState } from "react";
-import endpoints from "@/app/connections/enpoints/endpoints";
-import { environments } from "@/app/connections/environments/environments";
 import { useRouter } from "next/navigation";
 import Login from "../login/Login";
 import { useAppData } from "../provider/AppDataContext";
+import { environments } from "@/app/connections/environments/environments";
 
 interface User {
   photo?: string;
@@ -49,57 +48,21 @@ export function Navbar() {
     getInitialValueInEffect: true,
   });
 
-    // Ejemplo de uso
-    useEffect(() => {
-      console.log('Información del usuario:', userInfo);
-    }, [userInfo]);
-  
-    const handleRefresh = () => {
-      onUserInfoChange(); // Actualizar la información del usuario
-    };
-  
-
   useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const response = await fetch(endpoints.user, {
-          method: "GET",
-          credentials: "include",
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data.user || null);
-          console.log("si ves esto 2 veces es normal en DEV", data);
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        console.error("Error al verificar la sesión:", error);
-      }
-    };
-
-    if (!document.documentElement.getAttribute("data-theme")) {
-      document.documentElement.setAttribute("data-theme", "light");
+    console.log('Información del usuario en navbar:', userInfo);
+    if (userInfo && userInfo.getUserData) {
+      setUser(userInfo.getUserData);
+    } else {
+      setUser(null);
     }
+  }, [userInfo]);
 
-    checkSession();
-  }, []);
+  const handleRefresh = () => {
+    onUserInfoChange();
+  };
 
   const logout = async () => {
     try {
-      const response = await fetch(endpoints.logout, {
-        method: "POST",
-        credentials: "include",
-      });
-
-      if (response.ok) {
-        localStorage.removeItem("user");
-      } else {
-        console.error("Error log out:", response.status, response.statusText);
-      }
-
-      window.location.replace("/");
     } catch (error) {
       console.error("Error log out", error);
     }
@@ -248,7 +211,6 @@ export function Navbar() {
             <Group ml={50} gap={5} className={classes.links} visibleFrom="sm">
               <Login />
               <button onClick={handleRefresh}>Actualizar Datos del Usuario</button>
-
             </Group>
           )}
         </Group>

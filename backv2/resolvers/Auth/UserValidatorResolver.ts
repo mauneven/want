@@ -13,7 +13,7 @@ const userValidatorResolver: IResolvers = {
 
         const user = await User.findById(userId);
 
-        return user || null;
+        return user;
       } catch (err) {
         throw err;
       }

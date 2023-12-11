@@ -5,7 +5,9 @@ export const GET_USER_DATA = gql`
     getUserData {
       id
       email
-      # Otros campos del usuario que necesites
+      firstName
+      lastName
+      photo
     }
   }
 `;
