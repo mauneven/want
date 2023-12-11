@@ -8,6 +8,8 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import loginSchema from "./schemas/Auth/loginSchema";
 import cors from "cors";
+import userValidatorResolver from "./resolvers/Auth/UserValidatorResolver";
+import userValidatorSchema from "./schemas/Auth/UserValidatorSchema";
 
 async function startServer() {
   const app = express();
@@ -16,8 +18,8 @@ async function startServer() {
     cors({
       origin: "http://localhost:3000",
       credentials: true,
-      methods: "POST", // Allow only POST requests
-      allowedHeaders: ["Content-Type", "Authorization"], // Add headers as needed
+      methods: "POST",
+      allowedHeaders: ["Content-Type", "Authorization"],
     })
   );
 
@@ -46,8 +48,8 @@ async function startServer() {
   );
 
   const server = new ApolloServer({
-    typeDefs: [loginSchema, registerSchema],
-    resolvers: [loginResolver, registerResolver],
+    typeDefs: [loginSchema, registerSchema, userValidatorSchema],
+    resolvers: [loginResolver, registerResolver, userValidatorResolver],
     context: ({ req }) => ({ req }),
   });
 

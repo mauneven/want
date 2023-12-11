@@ -31,6 +31,7 @@ import endpoints from "@/app/connections/enpoints/endpoints";
 import { environments } from "@/app/connections/environments/environments";
 import { useRouter } from "next/navigation";
 import Login from "../login/Login";
+import { useAppData } from "../provider/AppDataContext";
 
 interface User {
   photo?: string;
@@ -41,11 +42,22 @@ export function Navbar() {
   const [user, setUser] = useState<User | null>(null);
   const [openedModal, { open, close }] = useDisclosure(false);
   const router = useRouter();
+  const { userInfo, onUserInfoChange } = useAppData();
 
   const { setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme("light", {
     getInitialValueInEffect: true,
   });
+
+    // Ejemplo de uso
+    useEffect(() => {
+      console.log('Información del usuario:', userInfo);
+    }, [userInfo]);
+  
+    const handleRefresh = () => {
+      onUserInfoChange(); // Actualizar la información del usuario
+    };
+  
 
   useEffect(() => {
     const checkSession = async () => {
@@ -235,6 +247,8 @@ export function Navbar() {
           ) : (
             <Group ml={50} gap={5} className={classes.links} visibleFrom="sm">
               <Login />
+              <button onClick={handleRefresh}>Actualizar Datos del Usuario</button>
+
             </Group>
           )}
         </Group>
