@@ -107,9 +107,6 @@ const Login = ({ shouldOpen, onModalClose }: { shouldOpen: any, onModalClose: an
         setAlertTitle("Wrong credentials");
         setAlertDescription("Invalid email or password");
         setAlertVisible(true);
-        setTimeout(() => {
-          setAlertVisible(false);
-        }, 5000);
       }
     }
   };
@@ -130,9 +127,6 @@ const Login = ({ shouldOpen, onModalClose }: { shouldOpen: any, onModalClose: an
       setAlertTitle("You have entered an inexisting date");
       setAlertDescription("Check if your birthday already exists");
       setAlertVisible(true);
-      setTimeout(() => {
-        setAlertVisible(false);
-      }, 5000);
       return;
     }
     if (
@@ -228,6 +222,7 @@ const Login = ({ shouldOpen, onModalClose }: { shouldOpen: any, onModalClose: an
             onChange={(event) => {
               form.setFieldValue("email", event.currentTarget.value);
               setEmailError("");
+              setAlertVisible(false);
             }}
             error={emailError}
           />
@@ -238,6 +233,7 @@ const Login = ({ shouldOpen, onModalClose }: { shouldOpen: any, onModalClose: an
             onChange={(event) => {
               form.setFieldValue("password", event.currentTarget.value);
               setPasswordError("");
+              setAlertVisible(false);
             }}
             error={passwordError}
           />
