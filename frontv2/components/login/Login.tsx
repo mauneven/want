@@ -203,7 +203,6 @@ const Login = ({ shouldOpen, onModalClose }: { shouldOpen: any, onModalClose: an
 
   return (
     <>
-      <Button onClick={open}>Login/Register</Button>
       <Modal
         opened={opened}
         onClose={handleClose}

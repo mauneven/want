@@ -26,6 +26,8 @@ import {
   IconSun,
   IconMoon,
   IconHome,
+  IconPlus,
+  IconBell,
 } from "@tabler/icons-react";
 import classes from "./Navbar.module.css";
 import { useEffect, useState } from "react";
@@ -85,38 +87,12 @@ export function Navbar() {
 
   return (
     <header className={classes.header}>
-      <Modal
-        opened={openedModal}
-        onClose={close}
-        title="Sure you want to logout?"
-        overlayProps={{
-          backgroundOpacity: 0.55,
-          blur: 3,
-        }}
-      >
-        <Text>
-          You will have to login again if you Want to use your account
-        </Text>
-        <Group>
-          <Button
-            variant="gradient"
-            gradient={{ from: "red", to: "orange", deg: 90 }}
-            color="red"
-            fullWidth
-            justify="center"
-            onClick={logout}
-          >
-            Logout
-          </Button>
-        </Group>
-      </Modal>
       <div className={classes.inner}>
         <Group>
           <Button p={0} onClick={() => router.push("/")} variant="transparent">
             <h1>Want</h1>
           </Button>
-        </Group>
-        <Autocomplete
+          <Autocomplete
           className={classes.search}
           placeholder="Search"
           leftSection={
@@ -127,39 +103,34 @@ export function Navbar() {
           }
           data={[
             "React",
-            "Angular",
-            "Vue",
-            "Next.js",
-            "Riot.js",
-            "Svelte",
-            "Blitz.js",
           ]}
           visibleFrom="xs"
         />
+        </Group>
         <Group>
           {user ? (
-            <Group>
+            <Group gap={0}>
               <Button variant="subtle">
-                <Stack p={20} justify="center" align="center" gap={0}>
+                <Stack justify="center" align="center" gap={0}>
                   <IconHome size={15} />
                   <Text size="xs">Home</Text>
                 </Stack>
               </Button>
               <Button variant="subtle">
-                <Stack p={20} justify="center" align="center" gap={0}>
+                <Stack justify="center" align="center" gap={0}>
                   <IconHome size={15} />
                   <Text size="xs">Messages</Text>
                 </Stack>
               </Button>
               <Button variant="subtle">
-                <Stack p={20} justify="center" align="center" gap={0}>
+                <Stack justify="center" align="center" gap={0}>
                   <IconHome size={15} />
                   <Text size="xs">Posts</Text>
                 </Stack>
               </Button>
               <Button variant="subtle">
-                <Stack p={20} justify="center" align="center" gap={0}>
-                  <IconHome size={15} />
+                <Stack justify="center" align="center" gap={0}>
+                  <IconBell size={15} />
                   <Text size="xs">Notifications</Text>
                 </Stack>
               </Button>
@@ -170,15 +141,122 @@ export function Navbar() {
                 shouldOpen={openLoginModal}
                 onModalClose={handleCloseLoginModal}
               />
+              <Button variant="light" onClick={() => setOpenLoginModal(true)}>
+                <Stack justify="center" align="center" gap={0}>
+                  <IconUser size={15} />
+                  <Text size="xs">Login / Register</Text>
+                </Stack>
+              </Button>
             </Group>
           )}
           <Button variant="light" onClick={handleWant}>
-            <Stack p={20} justify="center" align="center" gap={0}>
-              <IconHome size={15} />
+            <Stack justify="center" align="center" gap={0}>
+              <IconPlus size={15} />
               <Text size="xs">Create</Text>
             </Stack>
           </Button>
         </Group>
+        {user ? (
+          <Menu
+            shadow="md"
+            width={200}
+            offset={20}
+            position="bottom-end"
+            withArrow
+            openDelay={100}
+            closeDelay={100}
+          >
+            <Menu.Target>
+              <UnstyledButton>
+                <Avatar
+                  src={
+                    user?.photo
+                      ? `${environments.BASE_URL}/${user?.photo}`
+                      : null
+                  }
+                  alt="it's me"
+                />
+              </UnstyledButton>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Item
+                leftSection={
+                  <IconUser style={{ width: rem(14), height: rem(14) }} />
+                }
+                onClick={() => router.push("/account")}
+              >
+                Account
+              </Menu.Item>
+              <Menu.Item
+                leftSection={
+                  <IconMessageCircle
+                    style={{ width: rem(14), height: rem(14) }}
+                  />
+                }
+              >
+                Messages
+              </Menu.Item>
+              <Menu.Item
+                leftSection={
+                  <IconList style={{ width: rem(14), height: rem(14) }} />
+                }
+              >
+                Posts
+              </Menu.Item>
+              <Flex
+                onClick={() =>
+                  setColorScheme(
+                    computedColorScheme === "light" ? "dark" : "light"
+                  )
+                }
+                align={"center"}
+              >
+                <ActionIcon
+                  variant="transparent"
+                  color="default"
+                  size="md"
+                  aria-label="Toggle color scheme"
+                  p={5}
+                  ml={6}
+                >
+                  <IconSun
+                    className={(classes.icon, classes.light)}
+                    stroke={1.2}
+                  />
+                  <IconMoon
+                    className={(classes.icon, classes.dark)}
+                    stroke={1.2}
+                  />
+                </ActionIcon>
+                <Button
+                  p={0}
+                  justify="left"
+                  variant="transparent"
+                  color="default"
+                >
+                  <Text size="14">Change theme</Text>
+                </Button>
+              </Flex>
+              <Menu.Divider />
+              <Menu.Item
+                color="red"
+                leftSection={
+                  <IconLogout
+                    style={{
+                      width: rem(14),
+                      height: rem(14),
+                      marginLeft: rem(3),
+                    }}
+                  />
+                }
+                onClick={open}
+              >
+                Logout
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        ) : null}
       </div>
     </header>
   );
