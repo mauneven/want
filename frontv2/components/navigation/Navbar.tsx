@@ -56,10 +56,6 @@ export function Navbar() {
     }
   }, [userInfo]);
 
-  const handleRefresh = () => {
-    onUserInfoChange();
-  };
-
   const logout = async () => {
     try {
     } catch (error) {
@@ -209,7 +205,6 @@ export function Navbar() {
           ) : (
             <Group ml={50} gap={5} className={classes.links} visibleFrom="sm">
               <Login />
-              <button onClick={handleRefresh}>Actualizar Datos del Usuario</button>
             </Group>
           )}
         </Group>
