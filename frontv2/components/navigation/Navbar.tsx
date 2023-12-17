@@ -14,6 +14,7 @@ import {
   useComputedColorScheme,
   Flex,
   UnstyledButton,
+  Stack,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
@@ -24,6 +25,7 @@ import {
   IconUser,
   IconSun,
   IconMoon,
+  IconHome,
 } from "@tabler/icons-react";
 import classes from "./Navbar.module.css";
 import { useEffect, useState } from "react";
@@ -135,116 +137,47 @@ export function Navbar() {
           visibleFrom="xs"
         />
         <Group>
-          <Button variant="light" onClick={handleWant}>
-            I Want Something!
-          </Button>
           {user ? (
-            <>
-              <Menu
-                shadow="md"
-                width={200}
-                offset={20}
-                position="bottom-end"
-                withArrow
-                openDelay={100}
-                closeDelay={100}
-              >
-                <Menu.Target>
-                  <UnstyledButton>
-                    <Avatar
-                      src={
-                        user.photo
-                          ? `${environments.BASE_URL}/${user?.photo}`
-                          : null
-                      }
-                      alt="it's me"
-                    />
-                  </UnstyledButton>
-                </Menu.Target>
-
-                <Menu.Dropdown>
-                  <Menu.Item
-                    leftSection={
-                      <IconUser style={{ width: rem(14), height: rem(14) }} />
-                    }
-                    onClick={() => router.push("/account")}
-                  >
-                    Account
-                  </Menu.Item>
-                  <Menu.Item
-                    leftSection={
-                      <IconMessageCircle
-                        style={{ width: rem(14), height: rem(14) }}
-                      />
-                    }
-                  >
-                    Messages
-                  </Menu.Item>
-                  <Menu.Item
-                    leftSection={
-                      <IconList style={{ width: rem(14), height: rem(14) }} />
-                    }
-                  >
-                    Posts
-                  </Menu.Item>
-                  <Flex
-                    onClick={() =>
-                      setColorScheme(
-                        computedColorScheme === "light" ? "dark" : "light"
-                      )
-                    }
-                    align={"center"}
-                  >
-                    <ActionIcon
-                      variant="transparent"
-                      color="default"
-                      size="md"
-                      aria-label="Toggle color scheme"
-                      p={5}
-                      ml={6}
-                    >
-                      <IconSun
-                        className={(classes.icon, classes.light)}
-                        stroke={1.2}
-                      />
-                      <IconMoon
-                        className={(classes.icon, classes.dark)}
-                        stroke={1.2}
-                      />
-                    </ActionIcon>
-                    <Button
-                      p={0}
-                      justify="left"
-                      variant="transparent"
-                      color="default"
-                    >
-                      <Text size="14">Change theme</Text>
-                    </Button>
-                  </Flex>
-                  <Menu.Divider />
-                  <Menu.Item
-                    color="red"
-                    leftSection={
-                      <IconLogout
-                        style={{
-                          width: rem(14),
-                          height: rem(14),
-                          marginLeft: rem(3),
-                        }}
-                      />
-                    }
-                    onClick={open}
-                  >
-                    Logout
-                  </Menu.Item>
-                </Menu.Dropdown>
-              </Menu>
-            </>
+            <Group>
+              <Button variant="subtle">
+                <Stack p={20} justify="center" align="center" gap={0}>
+                  <IconHome size={15} />
+                  <Text size="xs">Home</Text>
+                </Stack>
+              </Button>
+              <Button variant="subtle">
+                <Stack p={20} justify="center" align="center" gap={0}>
+                  <IconHome size={15} />
+                  <Text size="xs">Messages</Text>
+                </Stack>
+              </Button>
+              <Button variant="subtle">
+                <Stack p={20} justify="center" align="center" gap={0}>
+                  <IconHome size={15} />
+                  <Text size="xs">Posts</Text>
+                </Stack>
+              </Button>
+              <Button variant="subtle">
+                <Stack p={20} justify="center" align="center" gap={0}>
+                  <IconHome size={15} />
+                  <Text size="xs">Notifications</Text>
+                </Stack>
+              </Button>
+            </Group>
           ) : (
             <Group ml={50} gap={5} className={classes.links} visibleFrom="sm">
-              <Login shouldOpen={openLoginModal} onModalClose={handleCloseLoginModal} />
+              <Login
+                shouldOpen={openLoginModal}
+                onModalClose={handleCloseLoginModal}
+              />
             </Group>
           )}
+          <Button variant="light" onClick={handleWant}>
+            <Stack p={20} justify="center" align="center" gap={0}>
+              <IconHome size={15} />
+              <Text size="xs">Create</Text>
+            </Stack>
+          </Button>
         </Group>
       </div>
     </header>
