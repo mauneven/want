@@ -17,8 +17,7 @@ import "@mantine/hooks";
 import WelcomeModal from "@/components/home/WelcomeModal";
 import "@mantine/carousel/styles.css";
 import createApolloClient from "@/components/apollo/ApolloClient";
-import { AppDataProvider } from "@/components/provider/AppDataContext";
-
+import { UserContextProvider } from "@/components/provider/UserContext";
 const queryClient = new QueryClient();
 
 const client = createApolloClient();
@@ -38,7 +37,7 @@ export default function RootLayout({
           <MantineProvider defaultColorScheme="dark">
             <Notifications position="bottom-right" />
             <QueryClientProvider client={queryClient}>
-              <AppDataProvider>
+              <UserContextProvider>
               <WelcomeModal />
               <Navbar />
               <Container
@@ -50,7 +49,7 @@ export default function RootLayout({
                 {children}
               </Container>
               <Footer />
-              </AppDataProvider>
+              </UserContextProvider>
             </QueryClientProvider>
           </MantineProvider>
         </ApolloProvider>

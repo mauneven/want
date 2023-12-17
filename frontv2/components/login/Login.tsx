@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
-import { useMutation, gql } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import {
   Modal,
   Button,
@@ -17,12 +17,8 @@ import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 import { useForm } from "@mantine/form";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
-import { useAppData } from "../provider/AppDataContext";
-
-interface User {
-  photo?: string;
-  [key: string]: any;
-}
+import { UseUserContext } from "../provider/UserContext";
+import { REGISTER_USER, LOGIN_USER } from "@/querys/AuthQuery";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -47,19 +43,7 @@ const Login = () => {
   const [alertTitle, setAlertTitle] = useState("");
   const [alertDescription, setAlertDescription] = useState("");
   const router = useRouter();
-  const { userInfo, onUserInfoChange } = useAppData();
-  const [user, setUser] = useState<User | null>(null);
-
-  
-  useEffect(() => {
-    console.log('Información del usuario en login:', userInfo);
-    if (userInfo && userInfo.getUserData) {
-      setUser(userInfo.getUserData);
-    } else {
-      setUser(null);
-    }
-  }, [userInfo]);
-
+  const { userInfo, onUserInfoChange } = UseUserContext();
 
   const form = useForm({
     initialValues: {
@@ -82,44 +66,8 @@ const Login = () => {
     setYearError("");
     setPhoneError("");
   };
-  
-  const LOGIN_USER = gql`
-    mutation LoginUser($email: String!, $password: String!) {
-      login(input: { email: $email, password: $password }) {
-        id
-        email
-      }
-    }
-  `;
 
   const [loginUser] = useMutation(LOGIN_USER);
-
-  const REGISTER_USER = gql`
-    mutation RegisterUser(
-      $email: String!
-      $password: String!
-      $firstName: String!
-      $lastName: String!
-      $birthdate: String!
-    ) {
-      register(
-        input: {
-          email: $email
-          password: $password
-          firstName: $firstName
-          lastName: $lastName
-          birthdate: $birthdate
-        }
-      ) {
-        id
-        email
-        firstName
-        lastName
-        birthdate
-        isVerified
-      }
-    }
-  `;
 
   const [registerUser] = useMutation(REGISTER_USER);
 

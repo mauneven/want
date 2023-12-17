@@ -29,7 +29,7 @@ import classes from "./Navbar.module.css";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Login from "../login/Login";
-import { useAppData } from "../provider/AppDataContext";
+import { UseUserContext } from "../provider/UserContext";
 import { environments } from "@/app/connections/environments/environments";
 
 interface User {
@@ -41,8 +41,7 @@ export function Navbar() {
   const [user, setUser] = useState<User | null>(null);
   const [openedModal, { open, close }] = useDisclosure(false);
   const router = useRouter();
-  const { userInfo, onUserInfoChange } = useAppData();
-
+  const { userInfo, onUserInfoChange } = UseUserContext();
   const { setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme("light", {
     getInitialValueInEffect: true,
