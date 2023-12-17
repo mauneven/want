@@ -8,7 +8,7 @@ import User, { IUser } from "../../models/userModel";
 
 const registerResolver: IResolvers = {
   Mutation: {
-    register: async (_, { input }): Promise<IUser> => {
+    register: async (_, { input }, {req}): Promise<IUser> => {
       try {
         const { email, password, firstName, lastName, birthdate } = input;
 
@@ -40,6 +40,8 @@ const registerResolver: IResolvers = {
         await user.save();
 
         await sendVerificationEmail(email, token);
+
+        req.session.userId = user._id;
 
         return user;
       } catch (err) {

@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 import { UseUserContext } from "../provider/UserContext";
 import { REGISTER_USER, LOGIN_USER } from "@/querys/AuthQuery";
 
-const Login = () => {
+const Login = ({ shouldOpen, onModalClose }: { shouldOpen: any, onModalClose: any }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [opened, { open, close }] = useDisclosure(false);
   const toggleForm = () => {
@@ -43,6 +43,17 @@ const Login = () => {
   const [alertDescription, setAlertDescription] = useState("");
   const router = useRouter();
   const { userInfo, onUserInfoChange } = UseUserContext();
+
+  useEffect(() => {
+    if (shouldOpen) {
+      open();
+    }
+  }, [shouldOpen, open]);
+
+  const handleClose = () => {
+    close();
+    onModalClose(); // Notifica al padre que el modal se ha cerrado.
+  };
 
   const form = useForm({
     initialValues: {
@@ -176,7 +187,13 @@ const Login = () => {
       onUserInfoChange();
       console.log("Registro exitoso:", data.register);
     } catch (error) {
-      console.error("Error en el registro:", error);
+      console.error("Error en el inicio de:", error);
+  
+      if ((error as Error).message.includes("User already exists")) {
+        setAlertTitle("Email already linked to an account");
+        setAlertDescription("This email is already linked to an account, please login or use another email");
+        setAlertVisible(true);
+      }
     }
   };
 
@@ -195,7 +212,7 @@ const Login = () => {
       <Button onClick={open}>Login/Register</Button>
       <Modal
         opened={opened}
-        onClose={close}
+        onClose={handleClose}
         centered
         size={"md"}
         overlayProps={{ backgroundOpacity: 0.55, blur: 3 }}
