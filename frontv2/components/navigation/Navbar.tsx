@@ -6,7 +6,6 @@ import {
   rem,
   Menu,
   Avatar,
-  Modal,
   Text,
   Button,
   ActionIcon,
@@ -16,22 +15,22 @@ import {
   UnstyledButton,
   Stack,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 import {
   IconSearch,
   IconMessageCircle,
   IconLogout,
-  IconList,
   IconUser,
   IconSun,
   IconMoon,
   IconHome,
   IconPlus,
   IconBell,
+  IconMessage2,
+  IconLayoutGrid,
 } from "@tabler/icons-react";
 import classes from "./Navbar.module.css";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Login from "../login/Login";
 import { UseUserContext } from "../provider/UserContext";
 import { environments } from "@/app/connections/environments/environments";
@@ -43,8 +42,8 @@ interface User {
 
 export function Navbar() {
   const [user, setUser] = useState<User | null>(null);
-  const [openedModal, { open, close }] = useDisclosure(false);
   const router = useRouter();
+  const pathname = usePathname();
   const { userInfo, onUserInfoChange } = UseUserContext();
   const { setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme("light", {
@@ -87,76 +86,86 @@ export function Navbar() {
 
   return (
     <header className={classes.header}>
+      <Login shouldOpen={openLoginModal} onModalClose={handleCloseLoginModal} />
       <div className={classes.inner}>
         <Group>
           <Button p={0} onClick={() => router.push("/")} variant="transparent">
             <h1>Want</h1>
           </Button>
           <Autocomplete
-          className={classes.search}
-          placeholder="Search"
-          leftSection={
-            <IconSearch
-              style={{ width: rem(16), height: rem(16) }}
-              stroke={1.5}
-            />
-          }
-          data={[
-            "React",
-          ]}
-          visibleFrom="xs"
-        />
+            className={classes.search}
+            placeholder="Search"
+            leftSection={
+              <IconSearch
+                style={{ width: rem(16), height: rem(16) }}
+                stroke={1.5}
+              />
+            }
+            data={["React"]}
+            visibleFrom="xs"
+          />
         </Group>
         <Group>
           {user ? (
-            <Group gap={0}>
-              <Button variant="subtle">
-                <Stack justify="center" align="center" gap={0}>
+            <Group gap={15}>
+              <Button
+                variant={pathname === "/" ? "light" : "subtle"}
+                onClick={() => router.push("/")}
+              >
+                <Stack
+                  justify="center"
+                  onClick={() => router.push("/")}
+                  align="center"
+                  gap={0}
+                >
                   <IconHome size={15} />
                   <Text size="xs">Home</Text>
                 </Stack>
               </Button>
-              <Button variant="subtle">
+              <Button
+                variant={pathname === "/chats" ? "light" : "subtle"}
+                onClick={() => router.push("/chats")}
+              >
                 <Stack justify="center" align="center" gap={0}>
-                  <IconHome size={15} />
+                  <IconMessage2 size={15} />
                   <Text size="xs">Messages</Text>
                 </Stack>
               </Button>
-              <Button variant="subtle">
-                <Stack justify="center" align="center" gap={0}>
-                  <IconHome size={15} />
+              <Button
+                variant={pathname === "/myposts" ? "light" : "subtle"}
+                onClick={() => router.push("/myposts")}
+              >
+                <Stack
+                  justify="center"
+                  onClick={() => router.push("/myposts")}
+                  align="center"
+                  gap={0}
+                >
+                  <IconLayoutGrid size={15} />
                   <Text size="xs">Posts</Text>
                 </Stack>
               </Button>
-              <Button variant="subtle">
+              <Button
+                variant={pathname === "/notifications" ? "light" : "subtle"}
+                onClick={() => router.push("/notifications")}
+              >
                 <Stack justify="center" align="center" gap={0}>
                   <IconBell size={15} />
                   <Text size="xs">Notifications</Text>
                 </Stack>
               </Button>
             </Group>
-          ) : (
-            <Group ml={50} gap={5} className={classes.links} visibleFrom="sm">
-              <Login
-                shouldOpen={openLoginModal}
-                onModalClose={handleCloseLoginModal}
-              />
-              <Button variant="light" onClick={() => setOpenLoginModal(true)}>
-                <Stack justify="center" align="center" gap={0}>
-                  <IconUser size={15} />
-                  <Text size="xs">Login / Register</Text>
-                </Stack>
-              </Button>
-            </Group>
-          )}
-          <Button variant="light" onClick={handleWant}>
+          ) : null}
+          <Button
+            variant={pathname === "/new" ? "light" : "subtle"}
+            onClick={handleWant}
+          >
             <Stack justify="center" align="center" gap={0}>
               <IconPlus size={15} />
               <Text size="xs">Create</Text>
             </Stack>
           </Button>
-        </Group>
-        {user ? (
+
           <Menu
             shadow="md"
             width={200}
@@ -180,30 +189,28 @@ export function Navbar() {
             </Menu.Target>
 
             <Menu.Dropdown>
-              <Menu.Item
-                leftSection={
-                  <IconUser style={{ width: rem(14), height: rem(14) }} />
-                }
-                onClick={() => router.push("/account")}
-              >
-                Account
-              </Menu.Item>
-              <Menu.Item
-                leftSection={
-                  <IconMessageCircle
-                    style={{ width: rem(14), height: rem(14) }}
-                  />
-                }
-              >
-                Messages
-              </Menu.Item>
-              <Menu.Item
-                leftSection={
-                  <IconList style={{ width: rem(14), height: rem(14) }} />
-                }
-              >
-                Posts
-              </Menu.Item>
+              {user ? (
+                <Menu.Item
+                  leftSection={
+                    <IconUser style={{ width: rem(14), height: rem(14) }} />
+                  }
+                  onClick={() => router.push("/account")}
+                >
+                  Account
+                </Menu.Item>
+              ) : (
+                <>
+                  <Menu.Item
+                    leftSection={
+                      <IconUser style={{ width: rem(14), height: rem(14) }} />
+                    }
+                    onClick={handleOpenLoginModal}
+                  >
+                    Login / Register
+                  </Menu.Item>
+                </>
+              )}
+
               <Flex
                 onClick={() =>
                   setColorScheme(
@@ -238,25 +245,28 @@ export function Navbar() {
                   <Text size="14">Change theme</Text>
                 </Button>
               </Flex>
-              <Menu.Divider />
-              <Menu.Item
-                color="red"
-                leftSection={
-                  <IconLogout
-                    style={{
-                      width: rem(14),
-                      height: rem(14),
-                      marginLeft: rem(3),
-                    }}
-                  />
-                }
-                onClick={open}
-              >
-                Logout
-              </Menu.Item>
+              {user ? (
+                <>
+                  <Menu.Divider />
+                  <Menu.Item
+                    color="red"
+                    leftSection={
+                      <IconLogout
+                        style={{
+                          width: rem(14),
+                          height: rem(14),
+                          marginLeft: rem(3),
+                        }}
+                      />
+                    }
+                  >
+                    Logout
+                  </Menu.Item>
+                </>
+              ) : null}
             </Menu.Dropdown>
           </Menu>
-        ) : null}
+        </Group>
       </div>
     </header>
   );

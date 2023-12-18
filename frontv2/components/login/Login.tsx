@@ -20,7 +20,13 @@ import { useRouter } from "next/navigation";
 import { UseUserContext } from "../provider/UserContext";
 import { REGISTER_USER, LOGIN_USER } from "@/querys/AuthQuery";
 
-const Login = ({ shouldOpen, onModalClose }: { shouldOpen: any, onModalClose: any }) => {
+const Login = ({
+  shouldOpen,
+  onModalClose,
+}: {
+  shouldOpen: any;
+  onModalClose: any;
+}) => {
   const [isLogin, setIsLogin] = useState(true);
   const [opened, { open, close }] = useDisclosure(false);
   const toggleForm = () => {
@@ -100,6 +106,7 @@ const Login = ({ shouldOpen, onModalClose }: { shouldOpen: any, onModalClose: an
 
       onUserInfoChange();
       console.log("Inicio de sesión exitoso:", data.login);
+      handleClose();
     } catch (error) {
       console.error("Error en el inicio de:", error);
 
@@ -123,7 +130,12 @@ const Login = ({ shouldOpen, onModalClose }: { shouldOpen: any, onModalClose: an
 
     const { email, password, firstName, lastName } = form.values;
 
-    if (!isValidDate(parseInt(year), parseInt(month), parseInt(day)) && day !== "" && month !== "" && year !== "") {
+    if (
+      !isValidDate(parseInt(year), parseInt(month), parseInt(day)) &&
+      day !== "" &&
+      month !== "" &&
+      year !== ""
+    ) {
       setAlertTitle("You have entered an inexisting date");
       setAlertDescription("Check if your birthday already exists");
       setAlertVisible(true);
@@ -180,12 +192,15 @@ const Login = ({ shouldOpen, onModalClose }: { shouldOpen: any, onModalClose: an
 
       onUserInfoChange();
       console.log("Registro exitoso:", data.register);
+      handleClose();
     } catch (error) {
       console.error("Error en el inicio de:", error);
-  
+
       if ((error as Error).message.includes("User already exists")) {
         setAlertTitle("Email already linked to an account");
-        setAlertDescription("This email is already linked to an account, please login or use another email");
+        setAlertDescription(
+          "This email is already linked to an account, please login or use another email"
+        );
         setAlertVisible(true);
       }
     }
@@ -320,18 +335,32 @@ const Login = ({ shouldOpen, onModalClose }: { shouldOpen: any, onModalClose: an
             </>
           )}
           {alertVisible && (
-            <Alert closeButtonLabel="dimiss" withCloseButton onClose={() => setAlertVisible(false)} variant="light" color="red" title={alertTitle} icon={icon} >
+            <Alert
+              closeButtonLabel="dimiss"
+              withCloseButton
+              onClose={() => setAlertVisible(false)}
+              variant="light"
+              color="red"
+              title={alertTitle}
+              icon={icon}
+            >
               {alertDescription}
             </Alert>
           )}
-          <Group justify="center" >
+          <Group justify="center">
             <Button type="submit" variant="light" onClick={handleSubmit}>
               {isLogin ? "Login" : "Register"}
             </Button>
           </Group>
           <Text mt="md">
             {isLogin ? "Don't have an account? " : "Already have an account? "}
-            <Button variant="transparent" justify="left" p={0} size="xs" onClick={toggleForm}>
+            <Button
+              variant="transparent"
+              justify="left"
+              p={0}
+              size="xs"
+              onClick={toggleForm}
+            >
               {isLogin ? "Register here" : "Login here"}
             </Button>
           </Text>
