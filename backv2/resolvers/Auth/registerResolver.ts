@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import {
   generateVerificationCode,
   sendVerificationEmail,
-} from "./VerificationResolver";
+} from "./verificationResolver";
 import User, { IUser } from "../../models/userModel";
 
 const registerResolver: IResolvers = {
@@ -45,6 +45,7 @@ const registerResolver: IResolvers = {
 
         return user;
       } catch (err) {
+        console.error(err);
         throw err;
       }
     },

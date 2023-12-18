@@ -25,7 +25,8 @@ const loginResolver: IResolvers = {
         return user;
 
     } catch (err) {
-        throw err;
+      console.error(err);
+      throw err;
     }
     },
   },

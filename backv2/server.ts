@@ -8,7 +8,7 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import loginSchema from "./schemas/Auth/loginSchema";
 import cors from "cors";
-import userValidatorResolver from "./resolvers/Auth/UserValidatorResolver";
+import userValidatorResolver from "./resolvers/Auth/userValidatorResolver";
 import userValidatorSchema from "./schemas/Auth/userValidatorSchema";
 
 async function startServer() {
