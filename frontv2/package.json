@@ -32,6 +32,7 @@
     "dayjs": "^1.11.10",
     "embla-carousel-react": "^7.1.0",
     "graphql": "^16.8.1",
+    "lottie-react": "^2.4.0",
     "lottie-web": "^5.12.2",
     "next": "^14.0.1",
     "postcss-preset-mantine": "^1.9.0",

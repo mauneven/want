@@ -1,0 +1,21 @@
+.container {
+    padding: 2rem;
+    display: flex;
+    justifyContent: center;
+    alignItems: center;
+  }
+  
+  .text {
+    margin: 1rem 0;
+  }
+  
+  .button {
+    marginTop: 2rem;
+    backgroundColor: #345678; 
+  }
+  
+  .lottieContainer {
+    width: 100%;
+    margin: auto;
+  }
+  
