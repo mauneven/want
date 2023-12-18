@@ -22,7 +22,7 @@ const upload = multer({ storage }).array('photos[]', 4);
 
 exports.uploadPhotoMiddleware = upload;
 
-const postResolver: IResolvers = {
+const createPostResolver: IResolvers = {
   Mutation: {
     createPost: async (_, { input }, { req }): Promise<IPost> => {
       try {
@@ -84,4 +84,4 @@ const postResolver: IResolvers = {
   },
 };
 
-export default postResolver;
+export default createPostResolver;

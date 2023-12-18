@@ -10,6 +10,8 @@ import loginSchema from "./schemas/Auth/loginSchema";
 import cors from "cors";
 import userValidatorResolver from "./resolvers/Auth/userValidatorResolver";
 import userValidatorSchema from "./schemas/Auth/userValidatorSchema";
+import createPostSchema from "./schemas/Post/createPostSchema";
+import createPostResolver from "./resolvers/Post/createPostResolver";
 
 async function startServer() {
   const app = express();
@@ -48,8 +50,8 @@ async function startServer() {
   );
 
   const server = new ApolloServer({
-    typeDefs: [loginSchema, registerSchema, userValidatorSchema],
-    resolvers: [loginResolver, registerResolver, userValidatorResolver],
+    typeDefs: [loginSchema, registerSchema, userValidatorSchema, createPostSchema],
+    resolvers: [loginResolver, registerResolver, userValidatorResolver, createPostResolver],
     context: ({ req }) => ({ req }),
   });
 
