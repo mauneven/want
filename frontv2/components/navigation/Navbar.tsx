@@ -17,7 +17,6 @@ import {
 } from "@mantine/core";
 import {
   IconSearch,
-  IconMessageCircle,
   IconLogout,
   IconUser,
   IconSun,

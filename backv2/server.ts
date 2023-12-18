@@ -9,7 +9,7 @@ import MongoStore from "connect-mongo";
 import loginSchema from "./schemas/Auth/loginSchema";
 import cors from "cors";
 import userValidatorResolver from "./resolvers/Auth/UserValidatorResolver";
-import userValidatorSchema from "./schemas/Auth/UserValidatorSchema";
+import userValidatorSchema from "./schemas/Auth/userValidatorSchema";
 
 async function startServer() {
   const app = express();
