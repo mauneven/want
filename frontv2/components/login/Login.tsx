@@ -13,7 +13,6 @@ import {
   NumberInput,
   Alert,
 } from "@mantine/core";
-import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 import { useForm } from "@mantine/form";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
@@ -176,8 +175,6 @@ const Login = ({
       2,
       "0"
     )}T00:00:00.000+00:00`;
-    loadDevMessages();
-    loadErrorMessages();
 
     try {
       const { data } = await registerUser({
@@ -217,7 +214,6 @@ const Login = ({
   };
 
   return (
-    <>
       <Modal
         opened={opened}
         onClose={handleClose}
@@ -369,7 +365,6 @@ const Login = ({
           </Button>
         </Stack>
       </Modal>
-    </>
   );
 };
 

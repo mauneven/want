@@ -17,9 +17,10 @@ import CateogoryModal from "@/components/new/CategoryModal";
 import { PhotoDropzone } from "@/components/new/PhotoDropzone";
 import PostLocation from "@/components/new/PostLocation";
 import { FileWithPath } from "@mantine/dropzone";
-import endpoints from "../connections/enpoints/endpoints";
 import { notifications } from "@mantine/notifications";
 import { useRouter } from "next/navigation";
+import { useMutation } from "@apollo/client";
+import { CREATE_POST_MUTATION } from "@/querys/PostQuery";
 
 const New = () => {
   const [selectedCategory, setSelectedCategory] = useState<{
@@ -35,6 +36,7 @@ const New = () => {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [photoOrder, setPhotoOrder] = useState<number[]>([]);
+  const [createPost, { loading, error }] = useMutation(CREATE_POST_MUTATION);
   const router = useRouter();
 
   const handleLocationSelect = (lat: number, lng: number) => {
@@ -65,45 +67,25 @@ const New = () => {
     }
 
     try {
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("description", description);
-      formData.append("latitude", location?.lat.toString() ?? "");
-      formData.append("longitude", location?.lng.toString() ?? "");
-      formData.append("mainCategory", selectedCategory?.id ?? "");
-      formData.append("price", price);
+      const postInput = {
+        title,
+        description,
+        latitude: location?.lat,
+        longitude: location?.lng,
+        mainCategory: selectedCategory?.id,
+        price: parseFloat(price),
+        
+        photos: []
+      };
 
-      for (const element of photoOrder) {
-        const index = element;
-        if (uploadedPhotos[index]) {
-          formData.append(
-            "photos[]",
-            uploadedPhotos[index],
-            uploadedPhotos[index].name
-          );
-        }
-      }
+      await createPost({ variables: { input: postInput } });
 
-      const response = await fetch(endpoints.createPost, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-        },
-        credentials: "include",
-        body: formData,
+      notifications.show({
+        title: "Éxito",
+        message: "El post se creó exitosamente",
+        color: "green",
       });
-
-      if (response.ok) {
-        console.log("El post se creó exitosamente");
-        notifications.show({
-          title: "Éxito",
-          message: "El post se creó exitosamente",
-          color: "green",
-        });
-        router.push("/");
-      } else {
-        console.error("Error al crear el post");
-      }
+      router.push("/");
     } catch (error) {
       console.error("Error al crear el post:", error);
     }
