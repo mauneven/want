@@ -15,7 +15,7 @@ interface IPost extends Document {
 
 const postSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  description: { type: String, required: true },
+  description: { type: String },
   createdAt: { type: Date, default: Date.now },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   latitude: { type: Number, required: true },

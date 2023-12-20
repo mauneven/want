@@ -67,6 +67,12 @@ const New = () => {
     }
 
     try {
+      const photoFiles = uploadedPhotos.map((file) => ({
+        uri: file.path,
+        name: file.name,
+        type: "image/*",
+      }));
+
       const postInput = {
         title,
         description,
@@ -74,8 +80,7 @@ const New = () => {
         longitude: location?.lng,
         mainCategory: selectedCategory?.id,
         price: parseFloat(price),
-        
-        photos: []
+        photos: photoFiles,
       };
 
       await createPost({ variables: { input: postInput } });

@@ -5,8 +5,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import sharp from "sharp";
-import { v4 as uuidv4 } from "uuid";
-import geolib from "geolib";
+import { computeDestinationPoint } from "geolib";
 
 const storage = multer.diskStorage({
   destination: (_, __, cb) => {
@@ -54,7 +53,7 @@ const createPostResolver: IResolvers = {
           );
         }
 
-        const newPosition = geolib.computeDestinationPoint(
+        const newPosition = computeDestinationPoint(
           { latitude, longitude },
           1000,
           Math.random() * 360

@@ -18,8 +18,6 @@ export const createPostSchema = gql`
   input CreatePostInput {
     title: String!
     description: String
-    createdAt: String!
-    createdBy: ID!
     latitude: Float!
     longitude: Float!
     mainCategory: String
