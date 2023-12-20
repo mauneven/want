@@ -1,54 +1,57 @@
-import { IResolvers } from '@graphql-tools/utils';
-import Post, { IPost } from '../../models/postModel';
-import User from '../../models/userModel';
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs/promises';
-import sharp from 'sharp';
-import { v4 as uuidv4 } from 'uuid';
-import geolib from 'geolib';
+import { IResolvers } from "@graphql-tools/utils";
+import Post, { IPost } from "../../models/postModel";
+import User from "../../models/userModel";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import sharp from "sharp";
+import { v4 as uuidv4 } from "uuid";
+import geolib from "geolib";
 
 const storage = multer.diskStorage({
   destination: (_, __, cb) => {
-    cb(null, 'uploads/');
+    cb(null, "uploads/");
   },
   filename: (_, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(null, uniqueSuffix + path.extname(file.originalname));
   },
 });
 
-const upload = multer({ storage }).array('photos[]', 4);
+const upload = multer({ storage }).array("photos[]", 4);
 
 exports.uploadPhotoMiddleware = upload;
 
 const createPostResolver: IResolvers = {
   Mutation: {
-    createPost: async (_, { input }, { req }): Promise<IPost> => {
+    createPost: async (_, { input, files }, { req }): Promise<IPost> => {
       try {
-        const { title, description, latitude, longitude, mainCategory, price } = input;
-
-        const photos = req.files.map((file: Express.Multer.File) => ({
-            type: file.mimetype,
-            path: file.path,
-            originalname: file.originalname,
-        }));
+        const { title, description, latitude, longitude, mainCategory, price } =
+          input;
 
         let compressedImagePaths = [];
 
-        if (photos.length > 0) {
-            compressedImagePaths = await Promise.all(
-                photos.map(async (photo: Express.Multer.File) => {
-                    const compressedImagePath = `uploads/${uuidv4()}.webp`;
-                    const fileBuffer = await fs.readFile(photo.path);
-                    await sharp(fileBuffer)
-                        .resize({ width: 500 })
-                        .toFormat('webp')
-                        .toFile(compressedImagePath);
-                    await fs.unlink(photo.path);
-                    return compressedImagePath;
-                })
-            );
+        if (files && files.length > 0) {
+          compressedImagePaths = await Promise.all(
+            files.map(async (file: any) => {
+              const { createReadStream, filename } = await file;
+              const stream = createReadStream();
+              const uniqueSuffix =
+                Date.now() + "-" + Math.round(Math.random() * 1e9);
+              const filePath = `uploads/${uniqueSuffix}-${filename}`;
+              const out = fs.createWriteStream(filePath);
+              stream.pipe(out);
+              await new Promise((resolve) => out.on("finish", resolve));
+
+              const compressedImagePath = `uploads/compressed-${uniqueSuffix}.webp`;
+              await sharp(filePath)
+                .resize({ width: 500 })
+                .toFormat("webp")
+                .toFile(compressedImagePath);
+              await fs.promises.unlink(filePath);
+              return compressedImagePath;
+            })
+          );
         }
 
         const newPosition = geolib.computeDestinationPoint(
@@ -77,9 +80,9 @@ const createPostResolver: IResolvers = {
         });
 
         return post;
-    } catch (err) {
+      } catch (err) {
         throw new Error((err as Error).message);
-    }
+      }
     },
   },
 };

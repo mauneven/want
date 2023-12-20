@@ -28,6 +28,8 @@
     "@tiptap/extension-link": "^2.1.12",
     "@tiptap/react": "^2.1.12",
     "@tiptap/starter-kit": "^2.1.12",
+    "@types/apollo-upload-client": "^17.0.5",
+    "apollo-upload-client": "^18.0.1",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.10",
     "embla-carousel-react": "^7.1.0",

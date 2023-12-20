@@ -34,6 +34,7 @@
     "geolib": "^3.3.4",
     "graphql": "^16.8.1",
     "graphql-tools": "^9.0.0",
+    "graphql-upload": "^16.0.2",
     "mongoose": "^8.0.1",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.7",
